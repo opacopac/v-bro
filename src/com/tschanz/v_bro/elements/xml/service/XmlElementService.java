@@ -8,15 +8,14 @@ import com.tschanz.v_bro.elements.xml.model.XmlElementClass;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.xml.service.XmlRepoService;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 
 public class XmlElementService implements ElementService {
     private final XmlRepoService repoService;
     private final ElementClassParser elementClassParser;
     private final ElementParser elementParser;
+    private final Map<String, List<NameField>> nameFields = new HashMap<>();
 
 
     public XmlElementService(
@@ -38,13 +37,17 @@ public class XmlElementService implements ElementService {
 
         Collection<XmlElementClass> elementStructureList = this.elementClassParser.readElementStructure(this.repoService);
 
+        // update name field map
+        this.nameFields.clear();
+        elementStructureList.forEach(elementClass -> this.nameFields.put(elementClass.getName(), elementClass.getNameFields()));
+
         return new ArrayList<>(elementStructureList);
     }
 
 
     @Override
     public List<NameField> readNameFields(String elementName) throws RepoException {
-        return null;
+        return this.nameFields.get(elementName);
     }
 
 

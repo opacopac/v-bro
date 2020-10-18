@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.versioning.swing.dependencyselection;
 
-import com.tschanz.v_bro.elements.swing.model.ElementTableItem;
+import com.tschanz.v_bro.elements.swing.model.ElementClassItem;
 
 import javax.swing.event.ChangeListener;
 import java.awt.event.ActionListener;
@@ -14,7 +14,7 @@ public interface DependencySelectionView {
 
     void addSelectElementTableListener(ActionListener listener);
 
-    ElementTableItem getSelectedElementTable();
+    ElementClassItem getSelectedElementTable();
 
-    void setElementTableNames(List<ElementTableItem> elementTableItem);
+    void setElementTableNames(List<ElementClassItem> elementClassItem);
 }

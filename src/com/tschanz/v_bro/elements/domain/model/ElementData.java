@@ -6,11 +6,11 @@ import java.util.List;
 
 public class ElementData {
     protected final String id;
-    protected final List<NameFieldData> nameFields = new ArrayList<>();
+    protected final List<NameFieldData> nameFieldValues = new ArrayList<>();
 
 
     public String getId() { return this.id; }
-    public List<NameFieldData> getNameFields() { return this.nameFields; }
+    public List<NameFieldData> getNameFieldValues() { return this.nameFieldValues; }
 
 
     public ElementData(String id) {
@@ -18,13 +18,13 @@ public class ElementData {
     }
 
 
-    public ElementData(String id, List<NameFieldData> nameFields) {
+    public ElementData(String id, List<NameFieldData> nameFieldValues) {
         this.id = id;
-        this.nameFields.addAll(nameFields);
+        this.nameFieldValues.addAll(nameFieldValues);
     }
 
 
     public void addNameField(NameFieldData nameField) {
-        this.nameFields.add(nameField);
+        this.nameFieldValues.add(nameField);
     }
 }

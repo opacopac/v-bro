@@ -1,19 +1,14 @@
 package com.tschanz.v_bro.elements.swing.model;
 
 
-public class ElementTableItem {
+public class NameFieldItem {
     private final String name;
+
 
     public String getName() { return name; }
 
 
-    public ElementTableItem(String name) {
+    public NameFieldItem(String name) {
         this.name = name;
-    }
-
-
-    @Override
-    public String toString() {
-        return this.getName();
     }
 }

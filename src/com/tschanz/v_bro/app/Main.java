@@ -4,6 +4,8 @@ import com.tschanz.v_bro.elements.domain.service.ElementService;
 import com.tschanz.v_bro.elements.mock.service.MockElementService2;
 import com.tschanz.v_bro.elements.usecase.read_element_classes.ReadElementClassesUseCase;
 import com.tschanz.v_bro.elements.usecase.read_element_classes.ReadElementClassesUseCaseImpl;
+import com.tschanz.v_bro.elements.usecase.read_element_namefields.ReadElementNameFieldsUseCase;
+import com.tschanz.v_bro.elements.usecase.read_element_namefields.ReadElementNamesFieldsUseCaseImpl;
 import com.tschanz.v_bro.elements.usecase.read_elements.ReadElementsUseCase;
 import com.tschanz.v_bro.elements.usecase.read_elements.ReadElementsUseCaseImpl;
 import com.tschanz.v_bro.elements.xml.service.ElementParser;
@@ -65,13 +67,14 @@ public class Main {
 
         // use cases
         Map<RepoType, RepoService> repoMap = Map.of(RepoType.JDBC, jdbcRepo, RepoType.XML, xmlRepo, RepoType.MOCK, mockRepo);
-        Map<RepoType, ElementService> elementClassServiceMap = Map.of(RepoType.JDBC, jdbcElementClassService, RepoType.XML, xmlElementClassService, RepoType.MOCK, mockElementClassService);
-        Map<RepoType, VersionService> versionDataServiceMap = Map.of(RepoType.JDBC, jdbcVersionDataService, RepoType.XML, xmlVersionDataService, RepoType.MOCK, mockVersionDataService);
+        Map<RepoType, ElementService> elementServiceMap = Map.of(RepoType.JDBC, jdbcElementClassService, RepoType.XML, xmlElementClassService, RepoType.MOCK, mockElementClassService);
+        Map<RepoType, VersionService> versionServiceMap = Map.of(RepoType.JDBC, jdbcVersionDataService, RepoType.XML, xmlVersionDataService, RepoType.MOCK, mockVersionDataService);
         OpenConnectionUseCase openConnectionUc = new OpenConnectionUseCaseImpl(repoMap);
         CloseConnectionUseCase closeConnectionUc = new CloseConnectionUseCaseImpl(repoMap);
-        ReadElementClassesUseCase readElementClassesUc = new ReadElementClassesUseCaseImpl(elementClassServiceMap);
-        ReadElementsUseCase readElementsUc = new ReadElementsUseCaseImpl(elementClassServiceMap);
-        ReadVersionsUseCase readVersionsUc = new ReadVersionsUseCaseImpl(versionDataServiceMap);
+        ReadElementClassesUseCase readElementClassesUc = new ReadElementClassesUseCaseImpl(elementServiceMap);
+        ReadElementNameFieldsUseCase readElementNameFieldsUc = new ReadElementNamesFieldsUseCaseImpl(elementServiceMap);
+        ReadElementsUseCase readElementsUc = new ReadElementsUseCaseImpl(elementServiceMap);
+        ReadVersionsUseCase readVersionsUc = new ReadVersionsUseCaseImpl(versionServiceMap);
 
         // view
         MainView mainView = new MainPanel();
@@ -80,6 +83,7 @@ public class Main {
             openConnectionUc,
             closeConnectionUc,
             readElementClassesUc,
+            readElementNameFieldsUc,
             readElementsUc,
             readVersionsUc
         );

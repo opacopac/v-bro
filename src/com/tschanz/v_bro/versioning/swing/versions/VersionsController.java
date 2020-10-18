@@ -2,10 +2,10 @@ package com.tschanz.v_bro.versioning.swing.versions;
 
 import com.tschanz.v_bro.repo.swing.connection.ConnectionController;
 import com.tschanz.v_bro.versioning.swing.dependencyselection.DependencySelectionView;
-import com.tschanz.v_bro.elements.swing.elementselection.ElementSelectionView;
+import com.tschanz.v_bro.elements.swing.element_class_selection.ElementClassSelectionView;
 import com.tschanz.v_bro.common.swing.statusbar.StatusBarView;
 import com.tschanz.v_bro.versioning.swing.versiontimeline.VersionTimelineController;
-import com.tschanz.v_bro.elements.swing.model.ElementTableItem;
+import com.tschanz.v_bro.elements.swing.model.ElementClassItem;
 import com.tschanz.v_bro.elements.swing.model.VersionItem;
 
 import java.awt.event.ActionEvent;
@@ -13,7 +13,7 @@ import java.awt.event.ActionEvent;
 
 public class VersionsController {
     private final VersionsView versionsView;
-    private final ElementSelectionView elementSelectionView;
+    private final ElementClassSelectionView elementClassSelectionView;
     private final DependencySelectionView dependencySelectionView;
     private final StatusBarView statusBarView;
     private final ConnectionController connectionController;
@@ -21,13 +21,13 @@ public class VersionsController {
 
     public VersionsController(
         VersionsView versionsView,
-        ElementSelectionView elementSelectionView,
+        ElementClassSelectionView elementClassSelectionView,
         DependencySelectionView dependencySelectionView,
         StatusBarView statusBarView,
         ConnectionController connectionController
     ) {
         this.versionsView = versionsView;
-        this.elementSelectionView = elementSelectionView;
+        this.elementClassSelectionView = elementClassSelectionView;
         this.dependencySelectionView = dependencySelectionView;
         this.statusBarView = statusBarView;
         this.connectionController = connectionController;
@@ -41,7 +41,7 @@ public class VersionsController {
 
 
     private void onVersionSelected(ActionEvent e) {
-        ElementTableItem fwdElementTable = this.elementSelectionView.getSelectedElementTable();
+        ElementClassItem fwdElementTable = this.elementClassSelectionView.getSelectedElementClass();
         VersionItem version = this.versionsView.getSelectedVersion();
         if (fwdElementTable == null || version == null) {
             return;

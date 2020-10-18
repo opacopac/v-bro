@@ -54,11 +54,11 @@ class ElementParserTest {
 
         assertEquals(1, elementDataList.size());
         assertEquals("ids__12004", elementDataList.get(0).getId());
-        assertEquals(2, elementDataList.get(0).getNameFields().size());
-        assertEquals("partnerCode", elementDataList.get(0).getNameFields().get(0).getName());
-        assertEquals("11", elementDataList.get(0).getNameFields().get(0).getValue());
-        assertEquals("partnerKuerzel", elementDataList.get(0).getNameFields().get(1).getName());
-        assertEquals("SBB", elementDataList.get(0).getNameFields().get(1).getValue());
+        assertEquals(2, elementDataList.get(0).getNameFieldValues().size());
+        assertEquals("partnerCode", elementDataList.get(0).getNameFieldValues().get(0).getName());
+        assertEquals("11", elementDataList.get(0).getNameFieldValues().get(0).getValue());
+        assertEquals("partnerKuerzel", elementDataList.get(0).getNameFieldValues().get(1).getName());
+        assertEquals("SBB", elementDataList.get(0).getNameFieldValues().get(1).getValue());
     }
 
 
@@ -87,9 +87,9 @@ class ElementParserTest {
 
         assertEquals(1, elementDataList.size());
         assertEquals("ids__2433574", elementDataList.get(0).getId());
-        assertEquals(1, elementDataList.get(0).getNameFields().size());
-        assertEquals("gattungsCode", elementDataList.get(0).getNameFields().get(0).getName());
-        assertEquals("AG", elementDataList.get(0).getNameFields().get(0).getValue());
+        assertEquals(1, elementDataList.get(0).getNameFieldValues().size());
+        assertEquals("gattungsCode", elementDataList.get(0).getNameFieldValues().get(0).getName());
+        assertEquals("AG", elementDataList.get(0).getNameFieldValues().get(0).getValue());
     }
 
 
@@ -130,17 +130,17 @@ class ElementParserTest {
 
         assertEquals(3, elementDataList.size());
         assertEquals("ids__23361", elementDataList.get(0).getId());
-        assertEquals(1, elementDataList.get(0).getNameFields().size());
-        assertEquals("name", elementDataList.get(0).getNameFields().get(0).getName());
-        assertEquals("743029", elementDataList.get(0).getNameFields().get(0).getValue());
+        assertEquals(1, elementDataList.get(0).getNameFieldValues().size());
+        assertEquals("name", elementDataList.get(0).getNameFieldValues().get(0).getName());
+        assertEquals("743029", elementDataList.get(0).getNameFieldValues().get(0).getValue());
         assertEquals("ids__23395", elementDataList.get(1).getId());
-        assertEquals(1, elementDataList.get(1).getNameFields().size());
-        assertEquals("name", elementDataList.get(1).getNameFields().get(0).getName());
-        assertEquals("743126", elementDataList.get(1).getNameFields().get(0).getValue());
+        assertEquals(1, elementDataList.get(1).getNameFieldValues().size());
+        assertEquals("name", elementDataList.get(1).getNameFieldValues().get(0).getName());
+        assertEquals("743126", elementDataList.get(1).getNameFieldValues().get(0).getValue());
         assertEquals("ids__23025", elementDataList.get(2).getId());
-        assertEquals(1, elementDataList.get(2).getNameFields().size());
-        assertEquals("name", elementDataList.get(2).getNameFields().get(0).getName());
-        assertEquals("sbg034", elementDataList.get(2).getNameFields().get(0).getValue());
+        assertEquals(1, elementDataList.get(2).getNameFieldValues().size());
+        assertEquals("name", elementDataList.get(2).getNameFieldValues().get(0).getName());
+        assertEquals("sbg034", elementDataList.get(2).getNameFieldValues().get(0).getValue());
     }
 
 

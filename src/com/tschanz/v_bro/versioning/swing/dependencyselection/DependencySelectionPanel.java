@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.versioning.swing.dependencyselection;
 
-import com.tschanz.v_bro.elements.swing.model.ElementTableItem;
+import com.tschanz.v_bro.elements.swing.model.ElementClassItem;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -12,7 +12,7 @@ import java.util.List;
 public class DependencySelectionPanel extends JPanel implements DependencySelectionView {
     private final JRadioButton fwdDependencyRadio = new JRadioButton("FW");
     private final JRadioButton bwdDependencyRadio = new JRadioButton("BW");
-    private final JComboBox<ElementTableItem> elementTablesList = new JComboBox<>();
+    private final JComboBox<ElementClassItem> elementTablesList = new JComboBox<>();
 
 
     public DependencySelectionPanel() {
@@ -47,14 +47,14 @@ public class DependencySelectionPanel extends JPanel implements DependencySelect
 
 
     @Override
-    public ElementTableItem getSelectedElementTable() {
-        return (ElementTableItem) this.elementTablesList.getSelectedItem();
+    public ElementClassItem getSelectedElementTable() {
+        return (ElementClassItem) this.elementTablesList.getSelectedItem();
     }
 
 
     @Override
-    public void setElementTableNames(List<ElementTableItem> elementTableItems) {
+    public void setElementTableNames(List<ElementClassItem> elementClassItems) {
         this.elementTablesList.removeAllItems();
-        elementTableItems.forEach(this.elementTablesList::addItem);
+        elementClassItems.forEach(this.elementTablesList::addItem);
     }
 }

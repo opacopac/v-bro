@@ -2,9 +2,9 @@ package com.tschanz.v_bro.repo.swing.connection;
 
 import com.tschanz.v_bro.common.VBroAppException;
 import com.tschanz.v_bro.elements.usecase.read_element_classes.ReadElementClassesUseCase;
-import com.tschanz.v_bro.elements.swing.elementselection.ElementSelectionView;
+import com.tschanz.v_bro.elements.swing.element_class_selection.ElementClassSelectionView;
 import com.tschanz.v_bro.common.swing.statusbar.StatusBarView;
-import com.tschanz.v_bro.elements.swing.model.ElementTableItem;
+import com.tschanz.v_bro.elements.swing.model.ElementClassItem;
 import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
 import com.tschanz.v_bro.repo.jdbc.model.JdbcConnectionParameters;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class ConnectionController {
     private final ConnectionView connectionView;
-    private final ElementSelectionView elementSelectionView;
+    private final ElementClassSelectionView elementClassSelectionView;
     private final StatusBarView statusBarView;
     private final OpenConnectionUseCase openConnectionUc;
     private final ReadElementClassesUseCase readElementClassesUc;
@@ -37,14 +37,14 @@ public class ConnectionController {
 
     public ConnectionController(
         ConnectionView connectionView,
-        ElementSelectionView elementSelectionView,
+        ElementClassSelectionView elementClassSelectionView,
         StatusBarView statusBarView,
         OpenConnectionUseCase openConnectionUc,
         ReadElementClassesUseCase readElementClassesUc,
         CloseConnectionUseCase closeConnectionUc
     ) {
         this.connectionView = connectionView;
-        this.elementSelectionView = elementSelectionView;
+        this.elementClassSelectionView = elementClassSelectionView;
         this.statusBarView = statusBarView;
         this.openConnectionUc = openConnectionUc;
         this.readElementClassesUc = readElementClassesUc;
@@ -89,12 +89,12 @@ public class ConnectionController {
             this.connectionView.setConnectedState(true);
             this.statusBarView.setStatusInfo("connection established");
 
-            List<ElementTableItem> elementTableItems = this.readElementClassesUc.readElementClasses(this.currentConnection).elementTableNames
+            List<ElementClassItem> elementClassItems = this.readElementClassesUc.readElementClasses(this.currentConnection).elementTableNames
                 .stream()
-                .map(ElementTableItem::new)
+                .map(ElementClassItem::new)
                 .collect(Collectors.toList());
 
-            this.elementSelectionView.setElementTables(elementTableItems);
+            this.elementClassSelectionView.updateElementClassList(elementClassItems);
         } catch (VBroAppException exception) {
             this.statusBarView.setStatusError(exception.getMessage());
         }
