@@ -2,9 +2,10 @@ package com.tschanz.v_bro.versioning.xml.service;
 
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.xml.service.XmlRepoService;
-import com.tschanz.v_bro.versioning.domain.model.VersionData;
+import com.tschanz.v_bro.versioning.domain.model.VersionAggregate;
+import com.tschanz.v_bro.versioning.domain.model.VersionInfo;
 import com.tschanz.v_bro.versioning.domain.service.VersionService;
-import com.tschanz.v_bro.versioning.xml.model.XmlVersionData;
+import com.tschanz.v_bro.versioning.xml.model.XmlVersionInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,17 +26,23 @@ public class XmlVersionService implements VersionService {
 
 
     @Override
-    public Collection<VersionData> readVersions(String elementName, String elementId) throws RepoException {
+    public Collection<VersionInfo> readVersionTimeline(String elementName, String elementId) throws RepoException {
         if (!this.repoService.isConnected()) {
             throw new RepoException("Repo not connected!");
         }
 
-        Collection<XmlVersionData> versionDataList = this.parser.readVersions(
+        Collection<XmlVersionInfo> versionDataList = this.parser.readVersions(
             this.repoService,
             elementName,
             elementId
         );
 
         return new ArrayList<>(versionDataList);
+    }
+
+
+    @Override
+    public VersionAggregate readVersionAggregate(String elementName, String elementId, String versionId) throws RepoException {
+        return null;
     }
 }

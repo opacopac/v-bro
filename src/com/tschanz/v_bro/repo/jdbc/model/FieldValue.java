@@ -4,12 +4,10 @@ import java.util.Date;
 
 
 public class FieldValue {
-    private final RepoTable repoTable;
     private final RepoField field;
     private final Object value;
 
 
-    public RepoTable getRepoClass() { return repoTable; }
     public RepoField getField() { return field; }
     public String getName() { return this.field.getName(); }
     public RepoFieldType getType() {
@@ -18,8 +16,7 @@ public class FieldValue {
     public Object getValue() { return this.value; }
 
 
-    public FieldValue(RepoTable repoTable, RepoField field, Object value) {
-        this.repoTable = repoTable;
+    public FieldValue(RepoField field, Object value) {
         this.field = field;
         this.value = value;
     }

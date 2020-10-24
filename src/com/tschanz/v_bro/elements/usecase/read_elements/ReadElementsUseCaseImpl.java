@@ -29,7 +29,7 @@ public class ReadElementsUseCaseImpl implements ReadElementsUseCase {
 
         ElementService elementDataService = this.getElementDataService(repoConnection.repoType);
         try {
-            Collection<ElementData> elements = elementDataService.readElementData(elementTableName, nameFields);
+            Collection<ElementData> elements = elementDataService.readElements(elementTableName, nameFields);
             ReadElementsResponse response = new ReadElementsResponse(
                 elements
                     .stream()
@@ -51,7 +51,7 @@ public class ReadElementsUseCaseImpl implements ReadElementsUseCase {
     private ElementService getElementDataService(RepoType repoType) throws VBroAppException {
         ElementService elementService = this.elementClassServiceMap.get(repoType);
         if (elementService == null) {
-            String message = "no service found for type " + repoType.name();
+            String message = "no repo_data found for type " + repoType.name();
             this.logger.severe(message);
             throw new VBroAppException(message);
         }

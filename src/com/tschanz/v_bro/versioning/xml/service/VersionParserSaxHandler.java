@@ -3,7 +3,7 @@ package com.tschanz.v_bro.versioning.xml.service;
 import com.tschanz.v_bro.elements.xml.service.ElementClassParserSaxHandler;
 import com.tschanz.v_bro.elements.xml.service.XmlPathTracker;
 import com.tschanz.v_bro.repo.xml.service.XmlRepoService;
-import com.tschanz.v_bro.versioning.xml.model.XmlVersionData;
+import com.tschanz.v_bro.versioning.xml.model.XmlVersionInfo;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -14,16 +14,16 @@ import java.util.Collection;
 
 
 public class VersionParserSaxHandler extends DefaultHandler {
-    private final ArrayList<XmlVersionData> versionList = new ArrayList<>();
+    private final ArrayList<XmlVersionInfo> versionList = new ArrayList<>();
     private String elementName;
     private String elementId;
     private int elementLevel = -1;
     private final Collection<String> elementFwdDepIds = new ArrayList<>();
-    private XmlVersionData currentVersion;
+    private XmlVersionInfo currentVersion;
     private XmlPathTracker pathTracker;
 
 
-    public ArrayList<XmlVersionData> getVersionList() { return versionList; }
+    public ArrayList<XmlVersionInfo> getVersionList() { return versionList; }
 
     public void setElementName(String elementName) { this.elementName = elementName; }
 
@@ -59,7 +59,7 @@ public class VersionParserSaxHandler extends DefaultHandler {
             LocalDate gueltigBis = this.findDate(attributes, XmlRepoService.VERSION_BIS_ATTRIBUTE_NAME);
 
             if (versionId != null && gueltigVon != null && gueltigBis != null) {
-                this.currentVersion = new XmlVersionData(versionId, gueltigVon, gueltigBis);
+                this.currentVersion = new XmlVersionInfo(versionId, gueltigVon, gueltigBis);
                 this.pathTracker.setNodeMarker();
             }
         }
@@ -113,7 +113,7 @@ public class VersionParserSaxHandler extends DefaultHandler {
 
         if (this.elementLevel >= this.pathTracker.getCurrentPath().size()) {
             if (this.versionList.size() == 0) {
-                XmlVersionData unversionedEntry = new XmlVersionData(this.elementId);
+                XmlVersionInfo unversionedEntry = new XmlVersionInfo(this.elementId);
                 unversionedEntry.addFwdDepIds(this.elementFwdDepIds);
                 this.versionList.add(unversionedEntry);
             }

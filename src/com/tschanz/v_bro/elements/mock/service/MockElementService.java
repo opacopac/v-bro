@@ -5,7 +5,7 @@ import com.tschanz.v_bro.common.test.MockReturnValue;
 import com.tschanz.v_bro.elements.domain.model.ElementClass;
 import com.tschanz.v_bro.elements.domain.service.ElementService;
 import com.tschanz.v_bro.elements.domain.model.ElementData;
-import com.tschanz.v_bro.elements.domain.model.NameField;
+import com.tschanz.v_bro.elements.domain.model.Denomination;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.List;
 public class MockElementService implements ElementService {
     public final MockHelper<RepoException> mockHelper = new MockHelper<>();
     public MockReturnValue<List<ElementClass>> readElementClassesResult = new MockReturnValue<>("readElementClasses");
-    public MockReturnValue<List<NameField>> readNameFieldsResults = new MockReturnValue<>("readNameFields");
+    public MockReturnValue<List<Denomination>> readNameFieldsResults = new MockReturnValue<>("readNameFields");
     public MockReturnValue<Collection<ElementData>> readElementDataResults = new MockReturnValue<>("readElementData");
 
 
@@ -29,7 +29,7 @@ public class MockElementService implements ElementService {
 
 
     @Override
-    public List<NameField> readNameFields(String elementName) throws RepoException {
+    public List<Denomination> readDenominations(String elementName) throws RepoException {
         this.mockHelper.reportMethodCall("readNameFields");
         this.mockHelper.checkThrowException();
         return this.readNameFieldsResults.next();
@@ -37,7 +37,7 @@ public class MockElementService implements ElementService {
 
 
     @Override
-    public Collection<ElementData> readElementData(String elementName, Collection<String> fieldNames) throws RepoException {
+    public Collection<ElementData> readElements(String elementName, Collection<String> fieldNames) throws RepoException {
         this.mockHelper.reportMethodCall("readElementData", elementName, fieldNames);
         this.mockHelper.checkThrowException();
         return new ArrayList<>(this.readElementDataResults.next());

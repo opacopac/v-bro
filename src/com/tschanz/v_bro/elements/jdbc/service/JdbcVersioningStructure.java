@@ -1,13 +1,10 @@
 package com.tschanz.v_bro.elements.jdbc.service;
 
-import com.tschanz.v_bro.repo.jdbc.service.JdbcRepoMetadata;
-import com.tschanz.v_bro.repo.jdbc.model.RepoMetadata;
+import com.tschanz.v_bro.repo.jdbc.repo_metadata.JdbcRepoMetadataService;
+import com.tschanz.v_bro.repo.jdbc.repo_metadata.RepoMetadataService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
-import com.tschanz.v_bro.repo.jdbc.service.JdbcConnectionFactory;
+import com.tschanz.v_bro.repo.jdbc.repo_connection.JdbcConnectionFactory;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -21,15 +18,15 @@ public class JdbcVersioningStructure { //implements VersioningStructure {
 
     private final Logger logger = Logger.getLogger(JdbcVersioningStructure.class.getName());
     private final JdbcConnectionFactory connectionFactory;
-    private final RepoMetadata repoMetaData;
+    private final RepoMetadataService repoMetaDataService;
 
 
     public JdbcVersioningStructure(
         JdbcConnectionFactory connectionFactory,
-        RepoMetadata repoMetadata
+        RepoMetadataService repoMetadataService
     ) {
         this.connectionFactory = connectionFactory;
-        this.repoMetaData = repoMetadata;
+        this.repoMetaDataService = repoMetadataService;
     }
 
 
@@ -39,21 +36,8 @@ public class JdbcVersioningStructure { //implements VersioningStructure {
     public List<String> findElementClassNames() throws RepoException {
         this.logger.info("finding tables with suffix " + ELEMENT_TABLE_SUFFIX);
 
-        ArrayList<String> tableNames = new ArrayList<>();
-        try {
-            ResultSet tablesResult = this.repoMetaData.readTableResults(
-                JdbcRepoMetadata.WILDCARD + this.repoMetaData.escapeUnderscore(ELEMENT_TABLE_SUFFIX)
-            );
-
-            while (tablesResult.next()) {
-                tableNames.add(tablesResult.getString("TABLE_NAME"));
-            }
-            tablesResult.close();
-        } catch (SQLException exception) {
-            String msg = "error finding tables: " + exception.getMessage();
-            this.logger.severe (msg);
-            throw new RepoException(msg, exception);
-        }
+        String tableNamePattern = JdbcRepoMetadataService.WILDCARD + this.repoMetaDataService.escapeUnderscore(ELEMENT_TABLE_SUFFIX);
+        List<String> tableNames = this.repoMetaDataService.findTableNames(tableNamePattern);
 
         return tableNames;
     }

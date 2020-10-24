@@ -2,7 +2,7 @@ package com.tschanz.v_bro.repo.jdbc.querybuilder;
 
 import com.tschanz.v_bro.repo.jdbc.model.FieldValue;
 import com.tschanz.v_bro.repo.jdbc.model.RepoField;
-import com.tschanz.v_bro.repo.jdbc.service.JdbcConnectionFactory;
+import com.tschanz.v_bro.repo.jdbc.repo_connection.JdbcConnectionFactory;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

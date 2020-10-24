@@ -6,11 +6,11 @@ import java.util.List;
 
 public class ElementClass {
     protected final String name;
-    protected final List<NameField> nameFields = new ArrayList<>();
+    protected final List<Denomination> denominations = new ArrayList<>();
 
 
     public String getName() { return this.name; }
-    public List<NameField> getNameFields() { return this.nameFields; }
+    public List<Denomination> getNameFields() { return this.denominations; }
 
 
     public ElementClass(String name) {

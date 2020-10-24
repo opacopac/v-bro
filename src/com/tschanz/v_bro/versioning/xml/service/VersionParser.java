@@ -2,14 +2,13 @@ package com.tschanz.v_bro.versioning.xml.service;
 
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.xml.service.XmlRepoService;
-import com.tschanz.v_bro.versioning.xml.model.XmlVersionData;
+import com.tschanz.v_bro.versioning.xml.model.XmlVersionInfo;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 
@@ -22,7 +21,7 @@ public class VersionParser {
     }
 
 
-    public List<XmlVersionData> readVersions(
+    public List<XmlVersionInfo> readVersions(
         XmlRepoService repoService,
         String elementName,
         String elementId

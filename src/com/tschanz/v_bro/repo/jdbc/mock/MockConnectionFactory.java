@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.repo.jdbc.mock;
 
 import com.tschanz.v_bro.common.test.MockHelper;
-import com.tschanz.v_bro.repo.jdbc.service.JdbcConnectionFactory;
+import com.tschanz.v_bro.repo.jdbc.repo_connection.JdbcConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;

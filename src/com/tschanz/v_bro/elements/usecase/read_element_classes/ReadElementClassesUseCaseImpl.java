@@ -51,7 +51,7 @@ public class ReadElementClassesUseCaseImpl implements ReadElementClassesUseCase 
     private ElementService getElementClassService(RepoType repoType) throws VBroAppException {
         ElementService elementService = this.elementClassServiceMap.get(repoType);
         if (elementService == null) {
-            String message = "no service found for type " + repoType.name();
+            String message = "no repo_data found for type " + repoType.name();
             this.logger.severe(message);
             throw new VBroAppException(message);
         }

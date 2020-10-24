@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.elements.xml.model;
 
 import com.tschanz.v_bro.elements.domain.model.ElementClass;
-import com.tschanz.v_bro.elements.domain.model.NameField;
+import com.tschanz.v_bro.elements.domain.model.Denomination;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,20 +24,20 @@ public class XmlElementClass extends ElementClass {
         this.dataIds.add(elementData.getElementId());
 
         Collection<String> existingNameFields = this.getExistingNameFields();
-        Collection<NameField> newNameFields = elementData.getFieldNames()
+        Collection<Denomination> newDenominations = elementData.getFieldNames()
             .stream()
             .filter(fieldName -> !existingNameFields.contains(fieldName))
-            .map(NameField::new)
+            .map(Denomination::new)
             .collect(Collectors.toList());
 
-        this.nameFields.addAll(newNameFields);
+        this.denominations.addAll(newDenominations);
     }
 
 
     private Collection<String> getExistingNameFields() {
-        return this.nameFields
+        return this.denominations
             .stream()
-            .map(NameField::getName)
+            .map(Denomination::getName)
             .collect(Collectors.toList());
     }
 }

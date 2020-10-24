@@ -60,7 +60,7 @@ class JdbcQueryBuilderImplTest {
         fields.add(new RepoField( "ID", RepoFieldType.LONG, true,false, true));
         List<RowFilter> filters = new ArrayList<>();
         RepoTable repoTable = new RepoTable("TABLE1", fields, Collections.emptyList(), Collections.emptyList());
-        filters.add(new RowFilter(RowFilterOperator.EQUALS, new FieldValue(repoTable, new RepoField("ID", RepoFieldType.LONG, true, false, true), 1L)));
+        filters.add(new RowFilter(RowFilterOperator.EQUALS, new FieldValue(new RepoField("ID", RepoFieldType.LONG, true, false, true), 1L)));
 
         String query = this.jdbcQueryBuilder.buildQuery("TABLE1", fields, filters);
 
