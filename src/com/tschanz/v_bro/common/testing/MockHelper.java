@@ -1,4 +1,4 @@
-package com.tschanz.v_bro.common.test;
+package com.tschanz.v_bro.common.testing;
 
 import java.util.ArrayList;
 import java.util.Arrays;

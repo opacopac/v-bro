@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.versioning.mock.service;
 
-import com.tschanz.v_bro.common.test.MockHelper;
-import com.tschanz.v_bro.common.test.MockReturnValue;
+import com.tschanz.v_bro.common.testing.MockHelper;
+import com.tschanz.v_bro.common.testing.MockReturnValue;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.versioning.domain.model.VersionAggregate;
 import com.tschanz.v_bro.versioning.domain.model.VersionInfo;

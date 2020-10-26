@@ -40,12 +40,19 @@ import com.tschanz.v_bro.versioning.xml.service.VersionParser;
 import com.tschanz.v_bro.versioning.xml.service.XmlVersionService;
 
 import javax.xml.parsers.SAXParserFactory;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
+import java.util.Properties;
 
 
 public class Main {
-    public static void main(String[] args) throws ClassNotFoundException, RepoException {
+    public static void main(String[] args) throws ClassNotFoundException, RepoException, IOException {
         /// poor man's DI
+
+        // properties
+        Properties appProperties = loadProperties();
 
         // jdbc repo
         Class.forName("oracle.jdbc.OracleDriver");
@@ -85,6 +92,7 @@ public class Main {
         // view
         MainView mainView = new MainPanel();
         MainController mainController = new MainController(
+            appProperties,
             mainView,
             openConnectionUc,
             closeConnectionUc,
@@ -94,5 +102,21 @@ public class Main {
             readVersionsUc
         );
         mainController.start();;
+    }
+
+
+    private static Properties loadProperties() throws IOException {
+        Properties prop = new Properties();
+        String propFileName = "/application.properties";
+
+        InputStream inputStream = Main.class.getResourceAsStream(propFileName);
+
+        if (inputStream != null) {
+            prop.load(inputStream);
+        } else {
+            throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
+        }
+
+        return prop;
     }
 }

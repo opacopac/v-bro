@@ -11,12 +11,15 @@ import com.tschanz.v_bro.versioning.swing.controller.VersionsController;
 import com.tschanz.v_bro.repo.usecase.close_connection.CloseConnectionUseCase;
 import com.tschanz.v_bro.repo.usecase.open_connection.OpenConnectionUseCase;
 
+import java.util.Properties;
+
 
 public class MainController {
     private final MainView mainView;
 
 
     public MainController(
+        Properties appProperties,
         MainView mainView,
         OpenConnectionUseCase openConnectionUc,
         CloseConnectionUseCase closeConnectionUc,
@@ -32,6 +35,7 @@ public class MainController {
         );
 
         ConnectionController connectionController = new ConnectionController(
+            appProperties,
             mainView.getConnectionView(),
             statusBarController.getAppStatus(),
             openConnectionUc,
@@ -41,7 +45,7 @@ public class MainController {
         ElementController elementController = new ElementController(
             mainView.getElementView(),
             statusBarController.getAppStatus(),
-            connectionController.getCurrentConnection(),
+            connectionController.getCurrentRepoConnection(),
             readElementClassesUc,
             readElementDenominationsUc,
             readElementsUc
@@ -50,7 +54,7 @@ public class MainController {
         VersionsController versionsController = new VersionsController(
             mainView.getVersionsView(),
             statusBarController.getAppStatus(),
-            connectionController.getCurrentConnection(),
+            connectionController.getCurrentRepoConnection(),
             elementController.getSelectedElementClass(),
             elementController.getSelectedElement(),
             elementController.getSelectedVersionFilter(),

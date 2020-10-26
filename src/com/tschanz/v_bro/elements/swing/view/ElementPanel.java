@@ -41,43 +41,43 @@ public class ElementPanel extends JPanel implements ElementView {
 
 
     @Override
-    public void setElementClassList(BehaviorSubject<List<ElementClassItem>> elementClassList) {
-        this.elementClassSelectionPanel.setElementClassList(elementClassList);
+    public void bindElementClassList(BehaviorSubject<List<ElementClassItem>> elementClassList) {
+        this.elementClassSelectionPanel.bindElementClassList(elementClassList);
     }
 
 
     @Override
-    public void setDenominationList(BehaviorSubject<List<DenominationItem>> denominationList) {
-        this.denominationSelectionPanel.setDenominationList(denominationList);
+    public void bindDenominationList(BehaviorSubject<List<DenominationItem>> denominationList) {
+        this.denominationSelectionPanel.bindDenominationList(denominationList);
     }
 
 
     @Override
-    public void setElementList(BehaviorSubject<List<ElementItem>> elementList) {
-        this.elementSelectionPanel.setElementListPublisher(elementList);
+    public void bindElementList(BehaviorSubject<List<ElementItem>> elementList) {
+        this.elementSelectionPanel.bindElementList(elementList);
     }
 
 
     @Override
-    public void setSelectedElementClass(BehaviorSubject<ElementClassItem> selectedElementClass) {
-        this.elementClassSelectionPanel.setSelectedElementClass(selectedElementClass);
+    public void bindSelectElementClassAction(BehaviorSubject<ElementClassItem> selectElementClassAction) {
+        this.elementClassSelectionPanel.bindSelectElementClassAction(selectElementClassAction);
     }
 
 
     @Override
-    public void setSelectedDenominations(BehaviorSubject<List<DenominationItem>> selectedDenominations) {
-        this.denominationSelectionPanel.setSelectedDenominations(selectedDenominations);
+    public void bindSelectDenominationsAction(BehaviorSubject<List<DenominationItem>> selectDenominationsAction) {
+        this.denominationSelectionPanel.setSelectDenominationsAction(selectDenominationsAction);
     }
 
 
     @Override
-    public void setSelectedElement(BehaviorSubject<ElementItem> selectedElement) {
-        this.elementSelectionPanel.setSelectedElement(selectedElement);
+    public void bindSelectElementAction(BehaviorSubject<ElementItem> selectElementAction) {
+        this.elementSelectionPanel.setSelectElementAction(selectElementAction);
     }
 
 
     @Override
-    public void setSelectedVersionFilter(BehaviorSubject<VersionFilter> selectedVersionFilter) {
-        this.versionFilterPanel.setSelectedVersionFilter(selectedVersionFilter);
+    public void bindVersionFilter(BehaviorSubject<VersionFilter> versionFilter) {
+        this.versionFilterPanel.bindVersionFilter(versionFilter);
     }
 }

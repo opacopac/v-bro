@@ -62,13 +62,13 @@ public class ElementController {
         this.readElementNameFieldsUc = readElementNameFieldsUc;
         this.readElementsUc = readElementsUc;
 
-        this.elementView.setElementClassList(this.elementClassList);
-        this.elementView.setDenominationList(this.denominationList);
-        this.elementView.setElementList(this.elementList);
-        this.elementView.setSelectedElementClass(this.selectedElementClass);
-        this.elementView.setSelectedDenominations(this.selectedDenominations);
-        this.elementView.setSelectedElement(this.selectedElement);
-        this.elementView.setSelectedVersionFilter(this.selectedVersionFilter);
+        this.elementView.bindElementClassList(this.elementClassList);
+        this.elementView.bindDenominationList(this.denominationList);
+        this.elementView.bindElementList(this.elementList);
+        this.elementView.bindSelectElementClassAction(this.selectedElementClass);
+        this.elementView.bindSelectDenominationsAction(this.selectedDenominations);
+        this.elementView.bindSelectElementAction(this.selectedElement);
+        this.elementView.bindVersionFilter(this.selectedVersionFilter);
 
         this.repoConnection.subscribe(new GenericSubscriber<>(this::onConnectionChanged));
         this.selectedElementClass.subscribe(new GenericSubscriber<>(this::onElementClassSelected));

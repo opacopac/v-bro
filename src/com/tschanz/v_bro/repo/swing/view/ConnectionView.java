@@ -1,37 +1,16 @@
 package com.tschanz.v_bro.repo.swing.view;
 
-import com.tschanz.v_bro.repo.domain.model.RepoType;
+import com.tschanz.v_bro.common.BehaviorSubject;
+import com.tschanz.v_bro.repo.swing.model.QuickConnectionItem;
+import com.tschanz.v_bro.repo.swing.model.RepoConnectionItem;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ItemListener;
+import java.util.List;
 
 
 public interface ConnectionView {
-    void addShowConnectionDialogListener(ActionListener actionListener);
+    void bindQuickConnectionList(BehaviorSubject<List<QuickConnectionItem>> quickConnectionList);
 
-    void addQuickConnectionItemListener(ItemListener itemListener);
+    void bindConnectToRepoAction(BehaviorSubject<RepoConnectionItem> selectedRepoConnection);
 
-    void addConnectListener(ActionListener actionListener);
-
-    void addDisconnectListener(ActionListener actionListener);
-
-    void showConnectionDialog(boolean visible);
-
-    RepoType getRepoType();
-
-    String getUrl();
-
-    String getUser();
-
-    String getPassword();
-
-    String getFilename();
-
-    void setJdbcConnectionData(String url, String user, String password);
-
-    void setXmlConnectionData(String filename);
-
-    void setMockConnectionData();
-
-    void setConnectedState(boolean isConnected);
+    void bindCurrentRepoConnection(BehaviorSubject<RepoConnectionItem> currentRepoConnection);
 }

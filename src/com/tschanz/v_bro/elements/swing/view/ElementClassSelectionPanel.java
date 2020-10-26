@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ElementClassSelectionPanel extends JPanel {
     private final JComboBox<ElementClassItem> elementClassesComboBox = new JComboBox<>();
-    private BehaviorSubject<ElementClassItem> selectedElementClass;
+    private BehaviorSubject<ElementClassItem> selectElementClassAction;
 
 
     public ElementClassSelectionPanel() {
@@ -22,24 +22,24 @@ public class ElementClassSelectionPanel extends JPanel {
     }
 
 
-    public void setElementClassList(BehaviorSubject<List<ElementClassItem>> elementClassList) {
-        elementClassList.subscribe(new GenericSubscriber<>(this::updateElementClassList));
+    public void bindElementClassList(BehaviorSubject<List<ElementClassItem>> elementClassList) {
+        elementClassList.subscribe(new GenericSubscriber<>(this::onElementClassListChanged));
     }
 
 
-    public void setSelectedElementClass(BehaviorSubject<ElementClassItem> selectedElementClass) {
-        this.selectedElementClass = selectedElementClass;
+    public void bindSelectElementClassAction(BehaviorSubject<ElementClassItem> selectElementClassAction) {
+        this.selectElementClassAction = selectElementClassAction;
     }
 
 
-    private void updateElementClassList(List<ElementClassItem> elementClassList) {
+    private void onElementClassListChanged(List<ElementClassItem> elementClassList) {
         this.elementClassesComboBox.removeAllItems();
         elementClassList.forEach(this.elementClassesComboBox::addItem);
     }
 
 
     private void onElementClassSelected(ActionEvent e) {
-        this.selectedElementClass.next(
+        this.selectElementClassAction.next(
             (ElementClassItem) this.elementClassesComboBox.getSelectedItem()
         );
     }

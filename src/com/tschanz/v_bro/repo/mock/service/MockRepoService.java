@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.repo.mock.service;
 
-import com.tschanz.v_bro.common.test.MockHelper;
+import com.tschanz.v_bro.common.testing.MockHelper;
 import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
 import com.tschanz.v_bro.repo.domain.service.RepoService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;

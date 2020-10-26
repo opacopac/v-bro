@@ -27,7 +27,7 @@ public class VersionFilterPanel extends JPanel {
     private final JDatePicker datePickerVon = new JDatePickerImpl(this.datePanelVon, new DateComponentFormatter());
     private final JDatePicker datePickerBis = new JDatePickerImpl(this.datePanelBis, new DateComponentFormatter());
     private final JComboBox<PflegestatusItem> pflegestatusList = new JComboBox<>();
-    private BehaviorSubject<VersionFilter> selectedVersionFilter;
+    private BehaviorSubject<VersionFilter> versionFilter;
 
 
     public VersionFilterPanel() {
@@ -48,17 +48,17 @@ public class VersionFilterPanel extends JPanel {
     }
 
 
-    public void setSelectedVersionFilter(BehaviorSubject<VersionFilter> selectedVersionFilter) {
-        this.selectedVersionFilter = selectedVersionFilter;
-        VersionFilter versionFilter = selectedVersionFilter.getCurrentValue();
-        this.modelVon.setValue(Date.from(versionFilter.getMinGueltiVon().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-        this.modelBis.setValue(Date.from(versionFilter.getMaxGueltigBis().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-        this.pflegestatusList.setSelectedItem(versionFilter.getMinPflegestatus());
+    public void bindVersionFilter(BehaviorSubject<VersionFilter> versionFilter) {
+        this.versionFilter = versionFilter;
+        VersionFilter versionFilterValue = versionFilter.getCurrentValue();
+        this.modelVon.setValue(Date.from(versionFilterValue.getMinGueltiVon().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+        this.modelBis.setValue(Date.from(versionFilterValue.getMaxGueltigBis().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+        this.pflegestatusList.setSelectedItem(versionFilterValue.getMinPflegestatus());
     }
 
 
     private void onFilterChanged(ActionEvent e) {
-        this.selectedVersionFilter.next(
+        this.versionFilter.next(
             this.getVersionFilter()
         );
     }

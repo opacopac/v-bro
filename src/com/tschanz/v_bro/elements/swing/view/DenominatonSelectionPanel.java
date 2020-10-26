@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class DenominatonSelectionPanel extends JPanel {
     private final Map<JCheckBox, DenominationItem> checkBoxDenominationMap = new HashMap<>();
-    private BehaviorSubject<List<DenominationItem>> selectedDenominations;
+    private BehaviorSubject<List<DenominationItem>> selectDenominationsAction;
 
 
     public DenominatonSelectionPanel() {
@@ -23,17 +23,17 @@ public class DenominatonSelectionPanel extends JPanel {
     }
 
 
-    public void setDenominationList(BehaviorSubject<List<DenominationItem>> denominationListPublisher) {
-        denominationListPublisher.subscribe(new GenericSubscriber<>(this::updateDenominationList));
+    public void bindDenominationList(BehaviorSubject<List<DenominationItem>> denominationsList) {
+        denominationsList.subscribe(new GenericSubscriber<>(this::onDenominationsListChanged));
     }
 
 
-    public void setSelectedDenominations(BehaviorSubject<List<DenominationItem>> selectedDenominations) {
-        this.selectedDenominations = selectedDenominations;
+    public void setSelectDenominationsAction(BehaviorSubject<List<DenominationItem>> selectDenominationsAction) {
+        this.selectDenominationsAction = selectDenominationsAction;
     }
 
 
-    private void updateDenominationList(List<DenominationItem> denominationItems) {
+    private void onDenominationsListChanged(List<DenominationItem> denominationItems) {
         if (denominationItems == null) {
             throw new IllegalArgumentException("denominationItems");
         }
@@ -55,7 +55,7 @@ public class DenominatonSelectionPanel extends JPanel {
 
 
     private void onDenominationSelected(ActionEvent e) {
-        this.selectedDenominations.next(
+        this.selectDenominationsAction.next(
             this.checkBoxDenominationMap.keySet()
                 .stream()
                 .filter(AbstractButton::isSelected)

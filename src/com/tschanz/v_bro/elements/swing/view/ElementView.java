@@ -10,17 +10,17 @@ import java.util.List;
 
 
 public interface ElementView {
-    void setElementClassList(BehaviorSubject<List<ElementClassItem>> elementClassList);
+    void bindElementClassList(BehaviorSubject<List<ElementClassItem>> elementClassList);
 
-    void setDenominationList(BehaviorSubject<List<DenominationItem>> denominationList);
+    void bindDenominationList(BehaviorSubject<List<DenominationItem>> denominationList);
 
-    void setElementList(BehaviorSubject<List<ElementItem>> elementList);
+    void bindElementList(BehaviorSubject<List<ElementItem>> elementList);
 
-    void setSelectedElementClass(BehaviorSubject<ElementClassItem> selectedElementClass);
+    void bindSelectElementClassAction(BehaviorSubject<ElementClassItem> selectElementClassAction);
 
-    void setSelectedDenominations(BehaviorSubject<List<DenominationItem>> selectedDenominations);
+    void bindSelectDenominationsAction(BehaviorSubject<List<DenominationItem>> selectDenominationsAction);
 
-    void setSelectedElement(BehaviorSubject<ElementItem> selectedElement);
+    void bindSelectElementAction(BehaviorSubject<ElementItem> selectElementAction);
 
-    void setSelectedVersionFilter(BehaviorSubject<VersionFilter> selectedVersionFilter);
+    void bindVersionFilter(BehaviorSubject<VersionFilter> versionFilter);
 }

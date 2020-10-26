@@ -20,7 +20,7 @@ public class QuickConnectionItem {
     public String getFilename() { return filename; }
 
 
-    private QuickConnectionItem(
+    public QuickConnectionItem(
         String key,
         RepoType repoType,
         String url,
@@ -39,21 +39,6 @@ public class QuickConnectionItem {
 
     public static QuickConnectionItem createEmptyItem(String key) {
         return new QuickConnectionItem(key, null, null, null, null, null);
-    }
-
-
-    public static QuickConnectionItem createJdbcItem(String key, String url, String user, String password) {
-        return new QuickConnectionItem(key, RepoType.JDBC, url, user, password, null);
-    }
-
-
-    public static QuickConnectionItem createXmlItem(String key, String filename) {
-        return new QuickConnectionItem(key, RepoType.XML, null, null, null, filename);
-    }
-
-
-    public static QuickConnectionItem createMockItem(String key) {
-        return new QuickConnectionItem(key, RepoType.MOCK, null, null, null, null);
     }
 
 

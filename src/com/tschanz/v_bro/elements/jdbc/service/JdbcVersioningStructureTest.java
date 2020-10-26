@@ -2,10 +2,10 @@ package com.tschanz.v_bro.elements.jdbc.service;
 
 /*
 import com.tschanz.v_bro.repo_common.domain.RepoException;
-import com.tschanz.v_bro.repo_common.test.MockDatabaseMetaData;
-import com.tschanz.v_bro.repo_common.test.MockResult;
-import com.tschanz.v_bro.repo_common.test.MockResultSet;
-import com.tschanz.v_bro.repo_connection.data.jdbc.test.MockConnectionFactory;
+import com.tschanz.v_bro.repo_common.testing.MockDatabaseMetaData;
+import com.tschanz.v_bro.repo_common.testing.MockResult;
+import com.tschanz.v_bro.repo_common.testing.MockResultSet;
+import com.tschanz.v_bro.repo_connection.data.jdbc.testing.MockConnectionFactory;
 import com.tschanz.v_bro.versioning_structure.data.jdbc.JdbcVersioningStructure;
 import com.tschanz.v_bro.versioning_structure.domain.RepoClass;
 import com.tschanz.v_bro.versioning_structure.domain.RepoFieldType;

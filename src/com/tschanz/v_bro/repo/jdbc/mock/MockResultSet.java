@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.repo.jdbc.mock;
 
-import com.tschanz.v_bro.common.test.MockHelper;
+import com.tschanz.v_bro.common.testing.MockHelper;
 
 import java.io.InputStream;
 import java.io.Reader;

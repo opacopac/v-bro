@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.repo.jdbc.mock;
 
 import com.tschanz.v_bro.repo.jdbc.model.RepoField;
-import com.tschanz.v_bro.common.test.MockHelper;
+import com.tschanz.v_bro.common.testing.MockHelper;
 import com.tschanz.v_bro.repo.jdbc.querybuilder.JdbcQueryBuilder;
 import com.tschanz.v_bro.repo.jdbc.querybuilder.RowFilter;
 
