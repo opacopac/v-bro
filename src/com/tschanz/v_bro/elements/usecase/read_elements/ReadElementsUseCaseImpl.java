@@ -13,13 +13,14 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+
 public class ReadElementsUseCaseImpl implements ReadElementsUseCase {
     private final Logger logger = Logger.getLogger(ReadElementsUseCaseImpl.class.getName());
-    private final Map<RepoType, ElementService> elementClassServiceMap;
+    private final Map<RepoType, ElementService> elementServiceMap;
 
 
-    public ReadElementsUseCaseImpl(Map<RepoType, ElementService> elementClassServiceMap) {
-        this.elementClassServiceMap = elementClassServiceMap;
+    public ReadElementsUseCaseImpl(Map<RepoType, ElementService> elementServiceMap) {
+        this.elementServiceMap = elementServiceMap;
     }
 
 
@@ -49,7 +50,7 @@ public class ReadElementsUseCaseImpl implements ReadElementsUseCase {
 
 
     private ElementService getElementDataService(RepoType repoType) throws VBroAppException {
-        ElementService elementService = this.elementClassServiceMap.get(repoType);
+        ElementService elementService = this.elementServiceMap.get(repoType);
         if (elementService == null) {
             String message = "no repo_data found for type " + repoType.name();
             this.logger.severe(message);

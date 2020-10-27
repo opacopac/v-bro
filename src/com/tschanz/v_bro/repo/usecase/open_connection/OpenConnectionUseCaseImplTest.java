@@ -4,8 +4,8 @@ import com.tschanz.v_bro.common.VBroAppException;
 import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
-import com.tschanz.v_bro.repo.jdbc.model.JdbcConnectionParameters;
-import com.tschanz.v_bro.repo.mock.service.MockRepoService;
+import com.tschanz.v_bro.repo.persistence.jdbc.model.JdbcConnectionParameters;
+import com.tschanz.v_bro.repo.persistence.mock.service.MockRepoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

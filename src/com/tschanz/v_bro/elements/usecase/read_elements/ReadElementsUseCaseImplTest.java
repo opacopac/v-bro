@@ -2,7 +2,7 @@ package com.tschanz.v_bro.elements.usecase.read_elements;
 
 import com.tschanz.v_bro.common.VBroAppException;
 import com.tschanz.v_bro.elements.domain.model.ElementData;
-import com.tschanz.v_bro.elements.mock.service.MockElementService;
+import com.tschanz.v_bro.elements.persistence.mock.service.MockElementService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
 import com.tschanz.v_bro.repo.usecase.open_connection.OpenConnectionResponse;
