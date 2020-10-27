@@ -81,6 +81,10 @@ public class VersionTimeline extends JPanel implements VersionsView {
 
 
     private void onVersionSelected(VersionItem selectedVersion) {
+        if (this.selectVersionAction == null) {
+            return;
+        }
+
         this.selectVersionAction.next(selectedVersion);
         this.repaint();
     }
@@ -106,7 +110,8 @@ public class VersionTimeline extends JPanel implements VersionsView {
         this.versionVonBisXPixelCache.add(new VersionVonBisPx(version, x1, x2));
 
         // bar
-        g.setColor(version.equals(this.selectVersionAction.getCurrentValue()) ? Color.GREEN : Color.RED);
+        VersionItem selectedVersion = this.selectVersionAction != null ? this.selectVersionAction.getCurrentValue() : null;
+        g.setColor((version.equals(selectedVersion)) ? Color.GREEN : Color.RED);
         g.fillRect(x1, BAR_OFFSET_Y_PX,x2 - x1, BAR_HEIGHT_PX);
 
         // border

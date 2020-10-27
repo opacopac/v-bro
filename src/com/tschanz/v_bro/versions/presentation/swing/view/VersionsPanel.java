@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.versions.presentation.swing.view;
 
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
-import com.tschanz.v_bro.dependencies.presentation.swing.view.DependenciesPanel;
+import com.tschanz.v_bro.dependencies.presentation.swing.view.DependencyListPanel;
 import com.tschanz.v_bro.dependencies.presentation.swing.view.DependenciesView;
 import com.tschanz.v_bro.version_aggregates.presentation.swing.view.VersionAggregateTree;
 import com.tschanz.v_bro.dependencies.presentation.swing.viewmodel.FwdDependencyItem;
@@ -17,7 +17,7 @@ import java.util.concurrent.Flow;
 
 public class VersionsPanel extends JPanel implements VersionsView, DependenciesView, VersionAggregateView {
     private final VersionTimeline timeline = new VersionTimeline();
-    private final DependenciesPanel dependencies = new DependenciesPanel();
+    private final DependencyListPanel dependencies = new DependencyListPanel();
     private final VersionAggregateTree aggregateTree = new VersionAggregateTree();
 
 

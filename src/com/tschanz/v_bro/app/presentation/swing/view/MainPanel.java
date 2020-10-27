@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.swing.view;
 
-import com.tschanz.v_bro.dependencies.presentation.swing.view.DependenciesPanel;
+import com.tschanz.v_bro.dependencies.presentation.swing.view.DependencyListPanel;
 import com.tschanz.v_bro.dependencies.presentation.swing.view.DependenciesView;
 import com.tschanz.v_bro.element_classes.presentation.swing.view.DenominatonSelectionPanel;
 import com.tschanz.v_bro.element_classes.presentation.swing.view.ElementClassSelectionPanel;
@@ -25,7 +25,7 @@ public class MainPanel extends JFrame implements MainView {
     private final ElementSelectionPanel elementSelectionPanel = new ElementSelectionPanel();
     private final VersionFilterPanel versionFilterPanel = new VersionFilterPanel();
     private final VersionTimeline versionTimeline = new VersionTimeline();
-    private final DependenciesPanel dependenciesPanel = new DependenciesPanel();
+    private final DependencyListPanel dependencyListPanel = new DependencyListPanel();
     private final VersionAggregateTree versionAggregateTree = new VersionAggregateTree();
 
     private final StatusBarPanel statusBarPanel = new StatusBarPanel();
@@ -49,7 +49,7 @@ public class MainPanel extends JFrame implements MainView {
     @Override public ElementView getElementView() { return this.elementSelectionPanel; }
     @Override public VersionFilterView getVersionFilterView() { return this.versionFilterPanel; }
     @Override public VersionsView getVersionsView() { return this.versionTimeline; }
-    @Override public DependenciesView getDependenciesView() { return this.dependenciesPanel; }
+    @Override public DependenciesView getDependenciesView() { return this.dependencyListPanel; }
     @Override public VersionAggregateView getVersionAggregateView() { return this.versionAggregateTree; }
     @Override public StatusBarView getStatusBarView() { return this.statusBarPanel; }
 
@@ -122,7 +122,7 @@ public class MainPanel extends JFrame implements MainView {
     private void initDependencyAndVersionAggregate(JPanel contentPanel) {
         JPanel row1 = new JPanel();
         row1.setLayout(new FlowLayout(FlowLayout.LEADING));
-        row1.add(this.dependenciesPanel);
+        row1.add(this.dependencyListPanel);
         row1.add(this.versionAggregateTree);
         contentPanel.add(row1);
     }

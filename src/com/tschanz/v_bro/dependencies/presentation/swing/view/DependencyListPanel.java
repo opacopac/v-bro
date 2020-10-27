@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.concurrent.Flow;
 
 
-public class DependenciesPanel extends JPanel implements DependenciesView {
-    public DependenciesPanel() {
-        this.add(new JLabel("Dependencies"));
+public class DependencyListPanel extends JPanel implements DependenciesView {
+    public DependencyListPanel() {
+        this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
     }
 
 
@@ -21,6 +21,17 @@ public class DependenciesPanel extends JPanel implements DependenciesView {
 
 
     private void onFwdDependenciesChanged(List<FwdDependencyItem> fwdDependencyList) {
-        // TODO
+        this.removeAll();
+
+        if (fwdDependencyList != null) {
+            for (FwdDependencyItem dependency : fwdDependencyList) {
+                DependencyPanel dependencyPanel = new DependencyPanel();
+                dependencyPanel.setDependency(dependency);
+                this.add(dependencyPanel);
+            }
+        }
+
+        this.repaint();
+        this.revalidate();
     }
 }
