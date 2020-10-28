@@ -31,7 +31,7 @@ public class VersionFilterPanel extends JPanel implements VersionFilterView {
     private final JDatePicker datePickerVon = new JDatePickerImpl(this.datePanelVon, new DateComponentFormatter());
     private final JDatePicker datePickerBis = new JDatePickerImpl(this.datePanelBis, new DateComponentFormatter());
     private final JComboBox<PflegestatusItem> pflegestatusList = new JComboBox<>();
-    private BehaviorSubject<VersionFilter> versionFilter;
+    private BehaviorSubject<VersionFilter> selecVersionFilterAction;
 
 
     public VersionFilterPanel() {
@@ -66,7 +66,7 @@ public class VersionFilterPanel extends JPanel implements VersionFilterView {
 
     @Override
     public void bindSelectVersionFilterAction(BehaviorSubject<VersionFilter> selectVersionFilterAction) {
-        this.versionFilter = selectVersionFilterAction;
+        this.selecVersionFilterAction = selectVersionFilterAction;
     }
 
 
@@ -78,21 +78,18 @@ public class VersionFilterPanel extends JPanel implements VersionFilterView {
         this.modelVon.setValue(Date.from(versionFilter.getMinGueltiVon().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
         this.modelBis.setValue(Date.from(versionFilter.getMaxGueltigBis().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
         this.pflegestatusList.setSelectedItem(versionFilter.getMinPflegestatus());
+
+        this.selecVersionFilterAction.next(versionFilter); // auto-select
     }
 
 
     private void onFilterSelected(ActionEvent e) {
-        this.versionFilter.next(
-            this.getVersionFilter()
-        );
-    }
-
-
-    private VersionFilter getVersionFilter() {
-        return new VersionFilter(
-            LocalDate.ofInstant(this.modelVon.getValue().toInstant(), ZoneId.systemDefault()),
-            LocalDate.ofInstant(this.modelBis.getValue().toInstant(), ZoneId.systemDefault()),
-            ((PflegestatusItem) this.pflegestatusList.getSelectedItem()).getPflegestatus()
+        this.selecVersionFilterAction.next(
+            new VersionFilter(
+                LocalDate.ofInstant(this.modelVon.getValue().toInstant(), ZoneId.systemDefault()),
+                LocalDate.ofInstant(this.modelBis.getValue().toInstant(), ZoneId.systemDefault()),
+                ((PflegestatusItem) this.pflegestatusList.getSelectedItem()).getPflegestatus()
+            )
         );
     }
 }

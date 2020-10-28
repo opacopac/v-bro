@@ -17,14 +17,16 @@ public class DependencyPanel extends JPanel {
 
 
     public DependencyPanel() {
-        this.setLayout(new FlowLayout(FlowLayout.LEADING, 0, 0));
+        //this.setLayout(new FlowLayout(FlowLayout.LEADING, 0, 0));
+        this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        this.add(dependencyName);
         this.add(this.versionTimeline);
         this.versionTimeline.bindVersionList(this.versionList);
     }
 
 
     public void setDependency(FwdDependencyItem dependency) {
-        this.dependencyName.setText(this.getDependencyName(dependency));
+        this.dependencyName.setText(this.createDependencyName(dependency));
         this.versionList.next(dependency.getVersions());
 
         this.repaint();
@@ -32,7 +34,7 @@ public class DependencyPanel extends JPanel {
     }
 
 
-    private String getDependencyName(FwdDependencyItem dependency) {
-        return dependency.elementName() + " " + dependency.elementId();
+    private String createDependencyName(FwdDependencyItem dependency) {
+        return dependency.elementName() + " - " + dependency.elementId();
     }
 }

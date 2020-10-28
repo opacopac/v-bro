@@ -18,12 +18,28 @@ import java.util.concurrent.Flow;
 
 
 public class VersionTimeline extends JPanel implements VersionsView {
-    private static final int SPACER_HEIGHT = 3;
+    private static final Color BAR_BORDER_COLOR = Color.BLACK;
+    private static final Color BAR_BORDER_COLOR_SELECTED = Color.YELLOW;
+    private static final List<Color> BAR_FILL_COLORS = List.of(
+        new Color(0, 182, 235),
+        new Color(165, 138, 255),
+        new Color(251, 97, 215),
+        new Color(248, 118, 109),
+        new Color(196, 154, 0),
+        new Color(83, 180, 0),
+        new Color(0, 192, 148)
+    );
+    private static final Color BAR_FILL_COLOR_SELECTED = Color.YELLOW;
+    private static final Color TEXT_COLOR = Color.BLACK;
+    private static final Color TEXT_COLOR_SELECTED = Color.ORANGE;
+    private static final int SPACER_HEIGHT = 2;
     private static final int TEXT_HEIGHT = 10;
-    private static final int TEXT_VON_OFFSET_Y_PX = TEXT_HEIGHT;
-    private static final int BAR_OFFSET_Y_PX = TEXT_VON_OFFSET_Y_PX + SPACER_HEIGHT;
+    private static final int TEXT_VON_OFFSET_REL_X_PX = SPACER_HEIGHT;
+    private static final int TEXT_VON_OFFSET_Y_PX = TEXT_HEIGHT + SPACER_HEIGHT;
+    private static final int BAR_OFFSET_Y_PX = 0;
     private static final int BAR_HEIGHT_PX = 30;
-    private static final int TEXT_BIS_OFFSET_Y_PX = BAR_OFFSET_Y_PX + BAR_HEIGHT_PX + TEXT_HEIGHT + SPACER_HEIGHT;
+    private static final int TEXT_BIS_OFFSET_X_REL_PX = -SPACER_HEIGHT;
+    private static final int TEXT_BIS_OFFSET_Y_PX = BAR_OFFSET_Y_PX + BAR_HEIGHT_PX - SPACER_HEIGHT;
     private static final long ONE_YEAR_IN_S = 365L * 24 * 60 * 60;
     private static final Font DATE_FONT = new Font("SansSerif", Font.PLAIN, TEXT_HEIGHT);
     private List<VersionItem> versionList;
@@ -52,7 +68,7 @@ public class VersionTimeline extends JPanel implements VersionsView {
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(750, 2 * TEXT_HEIGHT + BAR_HEIGHT_PX + 2 * SPACER_HEIGHT);
+        return new Dimension(750, BAR_HEIGHT_PX + 10);
     }
 
 
@@ -112,21 +128,23 @@ public class VersionTimeline extends JPanel implements VersionsView {
 
         // bar
         VersionItem selectedVersion = this.selectVersionAction != null ? this.selectVersionAction.getCurrentValue() : null;
-        g.setColor((version.equals(selectedVersion)) ? Color.GREEN : Color.RED);
+        int colorIndex = this.versionList.indexOf(version) % BAR_FILL_COLORS.size();
+        g.setColor((version.equals(selectedVersion)) ? BAR_FILL_COLOR_SELECTED : BAR_FILL_COLORS.get(colorIndex));
         g.fillRect(x1, BAR_OFFSET_Y_PX,x2 - x1, BAR_HEIGHT_PX);
 
         // border
-        g.setColor(version.equals(this.hoverVersion) ? Color.RED : Color.BLACK);
+        g.setColor(version.equals(this.hoverVersion) ? BAR_BORDER_COLOR_SELECTED : BAR_BORDER_COLOR);
         g.drawRect(x1, BAR_OFFSET_Y_PX,x2 - x1, BAR_HEIGHT_PX);
 
         // von text
+        g.setColor(version.equals(this.hoverVersion) ? TEXT_COLOR_SELECTED : TEXT_COLOR);
         g.setFont(DATE_FONT);
-        g.drawString(version.getGueltigVonText(), x1, TEXT_VON_OFFSET_Y_PX);
+        g.drawString(version.getGueltigVonText(), x1 + TEXT_VON_OFFSET_REL_X_PX, TEXT_VON_OFFSET_Y_PX);
 
         // bis text
         String bisText = version.getGueltigBisText();
         int textWidth = g.getFontMetrics().stringWidth(bisText);
-        g.drawString(bisText, x2 - textWidth, TEXT_BIS_OFFSET_Y_PX);
+        g.drawString(bisText, x2 - textWidth + TEXT_BIS_OFFSET_X_REL_PX, TEXT_BIS_OFFSET_Y_PX);
     }
 
 
