@@ -6,9 +6,9 @@ import java.util.List;
 
 
 public class AggregateNode {
-    private final String nodeName;
-    private final List<KeyValue> fieldValues;
-    private final List<AggregateNode> childNodes;
+    protected final String nodeName;
+    protected final List<KeyValue> fieldValues;
+    protected final List<AggregateNode> childNodes;
 
 
     public String getNodeName() { return nodeName; }

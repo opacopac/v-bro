@@ -1,6 +1,7 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.model;
 
-import java.util.Date;
+import java.sql.Date;
+import java.time.LocalDate;
 
 
 public class FieldValue {
@@ -39,9 +40,9 @@ public class FieldValue {
     }
 
 
-    public Date getValueDate() {
+    public LocalDate getValueDate() {
         this.checkTypeOrThrow(RepoFieldType.DATE);
-        return (Date) this.value;
+        return ((Date) this.value).toLocalDate();
     }
 
 

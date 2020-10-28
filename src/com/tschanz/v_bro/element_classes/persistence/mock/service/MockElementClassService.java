@@ -1,4 +1,4 @@
-package com.tschanz.v_bro.element_classes.persistence.mock;
+package com.tschanz.v_bro.element_classes.persistence.mock.service;
 
 import com.tschanz.v_bro.common.testing.MockHelper;
 import com.tschanz.v_bro.common.testing.MockReturnValue;

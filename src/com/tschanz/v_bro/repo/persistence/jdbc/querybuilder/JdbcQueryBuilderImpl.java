@@ -6,6 +6,7 @@ import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFac
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -83,7 +84,7 @@ public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
     }
 
 
-    private String getDateFilterValue(Date date) {
+    private String getDateFilterValue(LocalDate date) {
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         if (this.connectionFactory.isCurrentConnectionMySql()) {
             return "str_to_date('" + formatter.format(date) + "','%Y-%m-%d')";

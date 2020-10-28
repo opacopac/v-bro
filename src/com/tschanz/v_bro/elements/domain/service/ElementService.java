@@ -7,5 +7,5 @@ import java.util.Collection;
 
 
 public interface ElementService {
-    Collection<ElementData> readElements(String elementName, Collection<String> fieldNames) throws RepoException;
+    Collection<ElementData> readElements(String elementClass, Collection<String> fieldNames) throws RepoException;
 }

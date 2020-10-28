@@ -24,7 +24,7 @@ public class RepoField {
         boolean isNullable,
         boolean isUnique
     ) {
-        this.name = name;
+        this.name = name.toUpperCase();
         this.type = type;
         this.isId = isId;
         this.isNullable = isNullable;

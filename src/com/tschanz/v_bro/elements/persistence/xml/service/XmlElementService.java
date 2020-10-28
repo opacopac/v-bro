@@ -53,14 +53,14 @@ public class XmlElementService implements ElementClassService, ElementService {
 
 
     @Override
-    public Collection<ElementData> readElements(String elementName, Collection<String> fieldNames) throws RepoException {
+    public Collection<ElementData> readElements(String elementClass, Collection<String> fieldNames) throws RepoException {
         if (!this.repoService.isConnected()) {
             throw new RepoException("Repo not connected!");
         }
 
         Collection<ElementData> elementDataList = this.elementParser.readElementList(
             this.repoService,
-            elementName,
+            elementClass,
             fieldNames
         );
 

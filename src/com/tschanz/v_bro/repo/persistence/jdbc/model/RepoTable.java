@@ -1,5 +1,6 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.model;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,11 +36,26 @@ public class RepoTable {
             .stream()
             .filter(field -> field.getName().toUpperCase().equals(fieldName.toUpperCase()))
             .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("no field found with name " + fieldName));
+            .orElse(null);
     }
 
 
-    public List<RepoField> findIdFields() {
+    public List<RepoField> findAllFields(String... fieldNames) {
+        return Arrays.stream(fieldNames)
+            .map(this::findField)
+            .collect(Collectors.toList());
+    }
+
+
+    public RepoField findfirstIdField() {
+        return this.findAllIdFields()
+            .stream()
+            .findFirst()
+            .orElse(null);
+    }
+
+
+    public List<RepoField> findAllIdFields() {
         return this.fields
             .stream()
             .filter(RepoField::getIsId)

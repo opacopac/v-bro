@@ -1,10 +1,8 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.repo_data;
 
 import com.tschanz.v_bro.repo.domain.model.RepoException;
+import com.tschanz.v_bro.repo.persistence.jdbc.model.*;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactory;
-import com.tschanz.v_bro.repo.persistence.jdbc.model.FieldValue;
-import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoField;
-import com.tschanz.v_bro.repo.persistence.jdbc.model.RowInfo;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.JdbcQueryBuilder;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.RowFilter;
 
@@ -16,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 public class JdbcRepoData {
@@ -30,6 +29,16 @@ public class JdbcRepoData {
     ) {
         this.connectionFactory = connectionFactory;
         this.queryBuilder = queryBuilder;
+    }
+
+
+    public List<RepoTableRecord> readRepoTableRecords(RepoTable repoTable, List<RepoField> fields, List<RowFilter> rowFilters) throws RepoException {
+        List<RowInfo> rows = this.readData(repoTable.getName(), fields, rowFilters);
+
+        return rows
+            .stream()
+            .map(row -> new RepoTableRecord(repoTable, row))
+            .collect(Collectors.toList());
     }
 
 

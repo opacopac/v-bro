@@ -5,7 +5,8 @@ import com.tschanz.v_bro.dependencies.persistence.jdbc.service.JdbcDependencySer
 import com.tschanz.v_bro.dependencies.persistence.mock.service.MockDependencyService2;
 import com.tschanz.v_bro.dependencies.persistence.xml.service.XmlDependencyService;
 import com.tschanz.v_bro.element_classes.domain.service.ElementClassService;
-import com.tschanz.v_bro.element_classes.persistence.mock.MockElementClassService2;
+import com.tschanz.v_bro.element_classes.persistence.jdbc.service.JdbcElementClassService;
+import com.tschanz.v_bro.element_classes.persistence.mock.service.MockElementClassService2;
 import com.tschanz.v_bro.elements.domain.service.ElementService;
 import com.tschanz.v_bro.elements.persistence.mock.service.MockElementService2;
 import com.tschanz.v_bro.element_classes.usecase.read_element_classes.ReadElementClassesUseCase;
@@ -74,10 +75,11 @@ public class Main {
         JdbcRepoMetadataService jdbcRepoMetadata = new JdbcRepoMetadataService(jdbcConnectionFactory);
         JdbcQueryBuilder jdbcQueryBuilder = new JdbcQueryBuilderImpl(jdbcConnectionFactory);
         JdbcRepoData jdbcRepoData = new JdbcRepoData(jdbcConnectionFactory, jdbcQueryBuilder);
+        JdbcElementClassService jdbcElementClassService = new JdbcElementClassService(jdbcRepo, jdbcRepoMetadata);
         JdbcElementService jdbcElementService = new JdbcElementService(jdbcRepo, jdbcRepoMetadata, jdbcRepoData);
-        JdbcVersionService jdbcVersionDataService = new JdbcVersionService(jdbcRepo, jdbcRepoMetadata, jdbcRepoData);
-        JdbcDependencyService jdbcDependencyService = new JdbcDependencyService(jdbcRepo, jdbcRepoMetadata, jdbcRepoData);
-        JdbcVersionAggregateService jdbcVersionAggregateService = new JdbcVersionAggregateService(jdbcRepo, jdbcRepoMetadata, jdbcRepoData);
+        JdbcVersionService jdbcVersionService = new JdbcVersionService(jdbcRepo, jdbcRepoMetadata, jdbcRepoData, jdbcElementService);
+        JdbcVersionAggregateService jdbcVersionAggregateService = new JdbcVersionAggregateService(jdbcRepo, jdbcRepoMetadata, jdbcRepoData, jdbcElementService, jdbcVersionService);
+        JdbcDependencyService jdbcDependencyService = new JdbcDependencyService(jdbcRepo, jdbcRepoMetadata, jdbcRepoData, jdbcVersionService, jdbcVersionAggregateService);
 
         // persistence xml
         XmlRepoService xmlRepo = new XmlRepoService();
@@ -87,24 +89,24 @@ public class Main {
         VersionParser versionParser = new VersionParser(saxParserFactory);
         XmlElementService xmlElementService = new XmlElementService(xmlRepo, elementClassParser, elementParser);
         XmlVersionService xmlVersionDataService = new XmlVersionService(xmlRepo, versionParser);
-        XmlDependencyService xmlDependencyService = new XmlDependencyService(xmlRepo, versionParser);
         XmlVersionAggregateService xmlVersionAggregateService = new XmlVersionAggregateService(xmlRepo, versionParser);
+        XmlDependencyService xmlDependencyService = new XmlDependencyService(xmlRepo, versionParser);
 
         // persistence mock
         MockRepoService2 mockRepo = new MockRepoService2();
         MockElementService2 mockElementService = new MockElementService2();
         MockElementClassService2 mockElementClassService = new MockElementClassService2();
         MockVersionService2 mockVersionDataService = new MockVersionService2();
-        MockDependencyService2 mockDependencyService = new MockDependencyService2();
         MockVersionAggregateService2 mockVersionAggregateService = new MockVersionAggregateService2();
+        MockDependencyService2 mockDependencyService = new MockDependencyService2();
 
         // persistence service maps
         Map<RepoType, RepoService> repoMap = Map.of(RepoType.JDBC, jdbcRepo, RepoType.XML, xmlRepo, RepoType.MOCK, mockRepo);
-        Map<RepoType, ElementClassService> elementClassServiceMap = Map.of(RepoType.JDBC, jdbcElementService, RepoType.XML, xmlElementService, RepoType.MOCK, mockElementClassService);
+        Map<RepoType, ElementClassService> elementClassServiceMap = Map.of(RepoType.JDBC, jdbcElementClassService, RepoType.XML, xmlElementService, RepoType.MOCK, mockElementClassService);
         Map<RepoType, ElementService> elementServiceMap = Map.of(RepoType.JDBC, jdbcElementService, RepoType.XML, xmlElementService, RepoType.MOCK, mockElementService);
-        Map<RepoType, VersionService> versionServiceMap = Map.of(RepoType.JDBC, jdbcVersionDataService, RepoType.XML, xmlVersionDataService, RepoType.MOCK, mockVersionDataService);
-        Map<RepoType, DependencyService> dependencyServiceMap = Map.of(RepoType.JDBC, jdbcDependencyService, RepoType.XML, xmlDependencyService, RepoType.MOCK, mockDependencyService);
+        Map<RepoType, VersionService> versionServiceMap = Map.of(RepoType.JDBC, jdbcVersionService, RepoType.XML, xmlVersionDataService, RepoType.MOCK, mockVersionDataService);
         Map<RepoType, VersionAggregateService> versionAggregateServiceMap = Map.of(RepoType.JDBC, jdbcVersionAggregateService, RepoType.XML, xmlVersionAggregateService, RepoType.MOCK, mockVersionAggregateService);
+        Map<RepoType, DependencyService> dependencyServiceMap = Map.of(RepoType.JDBC, jdbcDependencyService, RepoType.XML, xmlDependencyService, RepoType.MOCK, mockDependencyService);
 
         // app use cases
         OpenConnectionUseCase openConnectionUc = new OpenConnectionUseCaseImpl(repoMap);
@@ -113,8 +115,8 @@ public class Main {
         ReadElementDenominationsUseCase readElementNameFieldsUc = new ReadElementDenominationsUseCaseImpl(elementClassServiceMap);
         ReadElementsUseCase readElementsUc = new ReadElementsUseCaseImpl(elementServiceMap);
         ReadVersionTimelineUseCase readVersionsUc = new ReadVersionTimelineUseCaseImpl(versionServiceMap);
-        ReadFwdDependenciesUseCase readFwdDependenciesUc = new ReadFwdDependenciesUseCaseImpl(dependencyServiceMap);
         ReadVersionAggregateUseCase readVersionAggregateUc = new ReadVersionAggregateUseCaseImpl(versionAggregateServiceMap);
+        ReadFwdDependenciesUseCase readFwdDependenciesUc = new ReadFwdDependenciesUseCaseImpl(dependencyServiceMap);
 
         // presentation
         MainView mainView = new MainPanel();

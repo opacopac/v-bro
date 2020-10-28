@@ -1,11 +1,8 @@
 package com.tschanz.v_bro.elements.persistence.jdbc.service;
 
-import com.tschanz.v_bro.element_classes.domain.model.ElementClass;
-import com.tschanz.v_bro.element_classes.domain.service.ElementClassService;
 import com.tschanz.v_bro.elements.domain.model.DenominationData;
 import com.tschanz.v_bro.elements.domain.service.ElementService;
 import com.tschanz.v_bro.elements.domain.model.ElementData;
-import com.tschanz.v_bro.element_classes.domain.model.Denomination;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoField;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RowInfo;
@@ -21,10 +18,8 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
-public class JdbcElementService implements ElementClassService, ElementService {
-    public static String ELEMENT_TABLE_SUFFIX2 = "_E";
-
-    private final Logger logger = Logger.getLogger(JdbcVersioningStructure.class.getName());
+public class JdbcElementService implements ElementService {
+    private final Logger logger = Logger.getLogger(JdbcElementService.class.getName());
     private final JdbcRepoService repo;
     private final JdbcRepoMetadataService repoMetaData;
     private final JdbcRepoData repoData;
@@ -42,69 +37,42 @@ public class JdbcElementService implements ElementClassService, ElementService {
 
 
     @Override
-    public Collection<ElementClass> readElementClasses() throws RepoException {
+    public Collection<ElementData> readElements(String elementClass, Collection<String> fieldNames) throws RepoException {
         if (!this.repo.isConnected()) {
             throw new RepoException("Not connected to repo!");
         }
 
-        this.logger.info("finding tables with suffix " + ELEMENT_TABLE_SUFFIX2);
-        String tableNamePattern = JdbcRepoMetadataService.WILDCARD + this.repoMetaData.escapeUnderscore(ELEMENT_TABLE_SUFFIX2);
-        List<String> tableNames = this.repoMetaData.findTableNames(tableNamePattern);
+        RepoTable repoTable = this.readElementTable(elementClass);
+        List<RepoField> repoFields = this.getRepoFields(repoTable, fieldNames);
+        String idFieldName = repoTable.findfirstIdField().getName();
 
-        return tableNames
-            .stream()
-            .map(ElementClass::new)
-            .collect(Collectors.toList());
-    }
-
-
-    @Override
-    public List<Denomination> readDenominations(String elementName) throws RepoException {
-        if (!this.repo.isConnected()) {
-            throw new RepoException("Not connected to repo!");
-        }
-
-        RepoTable repoTable = this.repoMetaData.readTableStructure(elementName);
-
-        return repoTable.getFields()
-            .stream()
-            .map(dbField -> new Denomination(dbField.getName()))
-            .collect(Collectors.toList());
-    }
-
-
-    @Override
-    public Collection<ElementData> readElements(String elementName, Collection<String> fieldNames) throws RepoException {
-        if (!this.repo.isConnected()) {
-            throw new RepoException("Not connected to repo!");
-        }
-
-        RepoTable repoTable = this.repoMetaData.readTableStructure(elementName);
-        List<RepoField> repoFields = repoTable.getFields()
-            .stream()
-            .filter(field -> fieldNames.contains(field.getName()))
-            .collect(Collectors.toList());
-
-        String idFieldName = repoTable.findIdFields()
-            .stream()
-            .map(RepoField::getName)
-            .findFirst()
-            .orElse(null);
-
-        List<RowInfo> elementRows = this.repoData.readData(elementName, repoFields, Collections.emptyList());
+        List<RowInfo> elementRows = this.repoData.readData(elementClass, repoFields, Collections.emptyList());
         List<ElementData> elementList = elementRows
             .stream()
             .map(row -> {
-                String id = row.getFieldValueList().get(idFieldName).getValueString();
+                String id = row.getFieldValue(idFieldName).getValueString();
                 List<DenominationData> denominationDataList = fieldNames
                     .stream()
-                    .map(fieldName -> new DenominationData(fieldName, row.getFieldValueList().get(fieldName).getValueString()))
+                    .map(fieldName -> new DenominationData(fieldName, row.getFieldValue(fieldName).getValueString()))
                     .collect(Collectors.toList());
 
                 return new ElementData(id, denominationDataList);
             })
             .collect(Collectors.toList());
 
-        return elementList; // TODO;
+        return elementList;
+    }
+
+
+    public RepoTable readElementTable(String elementClass) throws RepoException {
+        return this.repoMetaData.readTableStructure(elementClass);
+    }
+
+
+    private List<RepoField> getRepoFields(RepoTable repoTable, Collection<String> fieldNames) {
+        return repoTable.getFields()
+            .stream()
+            .filter(field -> fieldNames.contains(field.getName()) || field.getIsId())
+            .collect(Collectors.toList());
     }
 }

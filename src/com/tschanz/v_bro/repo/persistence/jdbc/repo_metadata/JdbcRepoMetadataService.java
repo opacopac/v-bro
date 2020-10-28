@@ -43,7 +43,7 @@ public class JdbcRepoMetadataService implements RepoMetadataService {
 
             List<String> tableNames = new ArrayList<>();
             while (tablesResult.next()) {
-                String name = tablesResult.getString("TABLE_NAME");
+                String name = tablesResult.getString("TABLE_NAME").toUpperCase();
                 tableNames.add(name);
             }
             tablesResult.close();
@@ -94,7 +94,7 @@ public class JdbcRepoMetadataService implements RepoMetadataService {
         List<String> tableNames = this.findTableNames(this.escapeUnderscore(tableName));
 
         if (tableNames.size() > 0) {
-            return tableNames.get(0);
+            return tableNames.get(0).toUpperCase();
         } else {
             String msg = "table " + tableName + " not found.";
             this.logger.severe (msg);
@@ -116,7 +116,7 @@ public class JdbcRepoMetadataService implements RepoMetadataService {
             ResultSet pkResult = this.connectionFactory.getCurrentConnection().getMetaData().getPrimaryKeys(null,null, tableName);
 
             while (pkResult.next()) {
-                primaryKeys.add(pkResult.getString("COLUMN_NAME"));
+                primaryKeys.add(pkResult.getString("COLUMN_NAME").toUpperCase());
             }
             pkResult.close();
         } catch (SQLException exception) {
@@ -148,7 +148,7 @@ public class JdbcRepoMetadataService implements RepoMetadataService {
                 if (indexResults.getString("INDEX_NAME") == null) {
                     continue;
                 }
-                indexInfos.add(indexResults.getString("COLUMN_NAME"));
+                indexInfos.add(indexResults.getString("COLUMN_NAME").toUpperCase());
             }
             indexResults.close();
         } catch (SQLException exception) {
@@ -173,7 +173,7 @@ public class JdbcRepoMetadataService implements RepoMetadataService {
         try {
             ResultSet columnsResult = this.connectionFactory.getCurrentConnection().getMetaData().getColumns(null,null, tableName, null);
             while (columnsResult.next()) {
-                String fieldName = columnsResult.getString("COLUMN_NAME");
+                String fieldName = columnsResult.getString("COLUMN_NAME").toUpperCase();
                 RepoFieldType fieldType = this.getFieldType(columnsResult.getInt("DATA_TYPE"));
                 boolean isNullable = this.isNullable(columnsResult.getInt("NULLABLE"));
                 boolean isId = pks.contains(fieldName);
@@ -237,10 +237,10 @@ public class JdbcRepoMetadataService implements RepoMetadataService {
 
             while (relationsResult.next()) {
                 RepoRelation repoRelation = new RepoRelation(
-                    relationsResult.getString("FKTABLE_NAME"),
-                    relationsResult.getString("FKCOLUMN_NAME"),
-                    relationsResult.getString("PKTABLE_NAME"),
-                    relationsResult.getString("PKCOLUMN_NAME")
+                    relationsResult.getString("FKTABLE_NAME").toUpperCase(),
+                    relationsResult.getString("FKCOLUMN_NAME").toUpperCase(),
+                    relationsResult.getString("PKTABLE_NAME").toUpperCase(),
+                    relationsResult.getString("PKCOLUMN_NAME").toUpperCase()
                 );
                 repoRelations.add(repoRelation);
             }

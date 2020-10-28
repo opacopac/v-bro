@@ -1,4 +1,4 @@
-package com.tschanz.v_bro.element_classes.persistence.mock;
+package com.tschanz.v_bro.element_classes.persistence.mock.service;
 
 import com.tschanz.v_bro.element_classes.domain.model.Denomination;
 import com.tschanz.v_bro.element_classes.domain.model.ElementClass;
