@@ -17,7 +17,7 @@ public class DependencyPanel extends JPanel {
 
 
     public DependencyPanel() {
-        this.setLayout(new FlowLayout(FlowLayout.LEADING));
+        this.setLayout(new FlowLayout(FlowLayout.LEADING, 0, 0));
         this.add(this.versionTimeline);
         this.versionTimeline.bindVersionList(this.versionList);
     }

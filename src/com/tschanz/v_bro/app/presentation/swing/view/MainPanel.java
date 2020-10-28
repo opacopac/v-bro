@@ -57,73 +57,129 @@ public class MainPanel extends JFrame implements MainView {
     private void InitView() {
         this.setTitle("V-Bro");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(1200, 1000);
+        this.setPreferredSize(new Dimension(1200, 1000));
+        //this.setSize(1200, 1000);
 
         JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.PAGE_AXIS));
-        this.getContentPane().add(contentPanel, BorderLayout.PAGE_START);
+        contentPanel.setLayout(new GridBagLayout());
+
 
         this.initConnection(contentPanel);
         this.initElementClassAndDenominations(contentPanel);
-        this.initElementAndVersionFilter(contentPanel);
+        this.initElementSelection(contentPanel);
+        this.initVersionFilter(contentPanel);
         this.initVersionTimeline(contentPanel);
-        this.initDependencyAndVersionAggregate(contentPanel);
+        this.initDependencies(contentPanel);
+        this.initVersionAggregate(contentPanel);
 
+        this.getContentPane().add(contentPanel, BorderLayout.PAGE_START);
         this.getContentPane().add(this.statusBarPanel, BorderLayout.PAGE_END);
     }
 
 
     private void initConnection(JPanel contentPanel) {
-        contentPanel.add(this.connectionPanel);
+        contentPanel.add(
+            this.connectionPanel,
+            this.createGBConstraint(0, 0)
+        );
     }
 
 
     private void initElementClassAndDenominations(JPanel contentPanel) {
-        JPanel row1 = new JPanel();
-        row1.setLayout(new FlowLayout(FlowLayout.LEADING));
-        row1.add(new JLabel("Element Classes:"));
-        contentPanel.add(row1);
-
-        JPanel row2 = new JPanel();
-        row2.setLayout(new FlowLayout(FlowLayout.LEADING));
-        row2.add(this.elementClassSelectionPanel);
-        row2.add(this.denominationSelectionPanel);
-        contentPanel.add(row2);
+        contentPanel.add(
+            this.createContainer(
+                this.elementClassSelectionPanel,
+                this.denominationSelectionPanel
+            ),
+            this.createGBConstraint(0, 1)
+        );
     }
 
 
-    private void initElementAndVersionFilter(JPanel contentPanel) {
-        JPanel row1 = new JPanel();
-        row1.setLayout(new FlowLayout(FlowLayout.LEADING));
-        row1.add(new JLabel("Elements:"));
-        contentPanel.add(row1);
+    private void initElementSelection(JPanel contentPanel) {
+        contentPanel.add(
+            this.elementSelectionPanel,
+            this.createGBConstraint(0, 2)
+        );
+    }
 
-        JPanel row2 = new JPanel();
-        row2.setLayout(new FlowLayout(FlowLayout.LEADING));
-        row2.add(this.elementSelectionPanel);
-        row2.add(this.versionFilterPanel);
-        contentPanel.add(row2);
+
+    private void initVersionFilter(JPanel contentPanel) {
+        contentPanel.add(
+            this.versionFilterPanel,
+            this.createGBConstraint(0, 3)
+        );
     }
 
 
     private void initVersionTimeline(JPanel contentPanel) {
-        JPanel row1 = new JPanel();
-        row1.setLayout(new FlowLayout(FlowLayout.LEADING));
-        row1.add(new JLabel("Versions:"));
-        contentPanel.add(row1);
-
-        JPanel row2 = new JPanel();
-        row2.setLayout(new FlowLayout(FlowLayout.LEADING));
-        row2.add(this.versionTimeline);
-        contentPanel.add(row2);
+        contentPanel.add(
+            this.versionTimeline,
+            this.createGBConstraint(0, 4)
+        );
     }
 
 
-    private void initDependencyAndVersionAggregate(JPanel contentPanel) {
-        JPanel row1 = new JPanel();
-        row1.setLayout(new FlowLayout(FlowLayout.LEADING));
-        row1.add(this.dependencyListPanel);
-        row1.add(this.versionAggregateTree);
-        contentPanel.add(row1);
+    private void initDependencies(JPanel contentPanel) {
+        contentPanel.add(
+            this.createContainer(
+                new JLabel("Dependencies:"),
+                new JLabel("(o) FWD   ( ) BWD")
+            ),
+            this.createGBConstraint(0, 5)
+        );
+
+        contentPanel.add(
+            this.dependencyListPanel,
+            this.createGBConstraint(0, 6)
+        );
+    }
+
+
+
+    private void initVersionAggregate(JPanel contentPanel) {
+        contentPanel.add(
+            new JLabel("Data:"),
+            this.createGBConstraint(1, 0)
+        );
+
+        contentPanel.add(
+            this.versionAggregateTree,
+            this.createGBConstraint(1, 1, 1, 6)
+        );
+    }
+
+
+    private JPanel createContainer(JComponent... components) {
+        JPanel container = new JPanel();
+        container.setLayout(new FlowLayout(FlowLayout.LEADING, 0, 0));
+
+        for (JComponent component: components) {
+            container.add(component);
+        }
+
+        return container;
+    }
+
+
+    private GridBagConstraints createGBConstraint(int gridx, int gridy) {
+        return this.createGBConstraint(gridx, gridy, 1, 1);
+    }
+
+
+    private GridBagConstraints createGBConstraint(int gridx, int gridy, int gridwidth) {
+        return this.createGBConstraint(gridx, gridy, gridwidth, 1);
+    }
+
+
+    private GridBagConstraints createGBConstraint(int gridx, int gridy, int gridwidth, int gridheight) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.gridx = gridx;
+        gbc.gridy = gridy;
+        gbc.gridwidth = gridwidth;
+        gbc.gridheight = gridheight;
+
+        return gbc;
     }
 }
