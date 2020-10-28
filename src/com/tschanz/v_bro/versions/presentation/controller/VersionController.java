@@ -9,7 +9,6 @@ import com.tschanz.v_bro.elements.presentation.viewmodel.ElementItem;
 import com.tschanz.v_bro.elements.presentation.viewmodel.VersionFilter;
 import com.tschanz.v_bro.repo.presentation.viewmodel.RepoConnectionItem;
 import com.tschanz.v_bro.repo.usecase.open_connection.OpenConnectionResponse;
-import com.tschanz.v_bro.versions.presentation.view.swing.viewmodel.*;
 import com.tschanz.v_bro.versions.presentation.view.VersionsView;
 import com.tschanz.v_bro.element_classes.presentation.viewmodel.ElementClassItem;
 import com.tschanz.v_bro.versions.presentation.viewmodel.VersionItem;
