@@ -6,6 +6,7 @@ import com.tschanz.v_bro.element_classes.domain.service.ElementClassService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
+import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataServiceImpl;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataService;
 
 import java.util.Collection;
@@ -38,7 +39,7 @@ public class JdbcElementClassService implements ElementClassService {
         }
 
         this.logger.info("finding tables with suffix " + ELEMENT_TABLE_SUFFIX);
-        String tableNamePattern = JdbcRepoMetadataService.WILDCARD + this.repoMetaData.escapeUnderscore(ELEMENT_TABLE_SUFFIX);
+        String tableNamePattern = JdbcRepoMetadataServiceImpl.WILDCARD + this.repoMetaData.escapeUnderscore(ELEMENT_TABLE_SUFFIX);
         List<String> tableNames = this.repoMetaData.findTableNames(tableNamePattern);
 
         return tableNames

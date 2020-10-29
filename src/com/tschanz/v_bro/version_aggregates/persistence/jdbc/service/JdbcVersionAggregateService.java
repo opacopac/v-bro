@@ -12,7 +12,6 @@ import com.tschanz.v_bro.version_aggregates.domain.model.VersionAggregate;
 import com.tschanz.v_bro.version_aggregates.domain.service.VersionAggregateService;
 import com.tschanz.v_bro.version_aggregates.persistence.jdbc.model.JdbcAggregateNode;
 import com.tschanz.v_bro.version_aggregates.persistence.jdbc.model.JdbcVersionAggregate;
-import com.tschanz.v_bro.versions.domain.model.VersionInfo;
 import com.tschanz.v_bro.versions.persistence.jdbc.service.JdbcVersionService;
 
 import java.util.ArrayList;
@@ -50,29 +49,15 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
 
         RepoTable elementTable = this.elementService.readElementTable(elementClass);
         RepoTable versionTable = this.versionService.readVersionTable(elementTable);
-        RepoTableRecord element = this.readIdRecord(elementTable, Long.parseLong(elementId));
-        RepoTableRecord version = this.readIdRecord(versionTable, Long.parseLong(versionId));
-        VersionInfo versionInfo = this.getVersionInfo(elementClass, elementId, versionId);
+        RepoTableRecord elementRecord = this.readSingleIdRecord(elementTable, Long.parseLong(elementId));
+        RepoTableRecord versionRecord = this.readSingleIdRecord(versionTable, Long.parseLong(versionId));
+        List<JdbcAggregateNode> childNodes = this.readChildNodes(versionRecord, List.of(elementRecord));
 
-        List<JdbcAggregateNode> childNodes = this.readChildNodes(version, List.of(element));
-        JdbcAggregateNode versionNode = new JdbcAggregateNode(version, childNodes);
-        JdbcAggregateNode elementNode = new JdbcAggregateNode(element, List.of(versionNode));
-
-        return new JdbcVersionAggregate(versionInfo, elementNode);
+        return new JdbcVersionAggregate(elementRecord, versionRecord, childNodes);
     }
 
 
-    // TODO
-    private VersionInfo getVersionInfo(String elementClass, String elementId, String versionId) throws RepoException {
-        return this.versionService.readVersionTimeline(elementClass, elementId)
-            .stream()
-            .filter(info -> info.getId().equals(versionId))
-            .findFirst()
-            .orElse(null);
-    }
-
-
-    private RepoTableRecord readIdRecord(RepoTable repoTable, long id) throws RepoException {
+    private RepoTableRecord readSingleIdRecord(RepoTable repoTable, long id) throws RepoException {
         FieldValue idFieldValue = new FieldValue(repoTable.findfirstIdField(), id);
         RowFilter filter = new RowFilter(RowFilterOperator.EQUALS, idFieldValue);
 

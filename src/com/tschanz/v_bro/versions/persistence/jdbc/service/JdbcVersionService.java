@@ -7,6 +7,7 @@ import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.RowFilterOperator;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoData;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataService;
+import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataServiceImpl;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.versions.domain.model.Pflegestatus;
 import com.tschanz.v_bro.versions.domain.model.VersionInfo;

@@ -1,12 +1,13 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
 public class RepoTableRecord {
-    private RepoTable repoTable;
-    private List<FieldValue> fieldValues;
+    private final RepoTable repoTable;
+    private final List<FieldValue> fieldValues;
 
 
     public RepoTable getRepoTable() { return repoTable; }
@@ -15,9 +16,7 @@ public class RepoTableRecord {
 
     public RepoTableRecord(RepoTable repoTable, RowInfo rowInfo) {
         this.repoTable = repoTable;
-        this.fieldValues = rowInfo.getAllFieldValues()
-            .stream()
-            .collect(Collectors.toList());
+        this.fieldValues = new ArrayList<>(rowInfo.getAllFieldValues());
     }
 
 
@@ -27,5 +26,15 @@ public class RepoTableRecord {
             .filter(fieldValue -> fieldValue.getName().equals(fieldName))
             .findFirst()
             .orElse(null);
+    }
+
+
+    public FieldValue findIdFieldValue() {
+        String idFieldName = this.repoTable.findfirstIdField().getName();
+        if (idFieldName == null) {
+            return null;
+        } else {
+            return this.findFieldValue(idFieldName);
+        }
     }
 }

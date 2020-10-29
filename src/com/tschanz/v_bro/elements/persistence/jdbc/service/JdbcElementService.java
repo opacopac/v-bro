@@ -8,8 +8,8 @@ import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RowInfo;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoData;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
-import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
+import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataService;
 
 import java.util.Collection;
 import java.util.Collections;

@@ -3,7 +3,7 @@ package com.tschanz.v_bro.repo.persistence.jdbc.mock;
 import com.tschanz.v_bro.common.testing.MockHelper;
 import com.tschanz.v_bro.common.testing.MockReturnValue;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
-import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.RepoMetadataService;
+import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataService;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoField;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoRelation;
@@ -11,7 +11,7 @@ import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoRelation;
 import java.util.List;
 
 
-public class MockRepoMetadataService implements RepoMetadataService {
+public class MockRepoMetadataService implements JdbcRepoMetadataService {
     public MockHelper<RepoException> mockHelper = new MockHelper<>();
     public MockReturnValue<RepoTable> readTableStructureResults = new MockReturnValue<>("readTableStructureResults");
     public MockReturnValue<String> readTableResults = new MockReturnValue<>("readTableResults");

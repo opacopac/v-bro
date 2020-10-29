@@ -14,10 +14,8 @@ import com.tschanz.v_bro.version_aggregates.persistence.jdbc.service.JdbcVersion
 import com.tschanz.v_bro.versions.domain.model.VersionInfo;
 import com.tschanz.v_bro.versions.persistence.jdbc.service.JdbcVersionService;
 
-import javax.management.relation.Relation;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 

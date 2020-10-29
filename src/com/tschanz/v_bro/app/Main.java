@@ -1,5 +1,6 @@
 package com.tschanz.v_bro.app;
 
+import com.tschanz.v_bro.common.cache.EternalCache;
 import com.tschanz.v_bro.dependencies.domain.service.DependencyService;
 import com.tschanz.v_bro.dependencies.persistence.jdbc.service.JdbcDependencyService;
 import com.tschanz.v_bro.dependencies.persistence.mock.service.MockDependencyService2;
@@ -25,13 +26,15 @@ import com.tschanz.v_bro.app.presentation.view.MainView;
 import com.tschanz.v_bro.repo.domain.service.RepoService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
+import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactory;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactoryImpl;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoData;
-import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataService;
+import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataServiceImpl;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.JdbcQueryBuilder;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.JdbcQueryBuilderImpl;
+import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataServiceCacheDecorator;
 import com.tschanz.v_bro.repo.persistence.mock.service.MockRepoService2;
 import com.tschanz.v_bro.repo.usecase.close_connection.CloseConnectionUseCase;
 import com.tschanz.v_bro.repo.usecase.close_connection.CloseConnectionUseCaseImpl;
@@ -72,14 +75,15 @@ public class Main {
         Class.forName("oracle.jdbc.OracleDriver");
         JdbcConnectionFactory jdbcConnectionFactory = new JdbcConnectionFactoryImpl();
         JdbcRepoService jdbcRepo = new JdbcRepoService(jdbcConnectionFactory);
-        JdbcRepoMetadataService jdbcRepoMetadata = new JdbcRepoMetadataService(jdbcConnectionFactory);
+        JdbcRepoMetadataServiceImpl jdbcRepoMetadata = new JdbcRepoMetadataServiceImpl(jdbcConnectionFactory);
+        JdbcRepoMetadataServiceCacheDecorator jdbcRepoMetadataCached = new JdbcRepoMetadataServiceCacheDecorator(jdbcRepoMetadata, new EternalCache<RepoTable>());
         JdbcQueryBuilder jdbcQueryBuilder = new JdbcQueryBuilderImpl(jdbcConnectionFactory);
         JdbcRepoData jdbcRepoData = new JdbcRepoData(jdbcConnectionFactory, jdbcQueryBuilder);
-        JdbcElementClassService jdbcElementClassService = new JdbcElementClassService(jdbcRepo, jdbcRepoMetadata);
-        JdbcElementService jdbcElementService = new JdbcElementService(jdbcRepo, jdbcRepoMetadata, jdbcRepoData);
-        JdbcVersionService jdbcVersionService = new JdbcVersionService(jdbcRepo, jdbcRepoMetadata, jdbcRepoData, jdbcElementService);
-        JdbcVersionAggregateService jdbcVersionAggregateService = new JdbcVersionAggregateService(jdbcRepo, jdbcRepoMetadata, jdbcRepoData, jdbcElementService, jdbcVersionService);
-        JdbcDependencyService jdbcDependencyService = new JdbcDependencyService(jdbcRepo, jdbcRepoMetadata, jdbcRepoData, jdbcVersionService, jdbcVersionAggregateService);
+        JdbcElementClassService jdbcElementClassService = new JdbcElementClassService(jdbcRepo, jdbcRepoMetadataCached);
+        JdbcElementService jdbcElementService = new JdbcElementService(jdbcRepo, jdbcRepoMetadataCached, jdbcRepoData);
+        JdbcVersionService jdbcVersionService = new JdbcVersionService(jdbcRepo, jdbcRepoMetadataCached, jdbcRepoData, jdbcElementService);
+        JdbcVersionAggregateService jdbcVersionAggregateService = new JdbcVersionAggregateService(jdbcRepo, jdbcRepoMetadataCached, jdbcRepoData, jdbcElementService, jdbcVersionService);
+        JdbcDependencyService jdbcDependencyService = new JdbcDependencyService(jdbcRepo, jdbcRepoMetadataCached, jdbcRepoData, jdbcVersionService, jdbcVersionAggregateService);
 
         // persistence xml
         XmlRepoService xmlRepo = new XmlRepoService();
