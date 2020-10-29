@@ -1,13 +1,13 @@
-package com.tschanz.v_bro.elements.persistence.xml.model;
+package com.tschanz.v_bro.element_classes.persistence.xml.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 
-public class XmlElementStructurePart {
+public class XmlElementInfo {
     private final String elementId;
     private final String name;
-    private final Collection<String> fieldNames = new ArrayList<>();
+    private final Collection<String> denominations = new ArrayList<>();
 
 
     public String getElementId() {
@@ -16,16 +16,16 @@ public class XmlElementStructurePart {
 
     public String getName() { return this.name; }
 
-    public Collection<String> getFieldNames() { return fieldNames; }
+    public Collection<String> getDenominations() { return denominations; }
 
 
-    public XmlElementStructurePart(String name, String elementId) {
+    public XmlElementInfo(String name, String elementId) {
         this.name = name;
         this.elementId = elementId;
     }
 
 
     public void addFieldName(String fieldName) {
-        this.fieldNames.add(fieldName);
+        this.denominations.add(fieldName);
     }
 }

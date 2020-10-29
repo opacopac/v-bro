@@ -12,7 +12,7 @@ public class XmlRepoService implements RepoService {
     public static final String ID_ATTRIBUTE_NAME = "id";
     public static final String ID_VALUE_PREFIX_1 = "idd__";
     public static final String ID_VALUE_PREFIX_2 = "ids__";
-    public static final String VERSION_ELEMENT_NAME = "version";
+    public static final String VERSION_NODE_NAME = "version";
     public static final String VERSION_VON_ATTRIBUTE_NAME = "gueltigVon";
     public static final String VERSION_BIS_ATTRIBUTE_NAME = "gueltigBis";
 

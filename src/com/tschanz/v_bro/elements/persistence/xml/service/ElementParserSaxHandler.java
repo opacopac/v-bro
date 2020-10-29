@@ -1,5 +1,7 @@
 package com.tschanz.v_bro.elements.persistence.xml.service;
 
+import com.tschanz.v_bro.common.xml.XmlPathTracker;
+import com.tschanz.v_bro.element_classes.persistence.xml.service.ElementClassParserSaxHandler;
 import com.tschanz.v_bro.elements.domain.model.ElementData;
 import com.tschanz.v_bro.elements.domain.model.DenominationData;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
@@ -19,9 +21,7 @@ public class ElementParserSaxHandler extends DefaultHandler {
 
 
     public ArrayList<ElementData> getElementList() { return elementList; }
-
     public void setElementName(String elementStructureName) { this.elementStructureName = elementStructureName; }
-
     public void setFieldNames(Collection<String> fieldNames) { this.fieldNames = fieldNames; }
 
 
@@ -63,7 +63,7 @@ public class ElementParserSaxHandler extends DefaultHandler {
             return false;
         }
 
-        if (this.pathTracker.getSubLevelFromMarker() == 2 && !this.pathTracker.getParentNode(2).equals(XmlRepoService.VERSION_ELEMENT_NAME)) {
+        if (this.pathTracker.getSubLevelFromMarker() == 2 && !this.pathTracker.getParentNode(2).equals(XmlRepoService.VERSION_NODE_NAME)) {
             return false;
         }
 

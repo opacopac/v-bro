@@ -1,7 +1,7 @@
-package com.tschanz.v_bro.elements.persistence.xml.service;
+package com.tschanz.v_bro.element_classes.persistence.xml.service;
 
 import com.tschanz.v_bro.element_classes.domain.model.ElementClass;
-import com.tschanz.v_bro.elements.persistence.xml.model.XmlElementClass;
+import com.tschanz.v_bro.element_classes.persistence.xml.model.XmlElementClass;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.versions.persistence.xml.service.MockXmlRepoService;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,7 +1,8 @@
-package com.tschanz.v_bro.elements.persistence.xml.service;
+package com.tschanz.v_bro.element_classes.persistence.xml.service;
 
-import com.tschanz.v_bro.elements.persistence.xml.model.XmlElementClass;
-import com.tschanz.v_bro.elements.persistence.xml.model.XmlElementStructurePart;
+import com.tschanz.v_bro.element_classes.persistence.xml.model.XmlElementClass;
+import com.tschanz.v_bro.element_classes.persistence.xml.model.XmlElementInfo;
+import com.tschanz.v_bro.common.xml.XmlPathTracker;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -12,7 +13,7 @@ import java.util.HashMap;
 
 public class ElementClassParserSaxHandler extends DefaultHandler {
     private final HashMap<String, XmlElementClass> elementStructureMap = new HashMap<>();
-    private XmlElementStructurePart currentElement;
+    private XmlElementInfo currentElement;
     private XmlPathTracker pathTracker;
 
 
@@ -58,7 +59,7 @@ public class ElementClassParserSaxHandler extends DefaultHandler {
 
 
     private void setCurrentElement(String elementStructureName, String elementId) {
-        this.currentElement = new XmlElementStructurePart(elementStructureName, elementId);
+        this.currentElement = new XmlElementInfo(elementStructureName, elementId);
         this.pathTracker.setNodeMarker();
     }
 
@@ -80,11 +81,11 @@ public class ElementClassParserSaxHandler extends DefaultHandler {
             return false;
         }
 
-        if (this.pathTracker.getSubLevelFromMarker() == 1 && !this.pathTracker.getCurrentNode().equals(XmlRepoService.VERSION_ELEMENT_NAME)) {
+        if (this.pathTracker.getSubLevelFromMarker() == 1 && !this.pathTracker.getCurrentNode().equals(XmlRepoService.VERSION_NODE_NAME)) {
             return true;
         }
 
-        if (this.pathTracker.getSubLevelFromMarker() == 2 && this.pathTracker.getParentNode(2).equals(XmlRepoService.VERSION_ELEMENT_NAME)) {
+        if (this.pathTracker.getSubLevelFromMarker() == 2 && this.pathTracker.getParentNode(2).equals(XmlRepoService.VERSION_NODE_NAME)) {
             return true;
         }
 
@@ -131,7 +132,7 @@ public class ElementClassParserSaxHandler extends DefaultHandler {
         } else {
             structure = this.elementStructureMap.get(elementStructureName);
         }
-        structure.addElementData(this.currentElement);
+        structure.addElement(this.currentElement);
     }
 
 

@@ -7,6 +7,7 @@ import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
 import com.tschanz.v_bro.versions.persistence.xml.service.VersionParser;
 
 import java.util.Collection;
+import java.util.Collections;
 
 
 public class XmlDependencyService implements DependencyService {
@@ -25,6 +26,6 @@ public class XmlDependencyService implements DependencyService {
 
     @Override
     public Collection<FwdDependency> readFwdDependencies(String elemenClass, String elementId, String versionId) throws RepoException {
-        return null;
+        return Collections.emptyList(); // TODO
     }
 }

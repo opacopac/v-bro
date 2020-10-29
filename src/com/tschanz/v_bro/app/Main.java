@@ -8,6 +8,7 @@ import com.tschanz.v_bro.dependencies.persistence.xml.service.XmlDependencyServi
 import com.tschanz.v_bro.element_classes.domain.service.ElementClassService;
 import com.tschanz.v_bro.element_classes.persistence.jdbc.service.JdbcElementClassService;
 import com.tschanz.v_bro.element_classes.persistence.mock.service.MockElementClassService2;
+import com.tschanz.v_bro.element_classes.persistence.xml.service.XmlElementClassService;
 import com.tschanz.v_bro.elements.domain.service.ElementService;
 import com.tschanz.v_bro.elements.persistence.mock.service.MockElementService2;
 import com.tschanz.v_bro.element_classes.usecase.read_element_classes.ReadElementClassesUseCase;
@@ -18,7 +19,7 @@ import com.tschanz.v_bro.elements.usecase.read_elements.ReadElementsUseCase;
 import com.tschanz.v_bro.elements.usecase.read_elements.ReadElementsUseCaseImpl;
 import com.tschanz.v_bro.elements.persistence.xml.service.ElementParser;
 import com.tschanz.v_bro.elements.persistence.jdbc.service.JdbcElementService;
-import com.tschanz.v_bro.elements.persistence.xml.service.ElementClassParser;
+import com.tschanz.v_bro.element_classes.persistence.xml.service.ElementClassParser;
 import com.tschanz.v_bro.elements.persistence.xml.service.XmlElementService;
 import com.tschanz.v_bro.app.presentation.controller.MainController;
 import com.tschanz.v_bro.app.presentation.view.swing.MainPanel;
@@ -44,6 +45,7 @@ import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
 import com.tschanz.v_bro.version_aggregates.domain.service.VersionAggregateService;
 import com.tschanz.v_bro.version_aggregates.persistence.jdbc.service.JdbcVersionAggregateService;
 import com.tschanz.v_bro.version_aggregates.persistence.mock.service.MockVersionAggregateService2;
+import com.tschanz.v_bro.version_aggregates.persistence.xml.service.VersionAggregateParser;
 import com.tschanz.v_bro.version_aggregates.persistence.xml.service.XmlVersionAggregateService;
 import com.tschanz.v_bro.versions.domain.service.VersionService;
 import com.tschanz.v_bro.versions.persistence.jdbc.service.JdbcVersionService;
@@ -91,9 +93,11 @@ public class Main {
         ElementClassParser elementClassParser = new ElementClassParser(saxParserFactory);
         ElementParser elementParser = new ElementParser(saxParserFactory);
         VersionParser versionParser = new VersionParser(saxParserFactory);
-        XmlElementService xmlElementService = new XmlElementService(xmlRepo, elementClassParser, elementParser);
+        VersionAggregateParser versionAggregateParser = new VersionAggregateParser(saxParserFactory);
+        XmlElementClassService xmlElementClassService = new XmlElementClassService(xmlRepo, elementClassParser);
+        XmlElementService xmlElementService = new XmlElementService(xmlRepo, elementParser);
         XmlVersionService xmlVersionDataService = new XmlVersionService(xmlRepo, versionParser);
-        XmlVersionAggregateService xmlVersionAggregateService = new XmlVersionAggregateService(xmlRepo, versionParser);
+        XmlVersionAggregateService xmlVersionAggregateService = new XmlVersionAggregateService(xmlRepo, versionAggregateParser);
         XmlDependencyService xmlDependencyService = new XmlDependencyService(xmlRepo, versionParser);
 
         // persistence mock
@@ -106,7 +110,7 @@ public class Main {
 
         // persistence service maps
         Map<RepoType, RepoService> repoMap = Map.of(RepoType.JDBC, jdbcRepo, RepoType.XML, xmlRepo, RepoType.MOCK, mockRepo);
-        Map<RepoType, ElementClassService> elementClassServiceMap = Map.of(RepoType.JDBC, jdbcElementClassService, RepoType.XML, xmlElementService, RepoType.MOCK, mockElementClassService);
+        Map<RepoType, ElementClassService> elementClassServiceMap = Map.of(RepoType.JDBC, jdbcElementClassService, RepoType.XML, xmlElementClassService, RepoType.MOCK, mockElementClassService);
         Map<RepoType, ElementService> elementServiceMap = Map.of(RepoType.JDBC, jdbcElementService, RepoType.XML, xmlElementService, RepoType.MOCK, mockElementService);
         Map<RepoType, VersionService> versionServiceMap = Map.of(RepoType.JDBC, jdbcVersionService, RepoType.XML, xmlVersionDataService, RepoType.MOCK, mockVersionDataService);
         Map<RepoType, VersionAggregateService> versionAggregateServiceMap = Map.of(RepoType.JDBC, jdbcVersionAggregateService, RepoType.XML, xmlVersionAggregateService, RepoType.MOCK, mockVersionAggregateService);

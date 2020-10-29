@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.versions.persistence.xml.service;
 
-import com.tschanz.v_bro.elements.persistence.xml.service.ElementClassParserSaxHandler;
-import com.tschanz.v_bro.elements.persistence.xml.service.XmlPathTracker;
+import com.tschanz.v_bro.element_classes.persistence.xml.service.ElementClassParserSaxHandler;
+import com.tschanz.v_bro.common.xml.XmlPathTracker;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
 import com.tschanz.v_bro.versions.persistence.xml.model.XmlVersionInfo;
 import org.xml.sax.Attributes;
@@ -53,7 +53,7 @@ public class VersionParserSaxHandler extends DefaultHandler {
             return;
         }
 
-        if (this.pathTracker.getCurrentPath().size() == this.elementLevel + 1 && qName.equals(XmlRepoService.VERSION_ELEMENT_NAME)) {
+        if (this.pathTracker.getCurrentPath().size() == this.elementLevel + 1 && qName.equals(XmlRepoService.VERSION_NODE_NAME)) {
             String versionId = ElementClassParserSaxHandler.findId(attributes);
             LocalDate gueltigVon = this.findDate(attributes, XmlRepoService.VERSION_VON_ATTRIBUTE_NAME);
             LocalDate gueltigBis = this.findDate(attributes, XmlRepoService.VERSION_BIS_ATTRIBUTE_NAME);

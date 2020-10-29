@@ -1,4 +1,4 @@
-package com.tschanz.v_bro.elements.persistence.xml.model;
+package com.tschanz.v_bro.element_classes.persistence.xml.model;
 
 import com.tschanz.v_bro.element_classes.domain.model.ElementClass;
 import com.tschanz.v_bro.element_classes.domain.model.Denomination;
@@ -20,11 +20,11 @@ public class XmlElementClass extends ElementClass {
     }
 
 
-    public void addElementData(XmlElementStructurePart elementData) {
+    public void addElement(XmlElementInfo elementData) {
         this.dataIds.add(elementData.getElementId());
 
-        Collection<String> existingNameFields = this.getExistingNameFields();
-        Collection<Denomination> newDenominations = elementData.getFieldNames()
+        Collection<String> existingNameFields = this.getExistingDenominations();
+        Collection<Denomination> newDenominations = elementData.getDenominations()
             .stream()
             .filter(fieldName -> !existingNameFields.contains(fieldName))
             .map(Denomination::new)
@@ -34,7 +34,7 @@ public class XmlElementClass extends ElementClass {
     }
 
 
-    private Collection<String> getExistingNameFields() {
+    private Collection<String> getExistingDenominations() {
         return this.denominations
             .stream()
             .map(Denomination::getName)

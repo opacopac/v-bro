@@ -1,4 +1,4 @@
-package com.tschanz.v_bro.elements.persistence.xml.service;
+package com.tschanz.v_bro.common.xml;
 
 import java.util.Stack;
 
@@ -10,19 +10,12 @@ public class XmlPathTracker {
 
 
     public Stack<String> getCurrentPath() { return currentPath; }
-
     public String getCurrentNode() { return this.currentPath.peek(); }
-
     public String getMarkedNode() { return markedNode; }
-
     public boolean isCurrentNodeMarked() { return this.markerPathLevel == this.currentPath.size(); }
-
-
     public void startNode(String name) {
         this.currentPath.push(name);
     }
-
-
     public void endNode() {
         this.currentPath.pop();
     }
