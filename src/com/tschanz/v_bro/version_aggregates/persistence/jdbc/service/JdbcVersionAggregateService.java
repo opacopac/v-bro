@@ -70,6 +70,7 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
     }
 
 
+    // TODO: skip visitedRecords
     private List<JdbcAggregateNode> readChildNodes(RepoTableRecord parentRecord, List<RepoTableRecord> visitedRecords) throws RepoException {
         List<JdbcAggregateNode> childNodes = new ArrayList<>();
 

@@ -7,10 +7,19 @@ import com.tschanz.v_bro.versions.domain.model.Pflegestatus;
 import com.tschanz.v_bro.versions.domain.model.VersionInfo;
 import com.tschanz.v_bro.versions.persistence.jdbc.service.JdbcVersionService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class JdbcVersionAggregate extends VersionAggregate {
+    private final RepoTableRecord elementRecord;
+    private final RepoTableRecord versionRecord;
+
+
+    public RepoTableRecord getElementRecord() { return elementRecord; }
+    public RepoTableRecord getVersionRecord() { return versionRecord; }
+
+
     public JdbcVersionAggregate(
         RepoTableRecord elementRecord,
         RepoTableRecord versionRecord,
@@ -20,7 +29,26 @@ public class JdbcVersionAggregate extends VersionAggregate {
             getVersionInfo(versionRecord),
             getRootNode(elementRecord, versionRecord, versionChildNodes)
         );
+
+        this.elementRecord = elementRecord;
+        this.versionRecord = versionRecord;
     }
+
+
+    public List<RepoTableRecord> getAllRecords() {
+        return this.getAllRecordsAtNode((JdbcAggregateNode) this.getRootNode());
+    }
+
+
+    private List<RepoTableRecord> getAllRecordsAtNode(JdbcAggregateNode jdbcAggregateNode) {
+        ArrayList<RepoTableRecord> nodes = new ArrayList<>();
+
+        nodes.add(jdbcAggregateNode.getRepoTableEntry());
+        jdbcAggregateNode.getJdbcChildNodes().forEach(childNode -> nodes.addAll(this.getAllRecordsAtNode(childNode)));
+
+        return nodes;
+    }
+
 
 
     private static VersionInfo getVersionInfo(RepoTableRecord versionRecord) {
@@ -46,4 +74,5 @@ public class JdbcVersionAggregate extends VersionAggregate {
             List.of(new JdbcAggregateNode(versionRecord, versionChildNodes))
         );
     }
+
 }

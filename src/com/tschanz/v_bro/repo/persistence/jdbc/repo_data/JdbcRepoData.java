@@ -33,16 +33,16 @@ public class JdbcRepoData {
 
 
     public List<RepoTableRecord> readRepoTableRecords(RepoTable repoTable, List<RepoField> fields, List<RowFilter> rowFilters) throws RepoException {
-        List<RowInfo> rows = this.readData(repoTable.getName(), fields, rowFilters);
+        List<RowInfo> rows = this.readRows(repoTable.getName(), fields, rowFilters);
 
         return rows
             .stream()
-            .map(row -> new RepoTableRecord(repoTable, row))
+            .map(row -> new RepoTableRecord(repoTable, new ArrayList<>(row.getAllFieldValues())))
             .collect(Collectors.toList());
     }
 
 
-    public List<RowInfo> readData(String tableName, List<RepoField> fields, List<RowFilter> rowFilters) throws RepoException {
+    private List<RowInfo> readRows(String tableName, List<RepoField> fields, List<RowFilter> rowFilters) throws RepoException {
         this.logger.info("reading rows from table " + tableName);
 
         ArrayList<RowInfo> rows = new ArrayList<>();

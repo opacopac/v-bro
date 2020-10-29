@@ -44,21 +44,20 @@ public class JdbcDependencyService implements DependencyService {
 
     @Override
     public Collection<FwdDependency> readFwdDependencies(String elemenClass, String elementId, String versionId) throws RepoException {
-        JdbcVersionAggregate versionAggregate = (JdbcVersionAggregate) this.versionAggregateService.readVersionAggregate(elemenClass, elementId, versionId); // TODO: ugly type casting
-        List<RepoTableRecord> records = this.getRepoTableEntries((JdbcAggregateNode) versionAggregate.getRootNode());
-        RepoTableRecord element = this.getElementRecord(records);
-        RepoTableRecord version = this.getVersionRecord(records);
+        JdbcVersionAggregate aggregate = (JdbcVersionAggregate) this.versionAggregateService.readVersionAggregate(elemenClass, elementId, versionId); // TODO: ugly type casting
 
         List<FwdDependency> dependencies = new ArrayList<>();
-        for (RepoTableRecord record: records) {
+        for (RepoTableRecord record: aggregate.getAllRecords()) {
             for (RepoRelation relation: record.getRepoTable().getOutgoingRelations()) {
-                if (!this.isExternalRelation(relation, records)) {
+                if (!this.isExternalRelation(relation, aggregate)) {
                     continue;
                 }
                 String fwdElementClassName = relation.getFwdClassName();
                 String fwdElementId = record.findFieldValue(relation.getBwdFieldName()).getValueString();
                 List<VersionInfo> versionInfos = this.versionService.readVersionTimeline(fwdElementClassName, fwdElementId);
-                dependencies.add(new FwdDependency(fwdElementClassName, fwdElementId, versionInfos));
+                dependencies.add(
+                    new FwdDependency(fwdElementClassName, fwdElementId, versionInfos)
+                );
             }
         }
 
@@ -76,30 +75,32 @@ public class JdbcDependencyService implements DependencyService {
     }
 
 
-    private RepoTableRecord getElementRecord(List<RepoTableRecord> records) {
-        return records.get(0); // TODO
-    }
-
-
-    private RepoTableRecord getVersionRecord(List<RepoTableRecord> records) {
-        return records.get(1); // TODO
-    }
-
-
-    private boolean isExternalRelation(RepoRelation relation, List<RepoTableRecord> records) {
-        String elementTable = this.getElementRecord(records).getRepoTable().getName();
-        String versionTable = this.getVersionRecord(records).getRepoTable().getName();
-        String fwdElementTable = relation.getFwdClassName();
-
-        // TODO: allow links to own _E, except parent relation from _V
-
-        for (RepoTableRecord record: records) {
-            String internalTable = record.getRepoTable().getName();
-            if (fwdElementTable.equals(internalTable)) {
-                return false;
-            }
+    private boolean isExternalRelation(RepoRelation relation, JdbcVersionAggregate aggregate) {
+        if (this.isExternalTable(relation.getFwdClassName(), aggregate)) {
+            return true; // links to external tables are ok
+        } else if (!this.isElementTable(relation.getFwdClassName(), aggregate)) {
+            return false; // links to internal tables, except to _E are nok
+        } else if (this.isVersionTable(relation.getBwdClassName(), aggregate) && relation.getBwdFieldName().equals(JdbcVersionService.ELEMENT_ID_COLNAME)) {
+            return false; // parent-link from _V to _E is nok
+        } else {
+            return true; // other internal links to _E are ok
         }
+    }
 
-        return true;
+
+    private boolean isExternalTable(String tableName, JdbcVersionAggregate aggregate) {
+        return aggregate.getAllRecords()
+            .stream()
+            .noneMatch(record -> record.getRepoTable().getName().equals(tableName));
+    }
+
+
+    private boolean isElementTable(String tableName, JdbcVersionAggregate aggregate) {
+        return aggregate.getElementRecord().getRepoTable().getName().equals(tableName);
+    }
+
+
+    private boolean isVersionTable(String tableName, JdbcVersionAggregate aggregate) {
+        return aggregate.getVersionRecord().getRepoTable().getName().equals(tableName);
     }
 }

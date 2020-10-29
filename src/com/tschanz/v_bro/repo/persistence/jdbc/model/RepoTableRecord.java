@@ -1,8 +1,6 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.model;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class RepoTableRecord {
@@ -14,9 +12,9 @@ public class RepoTableRecord {
     public List<FieldValue> getFieldValues() { return fieldValues; }
 
 
-    public RepoTableRecord(RepoTable repoTable, RowInfo rowInfo) {
+    public RepoTableRecord(RepoTable repoTable, List<FieldValue> fieldValues) {
         this.repoTable = repoTable;
-        this.fieldValues = new ArrayList<>(rowInfo.getAllFieldValues());
+        this.fieldValues = fieldValues;
     }
 
 

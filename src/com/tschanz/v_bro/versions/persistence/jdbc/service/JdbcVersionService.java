@@ -7,7 +7,6 @@ import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.RowFilterOperator;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoData;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataService;
-import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataServiceImpl;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.versions.domain.model.Pflegestatus;
 import com.tschanz.v_bro.versions.domain.model.VersionInfo;
@@ -54,19 +53,19 @@ public class JdbcVersionService implements VersionService {
         RepoTable versionTable = this.readVersionTable(elementTable);
         RepoField idField = versionTable.findfirstIdField();
 
-        List<RowInfo> versionRows = this.repoData.readData(
-            versionTable.getName(),
+        List<RepoTableRecord> versionRecords = this.repoData.readRepoTableRecords(
+            versionTable,
             versionTable.findAllFields(idField.getName(), GUELTIG_VON_COLNAME, GUELTIG_BIS_COLNAME),
             this.getRowFilters(versionTable, elementId)
         );
-        List<VersionInfo> versions = versionRows
+        List<VersionInfo> versions = versionRecords
             .stream()
             .map(row -> {
-                String id = row.getFieldValue(idField.getName()).getValueString();
-                LocalDate gueltigVon = row.getFieldValue(GUELTIG_VON_COLNAME).getValueDate();
-                LocalDate gueltigBis = row.getFieldValue(GUELTIG_BIS_COLNAME).getValueDate();
-                Pflegestatus pflegestatus = (row.getFieldValue(PFLEGESTATUS_COLNAME) != null)
-                    ? Pflegestatus.valueOf(row.getFieldValue(PFLEGESTATUS_COLNAME).getValueString())
+                String id = row.findIdFieldValue().getValueString();
+                LocalDate gueltigVon = row.findFieldValue(GUELTIG_VON_COLNAME).getValueDate();
+                LocalDate gueltigBis = row.findFieldValue(GUELTIG_BIS_COLNAME).getValueDate();
+                Pflegestatus pflegestatus = (row.findFieldValue(PFLEGESTATUS_COLNAME) != null)
+                    ? Pflegestatus.valueOf(row.findFieldValue(PFLEGESTATUS_COLNAME).getValueString())
                     : Pflegestatus.PRODUKTIV;
 
                 return new VersionInfo(id, gueltigVon, gueltigBis, pflegestatus);

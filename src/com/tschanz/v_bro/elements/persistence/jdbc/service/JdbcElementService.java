@@ -5,7 +5,7 @@ import com.tschanz.v_bro.elements.domain.service.ElementService;
 import com.tschanz.v_bro.elements.domain.model.ElementData;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoField;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
-import com.tschanz.v_bro.repo.persistence.jdbc.model.RowInfo;
+import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTableRecord;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoData;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
@@ -46,14 +46,14 @@ public class JdbcElementService implements ElementService {
         List<RepoField> repoFields = this.getRepoFields(repoTable, fieldNames);
         String idFieldName = repoTable.findfirstIdField().getName();
 
-        List<RowInfo> elementRows = this.repoData.readData(elementClass, repoFields, Collections.emptyList());
+        List<RepoTableRecord> elementRows = this.repoData.readRepoTableRecords(repoTable, repoFields, Collections.emptyList());
         List<ElementData> elementList = elementRows
             .stream()
             .map(row -> {
-                String id = row.getFieldValue(idFieldName).getValueString();
+                String id = row.findIdFieldValue().getValueString();
                 List<DenominationData> denominationDataList = fieldNames
                     .stream()
-                    .map(fieldName -> new DenominationData(fieldName, row.getFieldValue(fieldName).getValueString()))
+                    .map(fieldName -> new DenominationData(fieldName, row.findFieldValue(fieldName).getValueString()))
                     .collect(Collectors.toList());
 
                 return new ElementData(id, denominationDataList);
