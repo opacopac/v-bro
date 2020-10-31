@@ -24,12 +24,12 @@ public class ReadElementDenominationsUseCaseImpl implements ReadElementDenominat
 
 
     @Override
-    public ReadElementDenominationsResponse readDenominations(OpenConnectionResponse.RepoConnection repoConnection, String elementTableName) throws VBroAppException {
+    public ReadElementDenominationsResponse readDenominations(OpenConnectionResponse.RepoConnection repoConnection, String elementClass) throws VBroAppException {
         this.logger.info("UC: reading element denominations...");
 
         ElementClassService elementClassService = this.getElementClassService(repoConnection.repoType);
         try {
-            Collection<Denomination> denominations = elementClassService.readDenominations(elementTableName);
+            Collection<Denomination> denominations = elementClassService.readDenominations(elementClass);
             ReadElementDenominationsResponse response = new ReadElementDenominationsResponse(
                 denominations
                     .stream()

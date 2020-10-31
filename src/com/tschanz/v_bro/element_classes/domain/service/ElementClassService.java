@@ -11,5 +11,5 @@ import java.util.List;
 public interface ElementClassService {
     Collection<ElementClass> readElementClasses() throws RepoException;
 
-    List<Denomination> readDenominations(String elementName) throws RepoException;
+    List<Denomination> readDenominations(String elementClass) throws RepoException;
 }

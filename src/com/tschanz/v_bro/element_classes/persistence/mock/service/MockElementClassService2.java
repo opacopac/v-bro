@@ -20,7 +20,7 @@ public class MockElementClassService2 implements ElementClassService {
 
 
     @Override
-    public List<Denomination> readDenominations(String elementName) throws RepoException {
+    public List<Denomination> readDenominations(String elementClass) throws RepoException {
         return List.of(
             new Denomination("CODE"),
             new Denomination("BEZEICHNUNG")

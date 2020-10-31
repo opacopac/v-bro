@@ -50,12 +50,12 @@ public class JdbcElementClassService implements ElementClassService {
 
 
     @Override
-    public List<Denomination> readDenominations(String elementName) throws RepoException {
+    public List<Denomination> readDenominations(String elementClass) throws RepoException {
         if (!this.repo.isConnected()) {
             throw new RepoException("Not connected to repo!");
         }
 
-        RepoTable repoTable = this.repoMetaData.readTableStructure(elementName);
+        RepoTable repoTable = this.repoMetaData.readTableStructure(elementClass);
 
         return repoTable.getFields()
             .stream()

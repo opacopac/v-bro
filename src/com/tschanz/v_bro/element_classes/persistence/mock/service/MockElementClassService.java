@@ -26,7 +26,7 @@ public class MockElementClassService implements ElementClassService {
 
 
     @Override
-    public List<Denomination> readDenominations(String elementName) throws RepoException {
+    public List<Denomination> readDenominations(String elementClass) throws RepoException {
         this.mockHelper.reportMethodCall("readDenominations");
         this.mockHelper.checkThrowException();
         return this.readDenominationsResults.next();

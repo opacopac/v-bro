@@ -19,7 +19,6 @@ import com.tschanz.v_bro.elements.usecase.read_elements.ReadElementsUseCase;
 import com.tschanz.v_bro.elements.usecase.read_elements.ReadElementsUseCaseImpl;
 import com.tschanz.v_bro.elements.persistence.xml.service.ElementParser;
 import com.tschanz.v_bro.elements.persistence.jdbc.service.JdbcElementService;
-import com.tschanz.v_bro.element_classes.persistence.xml.service.ElementClassParser;
 import com.tschanz.v_bro.elements.persistence.xml.service.XmlElementService;
 import com.tschanz.v_bro.app.presentation.controller.MainController;
 import com.tschanz.v_bro.app.presentation.view.swing.MainPanel;
@@ -60,6 +59,7 @@ import com.tschanz.v_bro.versions.persistence.xml.service.VersionParser;
 import com.tschanz.v_bro.versions.persistence.xml.service.XmlVersionService;
 
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.stream.XMLInputFactory;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,12 +89,12 @@ public class Main {
 
         // persistence xml
         XmlRepoService xmlRepo = new XmlRepoService();
+        XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
         SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-        ElementClassParser elementClassParser = new ElementClassParser(saxParserFactory);
         ElementParser elementParser = new ElementParser(saxParserFactory);
         VersionParser versionParser = new VersionParser(saxParserFactory);
         VersionAggregateParser versionAggregateParser = new VersionAggregateParser(saxParserFactory);
-        XmlElementClassService xmlElementClassService = new XmlElementClassService(xmlRepo, elementClassParser);
+        XmlElementClassService xmlElementClassService = new XmlElementClassService(xmlRepo, xmlInputFactory);
         XmlElementService xmlElementService = new XmlElementService(xmlRepo, elementParser);
         XmlVersionService xmlVersionDataService = new XmlVersionService(xmlRepo, versionParser);
         XmlVersionAggregateService xmlVersionAggregateService = new XmlVersionAggregateService(xmlRepo, versionAggregateParser);
