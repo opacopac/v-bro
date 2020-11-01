@@ -1,6 +1,8 @@
 package com.tschanz.v_bro.version_aggregates.persistence.xml.service;
 
 import com.tschanz.v_bro.common.KeyValue;
+import com.tschanz.v_bro.element_classes.persistence.xml.model.XmlElementLutInfo;
+import com.tschanz.v_bro.element_classes.persistence.xml.service.XmlElementClassService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
 import com.tschanz.v_bro.version_aggregates.domain.model.AggregateNode;
@@ -10,6 +12,7 @@ import com.tschanz.v_bro.version_aggregates.persistence.xml.model.XmlNodeInfo;
 import com.tschanz.v_bro.versions.domain.model.Pflegestatus;
 import com.tschanz.v_bro.versions.domain.model.VersionInfo;
 
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,11 +35,9 @@ public class XmlVersionAggregateService implements VersionAggregateService {
 
     @Override
     public VersionAggregate readVersionAggregate(String elementClass, String elementId, String versionId) throws RepoException {
-        if (!this.repoService.isConnected()) {
-            throw new RepoException("Repo not connected!");
-        }
-
-        XmlNodeInfo rootNode = this.parser.readVersionAggregate(this.repoService, elementClass, elementId, versionId);
+        XmlElementLutInfo elementLutInfo = this.repoService.getElementLut().get(elementId);
+        InputStream xmlInputStream = this.repoService.getNewXmlFileStream(elementLutInfo.getStartBytePos(), elementLutInfo.getEndBytePos());
+        XmlNodeInfo rootNode = this.parser.readVersionAggregate(xmlInputStream, elementClass, elementId, versionId);
 
         return new VersionAggregate(
             this.getVersionInfo(rootNode),

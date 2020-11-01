@@ -11,7 +11,7 @@ import java.util.List;
 
 public class MockElementClassService2 implements ElementClassService {
     @Override
-    public Collection<ElementClass> readElementClasses() throws RepoException {
+    public List<ElementClass> readElementClasses() throws RepoException {
         return List.of(
             new ElementClass("A_SORTIMENT_E"),
             new ElementClass("P_PRODUKTDEF_E")

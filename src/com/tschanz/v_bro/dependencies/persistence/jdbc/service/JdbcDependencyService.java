@@ -6,7 +6,7 @@ import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoRelation;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTableRecord;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
-import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoData;
+import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoDataService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataService;
 import com.tschanz.v_bro.version_aggregates.persistence.jdbc.model.JdbcAggregateNode;
 import com.tschanz.v_bro.version_aggregates.persistence.jdbc.model.JdbcVersionAggregate;
@@ -22,7 +22,7 @@ import java.util.List;
 public class JdbcDependencyService implements DependencyService {
     private final JdbcRepoService repo;
     private final JdbcRepoMetadataService repoMetaData;
-    private final JdbcRepoData repoData;
+    private final JdbcRepoDataService repoData;
     JdbcVersionService versionService;
     private final JdbcVersionAggregateService versionAggregateService;
 
@@ -30,7 +30,7 @@ public class JdbcDependencyService implements DependencyService {
     public JdbcDependencyService(
         JdbcRepoService repo,
         JdbcRepoMetadataService repoMetaData,
-        JdbcRepoData repoData,
+        JdbcRepoDataService repoData,
         JdbcVersionService versionService,
         JdbcVersionAggregateService versionAggregateService
     ) {

@@ -45,7 +45,14 @@ public class DenominatonSelectionPanel extends JPanel implements ElementDenomina
         this.removeAll();
         this.checkBoxDenominationMap.clear();
 
+        int denominationCount = 0;
         for (DenominationItem item : denominationItems) {
+            if (denominationCount < DenominationItem.MAX_DENOMINATIONS) {
+                denominationCount++;
+            } else {
+                break; // TODO: more...
+            }
+
             JCheckBox checkBox = new JCheckBox(item.getName());
             checkBox.addActionListener(this::onDenominationSelected);
             this.add(checkBox);

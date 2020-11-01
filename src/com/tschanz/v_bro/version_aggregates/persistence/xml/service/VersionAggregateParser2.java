@@ -1,11 +1,13 @@
-package com.tschanz.v_bro.versions.persistence.xml.service;
+package com.tschanz.v_bro.version_aggregates.persistence.xml.service;
 
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
+import com.tschanz.v_bro.version_aggregates.persistence.xml.model.XmlNodeInfo;
 import com.tschanz.v_bro.versions.domain.model.Pflegestatus;
 import com.tschanz.v_bro.versions.domain.model.VersionInfo;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.InputStream;
@@ -14,16 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class VersionParser {
+public class VersionAggregateParser2 {
     private final XMLInputFactory xmlInputFactory;
 
 
-    public VersionParser(XMLInputFactory xmlInputFactory) {
+    public VersionAggregateParser2(XMLInputFactory xmlInputFactory) {
         this.xmlInputFactory = xmlInputFactory;
     }
 
 
-    public List<VersionInfo> readVersions(InputStream xmlStream, String elementClass, String elementId) throws RepoException {
+/*    public XmlNodeInfo readVersionAggregate(InputStream xmlStream, String elementClass, String elementId, String versionId) throws RepoException {
         List<VersionInfo> versions;
 
         try {
@@ -37,16 +39,14 @@ public class VersionParser {
     }
 
 
-    private List<VersionInfo> parseDocument(XMLStreamReader reader, String elementClass, String elementId) throws XMLStreamException {
-        List<VersionInfo> versions = new ArrayList<>();
-
+    private XmlNodeInfo parseDocument(XMLStreamReader reader, String elementClass, String elementId, String versionId) throws XMLStreamException {
         while (reader.hasNext()) {
             switch (reader.next()) {
                 case XMLStreamReader.START_ELEMENT:
                     if (reader.getLocalName().equals(elementClass)) {
                         String currentElementId = XmlRepoService.findId(reader);
                         if (elementId.equals(currentElementId)) {
-                            versions.addAll(parseSingleElement(reader, elementClass, elementId));
+                            return parseElement(reader, elementClass, elementId, versionId);
                         }
                     }
                     break;
@@ -55,11 +55,11 @@ public class VersionParser {
             }
         }
 
-        return versions;
+        throw new XMLStreamException("premature end of file");
     }
 
 
-    private List<VersionInfo> parseSingleElement(XMLStreamReader reader, String elementClass, String elementId) throws XMLStreamException {
+    private XmlNodeInfo parseElement(XMLStreamReader reader, String elementClass, String elementId, String versionId) throws XMLStreamException {
         int subLevel = 0;
         List<VersionInfo> versionInfos = new ArrayList<>();
 
@@ -67,19 +67,24 @@ public class VersionParser {
             switch (reader.next()) {
                 case XMLStreamReader.START_ELEMENT:
                     if (reader.getLocalName().equals(XmlRepoService.VERSION_NODE_NAME)) {
-                        VersionInfo versionInfo = this.parseVersion(reader);
-                        if (versionInfo != null) {
-                            versionInfos.add(versionInfo);
+                        denominations.addAll(parseVersion(reader));
+                    } else {
+                        subLevel++;
+                        if (subLevel == 1) {
+                            value.setLength(0); // clear current value
                         }
                     }
-                    subLevel++;
+                    break;
+                case XMLStreamConstants.CHARACTERS:
+                    if (subLevel == 1) {
+                        value.append(reader.getText());
+                    }
                     break;
                 case XMLStreamReader.END_ELEMENT:
-                    if (subLevel < 1) {
-                        if (versionInfos.size() == 0) {
-                            versionInfos.add(new VersionInfo(elementId));
-                        }
-                        return versionInfos;
+                    if (subLevel == 1) {
+                        addDenomination(denominations, reader.getLocalName(), value.toString());
+                    } else if (subLevel < 1) {
+                        return denominations;
                     }
                     subLevel--;
                     break;
@@ -90,7 +95,7 @@ public class VersionParser {
     }
 
 
-    private VersionInfo parseVersion(XMLStreamReader reader) throws XMLStreamException {
+    private XmlNodeInfo parseVersion(XMLStreamReader reader) throws XMLStreamException {
         String versionId = XmlRepoService.findId(reader);
         LocalDate gueltigVon = XmlRepoService.findDate(reader, XmlRepoService.VERSION_VON_ATTRIBUTE_NAME);
         LocalDate gueltigBis = XmlRepoService.findDate(reader, XmlRepoService.VERSION_BIS_ATTRIBUTE_NAME);
@@ -100,5 +105,5 @@ public class VersionParser {
         } else {
             return null;
         }
-    }
+    }*/
 }

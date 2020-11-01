@@ -19,7 +19,6 @@ public class VersionInfo {
     public LocalDate getGueltigVon() { return this.gueltigVon; }
     public LocalDate getGueltigBis() { return this.gueltigBis; }
     public Pflegestatus getPflegestatus() { return pflegestatus; }
-    public boolean isUnversioned() { return this.gueltigVon != null && this.gueltigBis != null; }
 
 
     public VersionInfo(String id) {

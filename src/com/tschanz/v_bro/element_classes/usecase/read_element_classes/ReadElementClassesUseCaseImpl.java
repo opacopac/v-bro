@@ -3,7 +3,6 @@ package com.tschanz.v_bro.element_classes.usecase.read_element_classes;
 import com.tschanz.v_bro.common.VBroAppException;
 import com.tschanz.v_bro.element_classes.domain.model.ElementClass;
 import com.tschanz.v_bro.element_classes.domain.service.ElementClassService;
-import com.tschanz.v_bro.elements.domain.service.ElementService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
 import com.tschanz.v_bro.repo.usecase.open_connection.OpenConnectionResponse;
@@ -35,6 +34,7 @@ public class ReadElementClassesUseCaseImpl implements ReadElementClassesUseCase 
                 elementClasses
                 .stream()
                 .map(ElementClass::getName)
+                .sorted()
                 .collect(Collectors.toList())
             );
 

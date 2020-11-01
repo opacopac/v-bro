@@ -8,6 +8,7 @@ import com.tschanz.v_bro.version_aggregates.presentation.viewmodel.VersionAggreg
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.awt.*;
 import java.util.concurrent.Flow;
 
 
@@ -30,7 +31,9 @@ public class VersionAggregateTree extends JPanel implements VersionAggregateView
         if (versionAggregate != null) {
             DefaultMutableTreeNode root = this.createTreeNode(versionAggregate.getRootNode());
             JTree aggregateTree = new JTree(root);
-            this.add(new JScrollPane(aggregateTree));
+            JScrollPane scrollPane = new JScrollPane(aggregateTree);
+            scrollPane.setPreferredSize(new Dimension(400, 500));
+            this.add(scrollPane);
             this.expandAllNodes(aggregateTree);
         }
 

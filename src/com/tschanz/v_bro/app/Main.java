@@ -8,6 +8,7 @@ import com.tschanz.v_bro.dependencies.persistence.xml.service.XmlDependencyServi
 import com.tschanz.v_bro.element_classes.domain.service.ElementClassService;
 import com.tschanz.v_bro.element_classes.persistence.jdbc.service.JdbcElementClassService;
 import com.tschanz.v_bro.element_classes.persistence.mock.service.MockElementClassService2;
+import com.tschanz.v_bro.element_classes.persistence.xml.service.DenominationsParser;
 import com.tschanz.v_bro.element_classes.persistence.xml.service.XmlElementClassService;
 import com.tschanz.v_bro.elements.domain.service.ElementService;
 import com.tschanz.v_bro.elements.persistence.mock.service.MockElementService2;
@@ -15,9 +16,9 @@ import com.tschanz.v_bro.element_classes.usecase.read_element_classes.ReadElemen
 import com.tschanz.v_bro.element_classes.usecase.read_element_classes.ReadElementClassesUseCaseImpl;
 import com.tschanz.v_bro.element_classes.usecase.read_element_denominations.ReadElementDenominationsUseCase;
 import com.tschanz.v_bro.element_classes.usecase.read_element_denominations.ReadElementDenominationsUseCaseImpl;
+import com.tschanz.v_bro.elements.persistence.xml.service.ElementParser;
 import com.tschanz.v_bro.elements.usecase.read_elements.ReadElementsUseCase;
 import com.tschanz.v_bro.elements.usecase.read_elements.ReadElementsUseCaseImpl;
-import com.tschanz.v_bro.elements.persistence.xml.service.ElementParser;
 import com.tschanz.v_bro.elements.persistence.jdbc.service.JdbcElementService;
 import com.tschanz.v_bro.elements.persistence.xml.service.XmlElementService;
 import com.tschanz.v_bro.app.presentation.controller.MainController;
@@ -30,11 +31,11 @@ import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactory;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactoryImpl;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
-import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoData;
+import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoDataService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataServiceImpl;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.JdbcQueryBuilder;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.JdbcQueryBuilderImpl;
-import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataServiceCacheDecorator;
+import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataServiceCache;
 import com.tschanz.v_bro.repo.persistence.mock.service.MockRepoService2;
 import com.tschanz.v_bro.repo.usecase.close_connection.CloseConnectionUseCase;
 import com.tschanz.v_bro.repo.usecase.close_connection.CloseConnectionUseCaseImpl;
@@ -53,9 +54,9 @@ import com.tschanz.v_bro.dependencies.usecase.read_fwd_dependencies.ReadFwdDepen
 import com.tschanz.v_bro.dependencies.usecase.read_fwd_dependencies.ReadFwdDependenciesUseCaseImpl;
 import com.tschanz.v_bro.version_aggregates.usecase.read_version_aggregate.ReadVersionAggregateUseCase;
 import com.tschanz.v_bro.version_aggregates.usecase.read_version_aggregate.ReadVersionAggregateUseCaseImpl;
+import com.tschanz.v_bro.versions.persistence.xml.service.VersionParser;
 import com.tschanz.v_bro.versions.usecase.read_version_timeline.ReadVersionTimelineUseCase;
 import com.tschanz.v_bro.versions.usecase.read_version_timeline.ReadVersionTimelineUseCaseImpl;
-import com.tschanz.v_bro.versions.persistence.xml.service.VersionParser;
 import com.tschanz.v_bro.versions.persistence.xml.service.XmlVersionService;
 
 import javax.xml.parsers.SAXParserFactory;
@@ -78,27 +79,28 @@ public class Main {
         JdbcConnectionFactory jdbcConnectionFactory = new JdbcConnectionFactoryImpl();
         JdbcRepoService jdbcRepo = new JdbcRepoService(jdbcConnectionFactory);
         JdbcRepoMetadataServiceImpl jdbcRepoMetadata = new JdbcRepoMetadataServiceImpl(jdbcConnectionFactory);
-        JdbcRepoMetadataServiceCacheDecorator jdbcRepoMetadataCached = new JdbcRepoMetadataServiceCacheDecorator(jdbcRepoMetadata, new EternalCache<RepoTable>());
+        JdbcRepoMetadataServiceCache jdbcRepoMetadataCached = new JdbcRepoMetadataServiceCache(jdbcRepoMetadata, new EternalCache<RepoTable>());
         JdbcQueryBuilder jdbcQueryBuilder = new JdbcQueryBuilderImpl(jdbcConnectionFactory);
-        JdbcRepoData jdbcRepoData = new JdbcRepoData(jdbcConnectionFactory, jdbcQueryBuilder);
+        JdbcRepoDataService jdbcRepoDataService = new JdbcRepoDataService(jdbcConnectionFactory, jdbcQueryBuilder);
         JdbcElementClassService jdbcElementClassService = new JdbcElementClassService(jdbcRepo, jdbcRepoMetadataCached);
-        JdbcElementService jdbcElementService = new JdbcElementService(jdbcRepo, jdbcRepoMetadataCached, jdbcRepoData);
-        JdbcVersionService jdbcVersionService = new JdbcVersionService(jdbcRepo, jdbcRepoMetadataCached, jdbcRepoData, jdbcElementService);
-        JdbcVersionAggregateService jdbcVersionAggregateService = new JdbcVersionAggregateService(jdbcRepo, jdbcRepoMetadataCached, jdbcRepoData, jdbcElementService, jdbcVersionService);
-        JdbcDependencyService jdbcDependencyService = new JdbcDependencyService(jdbcRepo, jdbcRepoMetadataCached, jdbcRepoData, jdbcVersionService, jdbcVersionAggregateService);
+        JdbcElementService jdbcElementService = new JdbcElementService(jdbcRepo, jdbcRepoMetadataCached, jdbcRepoDataService);
+        JdbcVersionService jdbcVersionService = new JdbcVersionService(jdbcRepo, jdbcRepoMetadataCached, jdbcRepoDataService, jdbcElementService);
+        JdbcVersionAggregateService jdbcVersionAggregateService = new JdbcVersionAggregateService(jdbcRepo, jdbcRepoMetadataCached, jdbcRepoDataService, jdbcElementService, jdbcVersionService);
+        JdbcDependencyService jdbcDependencyService = new JdbcDependencyService(jdbcRepo, jdbcRepoMetadataCached, jdbcRepoDataService, jdbcVersionService, jdbcVersionAggregateService);
 
         // persistence xml
         XmlRepoService xmlRepo = new XmlRepoService();
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
         SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-        ElementParser elementParser = new ElementParser(saxParserFactory);
-        VersionParser versionParser = new VersionParser(saxParserFactory);
+        DenominationsParser denominationsParser = new DenominationsParser(xmlInputFactory);
+        ElementParser elementParser = new ElementParser(xmlInputFactory);
+        VersionParser versionParser = new VersionParser(xmlInputFactory);
         VersionAggregateParser versionAggregateParser = new VersionAggregateParser(saxParserFactory);
-        XmlElementClassService xmlElementClassService = new XmlElementClassService(xmlRepo, xmlInputFactory);
+        XmlElementClassService xmlElementClassService = new XmlElementClassService(xmlRepo, denominationsParser);
         XmlElementService xmlElementService = new XmlElementService(xmlRepo, elementParser);
-        XmlVersionService xmlVersionDataService = new XmlVersionService(xmlRepo, versionParser);
+        XmlVersionService xmlVersionService = new XmlVersionService(xmlRepo, versionParser);
         XmlVersionAggregateService xmlVersionAggregateService = new XmlVersionAggregateService(xmlRepo, versionAggregateParser);
-        XmlDependencyService xmlDependencyService = new XmlDependencyService(xmlRepo, versionParser);
+        XmlDependencyService xmlDependencyService = new XmlDependencyService(xmlRepo, xmlVersionService, xmlVersionAggregateService);
 
         // persistence mock
         MockRepoService2 mockRepo = new MockRepoService2();
@@ -112,7 +114,7 @@ public class Main {
         Map<RepoType, RepoService> repoMap = Map.of(RepoType.JDBC, jdbcRepo, RepoType.XML, xmlRepo, RepoType.MOCK, mockRepo);
         Map<RepoType, ElementClassService> elementClassServiceMap = Map.of(RepoType.JDBC, jdbcElementClassService, RepoType.XML, xmlElementClassService, RepoType.MOCK, mockElementClassService);
         Map<RepoType, ElementService> elementServiceMap = Map.of(RepoType.JDBC, jdbcElementService, RepoType.XML, xmlElementService, RepoType.MOCK, mockElementService);
-        Map<RepoType, VersionService> versionServiceMap = Map.of(RepoType.JDBC, jdbcVersionService, RepoType.XML, xmlVersionDataService, RepoType.MOCK, mockVersionDataService);
+        Map<RepoType, VersionService> versionServiceMap = Map.of(RepoType.JDBC, jdbcVersionService, RepoType.XML, xmlVersionService, RepoType.MOCK, mockVersionDataService);
         Map<RepoType, VersionAggregateService> versionAggregateServiceMap = Map.of(RepoType.JDBC, jdbcVersionAggregateService, RepoType.XML, xmlVersionAggregateService, RepoType.MOCK, mockVersionAggregateService);
         Map<RepoType, DependencyService> dependencyServiceMap = Map.of(RepoType.JDBC, jdbcDependencyService, RepoType.XML, xmlDependencyService, RepoType.MOCK, mockDependencyService);
 

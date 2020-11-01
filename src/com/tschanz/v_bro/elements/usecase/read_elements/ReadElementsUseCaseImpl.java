@@ -1,6 +1,7 @@
 package com.tschanz.v_bro.elements.usecase.read_elements;
 
 import com.tschanz.v_bro.common.VBroAppException;
+import com.tschanz.v_bro.elements.domain.model.DenominationData;
 import com.tschanz.v_bro.elements.domain.service.ElementService;
 import com.tschanz.v_bro.elements.domain.model.ElementData;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
@@ -8,6 +9,7 @@ import com.tschanz.v_bro.repo.domain.model.RepoType;
 import com.tschanz.v_bro.repo.usecase.open_connection.OpenConnectionResponse;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -34,7 +36,8 @@ public class ReadElementsUseCaseImpl implements ReadElementsUseCase {
             ReadElementsResponse response = new ReadElementsResponse(
                 elements
                     .stream()
-                    .map(element -> new ReadElementsResponse.Element(element.getId(), element.getId())) // TODO => name fields
+                    .map(element -> new ReadElementsResponse.Element(element.getId(), this.getElementName(element)))
+                    .sorted(Comparator.comparing(e -> e.name))
                     .collect(Collectors.toList())
             );
 
@@ -58,6 +61,18 @@ public class ReadElementsUseCaseImpl implements ReadElementsUseCase {
         }
 
         return elementService;
+    }
+
+
+    private String getElementName(ElementData element) {
+        if (element.getNameFieldValues().size() == 0) {
+            return element.getId();
+        } else {
+            return element.getNameFieldValues()
+                .stream()
+                .map(DenominationData::getValue)
+                .collect(Collectors.joining(" - "));
+        }
     }
 }
 

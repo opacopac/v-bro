@@ -1,11 +1,11 @@
 package com.tschanz.v_bro.versions.persistence.xml.service;
 
 import com.tschanz.v_bro.repo.domain.model.RepoException;
-import com.tschanz.v_bro.versions.persistence.xml.model.XmlVersionInfo;
+import com.tschanz.v_bro.versions.domain.model.VersionInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.parsers.SAXParserFactory;
+import javax.xml.stream.XMLInputFactory;
 
 import java.io.*;
 import java.time.LocalDate;
@@ -14,15 +14,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-class VersionAggregateInfoParserTest {
+class versionParserTest {
     private VersionParser parser;
-    private MockXmlRepoService mockXmlRepoService;
 
 
     @BeforeEach
     void setUp() {
-        this.parser = new VersionParser(SAXParserFactory.newInstance());
-        this.mockXmlRepoService = new MockXmlRepoService();
+        XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+        this.parser = new VersionParser(xmlInputFactory);
     }
 
 
@@ -41,10 +40,10 @@ class VersionAggregateInfoParserTest {
             "  </gattungen>\n" +
             " </subsystemNetz>\n" +
             "</ns2:datenrelease>";
-        this.mockXmlRepoService.getNewXmlFileStreamResult.add(new ByteArrayInputStream(xmlText.getBytes()));
+        InputStream stream = new ByteArrayInputStream(xmlText.getBytes());
 
-        List<XmlVersionInfo> versionList = this.parser.readVersions(
-            this.mockXmlRepoService,
+        List<VersionInfo> versionList = this.parser.readVersions(
+            stream,
             "gattung",
             "ids__2433574"
         );
@@ -81,10 +80,10 @@ class VersionAggregateInfoParserTest {
             "  </betreibers>\n" +
             " </subsystemNetz>\n" +
             "</ns2:datenrelease>";
-        this.mockXmlRepoService.getNewXmlFileStreamResult.add(new ByteArrayInputStream(xmlText.getBytes()));
+        InputStream stream = new ByteArrayInputStream(xmlText.getBytes());
 
-        List<XmlVersionInfo> versionList = this.parser.readVersions(
-            this.mockXmlRepoService,
+        List<VersionInfo> versionList = this.parser.readVersions(
+            stream,
             "betreiber",
             "ids__23395"
         );
@@ -116,23 +115,23 @@ class VersionAggregateInfoParserTest {
             "  </partners>\n" +
             " </subsystemFQF>\n" +
             "</ns2:datenrelease>";
-        this.mockXmlRepoService.getNewXmlFileStreamResult.add(new ByteArrayInputStream(xmlText.getBytes()));
+        InputStream stream = new ByteArrayInputStream(xmlText.getBytes());
 
-        List<XmlVersionInfo> versionList = this.parser.readVersions(
-            this.mockXmlRepoService,
+        List<VersionInfo> versionList = this.parser.readVersions(
+            stream,
             "partner",
             "ids__12004"
         );
 
         assertEquals(1, versionList.size());
         assertEquals("ids__12004", versionList.get(0).getId());
-        assertTrue(versionList.get(0).isUnversioned());
-        assertNull(versionList.get(0).getGueltigVon());
-        assertNull(versionList.get(0).getGueltigBis());
+        assertEquals(VersionInfo.LOW_DATE, versionList.get(0).getGueltigVon());
+        assertEquals(VersionInfo.HIGH_DATE, versionList.get(0).getGueltigBis());
+        assertEquals(VersionInfo.DEFAULT_PFLEGESTATUS, versionList.get(0).getPflegestatus());
     }
 
 
-    @Test
+    /*@Test
     void readVersions_finds_fwd_dep_in_versioned_entries() throws RepoException {
         String xmlText = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<ns2:datenrelease xmlns:ns2=\"ch.voev.nova.pflege.common.exporter.datenrelease\" xmlns:ns3=\"ch.voev.nova.pflege.common.exporter.datenrelease.tarifcommons\" xmlns:ns4=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ns5=\"ch.voev.nova.pflege.common.exporter.datenrelease.dvmodell\" xmlns:ns6=\"ch.voev.nova.pflege.common.exporter.datenrelease.netz\" id=\"D555.0\">\n" +
@@ -159,10 +158,10 @@ class VersionAggregateInfoParserTest {
             "  </kanten>\n" +
             " </subsystemNetz>\n" +
             "</ns2:datenrelease>";
-        this.mockXmlRepoService.getNewXmlFileStreamResult.add(new ByteArrayInputStream(xmlText.getBytes()));
+        InputStream stream = new ByteArrayInputStream(xmlText.getBytes());
 
-        List<XmlVersionInfo> versionList = this.parser.readVersions(
-            this.mockXmlRepoService,
+        List<VersionInfo> versionList = this.parser.readVersions(
+            stream,
             "kante",
             "ids__1634307168"
         );
@@ -193,10 +192,10 @@ class VersionAggregateInfoParserTest {
             "  </transportunternehmungen>" +
             " </subsystemFQF>\n" +
             "</ns2:datenrelease>";
-        this.mockXmlRepoService.getNewXmlFileStreamResult.add(new ByteArrayInputStream(xmlText.getBytes()));
+        InputStream stream = new ByteArrayInputStream(xmlText.getBytes());
 
-        List<XmlVersionInfo> versionList = this.parser.readVersions(
-            this.mockXmlRepoService,
+        List<VersionInfo> versionList = this.parser.readVersions(
+            stream,
             "transportunternehmung",
             "ids__14031"
         );
@@ -205,23 +204,5 @@ class VersionAggregateInfoParserTest {
         assertEquals("ids__14031", versionList.get(0).getId());
         assertTrue(versionList.get(0).isUnversioned());
         assertTrue(versionList.get(0).getFwdDepIds().contains("ids__12033"));
-    }
-
-
-    /*@Test
-    void test_real_dr() throws RepoException, FileNotFoundException {
-        //String fileName = "./dr_examples/mini_dr.xml";
-        String fileName = "./dr_examples/stammdaten.xml";
-        File xmlFile = new File(fileName);
-        InputStream xmlStream = new FileInputStream(xmlFile);
-
-        long start = System.currentTimeMillis();
-        String elementName = "haltestelle";
-        String elementId = "ids__1634280237";
-        ArrayList<VersionData> versionList = new ArrayList<>(this.parser.readVersions(xmlStream, elementName, elementId));
-        long diff = System.currentTimeMillis() - start;
-        System.out.println(diff);
-
-        assertEquals(1, versionList.size());
     }*/
 }

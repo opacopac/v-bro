@@ -17,13 +17,13 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
-public class JdbcRepoData {
-    private final Logger logger = Logger.getLogger(JdbcRepoData.class.getName());
+public class JdbcRepoDataService {
+    private final Logger logger = Logger.getLogger(JdbcRepoDataService.class.getName());
     private final JdbcConnectionFactory connectionFactory;
     private final JdbcQueryBuilder queryBuilder;
 
 
-    public JdbcRepoData(
+    public JdbcRepoDataService(
         JdbcConnectionFactory connectionFactory,
         JdbcQueryBuilder queryBuilder
     ) {

@@ -33,11 +33,7 @@ public class JdbcElementClassService implements ElementClassService {
 
 
     @Override
-    public Collection<ElementClass> readElementClasses() throws RepoException {
-        if (!this.repo.isConnected()) {
-            throw new RepoException("Not connected to repo!");
-        }
-
+    public List<ElementClass> readElementClasses() throws RepoException {
         this.logger.info("finding tables with suffix " + ELEMENT_TABLE_SUFFIX);
         String tableNamePattern = JdbcRepoMetadataServiceImpl.WILDCARD + this.repoMetaData.escapeUnderscore(ELEMENT_TABLE_SUFFIX);
         List<String> tableNames = this.repoMetaData.findTableNames(tableNamePattern);
@@ -51,10 +47,6 @@ public class JdbcElementClassService implements ElementClassService {
 
     @Override
     public List<Denomination> readDenominations(String elementClass) throws RepoException {
-        if (!this.repo.isConnected()) {
-            throw new RepoException("Not connected to repo!");
-        }
-
         RepoTable repoTable = this.repoMetaData.readTableStructure(elementClass);
 
         return repoTable.getFields()

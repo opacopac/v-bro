@@ -9,6 +9,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
+import java.io.InputStream;
 
 
 public class VersionAggregateParser {
@@ -21,7 +22,7 @@ public class VersionAggregateParser {
 
 
     public XmlNodeInfo readVersionAggregate(
-        XmlRepoService repoService,
+        InputStream xmlInputStream,
         String elementName,
         String elementId,
         String versionId
@@ -34,7 +35,7 @@ public class VersionAggregateParser {
             handler.setElementClass(elementName);
             handler.setElementId(elementId);
             handler.setVersionId(versionId);
-            saxParser.parse(repoService.getNewXmlFileStream(), handler);
+            saxParser.parse(xmlInputStream, handler);
         } catch (SAXException | ParserConfigurationException | IOException exception) {
             throw new RepoException(exception);
         }

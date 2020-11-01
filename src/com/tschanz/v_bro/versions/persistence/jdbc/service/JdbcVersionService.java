@@ -4,7 +4,7 @@ import com.tschanz.v_bro.elements.persistence.jdbc.service.JdbcElementService;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.*;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.RowFilter;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.RowFilterOperator;
-import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoData;
+import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoDataService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
@@ -26,14 +26,14 @@ public class JdbcVersionService implements VersionService {
 
     private final JdbcRepoService repo;
     private final JdbcRepoMetadataService repoMetaData;
-    private final JdbcRepoData repoData;
+    private final JdbcRepoDataService repoData;
     private final JdbcElementService elementService;
 
 
     public JdbcVersionService(
         JdbcRepoService repo,
         JdbcRepoMetadataService repoMetaData,
-        JdbcRepoData repoData,
+        JdbcRepoDataService repoData,
         JdbcElementService elementService
     ) {
         this.repo = repo;

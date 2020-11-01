@@ -1,4 +1,4 @@
-package com.tschanz.v_bro.versions.persistence.xml.service;
+package com.tschanz.v_bro.repo.persistence.xml.service;
 
 import com.tschanz.v_bro.common.testing.MockHelper;
 import com.tschanz.v_bro.common.testing.MockReturnValue;

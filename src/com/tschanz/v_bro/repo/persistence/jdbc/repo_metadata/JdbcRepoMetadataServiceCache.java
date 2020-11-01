@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.logging.Logger;
 
 
-public class JdbcRepoMetadataServiceCacheDecorator implements JdbcRepoMetadataService {
-    private final Logger logger = Logger.getLogger(JdbcRepoMetadataServiceCacheDecorator.class.getName());
+public class JdbcRepoMetadataServiceCache implements JdbcRepoMetadataService {
+    private final Logger logger = Logger.getLogger(JdbcRepoMetadataServiceCache.class.getName());
     private final JdbcRepoMetadataServiceImpl jdbcRepoMetadataService;
     private final Cache<RepoTable> readTableStructureCache;
 
 
-    public JdbcRepoMetadataServiceCacheDecorator(
+    public JdbcRepoMetadataServiceCache(
         JdbcRepoMetadataServiceImpl jdbcRepoMetadataService,
         Cache<RepoTable> readTableStructureCache
     ) {

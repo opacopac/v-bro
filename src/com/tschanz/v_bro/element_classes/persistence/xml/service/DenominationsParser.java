@@ -4,18 +4,33 @@ import com.tschanz.v_bro.element_classes.domain.model.Denomination;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
 
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class DenominationsParser {
-    public static Set<Denomination> parseDenominations(XMLStreamReader reader, String elementClass) throws RepoException {
-        Set<Denomination> denominations;
+    private final XMLInputFactory xmlInputFactory;
+
+
+    public DenominationsParser(XMLInputFactory xmlInputFactory) {
+        this.xmlInputFactory = xmlInputFactory;
+    }
+
+
+    public List<Denomination> readDenominations(InputStream xmlStream, String elementClass) throws RepoException {
+        List<Denomination> denominations;
 
         try {
+            XMLStreamReader reader = this.xmlInputFactory.createXMLStreamReader(xmlStream);
             denominations = parseDocument(reader, elementClass);
         } catch (XMLStreamException exception) {
             throw new RepoException(exception);
@@ -25,8 +40,8 @@ public class DenominationsParser {
     }
 
 
-    private static Set<Denomination> parseDocument(XMLStreamReader reader, String elementClass) throws XMLStreamException {
-        Set<Denomination> denominations = new HashSet<>();
+    private List<Denomination> parseDocument(XMLStreamReader reader, String elementClass) throws XMLStreamException {
+        List<Denomination> denominations = new ArrayList<>();
 
         while (reader.hasNext()) {
             switch (reader.next()) {
@@ -40,12 +55,16 @@ public class DenominationsParser {
             }
         }
 
-        return denominations;
+        return denominations
+            .stream()
+            .distinct()
+            .collect(Collectors.toList());
     }
 
 
-    private static Set<Denomination> parseElement(XMLStreamReader reader) throws XMLStreamException {
-        Set<Denomination> denominations = new HashSet<>();
+    private List<Denomination> parseElement(XMLStreamReader reader) throws XMLStreamException {
+        List<Denomination> elementDenominations = new ArrayList<>();
+        List<Denomination> versionDenominations = new ArrayList<>();
         int subLevel = 0;
         StringBuilder value = new StringBuilder();
 
@@ -53,7 +72,7 @@ public class DenominationsParser {
             switch (reader.next()) {
                 case XMLStreamReader.START_ELEMENT:
                     if (reader.getLocalName().equals(XmlRepoService.VERSION_NODE_NAME)) {
-                        denominations.addAll(parseVersion(reader));
+                        versionDenominations.addAll(parseVersion(reader));
                     } else {
                         subLevel++;
                         if (subLevel == 1) {
@@ -68,9 +87,13 @@ public class DenominationsParser {
                     break;
                 case XMLStreamReader.END_ELEMENT:
                     if (subLevel == 1) {
-                        addDenomination(denominations, reader.getLocalName(), value.toString());
+                        checkAddDenomination(elementDenominations, reader.getLocalName(), value.toString());
                     } else if (subLevel < 1) {
-                        return denominations;
+                        return Stream.concat(
+                            elementDenominations.stream(),
+                            versionDenominations.stream()
+                        )
+                            .collect(Collectors.toList());
                     }
                     subLevel--;
                     break;
@@ -81,8 +104,8 @@ public class DenominationsParser {
     }
 
 
-    private static Set<Denomination> parseVersion(XMLStreamReader reader) throws XMLStreamException {
-        Set<Denomination> denominations = new HashSet<>();
+    private List<Denomination> parseVersion(XMLStreamReader reader) throws XMLStreamException {
+        List<Denomination> denominations = new ArrayList<>();
         int subLevel = 0;
         StringBuilder value = new StringBuilder();
 
@@ -101,7 +124,7 @@ public class DenominationsParser {
                     break;
                 case XMLStreamReader.END_ELEMENT:
                     if (subLevel == 1) {
-                        addDenomination(denominations, reader.getLocalName(), value.toString());
+                        checkAddDenomination(denominations, reader.getLocalName(), value.toString());
                     } else if (subLevel == 0) {
                         return denominations;
                     }
@@ -114,16 +137,15 @@ public class DenominationsParser {
     }
 
 
-    private static void addDenomination(Set<Denomination> denominations, String name, String value) {
+    private void checkAddDenomination(List<Denomination> denominations, String name, String value) {
         if (value == null || value.trim().isEmpty()) {
             return;
         } else if (value.equals("true") || value.equals("false")) {
             return;
-        } else {
+        } else if (!denominations.contains(name)) {
             denominations.add(new Denomination(name));
         }
 
-        // TODO: exclude some formats
-
+        // TODO: exclude some other formats
     }
 }

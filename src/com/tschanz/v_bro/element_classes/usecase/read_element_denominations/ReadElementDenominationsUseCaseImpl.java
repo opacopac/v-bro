@@ -8,6 +8,7 @@ import com.tschanz.v_bro.repo.domain.model.RepoType;
 import com.tschanz.v_bro.repo.usecase.open_connection.OpenConnectionResponse;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -29,7 +30,7 @@ public class ReadElementDenominationsUseCaseImpl implements ReadElementDenominat
 
         ElementClassService elementClassService = this.getElementClassService(repoConnection.repoType);
         try {
-            Collection<Denomination> denominations = elementClassService.readDenominations(elementClass);
+            List<Denomination> denominations = elementClassService.readDenominations(elementClass);
             ReadElementDenominationsResponse response = new ReadElementDenominationsResponse(
                 denominations
                     .stream()

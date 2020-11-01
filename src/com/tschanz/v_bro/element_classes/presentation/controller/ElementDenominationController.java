@@ -25,7 +25,7 @@ public class ElementDenominationController {
     private final BehaviorSubject<ElementClassItem> selectElementClassAction;
     private final BehaviorSubject<List<DenominationItem>> denominationList = new BehaviorSubject<>(Collections.emptyList());
     private final BehaviorSubject<List<DenominationItem>> selectDenominationsAction = new BehaviorSubject<>(Collections.emptyList());
-    private final ReadElementDenominationsUseCase readElementNameFieldsUc;
+    private final ReadElementDenominationsUseCase readElementDenominationsUc;
 
 
     public BehaviorSubject<List<DenominationItem>> getSelectDenominationsAction() {
@@ -37,13 +37,13 @@ public class ElementDenominationController {
         BehaviorSubject<StatusItem> appStatus,
         BehaviorSubject<RepoConnectionItem> repoConnection,
         BehaviorSubject<ElementClassItem> selectElementClassAction,
-        ReadElementDenominationsUseCase readElementNameFieldsUc
+        ReadElementDenominationsUseCase readElementDenominationsUc
     ) {
         this.elementDenominationView = elementDenominationView;
         this.appStatus = appStatus;
         this.repoConnection = repoConnection;
         this.selectElementClassAction = selectElementClassAction;
-        this.readElementNameFieldsUc = readElementNameFieldsUc;
+        this.readElementDenominationsUc = readElementDenominationsUc;
 
         this.elementDenominationView.bindDenominationList(this.denominationList);
         this.elementDenominationView.bindSelectDenominationsAction(this.selectDenominationsAction);
@@ -73,7 +73,7 @@ public class ElementDenominationController {
         if (repoConnection == null || selectedElementClass == null) {
             newDenominations = Collections.emptyList();
         } else {
-            ReadElementDenominationsResponse response = this.readElementNameFieldsUc.readDenominations(
+            ReadElementDenominationsResponse response = this.readElementDenominationsUc.readDenominations(
                 new OpenConnectionResponse.RepoConnection(repoConnection.repoType),
                 selectedElementClass.getName()
             );

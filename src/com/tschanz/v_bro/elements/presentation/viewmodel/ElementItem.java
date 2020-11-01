@@ -2,6 +2,7 @@ package com.tschanz.v_bro.elements.presentation.viewmodel;
 
 
 public class ElementItem {
+    private static final int MAX_NAME_LENGTH = 100;
     private final String id;
     private final String name;
 
@@ -17,6 +18,10 @@ public class ElementItem {
 
     @Override
     public String toString() {
-        return this.name;
+        if (this.name.length() <= MAX_NAME_LENGTH) {
+            return this.name;
+        } else {
+            return this.name.substring(0, MAX_NAME_LENGTH) + "...";
+        }
     }
 }

@@ -18,7 +18,7 @@ public class MockElementClassService implements ElementClassService {
 
 
     @Override
-    public Collection<ElementClass> readElementClasses() throws RepoException {
+    public List<ElementClass> readElementClasses() throws RepoException {
         this.mockHelper.reportMethodCall("readElementClasses");
         this.mockHelper.checkThrowException();
         return this.readElementClassesResult.next();

@@ -2,28 +2,25 @@ package com.tschanz.v_bro.elements.persistence.xml.service;
 
 import com.tschanz.v_bro.elements.domain.model.ElementData;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
-import com.tschanz.v_bro.versions.persistence.xml.service.MockXmlRepoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.parsers.SAXParserFactory;
+import javax.xml.stream.XMLInputFactory;
 
 import java.io.*;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 class ElementParserTest {
     private ElementParser parser;
-    private MockXmlRepoService mockXmlRepoService;
 
 
     @BeforeEach
     void setUp() {
-        this.parser = new ElementParser(SAXParserFactory.newInstance());
-        this.mockXmlRepoService = new MockXmlRepoService();
+        XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+        this.parser = new ElementParser(xmlInputFactory);
     }
 
 
@@ -44,10 +41,10 @@ class ElementParserTest {
             "  </partners>\n" +
             " </subsystemFQF>\n" +
             "</ns2:datenrelease>";
-        this.mockXmlRepoService.getNewXmlFileStreamResult.add(new ByteArrayInputStream(xmlText.getBytes()));
+        InputStream stream = new ByteArrayInputStream(xmlText.getBytes());
 
-        List<ElementData> elementDataList = this.parser.readElementList(
-            this.mockXmlRepoService,
+        List<ElementData> elementDataList = this.parser.readElements(
+            stream,
             "partner",
             List.of("partnerCode", "partnerKuerzel")
         );
@@ -77,10 +74,10 @@ class ElementParserTest {
             "  </gattungen>\n" +
             " </subsystemNetz>\n" +
             "</ns2:datenrelease>";
-        this.mockXmlRepoService.getNewXmlFileStreamResult.add(new ByteArrayInputStream(xmlText.getBytes()));
+        InputStream stream = new ByteArrayInputStream(xmlText.getBytes());
 
-        List<ElementData> elementDataList = this.parser.readElementList(
-            this.mockXmlRepoService,
+        List<ElementData> elementDataList = this.parser.readElements(
+            stream,
             "gattung",
             List.of("gattungsCode")
         );
@@ -120,10 +117,10 @@ class ElementParserTest {
             "  </betreibers>\n" +
             " </subsystemNetz>\n" +
             "</ns2:datenrelease>";
-        this.mockXmlRepoService.getNewXmlFileStreamResult.add(new ByteArrayInputStream(xmlText.getBytes()));
+        InputStream stream = new ByteArrayInputStream(xmlText.getBytes());
 
-        List<ElementData> elementDataList = this.parser.readElementList(
-            this.mockXmlRepoService,
+        List<ElementData> elementDataList = this.parser.readElements(
+            stream,
             "betreiber",
             List.of("name")
         );
@@ -142,23 +139,4 @@ class ElementParserTest {
         assertEquals("name", elementDataList.get(2).getNameFieldValues().get(0).getName());
         assertEquals("sbg034", elementDataList.get(2).getNameFieldValues().get(0).getValue());
     }
-
-
-
-    /*@Test
-    void test_real_dr() throws RepoException, FileNotFoundException {
-        //String fileName = "./dr_examples/mini_dr.xml";
-        String fileName = "./dr_examples/stammdaten.xml";
-        File xmlFile = new File(fileName);
-        InputStream xmlStream = new FileInputStream(xmlFile);
-
-        long start = System.currentTimeMillis();
-        String elementName = "haltestelle";
-        List<String> fieldNames = List.of("bavName");
-        ArrayList<ElementData> elementData = new ArrayList<>(this.parser.readElementData(xmlStream, elementName, fieldNames));
-        long diff = System.currentTimeMillis() - start;
-        System.out.println(diff);
-
-        assertEquals(95, elementData.size());
-    }*/
 }

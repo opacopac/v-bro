@@ -6,7 +6,7 @@ import com.tschanz.v_bro.elements.domain.model.ElementData;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoField;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTableRecord;
-import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoData;
+import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoDataService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataService;
@@ -22,13 +22,13 @@ public class JdbcElementService implements ElementService {
     private final Logger logger = Logger.getLogger(JdbcElementService.class.getName());
     private final JdbcRepoService repo;
     private final JdbcRepoMetadataService repoMetaData;
-    private final JdbcRepoData repoData;
+    private final JdbcRepoDataService repoData;
 
 
     public JdbcElementService(
         JdbcRepoService repo,
         JdbcRepoMetadataService repoMetaData,
-        JdbcRepoData repoData
+        JdbcRepoDataService repoData
     ) {
         this.repo = repo;
         this.repoMetaData = repoMetaData;
