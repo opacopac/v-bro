@@ -201,6 +201,8 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
                 return RepoFieldType.BOOL;
             case Types.DATE:
                 return RepoFieldType.DATE;
+            case Types.TIMESTAMP:
+                return RepoFieldType.TIMESTAMP;
             case Types.VARCHAR:
             case Types.NVARCHAR:
             default:

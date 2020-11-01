@@ -163,6 +163,10 @@ public class XmlRepoService implements RepoService {
 
 
     public static boolean isId(String value) {
+        if (value == null) {
+            return false;
+        }
+
         return (value.startsWith(XmlRepoService.ID_VALUE_PREFIX_1) || value.startsWith(XmlRepoService.ID_VALUE_PREFIX_2));
     }
 }

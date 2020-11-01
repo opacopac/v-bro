@@ -56,7 +56,9 @@ public class JdbcRepoDataService {
                 while (statement.getResultSet().next()) {
                     rows.add(this.parseRow(fields, statement.getResultSet()));
                 }
+                statement.getResultSet().close();
             }
+            statement.close();
         } catch (SQLException exception) {
             String msg = "error reading rows: " + exception.getMessage();
             this.logger.severe(msg);
@@ -89,6 +91,8 @@ public class JdbcRepoDataService {
                 return new FieldValue(field, resultSet.getLong(this.queryBuilder.createFieldName(field)));
             case DATE:
                 return new FieldValue(field, resultSet.getDate(this.queryBuilder.createFieldName(field)));
+            case TIMESTAMP:
+                return new FieldValue(field, resultSet.getTimestamp(this.queryBuilder.createFieldName(field)));
             case STRING:
             default:
                 return new FieldValue(field, resultSet.getString(this.queryBuilder.createFieldName(field)));

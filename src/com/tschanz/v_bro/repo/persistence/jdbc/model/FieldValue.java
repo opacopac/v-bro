@@ -1,6 +1,7 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.model;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 
 
@@ -29,26 +30,30 @@ public class FieldValue {
 
 
     public long getValueLong() {
-        this.checkTypeOrThrow(RepoFieldType.LONG);
-        return (long) this.value;
+        if (this.field.getType() == RepoFieldType.LONG) {
+            return (long) this.value;
+        } else {
+            throw new IllegalArgumentException("field must be of type LONG but is " + this.field.getType().name());
+        }
     }
 
 
     public boolean getValueBool() {
-        this.checkTypeOrThrow(RepoFieldType.BOOL);
-        return (boolean) this.value;
+        if (this.field.getType() == RepoFieldType.BOOL) {
+            return (boolean) this.value;
+        } else {
+            throw new IllegalArgumentException("field must be of type BOOL but is " + this.field.getType().name());
+        }
     }
 
 
     public LocalDate getValueDate() {
-        this.checkTypeOrThrow(RepoFieldType.DATE);
-        return ((Date) this.value).toLocalDate();
-    }
-
-
-    private void checkTypeOrThrow(RepoFieldType type) {
-        if (type != this.field.getType()) {
-            throw new IllegalArgumentException("field must be of type " + type.name());
+        if (this.field.getType() == RepoFieldType.DATE) {
+            return ((Date) this.value).toLocalDate();
+        } else if (this.field.getType() == RepoFieldType.TIMESTAMP) {
+            return ((Timestamp) this.value).toLocalDateTime().toLocalDate();
+        } else {
+            throw new IllegalArgumentException("field must be of type DATE or TIMESTAMP but is " + this.field.getType().name());
         }
     }
 }

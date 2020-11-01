@@ -5,5 +5,6 @@ public enum RepoFieldType {
     STRING,
     LONG,
     BOOL,
-    DATE
+    DATE,
+    TIMESTAMP
 }
