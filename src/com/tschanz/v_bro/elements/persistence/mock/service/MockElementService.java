@@ -8,15 +8,16 @@ import com.tschanz.v_bro.repo.domain.model.RepoException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 
 public class MockElementService implements ElementService {
     public final MockHelper<RepoException> mockHelper = new MockHelper<>();
-    public MockReturnValue<Collection<ElementData>> readElementDataResults = new MockReturnValue<>("readElementData");
+    public MockReturnValue<List<ElementData>> readElementDataResults = new MockReturnValue<>("readElementData");
 
 
     @Override
-    public Collection<ElementData> readElements(String elementClass, Collection<String> fieldNames) throws RepoException {
+    public List<ElementData> readElements(String elementClass, Collection<String> fieldNames) throws RepoException {
         this.mockHelper.reportMethodCall("readElementData", elementClass, fieldNames);
         this.mockHelper.checkThrowException();
         return new ArrayList<>(this.readElementDataResults.next());

@@ -26,7 +26,7 @@ public class XmlElementService implements ElementService {
 
 
     @Override
-    public Collection<ElementData> readElements(String elementClass, Collection<String> denominationFields) throws RepoException {
+    public List<ElementData> readElements(String elementClass, Collection<String> denominationFields) throws RepoException {
         List<XmlElementLutInfo> elementLuts = this.repoService.getElementLut().values()
             .stream()
             .filter(element -> elementClass.equals(element.getName()))
@@ -37,12 +37,12 @@ public class XmlElementService implements ElementService {
 
         InputStream xmlFileStream = this.repoService.getNewXmlFileStream(minBytePos, maxBytePos);
 
-        Collection<ElementData> elementDataList = this.elementParser.readElements(
+        List<ElementData> elementDataList = this.elementParser.readElements(
             xmlFileStream,
             elementClass,
             denominationFields
         );
 
-        return new ArrayList<>(elementDataList);
+        return elementDataList;
     }
 }

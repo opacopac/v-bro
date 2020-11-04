@@ -43,7 +43,7 @@ public class JdbcDependencyService implements DependencyService {
 
 
     @Override
-    public Collection<FwdDependency> readFwdDependencies(String elemenClass, String elementId, String versionId) throws RepoException {
+    public List<FwdDependency> readFwdDependencies(String elemenClass, String elementId, String versionId) throws RepoException {
         JdbcVersionAggregate aggregate = (JdbcVersionAggregate) this.versionAggregateService.readVersionAggregate(elemenClass, elementId, versionId); // TODO: ugly type casting
 
         List<FwdDependency> dependencies = new ArrayList<>();

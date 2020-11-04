@@ -37,7 +37,7 @@ public class JdbcElementService implements ElementService {
 
 
     @Override
-    public Collection<ElementData> readElements(String elementClass, Collection<String> fieldNames) throws RepoException {
+    public List<ElementData> readElements(String elementClass, Collection<String> fieldNames) throws RepoException {
         if (!this.repo.isConnected()) {
             throw new RepoException("Not connected to repo!");
         }

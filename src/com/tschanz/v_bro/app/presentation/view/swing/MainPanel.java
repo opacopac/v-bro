@@ -2,22 +2,7 @@ package com.tschanz.v_bro.app.presentation.view.swing;
 
 import com.tschanz.v_bro.app.presentation.view.MainView;
 import com.tschanz.v_bro.app.presentation.view.StatusBarView;
-import com.tschanz.v_bro.dependencies.presentation.view.swing.DependencyListPanel;
-import com.tschanz.v_bro.dependencies.presentation.view.DependenciesView;
-import com.tschanz.v_bro.element_classes.presentation.view.swing.DenominatonSelectionPanel;
-import com.tschanz.v_bro.element_classes.presentation.view.swing.ElementClassSelectionPanel;
-import com.tschanz.v_bro.element_classes.presentation.view.ElementClassView;
-import com.tschanz.v_bro.element_classes.presentation.view.ElementDenominationView;
-import com.tschanz.v_bro.elements.presentation.view.swing.ElementSelectionPanel;
-import com.tschanz.v_bro.elements.presentation.view.ElementView;
-import com.tschanz.v_bro.version_aggregates.presentation.view.VersionAggregateView;
-import com.tschanz.v_bro.repo.presentation.view.swing.ConnectionPanel;
-import com.tschanz.v_bro.repo.presentation.view.ConnectionView;
-import com.tschanz.v_bro.version_aggregates.presentation.view.swing.VersionAggregateTree;
-import com.tschanz.v_bro.versions.presentation.view.swing.VersionFilterPanel;
-import com.tschanz.v_bro.versions.presentation.view.VersionFilterView;
-import com.tschanz.v_bro.versions.presentation.view.swing.VersionTimeline;
-import com.tschanz.v_bro.versions.presentation.view.VersionsView;
+import com.tschanz.v_bro.app.presentation.viewmodel.MainModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,12 +17,34 @@ public class MainPanel extends JFrame implements MainView {
     private final VersionTimeline versionTimeline = new VersionTimeline();
     private final DependencyListPanel dependencyListPanel = new DependencyListPanel();
     private final VersionAggregateTree versionAggregateTree = new VersionAggregateTree();
-
     private final StatusBarPanel statusBarPanel = new StatusBarPanel();
 
 
     public MainPanel() {
         this.InitView();
+    }
+
+
+    @Override
+    public void bindViewModel(MainModel mainModel) {
+        this.statusBarPanel.bindStatus(mainModel.appStatus);
+        this.connectionPanel.bindQuickConnectionList(mainModel.quickConnectionList);
+        this.connectionPanel.bindCurrentRepoConnection(mainModel.currentRepoConnection);
+        this.connectionPanel.bindConnectToRepoAction(mainModel.connectToRepoAction);
+        this.elementClassSelectionPanel.bindElementClassList(mainModel.elementClasses);
+        this.elementClassSelectionPanel.bindSelectElementClassAction(mainModel.selectedElementClass);
+        this.denominationSelectionPanel.bindDenominationList(mainModel.elementDenominations);
+        this.denominationSelectionPanel.bindSelectDenominationsAction(mainModel.selectedDenominations);
+        this.elementSelectionPanel.bindElementList(mainModel.elements);
+        this.elementSelectionPanel.bindSelectElementAction(mainModel.selectedElement);
+        this.versionFilterPanel.bindInitialVersionFilter(mainModel.versionFilter);
+        this.versionFilterPanel.bindSelectVersionFilterAction(mainModel.selectedVersionFilter);
+        this.versionTimeline.bindEffectiveVersionFilter(mainModel.effectiveVersionFilter);
+        this.versionTimeline.bindVersionList(mainModel.versions);
+        this.versionTimeline.bindSelectVersionAction(mainModel.selectedVersion);
+        this.dependencyListPanel.bindEffectiveVersionFilter(mainModel.effectiveVersionFilter);
+        this.dependencyListPanel.bindFwdDependencyList(mainModel.fwdDependencies);
+        this.versionAggregateTree.bindVersionAggregate(mainModel.versionAggregate);
     }
 
 
@@ -48,14 +55,6 @@ public class MainPanel extends JFrame implements MainView {
     }
 
 
-    @Override public ConnectionView getConnectionView() { return this.connectionPanel; }
-    @Override public ElementClassView getElementClassView() { return this.elementClassSelectionPanel; }
-    @Override public ElementDenominationView getElementDenominationView() { return this.denominationSelectionPanel; }
-    @Override public ElementView getElementView() { return this.elementSelectionPanel; }
-    @Override public VersionFilterView getVersionFilterView() { return this.versionFilterPanel; }
-    @Override public VersionsView getVersionsView() { return this.versionTimeline; }
-    @Override public DependenciesView getDependenciesView() { return this.dependencyListPanel; }
-    @Override public VersionAggregateView getVersionAggregateView() { return this.versionAggregateTree; }
     @Override public StatusBarView getStatusBarView() { return this.statusBarPanel; }
 
 
@@ -63,7 +62,6 @@ public class MainPanel extends JFrame implements MainView {
         this.setTitle("V-Bro");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setPreferredSize(new Dimension(1200, 1000));
-        //this.setSize(1200, 1000);
 
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new GridBagLayout());

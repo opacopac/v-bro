@@ -7,7 +7,6 @@ import com.tschanz.v_bro.element_classes.domain.model.ElementClass;
 import com.tschanz.v_bro.element_classes.domain.service.ElementClassService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 
-import java.util.Collection;
 import java.util.List;
 
 

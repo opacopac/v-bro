@@ -34,7 +34,7 @@ public class XmlDependencyService implements DependencyService {
 
 
     @Override
-    public Collection<FwdDependency> readFwdDependencies(String elemenClass, String elementId, String versionId) throws RepoException {
+    public List<FwdDependency> readFwdDependencies(String elemenClass, String elementId, String versionId) throws RepoException {
         Map<String, XmlElementLutInfo> elementLutInfos = this.repoService.getElementLut();
         VersionAggregate versionAggregate = this.versionAggregateService.readVersionAggregate(elemenClass, elementId, versionId);
         List<FwdDependency> fwdDependencies = this.findNodeDependencies(versionAggregate.getRootNode(), elementId, elementLutInfos);

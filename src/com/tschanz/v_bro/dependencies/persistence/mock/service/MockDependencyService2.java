@@ -13,7 +13,7 @@ import java.util.List;
 
 public class MockDependencyService2 implements DependencyService {
     @Override
-    public Collection<FwdDependency> readFwdDependencies(String elemenClass, String elementId, String versionId) throws RepoException {
+    public List<FwdDependency> readFwdDependencies(String elemenClass, String elementId, String versionId) throws RepoException {
         return List.of(
             new FwdDependency(
             "P_PRODUKTDEFINITION_E",

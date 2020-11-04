@@ -70,6 +70,8 @@ public class ElementLutParser {
                     this.nodeLevel--;
                 }
             }
+
+            stream.close();
         } catch (IOException exception) {
             throw new RepoException(exception);
         }
