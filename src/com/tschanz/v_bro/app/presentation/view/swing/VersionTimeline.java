@@ -42,6 +42,10 @@ public class VersionTimeline extends JPanel implements VersionsView {
     private static final int TEXT_BIS_OFFSET_X_REL_PX = -SPACER_HEIGHT;
     private static final int TEXT_BIS_OFFSET_Y_PX = BAR_OFFSET_Y_PX + BAR_HEIGHT_PX - SPACER_HEIGHT;
     private static final Font DATE_FONT = new Font("SansSerif", Font.PLAIN, TEXT_HEIGHT);
+
+    public static int TIMELINE_WIDTH = 750;
+    public static int TIMELINE_HEIGHT = BAR_HEIGHT_PX + 10;
+
     private List<VersionItem> versionList;
     private VersionFilterItem effectiveVersionFilter;
     private VersionItem hoverVersion;
@@ -50,7 +54,10 @@ public class VersionTimeline extends JPanel implements VersionsView {
 
 
     public VersionTimeline() {
-        this.setPreferredSize(new Dimension(750, BAR_HEIGHT_PX + 10));
+        Dimension size = new Dimension(TIMELINE_WIDTH, TIMELINE_HEIGHT);
+        this.setMaximumSize(size);
+        this.setPreferredSize(size); // TODO
+        this.setMinimumSize(size);
         this.addMouseListener(new VersionTimelineMouseListener());
         this.addMouseMotionListener(new VersionTimelineMouseMotionListener());
     }
@@ -83,7 +90,11 @@ public class VersionTimeline extends JPanel implements VersionsView {
         }
 
         this.versionVonBisXPixelCache.clear();
-        this.versionList.forEach(version -> this.drawVersionBar(g, version));
+        this.versionList
+            .stream()
+            .filter(version -> version.getGueltigBis().isAfter(this.effectiveVersionFilter.getMinGueltigVon()))
+            .filter(version -> version.getGueltigVon().isBefore(this.effectiveVersionFilter.getMaxGueltigBis()))
+            .forEach(version -> this.drawVersionBar(g, version));
     }
 
 
@@ -92,9 +103,9 @@ public class VersionTimeline extends JPanel implements VersionsView {
 
         if (this.selectVersionAction != null) {
             if (versionList.size() == 0) {
-                this.onVersionSelected(null); // TODO: zombie alert
+                this.onVersionSelected(null); // TODO: show zombie alert
             } else {
-                this.onVersionSelected(versionList.get(versionList.size() - 1));
+                this.onVersionSelected(versionList.get(versionList.size() - 1)); // auto-select last entry
             }
         }
     }

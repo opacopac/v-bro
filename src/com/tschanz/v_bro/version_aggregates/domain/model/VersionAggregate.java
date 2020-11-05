@@ -1,19 +1,19 @@
 package com.tschanz.v_bro.version_aggregates.domain.model;
 
 
-import com.tschanz.v_bro.versions.domain.model.VersionInfo;
+import com.tschanz.v_bro.versions.domain.model.VersionData;
 
 public class VersionAggregate {
-    protected final VersionInfo versionInfo;
+    protected final VersionData versionData;
     protected final AggregateNode rootNode;
 
 
-    public VersionInfo getVersionInfo() { return this.versionInfo; }
+    public VersionData getVersionInfo() { return this.versionData; }
     public AggregateNode getRootNode() { return rootNode; }
 
 
-    public VersionAggregate(VersionInfo versionInfo, AggregateNode rootNode) {
-        this.versionInfo = versionInfo;
+    public VersionAggregate(VersionData versionData, AggregateNode rootNode) {
+        this.versionData = versionData;
         this.rootNode = rootNode;
     }
 }

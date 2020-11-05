@@ -8,7 +8,6 @@ import com.tschanz.v_bro.app.usecase.select_element.SelectElementUseCase;
 import com.tschanz.v_bro.app.usecase.disconnect_repo.CloseConnectionUseCase;
 import com.tschanz.v_bro.app.usecase.connect_repo.OpenConnectionUseCase;
 import com.tschanz.v_bro.app.usecase.select_version.SelectVersionUseCase;
-import com.tschanz.v_bro.app.usecase.select_version_filter.SelectVersionFilterUseCase;
 
 import java.util.Properties;
 
@@ -22,7 +21,6 @@ public class MainController {
         SelectElementClassUseCase selectElementClassUc,
         SelectElementDenominationUseCase selectElementDenominationUc,
         SelectElementUseCase selectElementUc,
-        SelectVersionFilterUseCase selectVersionFilterUc,
         SelectVersionUseCase selectVersionUc,
         SelectDependencyFilterUseCase selectDependencyFilterUc
     ) {
@@ -61,7 +59,7 @@ public class MainController {
             mainModel.selectedElementClass,
             mainModel.selectedElement,
             mainModel.selectedVersionFilter,
-            selectVersionFilterUc
+            selectElementUc
         );
 
         VersionController versionController = new VersionController(

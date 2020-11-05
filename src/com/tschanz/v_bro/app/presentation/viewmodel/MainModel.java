@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.presentation.viewmodel;
 
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
-import com.tschanz.v_bro.versions.domain.model.VersionInfo;
+import com.tschanz.v_bro.versions.domain.model.VersionData;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -27,10 +27,11 @@ public class MainModel {
     public final BehaviorSubject<List<VersionItem>> versions = new BehaviorSubject<>(Collections.emptyList());
     public final BehaviorSubject<VersionItem> selectedVersion = new BehaviorSubject<>(null);
 
-    public final BehaviorSubject<VersionFilterItem> versionFilter = new BehaviorSubject<>(new VersionFilterItem(LocalDate.of(2015, 1, 1), VersionInfo.HIGH_DATE, VersionInfo.DEFAULT_PFLEGESTATUS));
+    public final BehaviorSubject<VersionFilterItem> versionFilter = new BehaviorSubject<>(new VersionFilterItem(LocalDate.of(2015, 1, 1), VersionData.HIGH_DATE, VersionData.DEFAULT_PFLEGESTATUS));
     public final BehaviorSubject<VersionFilterItem> selectedVersionFilter = new BehaviorSubject<>(versionFilter.getCurrentValue());
-    public final BehaviorSubject<VersionFilterItem> effectiveVersionFilter = new BehaviorSubject<>(new VersionFilterItem(LocalDate.of(2015, 1, 1), LocalDate.of(2025, 1, 1), VersionInfo.DEFAULT_PFLEGESTATUS));
+    public final BehaviorSubject<VersionFilterItem> effectiveVersionFilter = new BehaviorSubject<>(new VersionFilterItem(LocalDate.of(2015, 1, 1), LocalDate.of(2025, 1, 1), VersionData.DEFAULT_PFLEGESTATUS));
 
+    public final BehaviorSubject<DependencyFilterItem> dependencyFilter = new BehaviorSubject<>(new DependencyFilterItem(true));
     public final BehaviorSubject<DependencyFilterItem> selectedDependencyFilter = new BehaviorSubject<>(new DependencyFilterItem(true));
     public final BehaviorSubject<List<FwdDependencyItem>> fwdDependencies = new BehaviorSubject<>(Collections.emptyList());
 

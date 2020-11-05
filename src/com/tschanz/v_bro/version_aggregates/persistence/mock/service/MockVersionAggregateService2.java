@@ -6,7 +6,7 @@ import com.tschanz.v_bro.version_aggregates.domain.model.AggregateNode;
 import com.tschanz.v_bro.version_aggregates.domain.model.VersionAggregate;
 import com.tschanz.v_bro.version_aggregates.domain.service.VersionAggregateService;
 import com.tschanz.v_bro.versions.domain.model.Pflegestatus;
-import com.tschanz.v_bro.versions.domain.model.VersionInfo;
+import com.tschanz.v_bro.versions.domain.model.VersionData;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -17,7 +17,7 @@ public class MockVersionAggregateService2 implements VersionAggregateService {
     @Override
     public VersionAggregate readVersionAggregate(String elementClass, String elementId, String versionId) throws RepoException {
         return new VersionAggregate(
-            new VersionInfo(
+            new VersionData(
                 "111",
                 LocalDate.of(2020,1,1),
                 LocalDate.of(2020,5,31),

@@ -3,7 +3,7 @@ package com.tschanz.v_bro.versions.persistence.xml.service;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
 import com.tschanz.v_bro.versions.domain.model.Pflegestatus;
-import com.tschanz.v_bro.versions.domain.model.VersionInfo;
+import com.tschanz.v_bro.versions.domain.model.VersionData;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -23,8 +23,8 @@ public class VersionParser {
     }
 
 
-    public List<VersionInfo> readVersions(InputStream xmlStream, String elementClass, String elementId) throws RepoException {
-        List<VersionInfo> versions;
+    public List<VersionData> readVersions(InputStream xmlStream, String elementClass, String elementId) throws RepoException {
+        List<VersionData> versions;
 
         try {
             XMLStreamReader reader = this.xmlInputFactory.createXMLStreamReader(xmlStream);
@@ -37,8 +37,8 @@ public class VersionParser {
     }
 
 
-    private List<VersionInfo> parseDocument(XMLStreamReader reader, String elementClass, String elementId) throws XMLStreamException {
-        List<VersionInfo> versions = new ArrayList<>();
+    private List<VersionData> parseDocument(XMLStreamReader reader, String elementClass, String elementId) throws XMLStreamException {
+        List<VersionData> versions = new ArrayList<>();
 
         while (reader.hasNext()) {
             switch (reader.next()) {
@@ -59,27 +59,27 @@ public class VersionParser {
     }
 
 
-    private List<VersionInfo> parseSingleElement(XMLStreamReader reader, String elementClass, String elementId) throws XMLStreamException {
+    private List<VersionData> parseSingleElement(XMLStreamReader reader, String elementClass, String elementId) throws XMLStreamException {
         int subLevel = 0;
-        List<VersionInfo> versionInfos = new ArrayList<>();
+        List<VersionData> versionDataList = new ArrayList<>();
 
         while (reader.hasNext()) {
             switch (reader.next()) {
                 case XMLStreamReader.START_ELEMENT:
                     if (reader.getLocalName().equals(XmlRepoService.VERSION_NODE_NAME)) {
-                        VersionInfo versionInfo = this.parseVersion(reader);
-                        if (versionInfo != null) {
-                            versionInfos.add(versionInfo);
+                        VersionData versionData = this.parseVersion(reader);
+                        if (versionData != null) {
+                            versionDataList.add(versionData);
                         }
                     }
                     subLevel++;
                     break;
                 case XMLStreamReader.END_ELEMENT:
                     if (subLevel < 1) {
-                        if (versionInfos.size() == 0) {
-                            versionInfos.add(new VersionInfo(elementId));
+                        if (versionDataList.size() == 0) {
+                            versionDataList.add(new VersionData(elementId));
                         }
-                        return versionInfos;
+                        return versionDataList;
                     }
                     subLevel--;
                     break;
@@ -90,13 +90,13 @@ public class VersionParser {
     }
 
 
-    private VersionInfo parseVersion(XMLStreamReader reader) throws XMLStreamException {
+    private VersionData parseVersion(XMLStreamReader reader) throws XMLStreamException {
         String versionId = XmlRepoService.findId(reader);
         LocalDate gueltigVon = XmlRepoService.findDate(reader, XmlRepoService.VERSION_VON_ATTRIBUTE_NAME);
         LocalDate gueltigBis = XmlRepoService.findDate(reader, XmlRepoService.VERSION_BIS_ATTRIBUTE_NAME);
 
         if (versionId != null && gueltigVon != null && gueltigBis != null) {
-            return new VersionInfo(versionId, gueltigVon, gueltigBis, Pflegestatus.PRODUKTIV);
+            return new VersionData(versionId, gueltigVon, gueltigBis, Pflegestatus.PRODUKTIV);
         } else {
             return null;
         }

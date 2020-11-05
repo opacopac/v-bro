@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.versions.persistence.xml.service;
 
 import com.tschanz.v_bro.repo.domain.model.RepoException;
-import com.tschanz.v_bro.versions.domain.model.VersionInfo;
+import com.tschanz.v_bro.versions.domain.model.VersionData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +42,7 @@ class versionParserTest {
             "</ns2:datenrelease>";
         InputStream stream = new ByteArrayInputStream(xmlText.getBytes());
 
-        List<VersionInfo> versionList = this.parser.readVersions(
+        List<VersionData> versionList = this.parser.readVersions(
             stream,
             "gattung",
             "ids__2433574"
@@ -82,7 +82,7 @@ class versionParserTest {
             "</ns2:datenrelease>";
         InputStream stream = new ByteArrayInputStream(xmlText.getBytes());
 
-        List<VersionInfo> versionList = this.parser.readVersions(
+        List<VersionData> versionList = this.parser.readVersions(
             stream,
             "betreiber",
             "ids__23395"
@@ -117,7 +117,7 @@ class versionParserTest {
             "</ns2:datenrelease>";
         InputStream stream = new ByteArrayInputStream(xmlText.getBytes());
 
-        List<VersionInfo> versionList = this.parser.readVersions(
+        List<VersionData> versionList = this.parser.readVersions(
             stream,
             "partner",
             "ids__12004"
@@ -125,9 +125,9 @@ class versionParserTest {
 
         assertEquals(1, versionList.size());
         assertEquals("ids__12004", versionList.get(0).getId());
-        assertEquals(VersionInfo.LOW_DATE, versionList.get(0).getGueltigVon());
-        assertEquals(VersionInfo.HIGH_DATE, versionList.get(0).getGueltigBis());
-        assertEquals(VersionInfo.DEFAULT_PFLEGESTATUS, versionList.get(0).getPflegestatus());
+        assertEquals(VersionData.LOW_DATE, versionList.get(0).getGueltigVon());
+        assertEquals(VersionData.HIGH_DATE, versionList.get(0).getGueltigBis());
+        assertEquals(VersionData.DEFAULT_PFLEGESTATUS, versionList.get(0).getPflegestatus());
     }
 
 

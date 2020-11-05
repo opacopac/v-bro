@@ -10,16 +10,15 @@ import java.util.Collections;
 import java.util.concurrent.Flow;
 
 
-public class DependencyPanel extends JPanel {
+public class DependencyEntry extends JPanel {
     private final JLabel dependencyName = new JLabel("");
     private final VersionTimeline versionTimeline = new VersionTimeline();
     private final BehaviorSubject<java.util.List<VersionItem>> versionList = new BehaviorSubject<>(Collections.emptyList()); // TODO => model
 
 
-    public DependencyPanel() {
-        //this.setLayout(new FlowLayout(FlowLayout.LEADING, 0, 0));
+    public DependencyEntry() {
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        this.add(dependencyName);
+        this.add(this.dependencyName);
         this.add(this.versionTimeline);
         this.versionTimeline.bindVersionList(this.versionList);
     }

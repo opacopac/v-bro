@@ -9,7 +9,7 @@ import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.versions.domain.model.Pflegestatus;
-import com.tschanz.v_bro.versions.domain.model.VersionInfo;
+import com.tschanz.v_bro.versions.domain.model.VersionData;
 import com.tschanz.v_bro.versions.domain.service.VersionService;
 
 import java.time.LocalDate;
@@ -44,7 +44,7 @@ public class JdbcVersionService implements VersionService {
 
 
     @Override
-    public List<VersionInfo> readVersionTimeline(String elementClass, String elementId) throws RepoException {
+    public List<VersionData> readVersionTimeline(String elementClass, String elementId) throws RepoException {
         if (!this.repo.isConnected()) {
             throw new RepoException("Not connected to repo!");
         }
@@ -58,7 +58,7 @@ public class JdbcVersionService implements VersionService {
             versionTable.findAllFields(idField.getName(), GUELTIG_VON_COLNAME, GUELTIG_BIS_COLNAME),
             this.getRowFilters(versionTable, elementId)
         );
-        List<VersionInfo> versions = versionRecords
+        List<VersionData> versions = versionRecords
             .stream()
             .map(row -> {
                 String id = row.findIdFieldValue().getValueString();
@@ -68,7 +68,7 @@ public class JdbcVersionService implements VersionService {
                     ? Pflegestatus.valueOf(row.findFieldValue(PFLEGESTATUS_COLNAME).getValueString())
                     : Pflegestatus.PRODUKTIV;
 
-                return new VersionInfo(id, gueltigVon, gueltigBis, pflegestatus);
+                return new VersionData(id, gueltigVon, gueltigBis, pflegestatus);
             })
             .collect(Collectors.toList());
 

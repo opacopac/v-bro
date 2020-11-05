@@ -11,11 +11,10 @@ import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataSer
 import com.tschanz.v_bro.version_aggregates.persistence.jdbc.model.JdbcAggregateNode;
 import com.tschanz.v_bro.version_aggregates.persistence.jdbc.model.JdbcVersionAggregate;
 import com.tschanz.v_bro.version_aggregates.persistence.jdbc.service.JdbcVersionAggregateService;
-import com.tschanz.v_bro.versions.domain.model.VersionInfo;
+import com.tschanz.v_bro.versions.domain.model.VersionData;
 import com.tschanz.v_bro.versions.persistence.jdbc.service.JdbcVersionService;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 
@@ -54,9 +53,9 @@ public class JdbcDependencyService implements DependencyService {
                 }
                 String fwdElementClassName = relation.getFwdClassName();
                 String fwdElementId = record.findFieldValue(relation.getBwdFieldName()).getValueString();
-                List<VersionInfo> versionInfos = this.versionService.readVersionTimeline(fwdElementClassName, fwdElementId);
+                List<VersionData> versionData = this.versionService.readVersionTimeline(fwdElementClassName, fwdElementId);
                 dependencies.add(
-                    new FwdDependency(fwdElementClassName, fwdElementId, versionInfos)
+                    new FwdDependency(fwdElementClassName, fwdElementId, versionData)
                 );
             }
         }

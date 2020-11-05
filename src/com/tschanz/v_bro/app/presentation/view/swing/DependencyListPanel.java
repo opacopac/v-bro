@@ -6,16 +6,24 @@ import com.tschanz.v_bro.app.presentation.viewmodel.FwdDependencyItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.VersionFilterItem;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 import java.util.concurrent.Flow;
 
 
 public class DependencyListPanel extends JPanel implements DependenciesView {
+    public static final int DEP_PANEL_WIDTH = VersionTimeline.TIMELINE_WIDTH + 50;
+    public static final int DEP_PANEL_HEIGHT = 550;
+    private final JPanel contentPanel = new JPanel();
     private Flow.Publisher<VersionFilterItem> effectiveVersionFilter;
 
 
     public DependencyListPanel() {
-        this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        this.contentPanel.setLayout(new BoxLayout(this.contentPanel, BoxLayout.PAGE_AXIS));
+
+        JScrollPane scrollPane = new JScrollPane(this.contentPanel);
+        scrollPane.setPreferredSize(new Dimension(DEP_PANEL_WIDTH, DEP_PANEL_HEIGHT));
+        this.add(scrollPane);
     }
 
 
@@ -32,14 +40,14 @@ public class DependencyListPanel extends JPanel implements DependenciesView {
 
 
     private void onFwdDependenciesChanged(List<FwdDependencyItem> fwdDependencyList) {
-        this.removeAll();
+        this.contentPanel.removeAll();
 
         if (fwdDependencyList != null) {
             for (FwdDependencyItem dependency : fwdDependencyList) {
-                DependencyPanel dependencyPanel = new DependencyPanel();
-                dependencyPanel.setEffectiveVersionFilter(this.effectiveVersionFilter);
-                dependencyPanel.setDependency(dependency);
-                this.add(dependencyPanel);
+                DependencyEntry dependencyEntry = new DependencyEntry();
+                dependencyEntry.setEffectiveVersionFilter(this.effectiveVersionFilter);
+                dependencyEntry.setDependency(dependency);
+                this.contentPanel.add(dependencyEntry);
             }
         }
 

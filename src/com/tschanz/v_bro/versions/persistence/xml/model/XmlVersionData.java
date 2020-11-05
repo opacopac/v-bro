@@ -1,26 +1,26 @@
 package com.tschanz.v_bro.versions.persistence.xml.model;
 
-import com.tschanz.v_bro.versions.domain.model.VersionInfo;
+import com.tschanz.v_bro.versions.domain.model.VersionData;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 
 
-public class XmlVersionInfo extends VersionInfo {
+public class XmlVersionData extends VersionData {
     private final Collection<String> fwdDepIds = new ArrayList<>();
 
 
     public Collection<String> getFwdDepIds() { return fwdDepIds; }
 
 
-    public XmlVersionInfo(String id) {
+    public XmlVersionData(String id) {
         super(id);
     }
 
 
-    public XmlVersionInfo(String id, LocalDate gueltigVon, LocalDate gueltigBis) {
-        super(id, gueltigVon, gueltigBis, VersionInfo.DEFAULT_PFLEGESTATUS);
+    public XmlVersionData(String id, LocalDate gueltigVon, LocalDate gueltigBis) {
+        super(id, gueltigVon, gueltigBis, VersionData.DEFAULT_PFLEGESTATUS);
     }
 
 

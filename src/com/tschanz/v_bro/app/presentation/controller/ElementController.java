@@ -2,7 +2,7 @@ package com.tschanz.v_bro.app.presentation.controller;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.*;
 import com.tschanz.v_bro.app.usecase.select_element.requestmodel.SelectElementRequest;
-import com.tschanz.v_bro.app.usecase.select_version_filter.requestmodel.VersionFilterRequest;
+import com.tschanz.v_bro.app.usecase.common.requestmodel.VersionFilterRequest;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.app.usecase.select_element.SelectElementUseCase;

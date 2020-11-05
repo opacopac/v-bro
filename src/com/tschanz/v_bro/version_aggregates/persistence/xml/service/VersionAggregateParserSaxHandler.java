@@ -4,11 +4,9 @@ import com.tschanz.v_bro.common.xml.XmlPathTracker2;
 import com.tschanz.v_bro.element_classes.persistence.xml.service.ElementClassParserSaxHandler;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
 import com.tschanz.v_bro.version_aggregates.persistence.xml.model.XmlNodeInfo;
-import com.tschanz.v_bro.versions.persistence.xml.model.XmlVersionInfo;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.util.ArrayList;
 import java.util.Stack;
 
 

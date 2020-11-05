@@ -1,10 +1,9 @@
 package com.tschanz.v_bro.versions.persistence.xml.service;
 
 import com.tschanz.v_bro.element_classes.persistence.xml.model.XmlElementLutInfo;
-import com.tschanz.v_bro.element_classes.persistence.xml.service.XmlElementClassService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
-import com.tschanz.v_bro.versions.domain.model.VersionInfo;
+import com.tschanz.v_bro.versions.domain.model.VersionData;
 import com.tschanz.v_bro.versions.domain.service.VersionService;
 
 import java.io.InputStream;
@@ -28,14 +27,14 @@ public class XmlVersionService implements VersionService {
 
 
     @Override
-    public List<VersionInfo> readVersionTimeline(String elementClass, String elementId) throws RepoException {
+    public List<VersionData> readVersionTimeline(String elementClass, String elementId) throws RepoException {
         XmlElementLutInfo elementLut = this.repoService.getElementLut().get(elementId);
         if (elementLut == null) {
             throw new IllegalArgumentException("element id not found");
         }
 
         InputStream xmlFileStream = this.repoService.getNewXmlFileStream(elementLut.getStartBytePos(), elementLut.getEndBytePos());
-        Collection<VersionInfo> versions = this.parser.readVersions(
+        Collection<VersionData> versions = this.parser.readVersions(
             xmlFileStream,
             elementClass,
             elementId

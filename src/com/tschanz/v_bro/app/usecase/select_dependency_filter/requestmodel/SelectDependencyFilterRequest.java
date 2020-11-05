@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.usecase.select_dependency_filter.requestmodel;
 
 import com.tschanz.v_bro.repo.domain.model.RepoType;
-import com.tschanz.v_bro.app.usecase.select_version_filter.requestmodel.VersionFilterRequest;
+import com.tschanz.v_bro.app.usecase.common.requestmodel.VersionFilterRequest;
 
 
 public class SelectDependencyFilterRequest {

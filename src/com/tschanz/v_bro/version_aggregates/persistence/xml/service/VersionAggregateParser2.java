@@ -1,19 +1,6 @@
 package com.tschanz.v_bro.version_aggregates.persistence.xml.service;
 
-import com.tschanz.v_bro.repo.domain.model.RepoException;
-import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
-import com.tschanz.v_bro.version_aggregates.persistence.xml.model.XmlNodeInfo;
-import com.tschanz.v_bro.versions.domain.model.Pflegestatus;
-import com.tschanz.v_bro.versions.domain.model.VersionInfo;
-
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import java.io.InputStream;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class VersionAggregateParser2 {

@@ -7,7 +7,6 @@ import com.tschanz.v_bro.app.usecase.select_element.SelectElementUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_element_class.SelectElementClassUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_element_denomination.SelectElementDenominationUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_version.SelectVersionUseCaseImpl;
-import com.tschanz.v_bro.app.usecase.select_version_filter.SelectVersionFilterUseCaseImpl;
 import com.tschanz.v_bro.common.cache.EternalCache;
 import com.tschanz.v_bro.dependencies.domain.service.DependencyService;
 import com.tschanz.v_bro.dependencies.persistence.jdbc.service.JdbcDependencyService;
@@ -59,14 +58,12 @@ import com.tschanz.v_bro.versions.persistence.mock.service.MockVersionService2;
 import com.tschanz.v_bro.versions.persistence.xml.service.VersionParser;
 import com.tschanz.v_bro.versions.persistence.xml.service.XmlVersionService;
 import com.tschanz.v_bro.app.usecase.select_version.SelectVersionUseCase;
-import com.tschanz.v_bro.app.usecase.select_version_filter.SelectVersionFilterUseCase;
 
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.XMLInputFactory;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 import java.util.Properties;
 
 
@@ -130,7 +127,6 @@ public class Main {
         SelectElementClassUseCase selectElementClassUc = new SelectElementClassUseCaseImpl(elementClassServiceProvider, elementServiceProvider, mainPresenter.getSelectElementClassPresenter());
         SelectElementDenominationUseCase selectElementDenominationUc = new SelectElementDenominationUseCaseImpl(elementServiceProvider, mainPresenter.getSelectElementDenominationPresenter());
         SelectElementUseCase selectElementUc = new SelectElementUseCaseImpl(versionServiceProvider, mainPresenter.getSelectElementPresenter());
-        SelectVersionFilterUseCase selectVersionFilterUc = new SelectVersionFilterUseCaseImpl(versionServiceProvider, mainPresenter.getSelectVersionFilterPresenter());
         SelectVersionUseCase selectVersionUc = new SelectVersionUseCaseImpl(dependencyServiceProvider, versionAggregateServiceProvider, mainPresenter.getSelectVersionPresenter());
         SelectDependencyFilterUseCase selectDependencyFilterUc = new SelectDependencyFilterUseCaseImpl(dependencyServiceProvider, mainPresenter.getSelectDependencyFilterPresenter());
 
@@ -143,7 +139,6 @@ public class Main {
             selectElementClassUc,
             selectElementDenominationUc,
             selectElementUc,
-            selectVersionFilterUc,
             selectVersionUc,
             selectDependencyFilterUc
         );

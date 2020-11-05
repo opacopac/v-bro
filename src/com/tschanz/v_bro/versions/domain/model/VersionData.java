@@ -3,11 +3,11 @@ package com.tschanz.v_bro.versions.domain.model;
 import java.time.LocalDate;
 
 
-public class VersionInfo {
+public class VersionData {
     public static final LocalDate HIGH_DATE = LocalDate.of(9999, 12, 31);
     public static final LocalDate LOW_DATE = LocalDate.of(2000, 1, 1);
     public static final Pflegestatus DEFAULT_PFLEGESTATUS = Pflegestatus.PRODUKTIV;
-    public static final VersionInfo ETERNAL_VERSION = new VersionInfo("TODO", LOW_DATE, HIGH_DATE, DEFAULT_PFLEGESTATUS);
+    public static final VersionData ETERNAL_VERSION = new VersionData("TODO", LOW_DATE, HIGH_DATE, DEFAULT_PFLEGESTATUS);
 
     protected final String id;
     protected final LocalDate gueltigVon;
@@ -21,12 +21,12 @@ public class VersionInfo {
     public Pflegestatus getPflegestatus() { return pflegestatus; }
 
 
-    public VersionInfo(String id) {
+    public VersionData(String id) {
         this(id, LOW_DATE, HIGH_DATE, DEFAULT_PFLEGESTATUS);
     }
 
 
-    public VersionInfo(
+    public VersionData(
         String id,
         LocalDate gueltigVon,
         LocalDate gueltigBis,

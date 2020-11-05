@@ -13,6 +13,8 @@ import java.util.concurrent.Flow;
 
 
 public class VersionAggregateTree extends JPanel implements VersionAggregateView {
+    public static final int AGGREGATE_TREE_WITDH = 400;
+    public static final int AGGREGATE_TREE_HEIGHT = 750;
 
 
     public VersionAggregateTree() {
@@ -32,7 +34,7 @@ public class VersionAggregateTree extends JPanel implements VersionAggregateView
             DefaultMutableTreeNode root = this.createTreeNode(versionAggregate.getRootNode());
             JTree aggregateTree = new JTree(root);
             JScrollPane scrollPane = new JScrollPane(aggregateTree);
-            scrollPane.setPreferredSize(new Dimension(400, 500));
+            scrollPane.setPreferredSize(new Dimension(AGGREGATE_TREE_WITDH, AGGREGATE_TREE_HEIGHT));
             this.add(scrollPane);
             this.expandAllNodes(aggregateTree);
         }

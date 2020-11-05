@@ -1,6 +1,5 @@
 package com.tschanz.v_bro.dependencies.persistence.xml.service;
 
-import com.tschanz.v_bro.common.KeyValue;
 import com.tschanz.v_bro.dependencies.domain.model.FwdDependency;
 import com.tschanz.v_bro.dependencies.domain.service.DependencyService;
 import com.tschanz.v_bro.element_classes.persistence.xml.model.XmlElementLutInfo;
@@ -9,7 +8,7 @@ import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
 import com.tschanz.v_bro.version_aggregates.domain.model.AggregateNode;
 import com.tschanz.v_bro.version_aggregates.domain.model.VersionAggregate;
 import com.tschanz.v_bro.version_aggregates.persistence.xml.service.XmlVersionAggregateService;
-import com.tschanz.v_bro.versions.domain.model.VersionInfo;
+import com.tschanz.v_bro.versions.domain.model.VersionData;
 import com.tschanz.v_bro.versions.persistence.xml.service.XmlVersionService;
 
 import java.util.*;
@@ -56,7 +55,7 @@ public class XmlDependencyService implements DependencyService {
             .collect(Collectors.toList());
 
         for (XmlElementLutInfo fwdElement: fwdElements) {
-            List<VersionInfo> versions = this.versionService.readVersionTimeline(fwdElement.getName(), fwdElement.getElementId());
+            List<VersionData> versions = this.versionService.readVersionTimeline(fwdElement.getName(), fwdElement.getElementId());
             fwdDependencies.add(new FwdDependency(fwdElement.getName(), fwdElement.getElementId(), versions));
         }
 

@@ -2,7 +2,6 @@ package com.tschanz.v_bro.version_aggregates.persistence.xml.service;
 
 import com.tschanz.v_bro.common.KeyValue;
 import com.tschanz.v_bro.element_classes.persistence.xml.model.XmlElementLutInfo;
-import com.tschanz.v_bro.element_classes.persistence.xml.service.XmlElementClassService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
 import com.tschanz.v_bro.version_aggregates.domain.model.AggregateNode;
@@ -10,7 +9,7 @@ import com.tschanz.v_bro.version_aggregates.domain.model.VersionAggregate;
 import com.tschanz.v_bro.version_aggregates.domain.service.VersionAggregateService;
 import com.tschanz.v_bro.version_aggregates.persistence.xml.model.XmlNodeInfo;
 import com.tschanz.v_bro.versions.domain.model.Pflegestatus;
-import com.tschanz.v_bro.versions.domain.model.VersionInfo;
+import com.tschanz.v_bro.versions.domain.model.VersionData;
 
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -46,9 +45,9 @@ public class XmlVersionAggregateService implements VersionAggregateService {
     }
 
 
-    private VersionInfo getVersionInfo(XmlNodeInfo nodeInfo) {
+    private VersionData getVersionInfo(XmlNodeInfo nodeInfo) {
         if (nodeInfo.getChildNodes().isEmpty()) {
-            return VersionInfo.ETERNAL_VERSION;
+            return VersionData.ETERNAL_VERSION;
         }
 
         XmlNodeInfo versionNode = nodeInfo.getChildNodes().get(0);
@@ -57,10 +56,10 @@ public class XmlVersionAggregateService implements VersionAggregateService {
         String gueltigBis = versionNode.getAttributes().get(XmlRepoService.VERSION_BIS_ATTRIBUTE_NAME);
 
         if (id == null || gueltigVon == null || gueltigBis == null) {
-            return VersionInfo.ETERNAL_VERSION;
+            return VersionData.ETERNAL_VERSION;
         }
 
-        return new VersionInfo(
+        return new VersionData(
             id,
             LocalDate.parse(gueltigVon),
             LocalDate.parse(gueltigBis),

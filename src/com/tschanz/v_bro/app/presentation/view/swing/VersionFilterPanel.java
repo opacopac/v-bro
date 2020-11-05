@@ -40,6 +40,8 @@ public class VersionFilterPanel extends JPanel implements VersionFilterView {
         this.add((Component) this.datePickerBis);
         this.add(new JLabel("Min. Status"));
         this.add(this.pflegestatusList);
+        this.datePickerVon.setTextEditable(true);
+        this.datePickerBis.setTextEditable(true);
         ((Component) this.datePickerVon).setPreferredSize(new Dimension(110, 30));
         ((Component) this.datePickerBis).setPreferredSize(new Dimension(110, 30));
 
