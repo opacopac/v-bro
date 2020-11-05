@@ -1,6 +1,10 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.*;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectDependencyFilterAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementClassAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectVersionAction;
 import com.tschanz.v_bro.app.usecase.select_dependency_filter.requestmodel.DependencyFilterRequest;
 import com.tschanz.v_bro.app.usecase.select_version.requestmodel.SelectVersionRequest;
 import com.tschanz.v_bro.app.usecase.common.requestmodel.VersionFilterRequest;
@@ -11,51 +15,51 @@ import com.tschanz.v_bro.app.usecase.select_version.SelectVersionUseCase;
 
 public class VersionController {
     private final BehaviorSubject<RepoConnectionItem> repoConnection;
-    private final BehaviorSubject<ElementClassItem> selectElementClassAction;
-    private final BehaviorSubject<ElementItem> selectElementAction;
+    private final SelectElementClassAction selectElementClassAction;
+    private final SelectElementAction selectElementAction;
     private final BehaviorSubject<VersionFilterItem> effectiveVersionFilter;
-    private final BehaviorSubject<DependencyFilterItem> dependencyFilter;
+    private final SelectDependencyFilterAction selectDependencyFilterAction;
     private final SelectVersionUseCase selectVersionUc;
 
 
     public VersionController(
         BehaviorSubject<RepoConnectionItem> repoConnection,
-        BehaviorSubject<ElementClassItem> selectElementClassAction,
-        BehaviorSubject<ElementItem> selectElementAction,
-        BehaviorSubject<VersionItem> selectVersionAction,
+        SelectElementClassAction selectElementClassAction,
+        SelectElementAction selectElementAction,
+        SelectVersionAction selectVersionAction,
         BehaviorSubject<VersionFilterItem> effectiveVersionFilter,
-        BehaviorSubject<DependencyFilterItem> dependencyFilter,
+        SelectDependencyFilterAction selectDependencyFilterAction,
         SelectVersionUseCase selectVersionUc
     ) {
         this.repoConnection = repoConnection;
         this.selectElementClassAction = selectElementClassAction;
         this.selectElementAction = selectElementAction;
         this.effectiveVersionFilter = effectiveVersionFilter;
-        this.dependencyFilter = dependencyFilter;
+        this.selectDependencyFilterAction = selectDependencyFilterAction;
         this.selectVersionUc = selectVersionUc;
 
         selectVersionAction.subscribe(new GenericSubscriber<>(this::onVersionSelected));
     }
 
 
-    private void onVersionSelected(VersionItem versionItem) {
+    private void onVersionSelected(String versionId) {
         if (this.repoConnection.getCurrentValue() == null
             || this.selectElementClassAction.getCurrentValue() == null
             || this.selectElementAction == null
-            || versionItem == null
+            || versionId == null
             || this.effectiveVersionFilter.getCurrentValue() == null
-            || this.dependencyFilter.getCurrentValue() == null
+            || this.selectDependencyFilterAction.getCurrentValue() == null
         ) {
             return;
         }
 
         SelectVersionRequest request = new SelectVersionRequest(
             this.repoConnection.getCurrentValue().repoType,
-            this.selectElementClassAction.getCurrentValue().getName(),
-            this.selectElementAction.getCurrentValue().getId(),
-            versionItem.getId(),
+            this.selectElementClassAction.getCurrentValue(),
+            this.selectElementAction.getCurrentValue(),
+            versionId,
             this.getVersionFilterRequest(this.effectiveVersionFilter.getCurrentValue()),
-            new DependencyFilterRequest(this.dependencyFilter.getCurrentValue().isFwd)
+            new DependencyFilterRequest(this.selectDependencyFilterAction.getCurrentValue().isFwd)
         );
         this.selectVersionUc.execute(request);
     }

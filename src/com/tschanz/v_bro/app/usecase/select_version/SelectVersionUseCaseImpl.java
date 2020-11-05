@@ -1,22 +1,18 @@
 package com.tschanz.v_bro.app.usecase.select_version;
 
-import com.tschanz.v_bro.app.usecase.common.responsemodel.VersionResponse;
-import com.tschanz.v_bro.app.usecase.select_dependency_filter.responsemodel.FwdDependencyResponse;
+import com.tschanz.v_bro.app.usecase.common.converter.FwdDependencyConverter;
+import com.tschanz.v_bro.app.usecase.common.converter.VersionAggregateConverter;
 import com.tschanz.v_bro.app.usecase.select_version.requestmodel.SelectVersionRequest;
 import com.tschanz.v_bro.app.usecase.select_version.responsemodel.SelectVersionResponse;
-import com.tschanz.v_bro.app.usecase.select_version.responsemodel.VersionAggregateNodeResponse;
-import com.tschanz.v_bro.app.usecase.select_version.responsemodel.VersionAggregateResponse;
 import com.tschanz.v_bro.dependencies.domain.model.FwdDependency;
 import com.tschanz.v_bro.dependencies.domain.service.DependencyService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
-import com.tschanz.v_bro.version_aggregates.domain.model.AggregateNode;
 import com.tschanz.v_bro.version_aggregates.domain.model.VersionAggregate;
 import com.tschanz.v_bro.version_aggregates.domain.service.VersionAggregateService;
 
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 
 public class SelectVersionUseCaseImpl implements SelectVersionUseCase {
@@ -52,8 +48,8 @@ public class SelectVersionUseCaseImpl implements SelectVersionUseCase {
             this.logger.info(message);
 
             SelectVersionResponse response = new SelectVersionResponse(
-                this.getFwdDependencyResponse(fwdDependencies),
-                this.getVersionAggregateResponse(versionAggregate),
+                FwdDependencyConverter.toResponse(fwdDependencies),
+                VersionAggregateConverter.toResponse(versionAggregate),
                 message,
                 false
             );
@@ -65,44 +61,5 @@ public class SelectVersionUseCaseImpl implements SelectVersionUseCase {
             SelectVersionResponse response = new SelectVersionResponse(null, null, message, true);
             this.presenter.present(response);
         }
-    }
-
-
-    private List<FwdDependencyResponse> getFwdDependencyResponse(List<FwdDependency> dependencies) {
-        return dependencies
-            .stream()
-            .map(fwdDep -> new FwdDependencyResponse(
-                fwdDep.elementName(),
-                fwdDep.elementId(),
-                fwdDep.getVersions()
-                    .stream()
-                    .map(version -> new VersionResponse(
-                        version.getId(),
-                        version.getGueltigVon(),
-                        version.getGueltigBis(),
-                        version.getPflegestatus()
-                    ))
-                    .collect(Collectors.toList())
-            ))
-            .collect(Collectors.toList());
-    }
-
-
-    private VersionAggregateResponse getVersionAggregateResponse(VersionAggregate versionAggregate) {
-        return new VersionAggregateResponse(
-            this.getAggregateNodeResponse(versionAggregate.getRootNode())
-        );
-    }
-
-
-    private VersionAggregateNodeResponse getAggregateNodeResponse(AggregateNode node) {
-        return new VersionAggregateNodeResponse(
-            node.getNodeName(),
-            node.getFieldValues(),
-            node.getChildNodes()
-                .stream()
-                .map(this::getAggregateNodeResponse)
-                .collect(Collectors.toList())
-        );
     }
 }

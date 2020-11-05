@@ -1,5 +1,6 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.ConnectToRepoAction;
 import com.tschanz.v_bro.app.usecase.connect_repo.requestmodel.*;
 import com.tschanz.v_bro.app.usecase.disconnect_repo.requestmodel.CloseConnectionRequest;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
@@ -29,7 +30,7 @@ public class ConnectionController {
         Properties appProperties,
         BehaviorSubject<List<QuickConnectionItem>> quickConnectionList,
         BehaviorSubject<RepoConnectionItem> repoConnection,
-        BehaviorSubject<RepoConnectionItem> connectToRepoAction,
+        ConnectToRepoAction connectToRepoAction,
         OpenConnectionUseCase openConnectionUc,
         CloseConnectionUseCase closeConnectionUc
     ) {

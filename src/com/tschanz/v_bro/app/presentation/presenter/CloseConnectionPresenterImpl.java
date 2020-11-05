@@ -32,10 +32,10 @@ public class CloseConnectionPresenterImpl implements CloseConnectionPresenter {
             this.mainModel.elements.next(Collections.emptyList());
             this.mainModel.versions.next(Collections.emptyList());
             this.mainModel.fwdDependencies.next(Collections.emptyList());
-            this.mainModel.selectedElementClass.next(null);
-            this.mainModel.selectedVersionFilter.next(null);
-            this.mainModel.selectedElement.next(null);
-            this.mainModel.selectedVersion.next(null);
+            this.mainModel.selectElementClassAction.next(null);
+            this.mainModel.selectVersionFilterAction.next(null);
+            this.mainModel.selectElementAction.next(null);
+            this.mainModel.selectVersionAction.next(null);
             this.mainModel.versionAggregate.next(null);
             this.mainModel.appStatus.next(new InfoStatusItem(response.message));
         } else {

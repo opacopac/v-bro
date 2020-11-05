@@ -22,7 +22,7 @@ public class VersionAggregateTree extends JPanel implements VersionAggregateView
 
 
     @Override
-    public void bindVersionAggregate(Flow.Publisher<VersionAggregateItem> versionAggregate) {
+    public void bindViewModel(Flow.Publisher<VersionAggregateItem> versionAggregate) {
         versionAggregate.subscribe(new GenericSubscriber<>(this::onVersionAggregateChanged));
     }
 

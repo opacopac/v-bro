@@ -2,6 +2,7 @@ package com.tschanz.v_bro.app.presentation.controller;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.MainModel;
 import com.tschanz.v_bro.app.usecase.select_dependency_filter.SelectDependencyFilterUseCase;
+import com.tschanz.v_bro.app.usecase.select_dependency_version.SelectDependencyVersionUseCase;
 import com.tschanz.v_bro.app.usecase.select_element_class.SelectElementClassUseCase;
 import com.tschanz.v_bro.app.usecase.select_element_denomination.SelectElementDenominationUseCase;
 import com.tschanz.v_bro.app.usecase.select_element.SelectElementUseCase;
@@ -22,7 +23,8 @@ public class MainController {
         SelectElementDenominationUseCase selectElementDenominationUc,
         SelectElementUseCase selectElementUc,
         SelectVersionUseCase selectVersionUc,
-        SelectDependencyFilterUseCase selectDependencyFilterUc
+        SelectDependencyFilterUseCase selectDependencyFilterUc,
+        SelectDependencyVersionUseCase selectDependencyVersionUc
     ) {
         ConnectionController connectionController = new ConnectionController(
             appProperties,
@@ -35,42 +37,50 @@ public class MainController {
 
         ElementClassController elementClassController = new ElementClassController(
             mainModel.currentRepoConnection,
-            mainModel.selectedElementClass,
+            mainModel.selectElementClassAction,
             selectElementClassUc
         );
 
         ElementDenominationController elementDenominationController = new ElementDenominationController(
             mainModel.currentRepoConnection,
-            mainModel.selectedElementClass,
-            mainModel.selectedDenominations,
+            mainModel.selectElementClassAction,
+            mainModel.selectDenominationsAction,
             selectElementDenominationUc
         );
 
         ElementController elementController = new ElementController(
             mainModel.currentRepoConnection,
-            mainModel.selectedElementClass,
-            mainModel.selectedElement,
-            mainModel.selectedVersionFilter,
+            mainModel.selectElementClassAction,
+            mainModel.selectElementAction,
+            mainModel.selectVersionFilterAction,
             selectElementUc
         );
 
         VersionFilterController versionFilterController = new VersionFilterController(
             mainModel.currentRepoConnection,
-            mainModel.selectedElementClass,
-            mainModel.selectedElement,
-            mainModel.selectedVersionFilter,
+            mainModel.selectElementClassAction,
+            mainModel.selectElementAction,
+            mainModel.selectVersionFilterAction,
             selectElementUc
         );
 
         VersionController versionController = new VersionController(
             mainModel.currentRepoConnection,
-            mainModel.selectedElementClass,
-            mainModel.selectedElement,
-            mainModel.selectedVersion,
+            mainModel.selectElementClassAction,
+            mainModel.selectElementAction,
+            mainModel.selectVersionAction,
             mainModel.effectiveVersionFilter,
-            mainModel.selectedDependencyFilter,
+            mainModel.selectDependencyFilterAction,
             selectVersionUc
+        );
+
+
+        DependencyListController dependencyListController = new DependencyListController(
+            mainModel.currentRepoConnection,
+            mainModel.selectVersionFilterAction,
+            mainModel.selectDependencyFilterAction,
+            mainModel.selectDependencyVersionAction,
+            selectDependencyVersionUc
         );
     }
 }
-

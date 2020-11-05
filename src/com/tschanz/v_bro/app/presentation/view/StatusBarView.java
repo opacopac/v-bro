@@ -6,9 +6,5 @@ import java.util.concurrent.Flow;
 
 
 public interface StatusBarView {
-    void setStatusInfo(String infoText);
-
-    void setStatusError(String errorText);
-
-    void bindStatus(Flow.Publisher<StatusItem> status);
+    void bindViewModel(Flow.Publisher<StatusItem> status);
 }

@@ -1,5 +1,6 @@
 package com.tschanz.v_bro.app.presentation.view.swing;
 
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectVersionFilterAction;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.app.presentation.viewmodel.VersionFilterItem;
@@ -29,7 +30,7 @@ public class VersionFilterPanel extends JPanel implements VersionFilterView {
     private final JDatePicker datePickerVon = new JDatePickerImpl(this.datePanelVon, new DateComponentFormatter());
     private final JDatePicker datePickerBis = new JDatePickerImpl(this.datePanelBis, new DateComponentFormatter());
     private final JComboBox<PflegestatusItem> pflegestatusList = new JComboBox<>();
-    private BehaviorSubject<VersionFilterItem> selecVersionFilterAction;
+    private SelectVersionFilterAction selecVersionFilterAction;
 
 
     public VersionFilterPanel() {
@@ -57,14 +58,12 @@ public class VersionFilterPanel extends JPanel implements VersionFilterView {
 
 
     @Override
-    public void bindInitialVersionFilter(Flow.Publisher<VersionFilterItem> versionFilter) {
-        versionFilter.subscribe(new GenericSubscriber<>(this::onInitialFilterChanged));
-    }
-
-
-    @Override
-    public void bindSelectVersionFilterAction(BehaviorSubject<VersionFilterItem> selectVersionFilterAction) {
+    public void bindViewModel(
+        Flow.Publisher<VersionFilterItem> versionFilter,
+        SelectVersionFilterAction selectVersionFilterAction
+    ) {
         this.selecVersionFilterAction = selectVersionFilterAction;
+        versionFilter.subscribe(new GenericSubscriber<>(this::onInitialFilterChanged));
     }
 
 

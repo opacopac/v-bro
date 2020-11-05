@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.view.swing;
 
-import com.tschanz.v_bro.common.reactive.BehaviorSubject;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectDenominationsAction;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.app.presentation.view.ElementDenominationView;
 import com.tschanz.v_bro.app.presentation.viewmodel.DenominationItem;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class DenominatonSelectionPanel extends JPanel implements ElementDenominationView {
     private final Map<JCheckBox, DenominationItem> checkBoxDenominationMap = new HashMap<>();
-    private BehaviorSubject<List<DenominationItem>> selectDenominationsAction;
+    private SelectDenominationsAction selectDenominationsAction;
 
 
     public DenominatonSelectionPanel() {
@@ -27,13 +27,12 @@ public class DenominatonSelectionPanel extends JPanel implements ElementDenomina
 
 
     @Override
-    public void bindDenominationList(Flow.Publisher<List<DenominationItem>> denominationsList) {
-        denominationsList.subscribe(new GenericSubscriber<>(this::onDenominationsListChanged));
-    }
-
-    @Override
-    public void bindSelectDenominationsAction(BehaviorSubject<List<DenominationItem>> selectDenominationsAction) {
+    public void bindViewModel(
+        Flow.Publisher<List<DenominationItem>> denominationsList,
+        SelectDenominationsAction selectDenominationsAction
+    ) {
         this.selectDenominationsAction = selectDenominationsAction;
+        denominationsList.subscribe(new GenericSubscriber<>(this::onDenominationsListChanged));
     }
 
 

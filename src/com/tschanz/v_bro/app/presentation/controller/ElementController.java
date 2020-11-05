@@ -1,6 +1,9 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.*;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementClassAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectVersionFilterAction;
 import com.tschanz.v_bro.app.usecase.select_element.requestmodel.SelectElementRequest;
 import com.tschanz.v_bro.app.usecase.common.requestmodel.VersionFilterRequest;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
@@ -10,16 +13,16 @@ import com.tschanz.v_bro.app.usecase.select_element.SelectElementUseCase;
 
 public class ElementController {
     private final BehaviorSubject<RepoConnectionItem> repoConnection;
-    private final BehaviorSubject<ElementClassItem> selectElementClassAction;
-    private final BehaviorSubject<VersionFilterItem> selectVersionFilterAction;
+    private final SelectElementClassAction selectElementClassAction;
+    private final SelectVersionFilterAction selectVersionFilterAction;
     private final SelectElementUseCase selectElementUc;
 
 
     public ElementController(
         BehaviorSubject<RepoConnectionItem> repoConnection,
-        BehaviorSubject<ElementClassItem> selectElementClassAction,
-        BehaviorSubject<ElementItem> selectElementAction,
-        BehaviorSubject<VersionFilterItem> selectVersionFilterAction,
+        SelectElementClassAction selectElementClassAction,
+        SelectElementAction selectElementAction,
+        SelectVersionFilterAction selectVersionFilterAction,
         SelectElementUseCase selectElementUc
     ) {
         this.repoConnection = repoConnection;
@@ -31,10 +34,10 @@ public class ElementController {
     }
 
 
-    private void onElementSelected(ElementItem selectedElement) {
+    private void onElementSelected(String selectedElementId) {
         if (this.repoConnection.getCurrentValue() == null
             || this.selectElementClassAction.getCurrentValue() == null
-            || selectedElement == null
+            || selectedElementId == null
             || this.selectVersionFilterAction.getCurrentValue() == null
         ) {
             return;
@@ -42,8 +45,8 @@ public class ElementController {
 
         SelectElementRequest request = new SelectElementRequest(
             this.repoConnection.getCurrentValue().repoType,
-            this.selectElementClassAction.getCurrentValue().getName(),
-            selectedElement.getId(),
+            this.selectElementClassAction.getCurrentValue(),
+            selectedElementId,
             this.getVersionFilterRequest(this.selectVersionFilterAction.getCurrentValue())
         );
         this.selectElementUc.execute(request);

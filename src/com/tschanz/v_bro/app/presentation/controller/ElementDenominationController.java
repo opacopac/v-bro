@@ -1,10 +1,11 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectDenominationsAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementClassAction;
 import com.tschanz.v_bro.app.usecase.select_element_denomination.requestmodel.SelectElementDenominationRequest;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.app.presentation.viewmodel.DenominationItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.ElementClassItem;
 import com.tschanz.v_bro.app.usecase.select_element_denomination.SelectElementDenominationUseCase;
 import com.tschanz.v_bro.app.presentation.viewmodel.RepoConnectionItem;
 
@@ -14,14 +15,14 @@ import java.util.stream.Collectors;
 
 public class ElementDenominationController {
     private final BehaviorSubject<RepoConnectionItem> repoConnection;
-    private final BehaviorSubject<ElementClassItem> selectElementClassAction;
+    private final SelectElementClassAction selectElementClassAction;
     private final SelectElementDenominationUseCase selectElementDenominationUc;
 
 
     public ElementDenominationController(
         BehaviorSubject<RepoConnectionItem> repoConnection,
-        BehaviorSubject<ElementClassItem> selectElementClassAction,
-        BehaviorSubject<List<DenominationItem>> selectDenominationsAction,
+        SelectElementClassAction selectElementClassAction,
+        SelectDenominationsAction selectDenominationsAction,
         SelectElementDenominationUseCase selectElementDenominationUc
     ) {
         this.repoConnection = repoConnection;
@@ -40,13 +41,14 @@ public class ElementDenominationController {
             return;
         }
 
-        RepoConnectionItem repoConnection = this.repoConnection.getCurrentValue();
-        String elementClass = this.selectElementClassAction.getCurrentValue().getName();
-        List<String> denominationNames = denominations
-            .stream()
-            .map(DenominationItem::getName)
-            .collect(Collectors.toList());
-        SelectElementDenominationRequest request = new SelectElementDenominationRequest(repoConnection.repoType, elementClass, denominationNames);
+        SelectElementDenominationRequest request = new SelectElementDenominationRequest(
+            this.repoConnection.getCurrentValue().repoType,
+            this.selectElementClassAction.getCurrentValue(),
+            denominations
+                .stream()
+                .map(DenominationItem::getName)
+                .collect(Collectors.toList())
+        );
         this.selectElementDenominationUc.execute(request);
     }
 }

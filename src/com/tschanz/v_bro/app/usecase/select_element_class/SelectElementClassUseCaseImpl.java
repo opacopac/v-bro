@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.usecase.select_element_class;
 
-import com.tschanz.v_bro.app.usecase.common.responsemodel.DenominationResponse;
-import com.tschanz.v_bro.app.usecase.common.responsemodel.ElementResponse;
+import com.tschanz.v_bro.app.usecase.common.converter.DenominationConverter;
+import com.tschanz.v_bro.app.usecase.common.converter.ElementConverter;
 import com.tschanz.v_bro.app.usecase.select_element_class.requestmodel.SelectElementClassRequest;
 import com.tschanz.v_bro.app.usecase.select_element_class.responsemodel.SelectElementClassResponse;
 import com.tschanz.v_bro.element_classes.domain.model.Denomination;
@@ -12,10 +12,8 @@ import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 
 public class SelectElementClassUseCaseImpl implements SelectElementClassUseCase {
@@ -53,8 +51,8 @@ public class SelectElementClassUseCaseImpl implements SelectElementClassUseCase 
             this.logger.info(message);
 
             SelectElementClassResponse response = new SelectElementClassResponse(
-                this.getDenominationResponse(denominations),
-                this.getElementResponse(elements),
+                DenominationConverter.toResponse(denominations),
+                ElementConverter.toResponse(elements),
                 message,
                 false
             );
@@ -66,23 +64,5 @@ public class SelectElementClassUseCaseImpl implements SelectElementClassUseCase 
             SelectElementClassResponse response = new SelectElementClassResponse(null, null, message, true);
             this.presenter.present(response);
         }
-    }
-
-
-
-    private List<DenominationResponse> getDenominationResponse(List<Denomination> denominations) {
-        return denominations
-            .stream()
-            .map(denomination -> new DenominationResponse(denomination.getName()))
-            .collect(Collectors.toList());
-    }
-
-
-    private List<ElementResponse> getElementResponse(List<ElementData> elements) {
-        return elements
-            .stream()
-            .map(element -> new ElementResponse(element.getId(), element.getId()))
-            .sorted(Comparator.comparing(e -> e.name))
-            .collect(Collectors.toList());
     }
 }

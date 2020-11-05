@@ -3,6 +3,8 @@ package com.tschanz.v_bro.app;
 import com.tschanz.v_bro.app.presentation.presenter.MainPresenter;
 import com.tschanz.v_bro.app.presentation.viewmodel.MainModel;
 import com.tschanz.v_bro.app.usecase.select_dependency_filter.SelectDependencyFilterUseCaseImpl;
+import com.tschanz.v_bro.app.usecase.select_dependency_version.SelectDependencyVersionUseCase;
+import com.tschanz.v_bro.app.usecase.select_dependency_version.SelectDependencyVersionUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_element.SelectElementUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_element_class.SelectElementClassUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_element_denomination.SelectElementDenominationUseCaseImpl;
@@ -129,6 +131,7 @@ public class Main {
         SelectElementUseCase selectElementUc = new SelectElementUseCaseImpl(versionServiceProvider, mainPresenter.getSelectElementPresenter());
         SelectVersionUseCase selectVersionUc = new SelectVersionUseCaseImpl(dependencyServiceProvider, versionAggregateServiceProvider, mainPresenter.getSelectVersionPresenter());
         SelectDependencyFilterUseCase selectDependencyFilterUc = new SelectDependencyFilterUseCaseImpl(dependencyServiceProvider, mainPresenter.getSelectDependencyFilterPresenter());
+        SelectDependencyVersionUseCase selectDependencyVersionUc = new SelectDependencyVersionUseCaseImpl(elementClassServiceProvider, elementServiceProvider, versionServiceProvider, dependencyServiceProvider, versionAggregateServiceProvider, mainPresenter.getSelectDependencyVersionPresenter());
 
         // presentation controller
         MainController mainController = new MainController(
@@ -140,7 +143,8 @@ public class Main {
             selectElementDenominationUc,
             selectElementUc,
             selectVersionUc,
-            selectDependencyFilterUc
+            selectDependencyFilterUc,
+            selectDependencyVersionUc
         );
 
         // presentation view

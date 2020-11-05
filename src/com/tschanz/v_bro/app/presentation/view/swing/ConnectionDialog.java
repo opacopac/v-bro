@@ -1,6 +1,7 @@
 package com.tschanz.v_bro.app.presentation.view.swing;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.*;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.ConnectToRepoAction;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
@@ -24,7 +25,7 @@ public class ConnectionDialog extends JDialog {
     private final JTextField filenameField = new JTextField();
     private final JButton connectButton = new JButton("connect");
     private final JButton disconnectButton = new JButton("disconnect");
-    private BehaviorSubject<RepoConnectionItem> connectToRepoAction;
+    private ConnectToRepoAction connectToRepoAction;
 
 
     public ConnectionDialog() {
@@ -44,7 +45,7 @@ public class ConnectionDialog extends JDialog {
     }
 
 
-    public void bindConnectToRepoAction(BehaviorSubject<RepoConnectionItem> connectToRepoAction) {
+    public void bindConnectToRepoAction(ConnectToRepoAction connectToRepoAction) {
         this.connectToRepoAction = connectToRepoAction;
     }
 

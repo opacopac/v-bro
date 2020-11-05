@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.view.swing;
 
-import com.tschanz.v_bro.common.reactive.BehaviorSubject;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementAction;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.app.presentation.view.ElementView;
 import com.tschanz.v_bro.app.presentation.viewmodel.ElementItem;
@@ -14,7 +14,7 @@ import java.util.concurrent.Flow;
 
 public class ElementSelectionPanel extends JPanel implements ElementView {
     private final JComboBox<ElementItem> elementsList = new JComboBox<>();
-    private BehaviorSubject<ElementItem> selectElementAction;
+    private SelectElementAction selectElementAction;
 
 
     public ElementSelectionPanel() {
@@ -25,14 +25,12 @@ public class ElementSelectionPanel extends JPanel implements ElementView {
 
 
     @Override
-    public void bindElementList(Flow.Publisher<List<ElementItem>> elementList) {
-        elementList.subscribe(new GenericSubscriber<>(this::onElementListChanged));
-    }
-
-
-    @Override
-    public void bindSelectElementAction(BehaviorSubject<ElementItem> selectElementAction) {
+    public void bindViewModel(
+        Flow.Publisher<List<ElementItem>> elementList,
+        SelectElementAction selectElementAction
+    ) {
         this.selectElementAction = selectElementAction;
+        elementList.subscribe(new GenericSubscriber<>(this::onElementListChanged));
     }
 
 
@@ -46,8 +44,10 @@ public class ElementSelectionPanel extends JPanel implements ElementView {
 
 
     private void onElementSelected(ActionEvent e) {
-        this.selectElementAction.next(
-            (ElementItem) this.elementsList.getSelectedItem()
-        );
+        ElementItem selectedItem = (ElementItem) this.elementsList.getSelectedItem();
+
+        if (selectedItem != null) {
+            this.selectElementAction.next(selectedItem.getId());
+        }
     }
 }

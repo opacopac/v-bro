@@ -1,8 +1,9 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
-import com.tschanz.v_bro.app.presentation.viewmodel.ElementClassItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.ElementItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.RepoConnectionItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementClassAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectVersionFilterAction;
 import com.tschanz.v_bro.app.usecase.select_element.SelectElementUseCase;
 import com.tschanz.v_bro.app.usecase.select_element.requestmodel.SelectElementRequest;
 import com.tschanz.v_bro.app.usecase.common.requestmodel.VersionFilterRequest;
@@ -13,16 +14,16 @@ import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 
 public class VersionFilterController {
     private final BehaviorSubject<RepoConnectionItem> repoConnection;
-    private final BehaviorSubject<ElementClassItem> selectElementClassAction;
-    private final BehaviorSubject<ElementItem> selectElementAction;
+    private final SelectElementClassAction selectElementClassAction;
+    private final SelectElementAction selectElementAction;
     private final SelectElementUseCase selectElementUc;
 
 
     public VersionFilterController(
         BehaviorSubject<RepoConnectionItem> repoConnection,
-        BehaviorSubject<ElementClassItem> selectElementClassAction,
-        BehaviorSubject<ElementItem> selectElementAction,
-        BehaviorSubject<VersionFilterItem> selectVersionFilterAction,
+        SelectElementClassAction selectElementClassAction,
+        SelectElementAction selectElementAction,
+        SelectVersionFilterAction selectVersionFilterAction,
         SelectElementUseCase selectElementUc
     ) {
         this.repoConnection = repoConnection;
@@ -45,8 +46,8 @@ public class VersionFilterController {
 
         SelectElementRequest request = new SelectElementRequest(
             this.repoConnection.getCurrentValue().repoType,
-            this.selectElementClassAction.getCurrentValue().getName(),
-            this.selectElementAction.getCurrentValue().getId(),
+            this.selectElementClassAction.getCurrentValue(),
+            this.selectElementAction.getCurrentValue(),
             this.getVersionFilterRequest(versionFilterItem)
         );
         this.selectElementUc.execute(request);

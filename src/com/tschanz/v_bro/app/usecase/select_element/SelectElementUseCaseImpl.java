@@ -1,8 +1,7 @@
 package com.tschanz.v_bro.app.usecase.select_element;
 
-import com.tschanz.v_bro.app.usecase.common.requestmodel.VersionFilterRequest;
-import com.tschanz.v_bro.app.usecase.common.responsemodel.VersionFilterResponse;
-import com.tschanz.v_bro.app.usecase.common.responsemodel.VersionResponse;
+import com.tschanz.v_bro.app.usecase.common.converter.VersionConverter;
+import com.tschanz.v_bro.app.usecase.common.converter.VersionFilterConverter;
 import com.tschanz.v_bro.app.usecase.select_element.requestmodel.SelectElementRequest;
 import com.tschanz.v_bro.app.usecase.select_element.responsemodel.SelectElementResponse;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
@@ -14,7 +13,6 @@ import com.tschanz.v_bro.versions.domain.service.VersionService;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 
 public class SelectElementUseCaseImpl implements SelectElementUseCase {
@@ -44,7 +42,8 @@ public class SelectElementUseCaseImpl implements SelectElementUseCase {
                 VersionService versionService = this.versionServiceProvider.getService(request.repoType);
                 versions = versionService.readVersionTimeline(request.elementClass, request.elementId);
 
-                effectiveVersionFilter = this.getEffectiveVersionFilter(request.versionFilter, versions);
+                VersionFilter selectedVersionFilter = VersionFilterConverter.fromRequest(request.versionFilter);
+                effectiveVersionFilter = selectedVersionFilter.cropToVersions(versions);
 
                 message = "successfully read " + versions.size() + " versions, ";
                 message += " displaying timeline between " + effectiveVersionFilter.getMinGueltigVon() + " till " + effectiveVersionFilter.getMaxGueltigBis();
@@ -57,8 +56,8 @@ public class SelectElementUseCaseImpl implements SelectElementUseCase {
             }
 
             SelectElementResponse response = new SelectElementResponse(
-                this.getEffectiveVersionFilterResponse(effectiveVersionFilter),
-                this.getVersionResponse(versions),
+                VersionFilterConverter.toResponse(effectiveVersionFilter),
+                VersionConverter.toResponse(versions),
                 message,
                 false
             );
@@ -71,37 +70,4 @@ public class SelectElementUseCaseImpl implements SelectElementUseCase {
             this.presenter.present(response);
         }
     }
-
-
-    private VersionFilter getEffectiveVersionFilter(VersionFilterRequest selectedVersionFilterRequest, List<VersionData> versions) {
-        VersionFilter selectedVersionFilter = new VersionFilter(
-            selectedVersionFilterRequest.minGueltigVon,
-            selectedVersionFilterRequest.maxGueltigBis,
-            selectedVersionFilterRequest.minPflegestatus
-        );
-
-        return selectedVersionFilter.cropToVersions(versions);
-    }
-
-
-    private VersionFilterResponse getEffectiveVersionFilterResponse(VersionFilter effectiveVersionFilter) {
-        if (effectiveVersionFilter != null) {
-            return new VersionFilterResponse(
-                effectiveVersionFilter.getMinGueltigVon(),
-                effectiveVersionFilter.getMaxGueltigBis(),
-                effectiveVersionFilter.getMinPflegestatus()
-            );
-        } else {
-            return null;
-        }
-    }
-
-
-    private List<VersionResponse> getVersionResponse(List<VersionData> versions) {
-        return versions
-            .stream()
-            .map(version -> new VersionResponse(version.getId(), version.getGueltigVon(), version.getGueltigBis(), version.getPflegestatus()))
-            .collect(Collectors.toList());
-    }
 }
-

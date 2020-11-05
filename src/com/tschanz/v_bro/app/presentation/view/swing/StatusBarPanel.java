@@ -21,22 +21,8 @@ public class StatusBarPanel extends JPanel implements StatusBarView {
     }
 
 
-    public void setStatusInfo(String infoText) {
-        this.statusLabel.setForeground(STATUS_INFO_COLOR);
-        this.statusLabel.setText(infoText);
-        this.statusLabel.repaint();
-    }
-
-
-    public void setStatusError(String errorText) {
-        this.statusLabel.setForeground(STATUS_ERROR_COLOR);
-        this.statusLabel.setText(errorText);
-        this.statusLabel.repaint();
-    }
-
-
     @Override
-    public void bindStatus(Flow.Publisher<StatusItem> status) {
+    public void bindViewModel(Flow.Publisher<StatusItem> status) {
         status.subscribe(new GenericSubscriber<>(this::onStatusChanged));
     }
 

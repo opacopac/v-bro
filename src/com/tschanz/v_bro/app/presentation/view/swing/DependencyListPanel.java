@@ -1,5 +1,8 @@
 package com.tschanz.v_bro.app.presentation.view.swing;
 
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectDependencyVersionAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementClassAction;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.app.presentation.view.DependenciesView;
 import com.tschanz.v_bro.app.presentation.viewmodel.FwdDependencyItem;
@@ -16,6 +19,9 @@ public class DependencyListPanel extends JPanel implements DependenciesView {
     public static final int DEP_PANEL_HEIGHT = 550;
     private final JPanel contentPanel = new JPanel();
     private Flow.Publisher<VersionFilterItem> effectiveVersionFilter;
+    private SelectElementClassAction selectElementClassAction;
+    private SelectElementAction selectElementAction;
+    private SelectDependencyVersionAction selectDependencyVersionAction;
 
 
     public DependencyListPanel() {
@@ -28,13 +34,17 @@ public class DependencyListPanel extends JPanel implements DependenciesView {
 
 
     @Override
-    public void bindEffectiveVersionFilter(Flow.Publisher<VersionFilterItem> versionFilter) {
+    public void bindViewModel(
+        Flow.Publisher<List<FwdDependencyItem>> fwdDependencyList,
+        Flow.Publisher<VersionFilterItem> versionFilter,
+        SelectElementClassAction selectElementClassAction,
+        SelectElementAction selectElementAction,
+        SelectDependencyVersionAction selectDependencyVersionAction
+    ) {
         this.effectiveVersionFilter = versionFilter;
-    }
-
-
-    @Override
-    public void bindFwdDependencyList(Flow.Publisher<List<FwdDependencyItem>> fwdDependencyList) {
+        this.selectElementClassAction = selectElementClassAction;
+        this.selectElementAction = selectElementAction;
+        this.selectDependencyVersionAction = selectDependencyVersionAction;
         fwdDependencyList.subscribe(new GenericSubscriber<>(this::onFwdDependenciesChanged));
     }
 
@@ -44,10 +54,15 @@ public class DependencyListPanel extends JPanel implements DependenciesView {
 
         if (fwdDependencyList != null) {
             for (FwdDependencyItem dependency : fwdDependencyList) {
-                DependencyEntry dependencyEntry = new DependencyEntry();
-                dependencyEntry.setEffectiveVersionFilter(this.effectiveVersionFilter);
-                dependencyEntry.setDependency(dependency);
-                this.contentPanel.add(dependencyEntry);
+                DependencyListEntry dependencyListEntry = new DependencyListEntry();
+                dependencyListEntry.bindViewModel(
+                    dependency,
+                    this.effectiveVersionFilter,
+                    this.selectElementClassAction,
+                    this.selectElementAction,
+                    this.selectDependencyVersionAction
+                );
+                this.contentPanel.add(dependencyListEntry);
             }
         }
 

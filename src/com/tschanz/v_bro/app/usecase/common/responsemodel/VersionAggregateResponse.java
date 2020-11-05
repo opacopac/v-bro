@@ -1,4 +1,4 @@
-package com.tschanz.v_bro.app.usecase.select_version.responsemodel;
+package com.tschanz.v_bro.app.usecase.common.responsemodel;
 
 
 public class VersionAggregateResponse {

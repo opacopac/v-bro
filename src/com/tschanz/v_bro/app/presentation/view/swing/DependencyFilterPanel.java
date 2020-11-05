@@ -2,7 +2,7 @@ package com.tschanz.v_bro.app.presentation.view.swing;
 
 import com.tschanz.v_bro.app.presentation.view.DependencyFilterView;
 import com.tschanz.v_bro.app.presentation.viewmodel.DependencyFilterItem;
-import com.tschanz.v_bro.common.reactive.BehaviorSubject;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectDependencyFilterAction;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 
 import javax.swing.*;
@@ -14,7 +14,7 @@ import java.util.concurrent.Flow;
 public class DependencyFilterPanel extends JPanel implements DependencyFilterView {
     private final JRadioButton fwdRadio = new JRadioButton("FWD", true);
     private final JRadioButton bwdRadio = new JRadioButton("BWD", false);
-    private BehaviorSubject<DependencyFilterItem> selecDependencyFilterAction;
+    private SelectDependencyFilterAction selecDependencyFilterAction;
 
 
     public DependencyFilterPanel() {
@@ -33,15 +33,13 @@ public class DependencyFilterPanel extends JPanel implements DependencyFilterVie
 
 
     @Override
-    public void bindInitialDependencyFilter(Flow.Publisher<DependencyFilterItem> dependencyFilter) {
+    public void bindViewModel(
+        Flow.Publisher<DependencyFilterItem> dependencyFilter,
+        SelectDependencyFilterAction selectDependencyFilterAction
+    ) {
+        this.selecDependencyFilterAction = selectDependencyFilterAction;
         dependencyFilter.subscribe(new GenericSubscriber<>(this::onInitialFilterChanged));
     }
-
-    @Override
-    public void bindSelectDependencyFilterAction(BehaviorSubject<DependencyFilterItem> selectDependencyFilterAction) {
-        this.selecDependencyFilterAction = selectDependencyFilterAction;
-    }
-
 
 
     private void onInitialFilterChanged(DependencyFilterItem dependencyFilter) {

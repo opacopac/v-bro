@@ -1,12 +1,12 @@
 package com.tschanz.v_bro.app.presentation.presenter;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.*;
+import com.tschanz.v_bro.app.usecase.common.responsemodel.VersionAggregateNodeResponse;
+import com.tschanz.v_bro.app.usecase.common.responsemodel.VersionAggregateResponse;
 import com.tschanz.v_bro.app.usecase.common.responsemodel.VersionResponse;
 import com.tschanz.v_bro.app.usecase.select_dependency_filter.responsemodel.FwdDependencyResponse;
 import com.tschanz.v_bro.app.usecase.select_version.SelectVersionPresenter;
 import com.tschanz.v_bro.app.usecase.select_version.responsemodel.SelectVersionResponse;
-import com.tschanz.v_bro.app.usecase.select_version.responsemodel.VersionAggregateNodeResponse;
-import com.tschanz.v_bro.app.usecase.select_version.responsemodel.VersionAggregateResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;

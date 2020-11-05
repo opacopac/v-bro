@@ -6,5 +6,5 @@ import java.util.concurrent.Flow;
 
 
 public interface VersionAggregateView {
-    void bindVersionAggregate(Flow.Publisher<VersionAggregateItem> versionAggregate);
+    void bindViewModel(Flow.Publisher<VersionAggregateItem> versionAggregate);
 }

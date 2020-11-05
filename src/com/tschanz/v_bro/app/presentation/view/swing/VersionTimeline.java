@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.view.swing;
 
-import com.tschanz.v_bro.common.reactive.BehaviorSubject;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectVersionAction;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.app.presentation.viewmodel.VersionFilterItem;
 import com.tschanz.v_bro.app.presentation.view.VersionsView;
@@ -50,7 +50,8 @@ public class VersionTimeline extends JPanel implements VersionsView {
     private VersionFilterItem effectiveVersionFilter;
     private VersionItem hoverVersion;
     private final Set<VersionVonBisPx> versionVonBisXPixelCache = new HashSet<>();
-    private BehaviorSubject<VersionItem> selectVersionAction;
+    private SelectVersionAction selectVersionAction;
+    //TODO: private boolean autoSelectLastEntry
 
 
     public VersionTimeline() {
@@ -64,20 +65,14 @@ public class VersionTimeline extends JPanel implements VersionsView {
 
 
     @Override
-    public void bindVersionList(Flow.Publisher<List<VersionItem>> versionList) {
-        versionList.subscribe(new GenericSubscriber<>(this::onVersionListChanged));
-    }
-
-
-    @Override
-    public void bindEffectiveVersionFilter(Flow.Publisher<VersionFilterItem> effectiveVersionFilter) {
-        effectiveVersionFilter.subscribe(new GenericSubscriber<>(this::onEffectiveVersionFilterChanged));
-    }
-
-
-    @Override
-    public void bindSelectVersionAction(BehaviorSubject<VersionItem> selectVersionAction) {
+    public void bindViewModel(
+        Flow.Publisher<List<VersionItem>> versionList,
+        Flow.Publisher<VersionFilterItem> effectiveVersionFilter,
+        SelectVersionAction selectVersionAction
+    ) {
         this.selectVersionAction = selectVersionAction;
+        effectiveVersionFilter.subscribe(new GenericSubscriber<>(this::onEffectiveVersionFilterChanged));
+        versionList.subscribe(new GenericSubscriber<>(this::onVersionListChanged));
     }
 
 
@@ -125,11 +120,11 @@ public class VersionTimeline extends JPanel implements VersionsView {
 
 
     private void onVersionSelected(VersionItem selectedVersion) {
-        if (this.selectVersionAction == null) {
+        if (this.selectVersionAction == null || selectedVersion == null) {
             return;
         }
 
-        this.selectVersionAction.next(selectedVersion);
+        this.selectVersionAction.next(selectedVersion.getId());
         this.repaint();
     }
 
@@ -154,7 +149,7 @@ public class VersionTimeline extends JPanel implements VersionsView {
         this.versionVonBisXPixelCache.add(new VersionVonBisPx(version, x1, x2));
 
         // bar
-        VersionItem selectedVersion = this.selectVersionAction != null ? this.selectVersionAction.getCurrentValue() : null;
+        String selectedVersionId = this.selectVersionAction != null ? this.selectVersionAction.getCurrentValue() : "";
         int colorIndex = this.versionList.indexOf(version) % BAR_FILL_COLORS.size();
         //g.setColor((version.equals(selectedVersion)) ? BAR_FILL_COLOR_SELECTED : BAR_FILL_COLORS.get(colorIndex));
         g.setColor(BAR_FILL_COLORS.get(colorIndex));
@@ -163,7 +158,7 @@ public class VersionTimeline extends JPanel implements VersionsView {
         // border
         if (version.equals(this.hoverVersion)) {
             g.setColor(BAR_BORDER_COLOR_HOVER);
-        } else if (version.equals(selectedVersion)) {
+        } else if (version.getId().equals(selectedVersionId)) {
             g.setColor(BAR_BORDER_COLOR_SELECTED);
         } else {
             g.setColor(BAR_BORDER_COLOR);
@@ -173,7 +168,7 @@ public class VersionTimeline extends JPanel implements VersionsView {
         // von text
         if (version.equals(this.hoverVersion)) {
             g.setColor(TEXT_COLOR_HOVER);
-        } else if (version.equals(selectedVersion)) {
+        } else if (version.getId().equals(selectedVersionId)) {
             g.setColor(TEXT_COLOR_SELECTED);
         } else {
             g.setColor(TEXT_COLOR);

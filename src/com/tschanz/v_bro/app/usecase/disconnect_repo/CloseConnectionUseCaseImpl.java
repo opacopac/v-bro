@@ -32,7 +32,7 @@ public class CloseConnectionUseCaseImpl implements CloseConnectionUseCase {
             RepoService repoService = this.repoServiceProvider.getService(request.repoType);
             repoService.disconnect();
 
-            String message = "disconnected succesfully";
+            String message = "disconnected successfully";
             this.logger.info(message);
 
             CloseConnectionResponse response = new CloseConnectionResponse(message, false);

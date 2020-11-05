@@ -5,9 +5,6 @@ import com.tschanz.v_bro.app.presentation.view.StatusBarView;
 import com.tschanz.v_bro.app.presentation.viewmodel.MainModel;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.StrokeBorder;
 import java.awt.*;
 
 
@@ -34,26 +31,16 @@ public class MainPanel extends JFrame implements MainView {
 
     @Override
     public void bindViewModel(MainModel mainModel) {
-        this.statusBarPanel.bindStatus(mainModel.appStatus);
-        this.connectionPanel.bindQuickConnectionList(mainModel.quickConnectionList);
-        this.connectionPanel.bindCurrentRepoConnection(mainModel.currentRepoConnection);
-        this.connectionPanel.bindConnectToRepoAction(mainModel.connectToRepoAction);
-        this.elementClassSelectionPanel.bindElementClassList(mainModel.elementClasses);
-        this.elementClassSelectionPanel.bindSelectElementClassAction(mainModel.selectedElementClass);
-        this.denominationSelectionPanel.bindDenominationList(mainModel.elementDenominations);
-        this.denominationSelectionPanel.bindSelectDenominationsAction(mainModel.selectedDenominations);
-        this.elementSelectionPanel.bindElementList(mainModel.elements);
-        this.elementSelectionPanel.bindSelectElementAction(mainModel.selectedElement);
-        this.versionFilterPanel.bindInitialVersionFilter(mainModel.versionFilter);
-        this.versionFilterPanel.bindSelectVersionFilterAction(mainModel.selectedVersionFilter);
-        this.versionTimeline.bindEffectiveVersionFilter(mainModel.effectiveVersionFilter);
-        this.versionTimeline.bindVersionList(mainModel.versions);
-        this.versionTimeline.bindSelectVersionAction(mainModel.selectedVersion);
-        this.dependencyFilterPanel.bindInitialDependencyFilter(mainModel.dependencyFilter);
-        this.dependencyFilterPanel.bindSelectDependencyFilterAction(mainModel.selectedDependencyFilter);
-        this.dependencyListPanel.bindEffectiveVersionFilter(mainModel.effectiveVersionFilter);
-        this.dependencyListPanel.bindFwdDependencyList(mainModel.fwdDependencies);
-        this.versionAggregateTree.bindVersionAggregate(mainModel.versionAggregate);
+        this.statusBarPanel.bindViewModel(mainModel.appStatus);
+        this.connectionPanel.bindViewModel(mainModel.quickConnectionList, mainModel.connectToRepoAction, mainModel.currentRepoConnection);
+        this.elementClassSelectionPanel.bindViewModel(mainModel.elementClasses, mainModel.selectElementClassAction);
+        this.denominationSelectionPanel.bindViewModel(mainModel.elementDenominations, mainModel.selectDenominationsAction);
+        this.elementSelectionPanel.bindViewModel(mainModel.elements, mainModel.selectElementAction);
+        this.versionFilterPanel.bindViewModel(mainModel.versionFilter, mainModel.selectVersionFilterAction);
+        this.versionTimeline.bindViewModel(mainModel.versions, mainModel.effectiveVersionFilter, mainModel.selectVersionAction);
+        this.dependencyFilterPanel.bindViewModel(mainModel.dependencyFilter, mainModel.selectDependencyFilterAction);
+        this.dependencyListPanel.bindViewModel(mainModel.fwdDependencies, mainModel.effectiveVersionFilter, mainModel.selectElementClassAction, mainModel.selectElementAction, mainModel.selectDependencyVersionAction);
+        this.versionAggregateTree.bindViewModel(mainModel.versionAggregate);
     }
 
 

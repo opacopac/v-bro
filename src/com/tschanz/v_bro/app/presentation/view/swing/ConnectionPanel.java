@@ -1,5 +1,6 @@
 package com.tschanz.v_bro.app.presentation.view.swing;
 
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.ConnectToRepoAction;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
@@ -35,21 +36,15 @@ public class ConnectionPanel extends JPanel implements ConnectionView {
 
 
     @Override
-    public void bindQuickConnectionList(Flow.Publisher<List<QuickConnectionItem>> quickConnectionList) {
+    public void bindViewModel(
+        Flow.Publisher<List<QuickConnectionItem>> quickConnectionList,
+        ConnectToRepoAction connectToRepoAction,
+        BehaviorSubject<RepoConnectionItem> currentRepoConnection
+    ) {
         this.connectionDialog.bindQuickConnectionList(quickConnectionList);
-    }
-
-
-    @Override
-    public void bindConnectToRepoAction(BehaviorSubject<RepoConnectionItem> selectedRepoConnection) {
-        this.connectionDialog.bindConnectToRepoAction(selectedRepoConnection);
-    }
-
-
-    @Override
-    public void bindCurrentRepoConnection(BehaviorSubject<RepoConnectionItem> currentRepoConnection) {
-        currentRepoConnection.subscribe(new GenericSubscriber<>(this::onRepoConnectionChanged));
+        this.connectionDialog.bindConnectToRepoAction(connectToRepoAction);
         this.connectionDialog.bindCurrentRepoConnection(currentRepoConnection);
+        currentRepoConnection.subscribe(new GenericSubscriber<>(this::onRepoConnectionChanged));
     }
 
 

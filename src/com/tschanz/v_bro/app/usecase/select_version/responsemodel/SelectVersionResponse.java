@@ -1,6 +1,7 @@
 package com.tschanz.v_bro.app.usecase.select_version.responsemodel;
 
 import com.tschanz.v_bro.app.usecase.common.responsemodel.UseCaseResponse;
+import com.tschanz.v_bro.app.usecase.common.responsemodel.VersionAggregateResponse;
 import com.tschanz.v_bro.app.usecase.select_dependency_filter.responsemodel.FwdDependencyResponse;
 
 import java.util.List;
