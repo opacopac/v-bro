@@ -19,8 +19,6 @@ public class DependencyListPanel extends JPanel implements DependenciesView {
     public static final int DEP_PANEL_HEIGHT = 550;
     private final JPanel contentPanel = new JPanel();
     private Flow.Publisher<VersionFilterItem> effectiveVersionFilter;
-    private SelectElementClassAction selectElementClassAction;
-    private SelectElementAction selectElementAction;
     private SelectDependencyVersionAction selectDependencyVersionAction;
 
 
@@ -37,13 +35,9 @@ public class DependencyListPanel extends JPanel implements DependenciesView {
     public void bindViewModel(
         Flow.Publisher<List<FwdDependencyItem>> fwdDependencyList,
         Flow.Publisher<VersionFilterItem> versionFilter,
-        SelectElementClassAction selectElementClassAction,
-        SelectElementAction selectElementAction,
         SelectDependencyVersionAction selectDependencyVersionAction
     ) {
         this.effectiveVersionFilter = versionFilter;
-        this.selectElementClassAction = selectElementClassAction;
-        this.selectElementAction = selectElementAction;
         this.selectDependencyVersionAction = selectDependencyVersionAction;
         fwdDependencyList.subscribe(new GenericSubscriber<>(this::onFwdDependenciesChanged));
     }
@@ -58,8 +52,6 @@ public class DependencyListPanel extends JPanel implements DependenciesView {
                 dependencyListEntry.bindViewModel(
                     dependency,
                     this.effectiveVersionFilter,
-                    this.selectElementClassAction,
-                    this.selectElementAction,
                     this.selectDependencyVersionAction
                 );
                 this.contentPanel.add(dependencyListEntry);

@@ -2,12 +2,11 @@ package com.tschanz.v_bro.app.presentation.controller;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.ElementVersionVector;
 import com.tschanz.v_bro.app.presentation.viewmodel.RepoConnectionItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.VersionFilterItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectDependencyFilterAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectDependencyVersionAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectVersionFilterAction;
-import com.tschanz.v_bro.app.usecase.common.requestmodel.VersionFilterRequest;
-import com.tschanz.v_bro.app.usecase.select_dependency_filter.requestmodel.DependencyFilterRequest;
+import com.tschanz.v_bro.app.presentation.viewmodel.converter.DependencyFilterItemConverter;
+import com.tschanz.v_bro.app.presentation.viewmodel.converter.VersionFilterItemConverter;
 import com.tschanz.v_bro.app.usecase.select_dependency_version.SelectDependencyVersionUseCase;
 import com.tschanz.v_bro.app.usecase.select_dependency_version.requestmodel.SelectDependencyVersionRequest;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
@@ -51,18 +50,9 @@ public class DependencyListController {
             selectedDependencyVersion.getElementClass(),
             selectedDependencyVersion.getElementId(),
             selectedDependencyVersion.getVersionId(),
-            this.getVersionFilterRequest(this.selectVersionFilterAction.getCurrentValue()),
-            new DependencyFilterRequest(this.selectDependencyFilterAction.getCurrentValue().isFwd)
+            VersionFilterItemConverter.toRequest(this.selectVersionFilterAction.getCurrentValue()),
+            DependencyFilterItemConverter.toRequest(this.selectDependencyFilterAction.getCurrentValue())
         );
         this.selectDependencyVersionUc.execute(request);
-    }
-
-
-    private VersionFilterRequest getVersionFilterRequest(VersionFilterItem versionFilter) {
-        return new VersionFilterRequest(
-            versionFilter.getMinGueltigVon(),
-            versionFilter.getMaxGueltigBis(),
-            versionFilter.getMinPflegestatus()
-        );
     }
 }

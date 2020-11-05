@@ -5,9 +5,9 @@ import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectDependencyFilt
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementClassAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectVersionAction;
-import com.tschanz.v_bro.app.usecase.select_dependency_filter.requestmodel.DependencyFilterRequest;
+import com.tschanz.v_bro.app.presentation.viewmodel.converter.DependencyFilterItemConverter;
+import com.tschanz.v_bro.app.presentation.viewmodel.converter.VersionFilterItemConverter;
 import com.tschanz.v_bro.app.usecase.select_version.requestmodel.SelectVersionRequest;
-import com.tschanz.v_bro.app.usecase.common.requestmodel.VersionFilterRequest;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.app.usecase.select_version.SelectVersionUseCase;
@@ -58,18 +58,9 @@ public class VersionController {
             this.selectElementClassAction.getCurrentValue(),
             this.selectElementAction.getCurrentValue(),
             versionId,
-            this.getVersionFilterRequest(this.effectiveVersionFilter.getCurrentValue()),
-            new DependencyFilterRequest(this.selectDependencyFilterAction.getCurrentValue().isFwd)
+            VersionFilterItemConverter.toRequest(this.effectiveVersionFilter.getCurrentValue()),
+            DependencyFilterItemConverter.toRequest(this.selectDependencyFilterAction.getCurrentValue())
         );
         this.selectVersionUc.execute(request);
-    }
-
-
-    private VersionFilterRequest getVersionFilterRequest(VersionFilterItem versionFilter) {
-        return new VersionFilterRequest(
-            versionFilter.getMinGueltigVon(),
-            versionFilter.getMaxGueltigBis(),
-            versionFilter.getMinPflegestatus()
-        );
     }
 }

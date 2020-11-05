@@ -4,8 +4,8 @@ import com.tschanz.v_bro.app.presentation.viewmodel.*;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementClassAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectVersionFilterAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.converter.VersionFilterItemConverter;
 import com.tschanz.v_bro.app.usecase.select_element.requestmodel.SelectElementRequest;
-import com.tschanz.v_bro.app.usecase.common.requestmodel.VersionFilterRequest;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.app.usecase.select_element.SelectElementUseCase;
@@ -47,17 +47,8 @@ public class ElementController {
             this.repoConnection.getCurrentValue().repoType,
             this.selectElementClassAction.getCurrentValue(),
             selectedElementId,
-            this.getVersionFilterRequest(this.selectVersionFilterAction.getCurrentValue())
+            VersionFilterItemConverter.toRequest(this.selectVersionFilterAction.getCurrentValue())
         );
         this.selectElementUc.execute(request);
-    }
-
-
-    private VersionFilterRequest getVersionFilterRequest(VersionFilterItem versionFilter) {
-        return new VersionFilterRequest(
-            versionFilter.getMinGueltigVon(),
-            versionFilter.getMaxGueltigBis(),
-            versionFilter.getMinPflegestatus()
-        );
     }
 }

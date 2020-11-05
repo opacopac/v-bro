@@ -95,14 +95,8 @@ public class VersionTimeline extends JPanel implements VersionsView {
 
     private void onVersionListChanged(List<VersionItem> versionList) {
         this.versionList = versionList;
-
-        if (this.selectVersionAction != null) {
-            if (versionList.size() == 0) {
-                this.onVersionSelected(null); // TODO: show zombie alert
-            } else {
-                this.onVersionSelected(versionList.get(versionList.size() - 1)); // auto-select last entry
-            }
-        }
+        this.repaint();
+        this.revalidate();
     }
 
 
@@ -151,7 +145,6 @@ public class VersionTimeline extends JPanel implements VersionsView {
         // bar
         String selectedVersionId = this.selectVersionAction != null ? this.selectVersionAction.getCurrentValue() : "";
         int colorIndex = this.versionList.indexOf(version) % BAR_FILL_COLORS.size();
-        //g.setColor((version.equals(selectedVersion)) ? BAR_FILL_COLOR_SELECTED : BAR_FILL_COLORS.get(colorIndex));
         g.setColor(BAR_FILL_COLORS.get(colorIndex));
         g.fillRect(x1, BAR_OFFSET_Y_PX,x2 - x1, BAR_HEIGHT_PX);
 

@@ -2,8 +2,6 @@ package com.tschanz.v_bro.app.presentation.view.swing;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.ElementVersionVector;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectDependencyVersionAction;
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementAction;
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementClassAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectVersionAction;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.app.presentation.viewmodel.FwdDependencyItem;
@@ -20,9 +18,8 @@ public class DependencyListEntry extends JPanel {
     private final JLabel dependencyName = new JLabel("");
     private final VersionTimeline versionTimeline = new VersionTimeline();
     private final BehaviorSubject<java.util.List<VersionItem>> versionList = new BehaviorSubject<>(Collections.emptyList());
-    private SelectElementClassAction selectElementClassAction;
-    private SelectElementAction selectElementAction;
     private SelectDependencyVersionAction selectDependencyVersionAction;
+    private FwdDependencyItem fwdDependencyItem;
 
 
     public DependencyListEntry() {
@@ -33,21 +30,17 @@ public class DependencyListEntry extends JPanel {
 
 
     public void bindViewModel(
-        FwdDependencyItem dependency,
+        FwdDependencyItem fwdDependency,
         Flow.Publisher<VersionFilterItem> versionFilter,
-        SelectElementClassAction selectElementClassAction,
-        SelectElementAction selectElementAction,
         SelectDependencyVersionAction selectDependencyVersionAction
     ) {
-        this.selectElementClassAction = selectElementClassAction;
-        this.selectElementAction = selectElementAction;
+        this.fwdDependencyItem = fwdDependency;
         this.selectDependencyVersionAction = selectDependencyVersionAction;
-        this.dependencyName.setText(this.createDependencyName(dependency));
-        this.versionList.next(dependency.getVersions());
+        this.dependencyName.setText(this.createDependencyName(fwdDependency));
+        this.versionList.next(fwdDependency.getVersions());
 
-        //SelectVersionAction selectVersionAction = new SelectVersionAction(null);
-        //selectVersionAction.subscribe(new GenericSubscriber<>(this::onVersionSelected));
-        SelectVersionAction selectVersionAction = null;
+        SelectVersionAction selectVersionAction = new SelectVersionAction(null);
+        selectVersionAction.subscribe(new GenericSubscriber<>(this::onVersionSelected));
 
         this.versionTimeline.bindViewModel(this.versionList, versionFilter, selectVersionAction);
 
@@ -63,16 +56,16 @@ public class DependencyListEntry extends JPanel {
 
     private void onVersionSelected(String versionId) {
         if (this.selectDependencyVersionAction == null
-            || this.selectElementClassAction == null
-            || this.selectElementAction == null
+            || this.fwdDependencyItem.elementName() == null
+            || this.fwdDependencyItem.elementId() == null
             || versionId == null
         ) {
             return;
         }
 
         ElementVersionVector dependencyVersion = new ElementVersionVector(
-            this.selectElementClassAction.getCurrentValue(),
-            this.selectElementAction.getCurrentValue(),
+            this.fwdDependencyItem.elementName(),
+            this.fwdDependencyItem.elementId(),
             versionId
         );
         this.selectDependencyVersionAction.next(dependencyVersion);

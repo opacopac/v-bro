@@ -1,13 +1,10 @@
 package com.tschanz.v_bro.app.presentation.presenter;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.*;
-import com.tschanz.v_bro.app.usecase.common.responsemodel.VersionFilterResponse;
-import com.tschanz.v_bro.app.usecase.common.responsemodel.VersionResponse;
+import com.tschanz.v_bro.app.presentation.viewmodel.converter.VersionFilterItemConverter;
+import com.tschanz.v_bro.app.presentation.viewmodel.converter.VersionItemConverter;
 import com.tschanz.v_bro.app.usecase.select_element.SelectElementPresenter;
 import com.tschanz.v_bro.app.usecase.select_element.responsemodel.SelectElementResponse;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class SelectElementPresenterImpl implements SelectElementPresenter {
@@ -26,28 +23,11 @@ public class SelectElementPresenterImpl implements SelectElementPresenter {
         }
 
         if (!response.isError) {
-            this.mainModel.effectiveVersionFilter.next(this.getVersionFilterItem(response.effectiveVersionFilter));
-            this.mainModel.versions.next(this.getVersionItems(response.versions));
+            this.mainModel.effectiveVersionFilter.next(VersionFilterItemConverter.fromResponse(response.effectiveVersionFilter));
+            this.mainModel.versions.next(VersionItemConverter.fromResponse(response.versions));
             this.mainModel.appStatus.next(new InfoStatusItem(response.message));
         } else {
             this.mainModel.appStatus.next(new ErrorStatusItem(response.message));
         }
-    }
-
-
-    private List<VersionItem> getVersionItems(List<VersionResponse> versions) {
-        return versions
-            .stream()
-            .map(version -> new VersionItem(version.id, version.gueltigVon, version.gueltigBis))
-            .collect(Collectors.toList());
-    }
-
-
-    private VersionFilterItem getVersionFilterItem(VersionFilterResponse versionFilter) {
-        return new VersionFilterItem(
-            versionFilter.minGueltigVon,
-            versionFilter.maxGueltigBis,
-            versionFilter.minPflegestatus
-        );
     }
 }

@@ -15,6 +15,7 @@ import java.util.concurrent.Flow;
 public class ElementClassSelectionPanel extends JPanel implements ElementClassView {
     private final JComboBox<ElementClassItem> elementClassesComboBox = new JComboBox<>();
     private SelectElementClassAction selectElementClassAction;
+    private boolean isPopulating = false;
 
 
     public ElementClassSelectionPanel() {
@@ -35,8 +36,10 @@ public class ElementClassSelectionPanel extends JPanel implements ElementClassVi
 
 
     private void onElementClassListChanged(List<ElementClassItem> elementClassList) {
+        this.isPopulating = true;
         this.elementClassesComboBox.removeAllItems();
         elementClassList.forEach(this.elementClassesComboBox::addItem);
+        this.isPopulating = false;
 
         this.repaint();
         this.revalidate();
@@ -44,7 +47,10 @@ public class ElementClassSelectionPanel extends JPanel implements ElementClassVi
 
 
     private void onElementClassSelected(ActionEvent e) {
-        ElementClassItem selectedElementClassItem = (ElementClassItem) this.elementClassesComboBox.getSelectedItem();
-        this.selectElementClassAction.next(selectedElementClassItem.getName());
+        ElementClassItem selectedItem = (ElementClassItem) this.elementClassesComboBox.getSelectedItem();
+
+        if (!isPopulating && selectedItem != null) {
+            this.selectElementClassAction.next(selectedItem.getName());
+        }
     }
 }

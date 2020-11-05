@@ -39,7 +39,7 @@ public class MainPanel extends JFrame implements MainView {
         this.versionFilterPanel.bindViewModel(mainModel.versionFilter, mainModel.selectVersionFilterAction);
         this.versionTimeline.bindViewModel(mainModel.versions, mainModel.effectiveVersionFilter, mainModel.selectVersionAction);
         this.dependencyFilterPanel.bindViewModel(mainModel.dependencyFilter, mainModel.selectDependencyFilterAction);
-        this.dependencyListPanel.bindViewModel(mainModel.fwdDependencies, mainModel.effectiveVersionFilter, mainModel.selectElementClassAction, mainModel.selectElementAction, mainModel.selectDependencyVersionAction);
+        this.dependencyListPanel.bindViewModel(mainModel.fwdDependencies, mainModel.effectiveVersionFilter, mainModel.selectDependencyVersionAction);
         this.versionAggregateTree.bindViewModel(mainModel.versionAggregate);
     }
 

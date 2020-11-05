@@ -1,6 +1,7 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.ConnectToRepoAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.converter.ConnectionItemConverter;
 import com.tschanz.v_bro.app.usecase.connect_repo.requestmodel.*;
 import com.tschanz.v_bro.app.usecase.disconnect_repo.requestmodel.CloseConnectionRequest;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
@@ -8,8 +9,6 @@ import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
 import com.tschanz.v_bro.app.presentation.viewmodel.QuickConnectionItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.RepoConnectionItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.XmlRepoConnectionItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.JdbcRepoConnectionItem;
 import com.tschanz.v_bro.app.usecase.disconnect_repo.CloseConnectionUseCase;
 import com.tschanz.v_bro.app.usecase.connect_repo.OpenConnectionUseCase;
 
@@ -73,31 +72,13 @@ public class ConnectionController {
 
     private void onConnectToRepoAction(RepoConnectionItem connection) {
         if (connection != null) {
-            OpenConnectionRequest request = this.getOpenConnectionRequest(connection);
+            OpenConnectionRequest request = new OpenConnectionRequest(
+                ConnectionItemConverter.toRequest(connection)
+            );
             this.openConnectionUc.execute(request);
         } else if (this.repoConnection.getCurrentValue() != null) {
             CloseConnectionRequest request = new CloseConnectionRequest(this.repoConnection.getCurrentValue().repoType);
             this.closeConnectionUc.execute(request);
         }
-    }
-
-
-    private OpenConnectionRequest getOpenConnectionRequest(RepoConnectionItem connection) {
-        ConnectionParametersRequest connectionParameters;
-        switch (connection.getRepoType()) {
-            case JDBC:
-                JdbcRepoConnectionItem jdbcConnection = (JdbcRepoConnectionItem) connection;
-                connectionParameters = new JdbcConnectionParametersRequest(jdbcConnection.getUrl(), jdbcConnection.getUser(), jdbcConnection.getPassword());
-                break;
-            case XML:
-                XmlRepoConnectionItem xmlRepoConnectionItem = (XmlRepoConnectionItem) connection;
-                connectionParameters = new XMlConnectionParametersRequest(xmlRepoConnectionItem.getFilename());
-                break;
-            case MOCK:
-            default:
-                connectionParameters = new MockConnectionParametersRequest();
-                break;
-        }
-        return new OpenConnectionRequest(connectionParameters);
     }
 }

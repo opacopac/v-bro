@@ -2,6 +2,7 @@ package com.tschanz.v_bro.app.presentation.controller;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectDenominationsAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementClassAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.converter.DenominationItemConverter;
 import com.tschanz.v_bro.app.usecase.select_element_denomination.requestmodel.SelectElementDenominationRequest;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
@@ -10,7 +11,6 @@ import com.tschanz.v_bro.app.usecase.select_element_denomination.SelectElementDe
 import com.tschanz.v_bro.app.presentation.viewmodel.RepoConnectionItem;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class ElementDenominationController {
@@ -44,10 +44,7 @@ public class ElementDenominationController {
         SelectElementDenominationRequest request = new SelectElementDenominationRequest(
             this.repoConnection.getCurrentValue().repoType,
             this.selectElementClassAction.getCurrentValue(),
-            denominations
-                .stream()
-                .map(DenominationItem::getName)
-                .collect(Collectors.toList())
+            DenominationItemConverter.toRequest(denominations)
         );
         this.selectElementDenominationUc.execute(request);
     }
