@@ -5,6 +5,7 @@ import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementAction;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.app.presentation.view.ElementView;
 import com.tschanz.v_bro.app.presentation.viewmodel.ElementItem;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +20,7 @@ public class ElementSelectionPanel extends JPanel implements ElementView {
 
 
     public ElementSelectionPanel() {
+        AutoCompleteDecorator.decorate(elementsComboBox);
         this.setLayout(new FlowLayout(FlowLayout.LEADING));
         this.add(this.elementsComboBox);
         this.elementsComboBox.addActionListener(this::onElementSelected);
@@ -40,6 +42,7 @@ public class ElementSelectionPanel extends JPanel implements ElementView {
         this.elementsComboBox.removeAllItems();
         elementItems.getItems().forEach(this.elementsComboBox::addItem);
         this.elementsComboBox.setSelectedItem(elementItems.getSelectedItem());
+
         this.isPopulating = false;
 
         this.repaint();

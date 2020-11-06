@@ -5,10 +5,12 @@ import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementClassAc
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.app.presentation.view.ElementClassView;
 import com.tschanz.v_bro.app.presentation.viewmodel.ElementClassItem;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.List;
 import java.util.concurrent.Flow;
 
 
@@ -19,8 +21,11 @@ public class ElementClassSelectionPanel extends JPanel implements ElementClassVi
 
 
     public ElementClassSelectionPanel() {
+        AutoCompleteDecorator.decorate(elementClassesComboBox);
+
         this.setLayout(new FlowLayout(FlowLayout.LEADING));
         this.add(this.elementClassesComboBox);
+
         this.elementClassesComboBox.addActionListener(this::onElementClassSelected);
     }
 

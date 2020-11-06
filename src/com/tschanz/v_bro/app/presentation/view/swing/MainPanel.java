@@ -63,7 +63,8 @@ public class MainPanel extends JFrame implements MainView {
         contentPanel.setLayout(new GridBagLayout());
 
         this.initConnection(contentPanel);
-        this.initElementClassAndDenominations(contentPanel);
+        this.initElementClassSelection(contentPanel);
+        this.initElementDenominationSelection(contentPanel);
         this.initElementSelection(contentPanel);
         this.initVersionFilter(contentPanel);
         this.initVersionTimeline(contentPanel);
@@ -83,7 +84,7 @@ public class MainPanel extends JFrame implements MainView {
     }
 
 
-    private void initElementClassAndDenominations(JPanel contentPanel) {
+    private void initElementClassSelection(JPanel contentPanel) {
         contentPanel.add(
             this.createContainer(
                 this.elementClassSelectionPanel,
@@ -94,10 +95,18 @@ public class MainPanel extends JFrame implements MainView {
     }
 
 
+    private void initElementDenominationSelection(JPanel contentPanel) {
+        contentPanel.add(
+            this.denominationSelectionPanel,
+            this.createGBConstraint(0, 2)
+        );
+    }
+
+
     private void initElementSelection(JPanel contentPanel) {
         contentPanel.add(
             this.elementSelectionPanel,
-            this.createGBConstraint(0, 2)
+            this.createGBConstraint(0, 3)
         );
     }
 
@@ -105,13 +114,13 @@ public class MainPanel extends JFrame implements MainView {
     private void initVersionFilter(JPanel contentPanel) {
         contentPanel.add(
             this.versionFilterPanel,
-            this.createGBConstraint(0, 3)
+            this.createGBConstraint(0, 4)
         );
     }
 
 
     private void initVersionTimeline(JPanel contentPanel) {
-        GridBagConstraints c = this.createGBConstraint(0, 4);
+        GridBagConstraints c = this.createGBConstraint(0, 5);
         c.insets = new Insets(10, 29, 10, 10);
         contentPanel.add(
             this.versionTimeline,
@@ -123,12 +132,12 @@ public class MainPanel extends JFrame implements MainView {
     private void initDependencies(JPanel contentPanel) {
         contentPanel.add(
             this.dependencyFilterPanel,
-            this.createGBConstraint(0, 5)
+            this.createGBConstraint(0, 6)
         );
 
         contentPanel.add(
             this.dependencyListPanel,
-            this.createGBConstraint(0, 6, 1, 1, GridBagConstraints.FIRST_LINE_START, GridBagConstraints.VERTICAL)
+            this.createGBConstraint(0, 7, 1, 1, GridBagConstraints.FIRST_LINE_START, GridBagConstraints.VERTICAL)
         );
     }
 
@@ -142,7 +151,7 @@ public class MainPanel extends JFrame implements MainView {
 
         contentPanel.add(
             this.versionAggregateTree,
-            this.createGBConstraint(1, 1, 1, 6, GridBagConstraints.FIRST_LINE_START, GridBagConstraints.BOTH)
+            this.createGBConstraint(1, 1, 1, 7, GridBagConstraints.FIRST_LINE_START, GridBagConstraints.BOTH)
         );
     }
 
