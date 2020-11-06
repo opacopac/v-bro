@@ -144,7 +144,7 @@ public class VersionTimeline extends JPanel implements VersionsView {
         this.versionVonBisXPixelCache.add(new VersionVonBisPx(version, x1, x2));
 
         // bar
-        String selectedVersionId = this.selectVersionAction != null ? this.selectVersionAction.getCurrentValue() : ""; // TODO
+        String selectedVersionId = versionList.getSelectedItem() != null ? versionList.getSelectedItem().getId() : "";
         int colorIndex = this.versionList.getItems().indexOf(version) % BAR_FILL_COLORS.size();
         g.setColor(BAR_FILL_COLORS.get(colorIndex));
         g.fillRect(x1, BAR_OFFSET_Y_PX,x2 - x1, BAR_HEIGHT_PX);

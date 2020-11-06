@@ -10,7 +10,7 @@ public class JdbcConnectionParameters implements ConnectionParameters {
     private final String password;
 
     @Override
-    public RepoType getType() { return RepoType.JDBC; }
+    public RepoType getRepoType() { return RepoType.JDBC; }
     public String getUrl() { return url; }
     public String getUser() { return user; }
     public String getPassword() { return password; }

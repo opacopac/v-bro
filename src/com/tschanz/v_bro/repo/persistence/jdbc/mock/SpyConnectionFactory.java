@@ -1,31 +1,31 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.mock;
 
-import com.tschanz.v_bro.common.testing.MockHelper;
+import com.tschanz.v_bro.common.testing.SpyHelper;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 
-public class MockConnectionFactory implements JdbcConnectionFactory {
-    public MockHelper<SQLException> mockHelper = new MockHelper<>();
-    public MockConnection mockConnection = new MockConnection();
-    public MockConnection getCurrentConnectionResult;
+public class SpyConnectionFactory implements JdbcConnectionFactory {
+    public SpyHelper<SQLException> spyHelper = new SpyHelper<>();
+    public SpyConnection spyConnection = new SpyConnection();
+    public SpyConnection getCurrentConnectionResult;
     public boolean isCurrentConnectionMySqlResult;
 
 
-    public MockConnectionFactory(boolean openConnection) {
+    public SpyConnectionFactory(boolean openConnection) {
         if (openConnection) {
-            this.getCurrentConnectionResult = mockConnection;
+            this.getCurrentConnectionResult = spyConnection;
         }
     }
 
 
     @Override
     public void openConnection(String url, String user, String password) throws SQLException {
-        this.mockHelper.reportMethodCall("openConnection", url, user, password);
-        this.mockHelper.checkThrowException();
-        this.getCurrentConnectionResult = mockConnection;
+        this.spyHelper.reportMethodCall("openConnection", url, user, password);
+        this.spyHelper.checkThrowException();
+        this.getCurrentConnectionResult = spyConnection;
     }
 
 
@@ -43,8 +43,8 @@ public class MockConnectionFactory implements JdbcConnectionFactory {
 
     @Override
     public void closeConnection() throws SQLException {
-        this.mockHelper.reportMethodCall("closeConnection");
-        this.mockHelper.checkThrowException();
+        this.spyHelper.reportMethodCall("closeConnection");
+        this.spyHelper.checkThrowException();
         this.getCurrentConnectionResult = null;
     }
 }

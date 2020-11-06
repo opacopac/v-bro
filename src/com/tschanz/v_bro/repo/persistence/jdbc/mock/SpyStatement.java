@@ -1,24 +1,24 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.mock;
 
-import com.tschanz.v_bro.common.testing.MockHelper;
+import com.tschanz.v_bro.common.testing.SpyHelper;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MockStatement implements Statement {
-    public MockHelper<SQLException> mockHelper = new MockHelper<>();
-    public List<MockResultSet> mockResultSets = new ArrayList<>();
+public class SpyStatement implements Statement {
+    public SpyHelper<SQLException> spyHelper = new SpyHelper<>();
+    public List<SpyResultSet> spyResultSets = new ArrayList<>();
     public boolean executeSuccess = true;
-    private MockResultSet currentResultSet;
+    private SpyResultSet currentResultSet;
 
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
-        this.mockHelper.reportMethodCall("executeQuery", sql);
-        this.mockHelper.checkThrowException();
-        this.currentResultSet = this.mockResultSets.remove(0);
+        this.spyHelper.reportMethodCall("executeQuery", sql);
+        this.spyHelper.checkThrowException();
+        this.currentResultSet = this.spyResultSets.remove(0);
         return this.currentResultSet;
     }
 
@@ -89,16 +89,16 @@ public class MockStatement implements Statement {
 
     @Override
     public boolean execute(String sql) throws SQLException {
-        this.mockHelper.reportMethodCall("execute", sql);
-        this.mockHelper.checkThrowException();
-        this.currentResultSet = this.mockResultSets.remove(0);
+        this.spyHelper.reportMethodCall("execute", sql);
+        this.spyHelper.checkThrowException();
+        this.currentResultSet = this.spyResultSets.remove(0);
         return this.executeSuccess;
     }
 
     @Override
     public ResultSet getResultSet() throws SQLException {
-        this.mockHelper.reportMethodCall("getResultSet");
-        this.mockHelper.checkThrowException();
+        this.spyHelper.reportMethodCall("getResultSet");
+        this.spyHelper.checkThrowException();
         return this.currentResultSet;
     }
 

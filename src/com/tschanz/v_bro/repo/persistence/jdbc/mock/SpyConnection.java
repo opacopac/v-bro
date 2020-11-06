@@ -6,14 +6,14 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 
-public class MockConnection implements Connection {
-    public MockDatabaseMetaData mockDatabaseMetaData = new MockDatabaseMetaData();
-    public MockStatement mockStatement = new MockStatement();
+public class SpyConnection implements Connection {
+    public SpyDatabaseMetaData spyDatabaseMetaData = new SpyDatabaseMetaData();
+    public SpyStatement spyStatement = new SpyStatement();
 
 
     @Override
     public Statement createStatement() throws SQLException {
-        return this.mockStatement;
+        return this.spyStatement;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class MockConnection implements Connection {
 
     @Override
     public DatabaseMetaData getMetaData() throws SQLException {
-        return this.mockDatabaseMetaData;
+        return this.spyDatabaseMetaData;
     }
 
     @Override

@@ -7,18 +7,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class MockResult {
+public class SpyResult {
     public final List<KeyValue> keyValues;
 
 
-    public static MockResult fromStrings(String[]... keyValues) {
-        MockResult result = new MockResult();
+    public static SpyResult fromStrings(String[]... keyValues) {
+        SpyResult result = new SpyResult();
         Arrays.stream(keyValues).forEach(kv -> result.keyValues.add(new KeyValue(kv[0], kv[1])));
         return result;
     }
 
 
-    public MockResult(KeyValue... keyValues) {
+    public SpyResult(KeyValue... keyValues) {
         this.keyValues = Arrays.stream(keyValues).collect(Collectors.toList());
     }
 

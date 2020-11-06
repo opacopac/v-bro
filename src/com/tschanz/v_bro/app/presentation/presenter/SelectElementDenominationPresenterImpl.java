@@ -24,10 +24,19 @@ public class SelectElementDenominationPresenterImpl implements SelectElementDeno
         }
 
         if (!response.isError) {
-            this.mainModel.elements.next(ElementItemConverter.fromResponse(response.elements, null)); // TODO
+            this.mainModel.elements.next(ElementItemConverter.fromResponse(response.elements, this.getSelectedElementId()));
             this.mainModel.appStatus.next(new InfoStatusItem(response.message));
         } else {
             this.mainModel.appStatus.next(new ErrorStatusItem(response.message));
+        }
+    }
+
+
+    private String getSelectedElementId() {
+        if (this.mainModel.elements.getCurrentValue() != null && this.mainModel.elements.getCurrentValue().getSelectedItem() != null) {
+            return this.mainModel.elements.getCurrentValue().getSelectedItem().getId();
+        } else {
+            return null;
         }
     }
 }

@@ -1,15 +1,15 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.mock;
 
-import com.tschanz.v_bro.common.testing.MockHelper;
+import com.tschanz.v_bro.common.testing.SpyHelper;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MockDatabaseMetaData implements DatabaseMetaData {
-    public MockHelper<SQLException> mockHelper = new MockHelper<SQLException>();
-    public List<MockResultSet> mockResultSets = new ArrayList<>();
+public class SpyDatabaseMetaData implements DatabaseMetaData {
+    public SpyHelper<SQLException> spyHelper = new SpyHelper<SQLException>();
+    public List<SpyResultSet> spyResultSets = new ArrayList<>();
     public String searchStringEscape;
 
 
@@ -170,8 +170,8 @@ public class MockDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public String getSearchStringEscape() throws SQLException {
-        this.mockHelper.reportMethodCall("getSearchStringEscape");
-        this.mockHelper.checkThrowException();
+        this.spyHelper.reportMethodCall("getSearchStringEscape");
+        this.spyHelper.checkThrowException();
 
         return this.searchStringEscape;
     }
@@ -618,10 +618,10 @@ public class MockDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public ResultSet getTables(String catalog, String schemaPattern, String tableNamePattern, String[] types) throws SQLException {
-        this.mockHelper.reportMethodCall("getTables", catalog, schemaPattern, tableNamePattern, types);
-        this.mockHelper.checkThrowException();
+        this.spyHelper.reportMethodCall("getTables", catalog, schemaPattern, tableNamePattern, types);
+        this.spyHelper.checkThrowException();
 
-        return this.mockResultSets.remove(0);
+        return this.spyResultSets.remove(0);
     }
 
     @Override
@@ -641,10 +641,10 @@ public class MockDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public ResultSet getColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) throws SQLException {
-        this.mockHelper.reportMethodCall("getColumns", catalog, schemaPattern, tableNamePattern, columnNamePattern);
-        this.mockHelper.checkThrowException();
+        this.spyHelper.reportMethodCall("getColumns", catalog, schemaPattern, tableNamePattern, columnNamePattern);
+        this.spyHelper.checkThrowException();
 
-        return this.mockResultSets.remove(0);
+        return this.spyResultSets.remove(0);
     }
 
     @Override
@@ -674,18 +674,18 @@ public class MockDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public ResultSet getImportedKeys(String catalog, String schema, String table) throws SQLException {
-        this.mockHelper.reportMethodCall("getImportedKeys", catalog, schema, table);
-        this.mockHelper.checkThrowException();
+        this.spyHelper.reportMethodCall("getImportedKeys", catalog, schema, table);
+        this.spyHelper.checkThrowException();
 
-        return this.mockResultSets.remove(0);
+        return this.spyResultSets.remove(0);
     }
 
     @Override
     public ResultSet getExportedKeys(String catalog, String schema, String table) throws SQLException {
-        this.mockHelper.reportMethodCall("getExportedKeys", catalog, schema, table);
-        this.mockHelper.checkThrowException();
+        this.spyHelper.reportMethodCall("getExportedKeys", catalog, schema, table);
+        this.spyHelper.checkThrowException();
 
-        return this.mockResultSets.remove(0);
+        return this.spyResultSets.remove(0);
     }
 
     @Override
@@ -700,10 +700,10 @@ public class MockDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public ResultSet getIndexInfo(String catalog, String schema, String table, boolean unique, boolean approximate) throws SQLException {
-        this.mockHelper.reportMethodCall("getIndexInfo", catalog, schema, table, unique, approximate);
-        this.mockHelper.checkThrowException();
+        this.spyHelper.reportMethodCall("getIndexInfo", catalog, schema, table, unique, approximate);
+        this.spyHelper.checkThrowException();
 
-        return this.mockResultSets.remove(0);
+        return this.spyResultSets.remove(0);
     }
 
     @Override

@@ -1,19 +1,19 @@
-package com.tschanz.v_bro.repo.persistence.mock.service;
+package com.tschanz.v_bro.repo.persistence;
 
-import com.tschanz.v_bro.common.testing.MockHelper;
+import com.tschanz.v_bro.common.testing.SpyHelper;
 import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
 import com.tschanz.v_bro.repo.domain.service.RepoService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 
 
-public class MockRepoService implements RepoService {
+public class SpyRepoService implements RepoService {
     private boolean isConnected = false;
-    public MockHelper<RepoException> mockHelper = new MockHelper<>();
+    public SpyHelper<RepoException> spyHelper = new SpyHelper<>();
 
 
     @Override
     public boolean isConnected() {
-        this.mockHelper.reportMethodCall("isConnected");
+        this.spyHelper.reportMethodCall("isConnected");
         return this.isConnected;
     }
 
@@ -21,15 +21,15 @@ public class MockRepoService implements RepoService {
     @Override
     public void connect(ConnectionParameters parameters) throws RepoException {
         this.isConnected = true;
-        this.mockHelper.reportMethodCall("connect", parameters);
-        this.mockHelper.checkThrowException();
+        this.spyHelper.reportMethodCall("connect", parameters);
+        this.spyHelper.checkThrowException();
     }
 
 
     @Override
     public void disconnect() throws RepoException {
         this.isConnected = false;
-        this.mockHelper.reportMethodCall("disconnect");
-        this.mockHelper.checkThrowException();
+        this.spyHelper.reportMethodCall("disconnect");
+        this.spyHelper.checkThrowException();
     }
 }

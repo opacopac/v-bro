@@ -8,14 +8,17 @@ import java.util.List;
 
 public class SelectElementDenominationResponse extends UseCaseResponse {
     public final List<ElementResponse> elements;
+    public final List<String> selectDenominations;
 
 
     public SelectElementDenominationResponse(
         List<ElementResponse> elements,
+        List<String> selectDenominations,
         String message,
         boolean isError
     ) {
         super(message, isError);
         this.elements = elements;
+        this.selectDenominations = selectDenominations;
     }
 }

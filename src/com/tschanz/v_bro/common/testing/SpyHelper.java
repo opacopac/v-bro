@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class MockHelper<E extends Throwable> {
+public class SpyHelper<E extends Throwable> {
     private final List<MethodCall> methodCalls = new ArrayList<>();
     private E throwException;
 

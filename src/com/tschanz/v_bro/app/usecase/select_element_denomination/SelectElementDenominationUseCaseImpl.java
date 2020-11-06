@@ -40,6 +40,7 @@ public class SelectElementDenominationUseCaseImpl implements SelectElementDenomi
 
             SelectElementDenominationResponse response = new SelectElementDenominationResponse(
                 ElementConverter.toResponse(elements),
+                request.denominations,
                 message,
                 false
             );
@@ -48,7 +49,7 @@ public class SelectElementDenominationUseCaseImpl implements SelectElementDenomi
             String message = "error reading element denominations and elements: " + exception.getMessage();
             this.logger.severe(message);
 
-            SelectElementDenominationResponse response = new SelectElementDenominationResponse(null, message, true);
+            SelectElementDenominationResponse response = new SelectElementDenominationResponse(null, null, message, true);
             this.presenter.present(response);
         }
     }

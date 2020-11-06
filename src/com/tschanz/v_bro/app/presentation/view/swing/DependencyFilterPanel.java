@@ -26,6 +26,7 @@ public class DependencyFilterPanel extends JPanel implements DependencyFilterVie
         bg.add(this.fwdRadio);
         this.add(this.bwdRadio);
         this.add(this.fwdRadio);
+        this.bwdRadio.setEnabled(false); // TODO
 
         this.bwdRadio.addActionListener(this::onBwdFilterSelected);
         this.fwdRadio.addActionListener(this::onFwdFilterSelected);

@@ -124,11 +124,11 @@ public class Main {
         MainPresenter mainPresenter = new MainPresenter(mainModel);
 
         // app use cases
-        OpenConnectionUseCase openConnectionUc = new OpenConnectionUseCaseImpl(repoServiceProvider, elementClassServiceProvider, mainPresenter.getOpenConnectionPresenter());
+        OpenConnectionUseCase openConnectionUc = new OpenConnectionUseCaseImpl(repoServiceProvider, elementClassServiceProvider, elementServiceProvider, versionServiceProvider, dependencyServiceProvider, versionAggregateServiceProvider, mainPresenter.getOpenConnectionPresenter());
         CloseConnectionUseCase closeConnectionUc = new CloseConnectionUseCaseImpl(repoServiceProvider, mainPresenter.getCloseConnectionPresenter());
-        SelectElementClassUseCase selectElementClassUc = new SelectElementClassUseCaseImpl(elementClassServiceProvider, elementServiceProvider, mainPresenter.getSelectElementClassPresenter());
+        SelectElementClassUseCase selectElementClassUc = new SelectElementClassUseCaseImpl(elementClassServiceProvider, elementServiceProvider, versionServiceProvider, dependencyServiceProvider, versionAggregateServiceProvider, mainPresenter.getSelectElementClassPresenter());
         SelectElementDenominationUseCase selectElementDenominationUc = new SelectElementDenominationUseCaseImpl(elementServiceProvider, mainPresenter.getSelectElementDenominationPresenter());
-        SelectElementUseCase selectElementUc = new SelectElementUseCaseImpl(versionServiceProvider, mainPresenter.getSelectElementPresenter());
+        SelectElementUseCase selectElementUc = new SelectElementUseCaseImpl(versionServiceProvider, dependencyServiceProvider, versionAggregateServiceProvider, mainPresenter.getSelectElementPresenter());
         SelectVersionUseCase selectVersionUc = new SelectVersionUseCaseImpl(dependencyServiceProvider, versionAggregateServiceProvider, mainPresenter.getSelectVersionPresenter());
         SelectDependencyFilterUseCase selectDependencyFilterUc = new SelectDependencyFilterUseCaseImpl(dependencyServiceProvider, mainPresenter.getSelectDependencyFilterPresenter());
         SelectDependencyVersionUseCase selectDependencyVersionUc = new SelectDependencyVersionUseCaseImpl(elementClassServiceProvider, elementServiceProvider, versionServiceProvider, dependencyServiceProvider, versionAggregateServiceProvider, mainPresenter.getSelectDependencyVersionPresenter());

@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.repo_connection;
 
-import com.tschanz.v_bro.repo.persistence.jdbc.mock.MockConnectionFactory;
+import com.tschanz.v_bro.repo.persistence.jdbc.mock.SpyConnectionFactory;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.JdbcConnectionParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,14 +12,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 class JdbcRepoServiceTest {
-    private MockConnectionFactory mockConnectionFactory;
+    private SpyConnectionFactory spyConnectionFactory;
     private JdbcRepoService jdbcRepo;
 
 
     @BeforeEach
     void setUp() {
-        this.mockConnectionFactory = new MockConnectionFactory(false);
-        this.jdbcRepo = new JdbcRepoService(mockConnectionFactory);
+        this.spyConnectionFactory = new SpyConnectionFactory(false);
+        this.jdbcRepo = new JdbcRepoService(spyConnectionFactory);
     }
 
 
@@ -31,13 +31,13 @@ class JdbcRepoServiceTest {
 
         this.jdbcRepo.connect(parameters);
 
-        assertNotNull(this.mockConnectionFactory.getCurrentConnection());
+        assertNotNull(this.spyConnectionFactory.getCurrentConnection());
     }
 
 
     @Test
     void connect_sql_exception() {
-        this.mockConnectionFactory.mockHelper.setThrowException(new SQLException("MEEP"));
+        this.spyConnectionFactory.spyHelper.setThrowException(new SQLException("MEEP"));
         JdbcConnectionParameters parameters = new JdbcConnectionParameters("XXX", "YYY", "ZZZ");
 
         Exception exception = assertThrows(RepoException.class, () -> {
@@ -56,13 +56,13 @@ class JdbcRepoServiceTest {
     void disconnect_happy_day() throws RepoException {
         this.jdbcRepo.disconnect();
 
-        assertNull(this.mockConnectionFactory.getCurrentConnection());
+        assertNull(this.spyConnectionFactory.getCurrentConnection());
     }
 
 
     @Test
     void disconnect_sql_exception() {
-        this.mockConnectionFactory.mockHelper.setThrowException(new SQLException("MEEP"));
+        this.spyConnectionFactory.spyHelper.setThrowException(new SQLException("MEEP"));
 
         Exception exception = assertThrows(RepoException.class, () -> {
             this.jdbcRepo.disconnect();

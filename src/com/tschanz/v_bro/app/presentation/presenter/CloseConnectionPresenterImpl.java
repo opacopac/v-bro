@@ -26,7 +26,7 @@ public class CloseConnectionPresenterImpl implements CloseConnectionPresenter {
         if (!response.isError) {
             this.mainModel.currentRepoConnection.next(null);
             this.mainModel.elementClasses.next(new SelectedItemList<>(Collections.emptyList(), null));
-            this.mainModel.elementDenominations.next(new SelectedItemList<>(Collections.emptyList(), null));
+            this.mainModel.elementDenominations.next(new MultiSelectedItemList<>(Collections.emptyList(), Collections.emptyList()));
             this.mainModel.elements.next(new SelectedItemList<>(Collections.emptyList(), null));
             this.mainModel.versions.next(new SelectedItemList<>(Collections.emptyList(), null));
             this.mainModel.fwdDependencies.next(Collections.emptyList());

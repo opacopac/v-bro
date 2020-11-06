@@ -51,49 +51,58 @@ public class SelectDependencyVersionUseCaseImpl implements SelectDependencyVersi
 
     @Override
     public void execute(SelectDependencyVersionRequest request) {
-        this.logger.info("UC: select version '" + request.versionId + "'...");
+        this.logger.info("UC: select dependency version '" + request.versionId + "'...");
 
         try {
+            // element denominations
             ElementClassService elementClassService = this.elementClassServiceProvider.getService(request.repoType);
             List<Denomination> denominations = elementClassService.readDenominations(request.elementClass);
+            List<String> selectDenominations = denominations.size() > 0 ? List.of(denominations.get(0).getName()) : Collections.emptyList();
 
+            // elements
             ElementService elementService = this.elementServiceProvider.getService(request.repoType);
-            List<ElementData> elements = elementService.readElements(request.elementClass, Collections.emptyList());
+            List<ElementData> elements = elementService.readElements(request.elementClass, selectDenominations);
 
+            // versions
             VersionService versionService = this.versionServiceProvider.getService(request.repoType);
             List<VersionData> versions = versionService.readVersionTimeline(request.elementClass, request.elementId);
 
+            // version filter
             VersionFilter selectedVersionFilter = VersionFilterConverter.fromRequest(request.versionFilter);
             VersionFilter effectiveVersionFilter = selectedVersionFilter.cropToVersions(versions);
 
+            // dependencies
             DependencyService dependencyService = this.dependencyServiceProvider.getService(request.repoType);
             List<FwdDependency> fwdDependencies = dependencyService.readFwdDependencies(request.elementClass, request.elementId, request.versionId);
 
+            // version aggregate
             VersionAggregateService versionAggregateService = this.versionAggregateServiceProvider.getService(request.repoType);
             VersionAggregate versionAggregate = versionAggregateService.readVersionAggregate(request.elementClass, request.elementId, request.versionId);
 
-            String message = "successfully read " + fwdDependencies.size() + " FWD dependencies and version aggregate";
+            String message = "successfully read " + elements.size()  + " elements, " + versions.size()  + " versions, "
+                + fwdDependencies.size() + " dependencies and the version aggregate";
             this.logger.info(message);
 
             SelectDependencyVersionResponse response = new SelectDependencyVersionResponse(
-                request.elementClass,
-                request.elementId,
-                request.versionId,
                 DenominationConverter.toResponse(denominations),
                 ElementConverter.toResponse(elements),
-                VersionFilterConverter.toResponse(effectiveVersionFilter),
                 VersionConverter.toResponse(versions),
+                VersionFilterConverter.toResponse(effectiveVersionFilter),
                 FwdDependencyConverter.toResponse(fwdDependencies),
                 VersionAggregateConverter.toResponse(versionAggregate),
+                request.elementClass,
+                selectDenominations,
+                request.elementId,
+                request.versionId,
                 message,
                 false
             );
             this.presenter.present(response);
         } catch (RepoException exception) {
-            String message = "error reading dependencies and version aggregate: " + exception.getMessage();
+            String message = "error reading dependency version: " + exception.getMessage();
             this.logger.severe(message);
 
-            SelectDependencyVersionResponse response = new SelectDependencyVersionResponse(null, null, null,null, null, null, null,null, null, message, true);
+            SelectDependencyVersionResponse response = new SelectDependencyVersionResponse(null, null, null, null,null, null, null, null,null, null, message, true);
             this.presenter.present(response);
         }
     }

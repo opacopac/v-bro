@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.mock;
 
-import com.tschanz.v_bro.common.testing.MockHelper;
+import com.tschanz.v_bro.common.testing.SpyHelper;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -13,41 +13,41 @@ import java.util.List;
 import java.util.Map;
 
 
-public class MockResultSet implements ResultSet {
-    public MockHelper<SQLException> mockHelper = new MockHelper<>();
-    private List<MockResult> mockResults;
+public class SpyResultSet implements ResultSet {
+    public SpyHelper<SQLException> spyHelper = new SpyHelper<>();
+    private List<SpyResult> spyResults;
     private int currentResultIndex = -1;
 
 
-    public static MockResultSet emptyResultSet() {
-        return new MockResultSet();
+    public static SpyResultSet emptyResultSet() {
+        return new SpyResultSet();
     }
 
 
-    public static MockResultSet throwErrorResultSet(SQLException exception) {
-        MockResultSet resultSet = new MockResultSet();
-        resultSet.mockHelper.setThrowException(exception);
+    public static SpyResultSet throwErrorResultSet(SQLException exception) {
+        SpyResultSet resultSet = new SpyResultSet();
+        resultSet.spyHelper.setThrowException(exception);
 
         return resultSet;
     }
 
 
-    public MockResultSet(MockResult... mockResults) {
-        this.mockResults = Arrays.asList(mockResults);
+    public SpyResultSet(SpyResult... spyResults) {
+        this.spyResults = Arrays.asList(spyResults);
     }
 
 
-    private MockResult getCurrentMockResult() {
-        return this.mockResults.get(this.currentResultIndex);
+    private SpyResult getCurrentMockResult() {
+        return this.spyResults.get(this.currentResultIndex);
     }
 
 
     @Override
     public boolean next() throws SQLException {
-        this.mockHelper.reportMethodCall("next");
-        this.mockHelper.checkThrowException();
+        this.spyHelper.reportMethodCall("next");
+        this.spyHelper.checkThrowException();
 
-        if (this.mockResults.size() > this.currentResultIndex + 1) {
+        if (this.spyResults.size() > this.currentResultIndex + 1) {
             this.currentResultIndex++;
             return true;
         } else {
@@ -146,16 +146,16 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public String getString(String columnLabel) throws SQLException {
-        this.mockHelper.reportMethodCall("getString", columnLabel);
-        this.mockHelper.checkThrowException();
+        this.spyHelper.reportMethodCall("getString", columnLabel);
+        this.spyHelper.checkThrowException();
 
         return this.getCurrentMockResult().getValue(columnLabel);
     }
 
     @Override
     public boolean getBoolean(String columnLabel) throws SQLException {
-        this.mockHelper.reportMethodCall("getBoolean", columnLabel);
-        this.mockHelper.checkThrowException();
+        this.spyHelper.reportMethodCall("getBoolean", columnLabel);
+        this.spyHelper.checkThrowException();
 
         return Boolean.parseBoolean(this.getCurrentMockResult().getValue(columnLabel));
     }
@@ -172,16 +172,16 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public int getInt(String columnLabel) throws SQLException {
-        this.mockHelper.reportMethodCall("getInt", columnLabel);
-        this.mockHelper.checkThrowException();
+        this.spyHelper.reportMethodCall("getInt", columnLabel);
+        this.spyHelper.checkThrowException();
 
         return Integer.parseInt(this.getCurrentMockResult().getValue(columnLabel));
     }
 
     @Override
     public long getLong(String columnLabel) throws SQLException {
-        this.mockHelper.reportMethodCall("getLong", columnLabel);
-        this.mockHelper.checkThrowException();
+        this.spyHelper.reportMethodCall("getLong", columnLabel);
+        this.spyHelper.checkThrowException();
 
         return Long.parseLong(this.getCurrentMockResult().getValue(columnLabel));
     }
@@ -208,8 +208,8 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public Date getDate(String columnLabel) throws SQLException {
-        this.mockHelper.reportMethodCall("getDate", columnLabel);
-        this.mockHelper.checkThrowException();
+        this.spyHelper.reportMethodCall("getDate", columnLabel);
+        this.spyHelper.checkThrowException();
 
         return Date.valueOf(this.getCurrentMockResult().getValue(columnLabel));
     }

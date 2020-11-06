@@ -10,9 +10,13 @@ import java.util.stream.Collectors;
 
 public class VersionAggregateConverter {
     public static VersionAggregateResponse toResponse(VersionAggregate versionAggregate) {
-        return new VersionAggregateResponse(
-            toResponse(versionAggregate.getRootNode())
-        );
+        if (versionAggregate == null) {
+            return null;
+        } else {
+            return new VersionAggregateResponse(
+                toResponse(versionAggregate.getRootNode())
+            );
+        }
     }
 
 

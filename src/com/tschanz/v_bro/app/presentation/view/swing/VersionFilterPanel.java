@@ -1,7 +1,6 @@
 package com.tschanz.v_bro.app.presentation.view.swing;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectVersionFilterAction;
-import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.app.presentation.viewmodel.VersionFilterItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.PflegestatusItem;
@@ -63,11 +62,11 @@ public class VersionFilterPanel extends JPanel implements VersionFilterView {
         SelectVersionFilterAction selectVersionFilterAction
     ) {
         this.selecVersionFilterAction = selectVersionFilterAction;
-        versionFilter.subscribe(new GenericSubscriber<>(this::onInitialFilterChanged));
+        versionFilter.subscribe(new GenericSubscriber<>(this::onVersionFilterChanged));
     }
 
 
-    private void onInitialFilterChanged(VersionFilterItem versionFilter) {
+    private void onVersionFilterChanged(VersionFilterItem versionFilter) {
         if (versionFilter == null) {
             return;
         }
@@ -78,10 +77,6 @@ public class VersionFilterPanel extends JPanel implements VersionFilterView {
 
         this.repaint();
         this.revalidate();
-
-        if (this.selecVersionFilterAction != null) {
-            this.selecVersionFilterAction.next(versionFilter);
-        }
     }
 
 

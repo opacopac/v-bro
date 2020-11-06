@@ -1,10 +1,10 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
+import com.tschanz.v_bro.app.presentation.viewmodel.DependencyFilterItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.ElementVersionVector;
 import com.tschanz.v_bro.app.presentation.viewmodel.RepoConnectionItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectDependencyFilterAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.VersionFilterItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectDependencyVersionAction;
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectVersionFilterAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.DependencyFilterItemConverter;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.VersionFilterItemConverter;
 import com.tschanz.v_bro.app.usecase.select_dependency_version.SelectDependencyVersionUseCase;
@@ -15,21 +15,21 @@ import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 
 public class DependencyListController {
     private final BehaviorSubject<RepoConnectionItem> repoConnection;
-    private final SelectVersionFilterAction selectVersionFilterAction;
-    private final SelectDependencyFilterAction selectDependencyFilterAction;
+    private final BehaviorSubject<VersionFilterItem> versionFilter;
+    private final BehaviorSubject<DependencyFilterItem> dependencyFilter;
     private final SelectDependencyVersionUseCase selectDependencyVersionUc;
 
 
     public DependencyListController(
         BehaviorSubject<RepoConnectionItem> repoConnection,
-        SelectVersionFilterAction selectVersionFilterAction,
-        SelectDependencyFilterAction selectDependencyFilterAction,
+        BehaviorSubject<VersionFilterItem> versionFilter,
+        BehaviorSubject<DependencyFilterItem> dependencyFilter,
         SelectDependencyVersionAction selectDependencyVersionAction,
         SelectDependencyVersionUseCase selectDependencyVersionUc
     ) {
         this.repoConnection = repoConnection;
-        this.selectDependencyFilterAction = selectDependencyFilterAction;
-        this.selectVersionFilterAction = selectVersionFilterAction;
+        this.dependencyFilter = dependencyFilter;
+        this.versionFilter = versionFilter;
         this.selectDependencyVersionUc = selectDependencyVersionUc;
 
         selectDependencyVersionAction.subscribe(new GenericSubscriber<>(this::onVersionFilterSelected));
@@ -39,8 +39,8 @@ public class DependencyListController {
     private void onVersionFilterSelected(ElementVersionVector selectedDependencyVersion) {
         if (this.repoConnection.getCurrentValue() == null
             || selectedDependencyVersion == null
-            || this.selectVersionFilterAction == null
-            || this.selectDependencyFilterAction == null
+            || this.versionFilter == null
+            || this.dependencyFilter == null
         ) {
             return;
         }
@@ -50,8 +50,8 @@ public class DependencyListController {
             selectedDependencyVersion.getElementClass(),
             selectedDependencyVersion.getElementId(),
             selectedDependencyVersion.getVersionId(),
-            VersionFilterItemConverter.toRequest(this.selectVersionFilterAction.getCurrentValue()),
-            DependencyFilterItemConverter.toRequest(this.selectDependencyFilterAction.getCurrentValue())
+            VersionFilterItemConverter.toRequest(this.versionFilter.getCurrentValue()),
+            DependencyFilterItemConverter.toRequest(this.dependencyFilter.getCurrentValue())
         );
         this.selectDependencyVersionUc.execute(request);
     }

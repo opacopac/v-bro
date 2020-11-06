@@ -8,7 +8,7 @@ public class XmlConnectionParameters implements ConnectionParameters {
     private final String filename;
 
     @Override
-    public RepoType getType() {
+    public RepoType getRepoType() {
         return RepoType.XML;
     }
     public String getFilename() { return filename; }

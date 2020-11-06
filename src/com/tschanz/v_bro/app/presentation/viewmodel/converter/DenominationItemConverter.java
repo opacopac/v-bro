@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.presentation.viewmodel.converter;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.DenominationItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.SelectedItemList;
+import com.tschanz.v_bro.app.presentation.viewmodel.MultiSelectedItemList;
 import com.tschanz.v_bro.app.usecase.common.responsemodel.DenominationResponse;
 
 import java.util.List;
@@ -17,8 +17,8 @@ public class DenominationItemConverter {
     }
 
 
-    public static SelectedItemList<DenominationItem> fromResponse(List<DenominationResponse> denominations, String selectDenomination) {
-        return new SelectedItemList<>(fromResponse(denominations), selectDenomination);
+    public static MultiSelectedItemList<DenominationItem> fromResponse(List<DenominationResponse> denominations, List<String> selectDenominations) {
+        return new MultiSelectedItemList<>(fromResponse(denominations), selectDenominations);
     }
 
 

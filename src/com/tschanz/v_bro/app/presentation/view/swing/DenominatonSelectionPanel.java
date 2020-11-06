@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.view.swing;
 
-import com.tschanz.v_bro.app.presentation.viewmodel.SelectedItemList;
+import com.tschanz.v_bro.app.presentation.viewmodel.MultiSelectedItemList;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectDenominationsAction;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.app.presentation.view.ElementDenominationView;
@@ -28,7 +28,7 @@ public class DenominatonSelectionPanel extends JPanel implements ElementDenomina
 
     @Override
     public void bindViewModel(
-        Flow.Publisher<SelectedItemList<DenominationItem>> denominationsList,
+        Flow.Publisher<MultiSelectedItemList<DenominationItem>> denominationsList,
         SelectDenominationsAction selectDenominationsAction
     ) {
         this.selectDenominationsAction = selectDenominationsAction;
@@ -36,7 +36,7 @@ public class DenominatonSelectionPanel extends JPanel implements ElementDenomina
     }
 
 
-    private void onDenominationsListChanged(SelectedItemList<DenominationItem> denominationItems) {
+    private void onDenominationsListChanged(MultiSelectedItemList<DenominationItem> denominationItems) {
         if (denominationItems == null) {
             throw new IllegalArgumentException("denominationItems");
         }
@@ -57,7 +57,10 @@ public class DenominatonSelectionPanel extends JPanel implements ElementDenomina
             checkBox.addActionListener(this::onDenominationSelected);
             this.add(checkBox);
             this.checkBoxDenominationMap.put(checkBox, item);
-            // TODO: select
+
+            if (denominationItems.getSelectedItems().contains(item)) {
+                checkBox.setSelected(true);
+            }
         }
 
         this.isPopulating = false;

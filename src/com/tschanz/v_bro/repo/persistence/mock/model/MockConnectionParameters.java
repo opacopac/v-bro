@@ -6,7 +6,7 @@ import com.tschanz.v_bro.repo.domain.model.RepoType;
 
 public class MockConnectionParameters implements ConnectionParameters {
     @Override
-    public RepoType getType() {
+    public RepoType getRepoType() {
         return RepoType.MOCK;
     }
 }

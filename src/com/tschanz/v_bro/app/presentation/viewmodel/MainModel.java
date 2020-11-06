@@ -19,7 +19,7 @@ public class MainModel {
     public final BehaviorSubject<SelectedItemList<ElementClassItem>> elementClasses = new BehaviorSubject<>(new SelectedItemList<>(Collections.emptyList(), null));
     public final SelectElementClassAction selectElementClassAction = new SelectElementClassAction(null);
 
-    public final BehaviorSubject<SelectedItemList<DenominationItem>> elementDenominations = new BehaviorSubject<>(new SelectedItemList<>(Collections.emptyList(), null));
+    public final BehaviorSubject<MultiSelectedItemList<DenominationItem>> elementDenominations = new BehaviorSubject<>(new MultiSelectedItemList<>(Collections.emptyList(), Collections.emptyList()));
     public final SelectDenominationsAction selectDenominationsAction = new SelectDenominationsAction(Collections.emptyList());
 
     public final BehaviorSubject<SelectedItemList<ElementItem>> elements = new BehaviorSubject<>(new SelectedItemList<>(Collections.emptyList(), null));

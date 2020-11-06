@@ -15,7 +15,7 @@ import com.tschanz.v_bro.repo.persistence.xml.model.XmlConnectionParameters;
 
 public class RepoConnectionConverter {
     public static RepoConnectionResponse toResponse(ConnectionParameters connectionParameters) {
-        switch (connectionParameters.getType()) {
+        switch (connectionParameters.getRepoType()) {
             case JDBC:
                 JdbcConnectionParameters jdbcConnectionParameters = (JdbcConnectionParameters) connectionParameters;
                 return new JdbcConnectionResponse(jdbcConnectionParameters.getUrl(), jdbcConnectionParameters.getUser(), jdbcConnectionParameters.getPassword());

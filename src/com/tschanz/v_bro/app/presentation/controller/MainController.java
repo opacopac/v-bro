@@ -37,48 +37,52 @@ public class MainController {
 
         ElementClassController elementClassController = new ElementClassController(
             mainModel.currentRepoConnection,
+            mainModel.versionFilter,
+            mainModel.dependencyFilter,
             mainModel.selectElementClassAction,
             selectElementClassUc
         );
 
         ElementDenominationController elementDenominationController = new ElementDenominationController(
             mainModel.currentRepoConnection,
-            mainModel.selectElementClassAction,
+            mainModel.elementClasses,
             mainModel.selectDenominationsAction,
             selectElementDenominationUc
         );
 
         ElementController elementController = new ElementController(
             mainModel.currentRepoConnection,
-            mainModel.selectElementClassAction,
+            mainModel.elementClasses,
+            mainModel.versionFilter,
+            mainModel.dependencyFilter,
             mainModel.selectElementAction,
-            mainModel.selectVersionFilterAction,
             selectElementUc
         );
 
         VersionFilterController versionFilterController = new VersionFilterController(
             mainModel.currentRepoConnection,
-            mainModel.selectElementClassAction,
-            mainModel.selectElementAction,
+            mainModel.elementClasses,
+            mainModel.elements,
+            mainModel.dependencyFilter,
             mainModel.selectVersionFilterAction,
             selectElementUc
         );
 
         VersionController versionController = new VersionController(
             mainModel.currentRepoConnection,
-            mainModel.selectElementClassAction,
-            mainModel.selectElementAction,
+            mainModel.elementClasses,
+            mainModel.elements,
+            mainModel.versionFilter,
+            mainModel.dependencyFilter,
             mainModel.selectVersionAction,
-            mainModel.effectiveVersionFilter,
-            mainModel.selectDependencyFilterAction,
             selectVersionUc
         );
 
 
         DependencyListController dependencyListController = new DependencyListController(
             mainModel.currentRepoConnection,
-            mainModel.selectVersionFilterAction,
-            mainModel.selectDependencyFilterAction,
+            mainModel.versionFilter,
+            mainModel.dependencyFilter,
             mainModel.selectDependencyVersionAction,
             selectDependencyVersionUc
         );

@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.querybuilder;
 
-import com.tschanz.v_bro.repo.persistence.jdbc.mock.MockConnectionFactory;
+import com.tschanz.v_bro.repo.persistence.jdbc.mock.SpyConnectionFactory;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.FieldValue;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoField;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoFieldType;
@@ -15,20 +15,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 class JdbcQueryBuilderImplTest {
-    private MockConnectionFactory mockConnectionFactory;
+    private SpyConnectionFactory spyConnectionFactory;
     private JdbcQueryBuilderImpl jdbcQueryBuilder;
 
 
     @BeforeEach
     void setUp() {
-        this.mockConnectionFactory = new MockConnectionFactory(false);
-        this.jdbcQueryBuilder = new JdbcQueryBuilderImpl(this.mockConnectionFactory);
+        this.spyConnectionFactory = new SpyConnectionFactory(false);
+        this.jdbcQueryBuilder = new JdbcQueryBuilderImpl(this.spyConnectionFactory);
     }
 
 
     @Test
     void buildQuery_single_field_oracle() {
-        this.mockConnectionFactory.isCurrentConnectionMySqlResult = false;
+        this.spyConnectionFactory.isCurrentConnectionMySqlResult = false;
         List<RepoField> fields = new ArrayList<>();
         fields.add(new RepoField( "ID", RepoFieldType.LONG, true,false, true));
 
@@ -40,7 +40,7 @@ class JdbcQueryBuilderImplTest {
 
     @Test
     void buildQuery_multiple_fields_mysql() {
-        this.mockConnectionFactory.isCurrentConnectionMySqlResult = true;
+        this.spyConnectionFactory.isCurrentConnectionMySqlResult = true;
         List<RepoField> fields = new ArrayList<>();
         fields.add(new RepoField("ID", RepoFieldType.LONG, true,false, true));
         fields.add(new RepoField("NAME", RepoFieldType.STRING, false, false, true));
@@ -55,7 +55,7 @@ class JdbcQueryBuilderImplTest {
 
     @Test
     void buildQuery_single_condition_mysql() {
-        this.mockConnectionFactory.isCurrentConnectionMySqlResult = true;
+        this.spyConnectionFactory.isCurrentConnectionMySqlResult = true;
         List<RepoField> fields = new ArrayList<>();
         fields.add(new RepoField( "ID", RepoFieldType.LONG, true,false, true));
         List<RowFilter> filters = new ArrayList<>();

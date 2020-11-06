@@ -1,9 +1,6 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.*;
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectDependencyFilterAction;
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementAction;
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementClassAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectVersionAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.DependencyFilterItemConverter;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.VersionFilterItemConverter;
@@ -15,27 +12,27 @@ import com.tschanz.v_bro.app.usecase.select_version.SelectVersionUseCase;
 
 public class VersionController {
     private final BehaviorSubject<RepoConnectionItem> repoConnection;
-    private final SelectElementClassAction selectElementClassAction;
-    private final SelectElementAction selectElementAction;
-    private final BehaviorSubject<VersionFilterItem> effectiveVersionFilter;
-    private final SelectDependencyFilterAction selectDependencyFilterAction;
+    private final BehaviorSubject<SelectedItemList<ElementClassItem>> elementClasses;
+    private final BehaviorSubject<SelectedItemList<ElementItem>> elements;
+    private final BehaviorSubject<VersionFilterItem> versionFilter;
+    private final BehaviorSubject<DependencyFilterItem> dependencyFilter;
     private final SelectVersionUseCase selectVersionUc;
 
 
     public VersionController(
         BehaviorSubject<RepoConnectionItem> repoConnection,
-        SelectElementClassAction selectElementClassAction,
-        SelectElementAction selectElementAction,
+        BehaviorSubject<SelectedItemList<ElementClassItem>> elementClasses,
+        BehaviorSubject<SelectedItemList<ElementItem>> elements,
+        BehaviorSubject<VersionFilterItem> versionFilter,
+        BehaviorSubject<DependencyFilterItem> dependencyFilter,
         SelectVersionAction selectVersionAction,
-        BehaviorSubject<VersionFilterItem> effectiveVersionFilter,
-        SelectDependencyFilterAction selectDependencyFilterAction,
         SelectVersionUseCase selectVersionUc
     ) {
         this.repoConnection = repoConnection;
-        this.selectElementClassAction = selectElementClassAction;
-        this.selectElementAction = selectElementAction;
-        this.effectiveVersionFilter = effectiveVersionFilter;
-        this.selectDependencyFilterAction = selectDependencyFilterAction;
+        this.elementClasses = elementClasses;
+        this.elements = elements;
+        this.versionFilter = versionFilter;
+        this.dependencyFilter = dependencyFilter;
         this.selectVersionUc = selectVersionUc;
 
         selectVersionAction.subscribe(new GenericSubscriber<>(this::onVersionSelected));
@@ -44,22 +41,24 @@ public class VersionController {
 
     private void onVersionSelected(String versionId) {
         if (this.repoConnection.getCurrentValue() == null
-            || this.selectElementClassAction.getCurrentValue() == null
-            || this.selectElementAction == null
+            || this.elementClasses.getCurrentValue() == null
+            || this.elementClasses.getCurrentValue().getSelectedItem() == null
+            || this.elements.getCurrentValue() == null
+            || this.elements.getCurrentValue().getSelectedItem() == null
             || versionId == null
-            || this.effectiveVersionFilter.getCurrentValue() == null
-            || this.selectDependencyFilterAction.getCurrentValue() == null
+            || this.versionFilter.getCurrentValue() == null
+            || this.dependencyFilter.getCurrentValue() == null
         ) {
             return;
         }
 
         SelectVersionRequest request = new SelectVersionRequest(
             this.repoConnection.getCurrentValue().repoType,
-            this.selectElementClassAction.getCurrentValue(),
-            this.selectElementAction.getCurrentValue(),
+            this.elementClasses.getCurrentValue().getSelectedItem().getId(),
+            this.elements.getCurrentValue().getSelectedItem().getId(),
             versionId,
-            VersionFilterItemConverter.toRequest(this.effectiveVersionFilter.getCurrentValue()),
-            DependencyFilterItemConverter.toRequest(this.selectDependencyFilterAction.getCurrentValue())
+            VersionFilterItemConverter.toRequest(this.versionFilter.getCurrentValue()),
+            DependencyFilterItemConverter.toRequest(this.dependencyFilter.getCurrentValue())
         );
         this.selectVersionUc.execute(request);
     }

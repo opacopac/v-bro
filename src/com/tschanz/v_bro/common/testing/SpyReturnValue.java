@@ -3,12 +3,12 @@ package com.tschanz.v_bro.common.testing;
 import java.util.ArrayList;
 
 
-public class MockReturnValue<T> {
+public class SpyReturnValue<T> {
     private final String argumentName;
     private final ArrayList<T> returnValueList = new ArrayList<>();
 
 
-    public MockReturnValue(String argumentName) {
+    public SpyReturnValue(String argumentName) {
         this.argumentName = argumentName;
     }
 

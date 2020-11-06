@@ -11,6 +11,7 @@ import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
 import com.tschanz.v_bro.version_aggregates.domain.model.VersionAggregate;
 import com.tschanz.v_bro.version_aggregates.domain.service.VersionAggregateService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -38,9 +39,11 @@ public class SelectVersionUseCaseImpl implements SelectVersionUseCase {
         this.logger.info("UC: select version '" + request.versionId + "'...");
 
         try {
+            // dependencies
             DependencyService dependencyService = this.dependencyServiceProvider.getService(request.repoType);
             List<FwdDependency> fwdDependencies = dependencyService.readFwdDependencies(request.elementClass, request.elementId, request.versionId);
 
+            // version aggregate
             VersionAggregateService versionAggregateService = this.versionAggregateServiceProvider.getService(request.repoType);
             VersionAggregate versionAggregate = versionAggregateService.readVersionAggregate(request.elementClass, request.elementId, request.versionId);
 
@@ -50,6 +53,7 @@ public class SelectVersionUseCaseImpl implements SelectVersionUseCase {
             SelectVersionResponse response = new SelectVersionResponse(
                 FwdDependencyConverter.toResponse(fwdDependencies),
                 VersionAggregateConverter.toResponse(versionAggregate),
+                request.versionId,
                 message,
                 false
             );
@@ -58,7 +62,7 @@ public class SelectVersionUseCaseImpl implements SelectVersionUseCase {
             String message = "error reading dependencies and version aggregate: " + exception.getMessage();
             this.logger.severe(message);
 
-            SelectVersionResponse response = new SelectVersionResponse(null, null, message, true);
+            SelectVersionResponse response = new SelectVersionResponse(null, null, null, message, true);
             this.presenter.present(response);
         }
     }

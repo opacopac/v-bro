@@ -1,6 +1,8 @@
 package com.tschanz.v_bro.element_classes.domain.model;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 public class Denomination {
@@ -12,6 +14,15 @@ public class Denomination {
 
     public Denomination(String name) {
         this.name = name;
+    }
+
+
+
+    public static List<String> getNameList(List<Denomination> denominations) {
+        return denominations
+            .stream()
+            .map(Denomination::getName)
+            .collect(Collectors.toList());
     }
 
 

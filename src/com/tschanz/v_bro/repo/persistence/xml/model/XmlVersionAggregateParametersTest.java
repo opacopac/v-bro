@@ -21,7 +21,7 @@ class XmlVersionAggregateParametersTest {
 
     @Test
     void test_type_is_always_xml() {
-        assertEquals(RepoType.XML, this.parameters.getType());
+        assertEquals(RepoType.XML, this.parameters.getRepoType());
     }
 
 
