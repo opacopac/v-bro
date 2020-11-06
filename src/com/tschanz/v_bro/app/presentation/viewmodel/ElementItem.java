@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.presentation.viewmodel;
 
 
-public class ElementItem {
+public class ElementItem implements IdItem {
     private static final int MAX_NAME_LENGTH = 100;
     private final String id;
     private final String name;

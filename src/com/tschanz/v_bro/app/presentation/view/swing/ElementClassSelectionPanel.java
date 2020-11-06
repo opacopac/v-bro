@@ -1,5 +1,6 @@
 package com.tschanz.v_bro.app.presentation.view.swing;
 
+import com.tschanz.v_bro.app.presentation.viewmodel.SelectedItemList;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementClassAction;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.app.presentation.view.ElementClassView;
@@ -8,7 +9,6 @@ import com.tschanz.v_bro.app.presentation.viewmodel.ElementClassItem;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.List;
 import java.util.concurrent.Flow;
 
 
@@ -27,7 +27,7 @@ public class ElementClassSelectionPanel extends JPanel implements ElementClassVi
 
     @Override
     public void bindViewModel(
-        Flow.Publisher<List<ElementClassItem>> elementClassList,
+        Flow.Publisher<SelectedItemList<ElementClassItem>> elementClassList,
         SelectElementClassAction selectElementClassAction
     ) {
         this.selectElementClassAction = selectElementClassAction;
@@ -35,10 +35,11 @@ public class ElementClassSelectionPanel extends JPanel implements ElementClassVi
     }
 
 
-    private void onElementClassListChanged(List<ElementClassItem> elementClassList) {
+    private void onElementClassListChanged(SelectedItemList<ElementClassItem> elementClassList) {
         this.isPopulating = true;
         this.elementClassesComboBox.removeAllItems();
-        elementClassList.forEach(this.elementClassesComboBox::addItem);
+        elementClassList.getItems().forEach(this.elementClassesComboBox::addItem);
+        this.elementClassesComboBox.setSelectedItem(elementClassList.getSelectedItem());
         this.isPopulating = false;
 
         this.repaint();

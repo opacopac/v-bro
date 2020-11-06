@@ -24,7 +24,7 @@ public class SelectElementDenominationPresenterImpl implements SelectElementDeno
         }
 
         if (!response.isError) {
-            this.mainModel.elements.next(ElementItemConverter.fromResponse(response.elements));
+            this.mainModel.elements.next(ElementItemConverter.fromResponse(response.elements, null)); // TODO
             this.mainModel.appStatus.next(new InfoStatusItem(response.message));
         } else {
             this.mainModel.appStatus.next(new ErrorStatusItem(response.message));

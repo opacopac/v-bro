@@ -76,6 +76,9 @@ public class SelectDependencyVersionUseCaseImpl implements SelectDependencyVersi
             this.logger.info(message);
 
             SelectDependencyVersionResponse response = new SelectDependencyVersionResponse(
+                request.elementClass,
+                request.elementId,
+                request.versionId,
                 DenominationConverter.toResponse(denominations),
                 ElementConverter.toResponse(elements),
                 VersionFilterConverter.toResponse(effectiveVersionFilter),
@@ -90,7 +93,7 @@ public class SelectDependencyVersionUseCaseImpl implements SelectDependencyVersi
             String message = "error reading dependencies and version aggregate: " + exception.getMessage();
             this.logger.severe(message);
 
-            SelectDependencyVersionResponse response = new SelectDependencyVersionResponse(null, null, null, null,null, null, message, true);
+            SelectDependencyVersionResponse response = new SelectDependencyVersionResponse(null, null, null,null, null, null, null,null, null, message, true);
             this.presenter.present(response);
         }
     }

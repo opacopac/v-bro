@@ -1,12 +1,9 @@
 package com.tschanz.v_bro.app.presentation.view.swing;
 
-import com.tschanz.v_bro.app.presentation.viewmodel.ElementVersionVector;
+import com.tschanz.v_bro.app.presentation.viewmodel.*;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectDependencyVersionAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectVersionAction;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
-import com.tschanz.v_bro.app.presentation.viewmodel.FwdDependencyItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.VersionFilterItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.VersionItem;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 
 import javax.swing.*;
@@ -17,7 +14,7 @@ import java.util.concurrent.Flow;
 public class DependencyListEntry extends JPanel {
     private final JLabel dependencyName = new JLabel("");
     private final VersionTimeline versionTimeline = new VersionTimeline();
-    private final BehaviorSubject<java.util.List<VersionItem>> versionList = new BehaviorSubject<>(Collections.emptyList());
+    private final BehaviorSubject<SelectedItemList<VersionItem>> versionList = new BehaviorSubject<>(new SelectedItemList<>(Collections.emptyList(), null)); // TODO
     private SelectDependencyVersionAction selectDependencyVersionAction;
     private FwdDependencyItem fwdDependencyItem;
 
@@ -37,7 +34,7 @@ public class DependencyListEntry extends JPanel {
         this.fwdDependencyItem = fwdDependency;
         this.selectDependencyVersionAction = selectDependencyVersionAction;
         this.dependencyName.setText(this.createDependencyName(fwdDependency));
-        this.versionList.next(fwdDependency.getVersions());
+        this.versionList.next(new SelectedItemList<>(fwdDependency.getVersions(), null)); // TODO
 
         SelectVersionAction selectVersionAction = new SelectVersionAction(null);
         selectVersionAction.subscribe(new GenericSubscriber<>(this::onVersionSelected));

@@ -24,7 +24,7 @@ public class SelectElementPresenterImpl implements SelectElementPresenter {
 
         if (!response.isError) {
             this.mainModel.effectiveVersionFilter.next(VersionFilterItemConverter.fromResponse(response.effectiveVersionFilter));
-            this.mainModel.versions.next(VersionItemConverter.fromResponse(response.versions));
+            this.mainModel.versions.next(VersionItemConverter.fromResponse(response.versions, null)); // TODO
             this.mainModel.appStatus.next(new InfoStatusItem(response.message));
         } else {
             this.mainModel.appStatus.next(new ErrorStatusItem(response.message));

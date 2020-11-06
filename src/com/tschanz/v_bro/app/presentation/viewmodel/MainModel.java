@@ -16,16 +16,16 @@ public class MainModel {
     public final BehaviorSubject<RepoConnectionItem> currentRepoConnection = new BehaviorSubject<>(null);
     public final ConnectToRepoAction connectToRepoAction = new ConnectToRepoAction(null);
 
-    public final BehaviorSubject<List<ElementClassItem>> elementClasses = new BehaviorSubject<>(Collections.emptyList());
+    public final BehaviorSubject<SelectedItemList<ElementClassItem>> elementClasses = new BehaviorSubject<>(new SelectedItemList<>(Collections.emptyList(), null));
     public final SelectElementClassAction selectElementClassAction = new SelectElementClassAction(null);
 
-    public final BehaviorSubject<List<DenominationItem>> elementDenominations = new BehaviorSubject<>(Collections.emptyList());
+    public final BehaviorSubject<SelectedItemList<DenominationItem>> elementDenominations = new BehaviorSubject<>(new SelectedItemList<>(Collections.emptyList(), null));
     public final SelectDenominationsAction selectDenominationsAction = new SelectDenominationsAction(Collections.emptyList());
 
-    public final BehaviorSubject<List<ElementItem>> elements = new BehaviorSubject<>(Collections.emptyList());
+    public final BehaviorSubject<SelectedItemList<ElementItem>> elements = new BehaviorSubject<>(new SelectedItemList<>(Collections.emptyList(), null));
     public final SelectElementAction selectElementAction = new SelectElementAction(null);
 
-    public final BehaviorSubject<List<VersionItem>> versions = new BehaviorSubject<>(Collections.emptyList());
+    public final BehaviorSubject<SelectedItemList<VersionItem>> versions = new BehaviorSubject<>(new SelectedItemList<>(Collections.emptyList(), null));
     public final SelectVersionAction selectVersionAction = new SelectVersionAction(null);
 
     public final BehaviorSubject<VersionFilterItem> versionFilter = new BehaviorSubject<>(new VersionFilterItem(LocalDate.of(2015, 1, 1), VersionData.HIGH_DATE, VersionData.DEFAULT_PFLEGESTATUS));

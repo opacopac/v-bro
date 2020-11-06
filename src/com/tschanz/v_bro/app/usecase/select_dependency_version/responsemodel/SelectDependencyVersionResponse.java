@@ -7,6 +7,9 @@ import java.util.List;
 
 
 public class SelectDependencyVersionResponse extends UseCaseResponse {
+    public final String selectElementClass;
+    public final String selectElementId;
+    public final String selectVersionId;
     public final List<DenominationResponse> denominations;
     public final List<ElementResponse> elements;
     public final VersionFilterResponse effectiveVersionFilter;
@@ -16,6 +19,9 @@ public class SelectDependencyVersionResponse extends UseCaseResponse {
 
 
     public SelectDependencyVersionResponse(
+        String selectElementClass,
+        String selectElementId,
+        String selectVersionId,
         List<DenominationResponse> denominations,
         List<ElementResponse> elements,
         VersionFilterResponse effectiveVersionFilter,
@@ -26,6 +32,9 @@ public class SelectDependencyVersionResponse extends UseCaseResponse {
         boolean isError
     ) {
         super(message, isError);
+        this.selectElementClass = selectElementClass;
+        this.selectElementId = selectElementId;
+        this.selectVersionId = selectVersionId;
         this.denominations = denominations;
         this.elements = elements;
         this.effectiveVersionFilter = effectiveVersionFilter;

@@ -1,5 +1,6 @@
 package com.tschanz.v_bro.app.presentation.view.swing;
 
+import com.tschanz.v_bro.app.presentation.viewmodel.SelectedItemList;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectVersionAction;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.app.presentation.viewmodel.VersionFilterItem;
@@ -46,7 +47,7 @@ public class VersionTimeline extends JPanel implements VersionsView {
     public static int TIMELINE_WIDTH = 750;
     public static int TIMELINE_HEIGHT = BAR_HEIGHT_PX + 10;
 
-    private List<VersionItem> versionList;
+    private SelectedItemList<VersionItem> versionList;
     private VersionFilterItem effectiveVersionFilter;
     private VersionItem hoverVersion;
     private final Set<VersionVonBisPx> versionVonBisXPixelCache = new HashSet<>();
@@ -66,7 +67,7 @@ public class VersionTimeline extends JPanel implements VersionsView {
 
     @Override
     public void bindViewModel(
-        Flow.Publisher<List<VersionItem>> versionList,
+        Flow.Publisher<SelectedItemList<VersionItem>> versionList,
         Flow.Publisher<VersionFilterItem> effectiveVersionFilter,
         SelectVersionAction selectVersionAction
     ) {
@@ -80,12 +81,12 @@ public class VersionTimeline extends JPanel implements VersionsView {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if (this.versionList == null || this.versionList.size() == 0) {
+        if (this.versionList == null || this.versionList.getItems().size() == 0) {
             return;
         }
 
         this.versionVonBisXPixelCache.clear();
-        this.versionList
+        this.versionList.getItems()
             .stream()
             .filter(version -> version.getGueltigBis().isAfter(this.effectiveVersionFilter.getMinGueltigVon()))
             .filter(version -> version.getGueltigVon().isBefore(this.effectiveVersionFilter.getMaxGueltigBis()))
@@ -93,7 +94,7 @@ public class VersionTimeline extends JPanel implements VersionsView {
     }
 
 
-    private void onVersionListChanged(List<VersionItem> versionList) {
+    private void onVersionListChanged(SelectedItemList<VersionItem> versionList) {
         this.versionList = versionList;
         this.repaint();
         this.revalidate();
@@ -143,8 +144,8 @@ public class VersionTimeline extends JPanel implements VersionsView {
         this.versionVonBisXPixelCache.add(new VersionVonBisPx(version, x1, x2));
 
         // bar
-        String selectedVersionId = this.selectVersionAction != null ? this.selectVersionAction.getCurrentValue() : "";
-        int colorIndex = this.versionList.indexOf(version) % BAR_FILL_COLORS.size();
+        String selectedVersionId = this.selectVersionAction != null ? this.selectVersionAction.getCurrentValue() : ""; // TODO
+        int colorIndex = this.versionList.getItems().indexOf(version) % BAR_FILL_COLORS.size();
         g.setColor(BAR_FILL_COLORS.get(colorIndex));
         g.fillRect(x1, BAR_OFFSET_Y_PX,x2 - x1, BAR_HEIGHT_PX);
 

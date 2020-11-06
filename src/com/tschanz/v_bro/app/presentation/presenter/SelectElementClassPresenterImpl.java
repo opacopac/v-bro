@@ -25,8 +25,8 @@ public class SelectElementClassPresenterImpl implements SelectElementClassPresen
         }
 
         if (!response.isError) {
-            this.mainModel.elementDenominations.next(DenominationItemConverter.fromResponse(response.denominations));
-            this.mainModel.elements.next(ElementItemConverter.fromResponse(response.elements));
+            this.mainModel.elementDenominations.next(DenominationItemConverter.fromResponse(response.denominations, null)); // TODO
+            this.mainModel.elements.next(ElementItemConverter.fromResponse(response.elements, null)); // TODO
             this.mainModel.appStatus.next(new InfoStatusItem(response.message));
         } else {
             this.mainModel.appStatus.next(new ErrorStatusItem(response.message));

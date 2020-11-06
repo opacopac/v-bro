@@ -1,5 +1,6 @@
 package com.tschanz.v_bro.app.presentation.view.swing;
 
+import com.tschanz.v_bro.app.presentation.viewmodel.SelectedItemList;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectDenominationsAction;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.app.presentation.view.ElementDenominationView;
@@ -8,9 +9,7 @@ import com.tschanz.v_bro.app.presentation.viewmodel.DenominationItem;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Flow;
 import java.util.stream.Collectors;
@@ -19,6 +18,7 @@ import java.util.stream.Collectors;
 public class DenominatonSelectionPanel extends JPanel implements ElementDenominationView {
     private final Map<JCheckBox, DenominationItem> checkBoxDenominationMap = new HashMap<>();
     private SelectDenominationsAction selectDenominationsAction;
+    private boolean isPopulating = false;
 
 
     public DenominatonSelectionPanel() {
@@ -28,7 +28,7 @@ public class DenominatonSelectionPanel extends JPanel implements ElementDenomina
 
     @Override
     public void bindViewModel(
-        Flow.Publisher<List<DenominationItem>> denominationsList,
+        Flow.Publisher<SelectedItemList<DenominationItem>> denominationsList,
         SelectDenominationsAction selectDenominationsAction
     ) {
         this.selectDenominationsAction = selectDenominationsAction;
@@ -36,17 +36,17 @@ public class DenominatonSelectionPanel extends JPanel implements ElementDenomina
     }
 
 
-    private void onDenominationsListChanged(List<DenominationItem> denominationItems) {
+    private void onDenominationsListChanged(SelectedItemList<DenominationItem> denominationItems) {
         if (denominationItems == null) {
             throw new IllegalArgumentException("denominationItems");
         }
 
-        // rebuild checkbox list
+        this.isPopulating = true;
         this.removeAll();
         this.checkBoxDenominationMap.clear();
 
         int denominationCount = 0;
-        for (DenominationItem item : denominationItems) {
+        for (DenominationItem item : denominationItems.getItems()) {
             if (denominationCount < DenominationItem.MAX_DENOMINATIONS) {
                 denominationCount++;
             } else {
@@ -57,24 +57,25 @@ public class DenominatonSelectionPanel extends JPanel implements ElementDenomina
             checkBox.addActionListener(this::onDenominationSelected);
             this.add(checkBox);
             this.checkBoxDenominationMap.put(checkBox, item);
+            // TODO: select
         }
+
+        this.isPopulating = false;
 
         this.repaint();
         this.revalidate();
-
-        if (this.selectDenominationsAction != null) {
-            this.selectDenominationsAction.next(Collections.emptyList());
-        }
     }
 
 
     private void onDenominationSelected(ActionEvent e) {
-        this.selectDenominationsAction.next(
-            this.checkBoxDenominationMap.keySet()
-                .stream()
-                .filter(AbstractButton::isSelected)
-                .map(this.checkBoxDenominationMap::get)
-                .collect(Collectors.toList())
-        );
+        if (!this.isPopulating && this.selectDenominationsAction != null) {
+            this.selectDenominationsAction.next(
+                this.checkBoxDenominationMap.keySet()
+                    .stream()
+                    .filter(AbstractButton::isSelected)
+                    .map(this.checkBoxDenominationMap::get)
+                    .collect(Collectors.toList())
+            );
+        }
     }
 }

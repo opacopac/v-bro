@@ -26,7 +26,7 @@ public class OpenConnectionPresenterImpl implements OpenConnectionPresenter {
 
         if (!response.isError) {
             this.mainModel.currentRepoConnection.next(ConnectionItemConverter.fromResponse(response.repoConnection));
-            this.mainModel.elementClasses.next(ElementClassItemConverter.fromResponse(response.elementClasses));
+            this.mainModel.elementClasses.next(ElementClassItemConverter.fromResponse(response.elementClasses, null)); // TODO: provide in response
             this.mainModel.appStatus.next(new InfoStatusItem(response.message));
         } else {
             this.mainModel.appStatus.next(new ErrorStatusItem(response.message));
