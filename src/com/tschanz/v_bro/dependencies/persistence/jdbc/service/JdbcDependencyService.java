@@ -5,13 +5,10 @@ import com.tschanz.v_bro.dependencies.domain.service.DependencyService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoRelation;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTableRecord;
-import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
-import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoDataService;
-import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataService;
-import com.tschanz.v_bro.version_aggregates.persistence.jdbc.model.JdbcAggregateNode;
+import com.tschanz.v_bro.version_aggregates.domain.service.VersionAggregateService;
 import com.tschanz.v_bro.version_aggregates.persistence.jdbc.model.JdbcVersionAggregate;
-import com.tschanz.v_bro.version_aggregates.persistence.jdbc.service.JdbcVersionAggregateService;
 import com.tschanz.v_bro.versions.domain.model.VersionData;
+import com.tschanz.v_bro.versions.domain.service.VersionService;
 import com.tschanz.v_bro.versions.persistence.jdbc.service.JdbcVersionService;
 
 import java.util.ArrayList;
@@ -19,23 +16,14 @@ import java.util.List;
 
 
 public class JdbcDependencyService implements DependencyService {
-    private final JdbcRepoService repo;
-    private final JdbcRepoMetadataService repoMetaData;
-    private final JdbcRepoDataService repoData;
-    JdbcVersionService versionService;
-    private final JdbcVersionAggregateService versionAggregateService;
+    private final VersionService versionService;
+    private final VersionAggregateService versionAggregateService;
 
 
     public JdbcDependencyService(
-        JdbcRepoService repo,
-        JdbcRepoMetadataService repoMetaData,
-        JdbcRepoDataService repoData,
-        JdbcVersionService versionService,
-        JdbcVersionAggregateService versionAggregateService
+        VersionService versionService,
+        VersionAggregateService versionAggregateService
     ) {
-        this.repo = repo;
-        this.repoMetaData = repoMetaData;
-        this.repoData = repoData;
         this.versionService = versionService;
         this.versionAggregateService = versionAggregateService;
     }
@@ -53,24 +41,14 @@ public class JdbcDependencyService implements DependencyService {
                 }
                 String fwdElementClassName = relation.getFwdClassName();
                 String fwdElementId = record.findFieldValue(relation.getBwdFieldName()).getValueString();
-                List<VersionData> versionData = this.versionService.readVersionTimeline(fwdElementClassName, fwdElementId);
-                dependencies.add(
-                    new FwdDependency(fwdElementClassName, fwdElementId, versionData)
-                );
+                if (fwdElementId != null) {
+                    List<VersionData> versionData = this.versionService.readVersionTimeline(fwdElementClassName, fwdElementId);
+                    dependencies.add(new FwdDependency(fwdElementClassName, fwdElementId, versionData));
+                }
             }
         }
 
         return dependencies;
-    }
-
-
-    private List<RepoTableRecord> getRepoTableEntries(JdbcAggregateNode jdbcAggregateNode) {
-        ArrayList<RepoTableRecord> nodes = new ArrayList<>();
-
-        nodes.add(jdbcAggregateNode.getRepoTableEntry());
-        jdbcAggregateNode.getJdbcChildNodes().forEach(childNode -> nodes.addAll(this.getRepoTableEntries(childNode)));
-
-        return nodes;
     }
 
 

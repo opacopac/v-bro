@@ -7,28 +7,28 @@ import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoRelation;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactory;
 
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
-    public static String WILDCARD = "%";
+    public static final String WILDCARD = "%";
 
     private final Logger logger = Logger.getLogger(JdbcRepoMetadataServiceImpl.class.getName());
     private final JdbcConnectionFactory connectionFactory;
+    private List<RepoField> repoFieldLut;
+    private List<RepoRelation> repoRelationLut;
 
 
     public JdbcRepoMetadataServiceImpl(JdbcConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
 
-
-    // region findTables
 
     @Override
     public List<String> findTableNames(String tableNamePattern) throws RepoException {
@@ -55,207 +55,37 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
         }
     }
 
-    // endregion
-
-
-    // region readTableStructure
 
     @Override
     public RepoTable readTableStructure(String tableName) throws RepoException {
-        tableName = this.readTable(tableName);
-        List<String> pks = this.readPrimaryKeys(tableName);
-        List<String> uniqueIdxes = this.readIndexes(tableName, true);
-        List<RepoField> repoFields = this.readFields(tableName, pks, uniqueIdxes);
-        List<RepoRelation> outgoingRelations = this.readRelations(tableName, false);
-        List<RepoRelation> incomingRelations = this.readRelations(tableName, true);
+        if (this.repoFieldLut == null) {
+            this.repoFieldLut = this.readAllRepoFields();
+        }
+
+        if (this.repoRelationLut == null) {
+            this.repoRelationLut = this.readAllRelations();
+        }
+
+        List<RepoField> repoFields = this.repoFieldLut
+            .stream()
+            .filter(field -> field.tableName.equals(tableName.toUpperCase()))
+            .collect(Collectors.toList());
+        List<RepoRelation> outgoingRelations = this.repoRelationLut
+            .stream()
+            .filter(relation -> relation.getBwdClassName().equals(tableName.toUpperCase()))
+            .collect(Collectors.toList());
+        List<RepoRelation> incomingRelations = this.repoRelationLut
+            .stream()
+            .filter(relation -> relation.getFwdClassName().equals(tableName.toUpperCase()))
+            .collect(Collectors.toList());
 
         return new RepoTable(
-            tableName,
+            tableName.toUpperCase(),
             repoFields,
             outgoingRelations,
             incomingRelations
         );
     }
-
-    // endregion
-
-
-    // region readTable
-
-    @Override
-    public String readTable(String tableName) throws RepoException {
-        if (tableName == null || tableName.isEmpty()) {
-            throw new RepoException("tableName must not be null or empty", null);
-        }
-
-        this.logger.info("reading table " + tableName);
-
-        List<String> tableNames = this.findTableNames(this.escapeUnderscore(tableName));
-
-        if (tableNames.size() > 0) {
-            return tableNames.get(0).toUpperCase();
-        } else {
-            String msg = "table " + tableName + " not found.";
-            this.logger.severe (msg);
-            throw new RepoException(msg, null);
-        }
-    }
-
-    // endregion
-
-
-    // region readPrimaryKeys
-
-    @Override
-    public List<String> readPrimaryKeys(String tableName) throws RepoException {
-        this.logger.info("reading primary keys for table " + tableName);
-
-        List<String> primaryKeys = new ArrayList<>();
-        try {
-            ResultSet pkResult = this.connectionFactory.getCurrentConnection().getMetaData().getPrimaryKeys(null,null, tableName);
-
-            while (pkResult.next()) {
-                primaryKeys.add(pkResult.getString("COLUMN_NAME").toUpperCase());
-            }
-            pkResult.close();
-        } catch (SQLException exception) {
-            String msg = "error primary keys: " + exception.getMessage();
-            this.logger.severe(msg);
-            throw new RepoException(msg, exception);
-        }
-
-        return primaryKeys;
-    }
-
-    // endregion
-
-
-    // region readIndexes
-
-    @Override
-    public List<String> readIndexes(String tableName, boolean uniqueOnly) throws RepoException {
-        this.logger.info("reading indexes for table " + tableName);
-
-        ArrayList<String> indexInfos = new ArrayList<>();
-        try {
-            ResultSet indexResults = this.connectionFactory
-                .getCurrentConnection()
-                .getMetaData()
-                .getIndexInfo(null, null, tableName, uniqueOnly, false);
-
-            while (indexResults.next()) {
-                if (indexResults.getString("INDEX_NAME") == null) {
-                    continue;
-                }
-                indexInfos.add(indexResults.getString("COLUMN_NAME").toUpperCase());
-            }
-            indexResults.close();
-        } catch (SQLException exception) {
-            String msg = "error reading indexes: " + exception.getMessage();
-            this.logger.severe(msg);
-            throw new RepoException(msg, exception);
-        }
-
-        return indexInfos;
-    }
-
-    // endregion
-
-
-    // region readFields
-
-    @Override
-    public List<RepoField> readFields(String tableName, List<String> pks, List<String> uniqueIdxes) throws RepoException {
-        this.logger.info("reading columns for table " + tableName);
-
-        List<RepoField> repoFields = new ArrayList<>();
-        try {
-            ResultSet columnsResult = this.connectionFactory.getCurrentConnection().getMetaData().getColumns(null,null, tableName, null);
-            while (columnsResult.next()) {
-                String fieldName = columnsResult.getString("COLUMN_NAME").toUpperCase();
-                RepoFieldType fieldType = this.getFieldType(columnsResult.getInt("DATA_TYPE"));
-                boolean isNullable = this.isNullable(columnsResult.getInt("NULLABLE"));
-                boolean isId = pks.contains(fieldName);
-                boolean isUnique = uniqueIdxes.contains(fieldName);
-                repoFields.add(new RepoField(fieldName, fieldType, isId, isNullable, isUnique));
-            }
-            columnsResult.close();
-        } catch (SQLException exception) {
-            String msg = "error reading columns: " + exception.getMessage();
-            this.logger.severe(msg);
-            throw new RepoException(msg, exception);
-        }
-
-        return repoFields;
-    }
-
-
-    private RepoFieldType getFieldType(int dataType) {
-        switch (dataType) {
-            case Types.INTEGER:
-            case Types.BIGINT:
-            case Types.SMALLINT:
-            case Types.TINYINT:
-                return RepoFieldType.LONG;
-            case Types.BOOLEAN:
-                return RepoFieldType.BOOL;
-            case Types.DATE:
-                return RepoFieldType.DATE;
-            case Types.TIMESTAMP:
-                return RepoFieldType.TIMESTAMP;
-            case Types.VARCHAR:
-            case Types.NVARCHAR:
-            default:
-                return RepoFieldType.STRING;
-        }
-    }
-
-
-    private boolean isNullable(int nullableType) {
-        switch (nullableType) {
-            case DatabaseMetaData.columnNoNulls:
-                return false;
-            case DatabaseMetaData.columnNullable:
-            default:
-                return true;
-        }
-    }
-
-    // endregion
-
-
-    // region readRelations
-
-    @Override
-    public List<RepoRelation> readRelations(String tableName, boolean incoming) throws RepoException {
-        this.logger.info("reading relations for table " + tableName);
-
-        List<RepoRelation> repoRelations = new ArrayList<>();
-        try {
-            ResultSet relationsResult = incoming ?
-                this.connectionFactory.getCurrentConnection().getMetaData().getExportedKeys(null,null, tableName) :
-                this.connectionFactory.getCurrentConnection().getMetaData().getImportedKeys(null, null, tableName);
-
-            while (relationsResult.next()) {
-                RepoRelation repoRelation = new RepoRelation(
-                    relationsResult.getString("FKTABLE_NAME").toUpperCase(),
-                    relationsResult.getString("FKCOLUMN_NAME").toUpperCase(),
-                    relationsResult.getString("PKTABLE_NAME").toUpperCase(),
-                    relationsResult.getString("PKCOLUMN_NAME").toUpperCase()
-                );
-                repoRelations.add(repoRelation);
-            }
-            relationsResult.close();
-        } catch (SQLException exception) {
-            String msg = "error reading relations: " + exception.getMessage();
-            this.logger.severe(msg);
-            throw new RepoException(msg, exception);
-        }
-
-        return repoRelations;
-    }
-
-    // endregion
 
 
     @Override
@@ -270,4 +100,200 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
         }
     }
 
+
+    private List<RepoRelation> readAllRelations() throws RepoException {
+        String query;
+        switch (this.connectionFactory.getJdbcServerType()) {
+            case MYSQL:
+                query = "select TABLE_NAME as BWD_TABLE, COLUMN_NAME as BWD_COLUMN, REFERENCED_TABLE_NAME as FWD_TABLE, REFERENCED_COLUMN_NAME as FWD_COLUMN "
+                    + "from information_schema.key_column_usage "
+                    + "where REFERENCED_TABLE_NAME IS NOT NULL AND constraint_schema = DATABASE()";
+                break;
+            case ORACLE:
+            default:
+                query = "SELECT uc.TABLE_NAME AS BWD_TABLE, col.COLUMN_NAME AS BWD_COLUMN, col2.TABLE_NAME AS FWD_TABLE, col2.COLUMN_NAME AS FWD_COLUMN "
+                    + "FROM USER_CONSTRAINTS uc "
+                    + "INNER JOIN USER_CONS_COLUMNS col ON col.CONSTRAINT_NAME = uc.CONSTRAINT_NAME "
+                    + "INNER JOIN USER_CONS_COLUMNS col2 ON col2.CONSTRAINT_NAME = uc.R_CONSTRAINT_NAME "
+                    + "WHERE uc.CONSTRAINT_TYPE = 'R'";
+                break;
+        }
+
+        this.logger.info("executing query " + query);
+
+        List<RepoRelation> repoRelations = new ArrayList<>();
+        try {
+            Statement statement = this.connectionFactory.getCurrentConnection().createStatement();
+            if (statement.execute(query)) {
+                ResultSet resultSet = statement.getResultSet();
+                while (resultSet.next()) {
+                    String pwdTable = resultSet.getString("BWD_TABLE").toUpperCase();
+                    String pwdColumn = resultSet.getString("BWD_COLUMN").toUpperCase();
+                    String fwdTable = resultSet.getString("FWD_TABLE").toUpperCase();
+                    String fwdColumn = resultSet.getString("FWD_COLUMN").toUpperCase();
+                    repoRelations.add(new RepoRelation(pwdTable, pwdColumn, fwdTable, fwdColumn));
+                }
+                statement.getResultSet().close();
+            }
+            statement.close();
+        } catch (SQLException exception) {
+            String msg = "error reading all relations from db: " + exception.getMessage();
+            this.logger.severe(msg);
+            throw new RepoException(msg, exception);
+        }
+
+        return repoRelations;
+    }
+
+
+    private List<RepoField> readAllRepoFields() throws RepoException {
+        Set<String> idTableColumns = new HashSet<>();
+        Set<String> uniqueTableColumns = new HashSet<>();
+        this.populateIdAndUniqueTableColumns(idTableColumns, uniqueTableColumns);
+
+        String query;
+        switch (this.connectionFactory.getJdbcServerType()) {
+            case MYSQL:
+                query = "select TABLE_NAME, COLUMN_NAME, DATA_TYPE, IS_NULLABLE as NULLABLE "
+                    + "from information_schema.columns "
+                    + "where table_schema = DATABASE()";
+                break;
+            case ORACLE:
+            default:
+                query = "SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, NULLABLE FROM USER_TAB_COLUMNS";
+                break;
+        }
+
+        this.logger.info("executing query " + query);
+
+        List<RepoField> repoFields = new ArrayList<>();
+
+        try {
+            Statement statement = this.connectionFactory.getCurrentConnection().createStatement();
+            if (statement.execute(query)) {
+                ResultSet resultSet = statement.getResultSet();
+                while (resultSet.next()) {
+                    String tableName = resultSet.getString("TABLE_NAME").toUpperCase();
+                    String colName = resultSet.getString("COLUMN_NAME").toUpperCase();
+                    String dataType = resultSet.getString("DATA_TYPE").toUpperCase();
+                    String isNullable = resultSet.getString("NULLABLE").toUpperCase();
+
+                    String key = this.getTableColumnKey(tableName, colName);
+                    RepoField repoField = new RepoField(
+                        colName,
+                        this.getRepoFieldType(dataType),
+                        idTableColumns.contains(key),
+                        this.getIsNullable(isNullable),
+                        uniqueTableColumns.contains(key)
+                    );
+                    repoField.tableName = tableName;
+                    repoFields.add(repoField);
+                }
+                statement.getResultSet().close();
+            }
+            statement.close();
+        } catch (SQLException exception) {
+            String msg = "error reading all columns from db: " + exception.getMessage();
+            this.logger.severe(msg);
+            throw new RepoException(msg, exception);
+        }
+
+        return repoFields;
+    }
+
+
+    private void populateIdAndUniqueTableColumns(Set<String> idTableColumns, Set<String> uniqueTableColumns) throws RepoException {
+        String query;
+        switch (this.connectionFactory.getJdbcServerType()) {
+            case MYSQL:
+                query = "select tc.TABLE_NAME, cu.COLUMN_NAME, tc.CONSTRAINT_TYPE "
+                    + "from information_schema.table_constraints as tc "
+                    + "inner join information_schema.key_column_usage as cu ON (cu.constraint_name = tc.constraint_name AND cu.table_name = tc.table_name) "
+                    + "where tc.constraint_schema = DATABASE()";
+                break;
+            case ORACLE:
+            default:
+                query = "SELECT uc.TABLE_NAME, col.COLUMN_NAME, uc.CONSTRAINT_TYPE "
+                    + "FROM USER_CONSTRAINTS uc "
+                    + "INNER JOIN USER_CONS_COLUMNS col ON (col.CONSTRAINT_NAME = uc.CONSTRAINT_NAME AND col.TABLE_NAME = uc.TABLE_NAME) "
+                    + "WHERE uc.CONSTRAINT_TYPE IN ('P', 'U')";
+                break;
+        }
+
+        this.logger.info("executing query " + query);
+
+        try {
+            Statement statement = this.connectionFactory.getCurrentConnection().createStatement();
+            if (statement.execute(query)) {
+                ResultSet resultSet = statement.getResultSet();
+                while (resultSet.next()) {
+                    String tableName = resultSet.getString("TABLE_NAME").toUpperCase();
+                    String colName = resultSet.getString("COLUMN_NAME").toUpperCase();
+                    String constraintType = resultSet.getString("CONSTRAINT_TYPE").toUpperCase();
+                    String key = this.getTableColumnKey(tableName, colName);
+                    if (this.isIdConstraint(constraintType)) {
+                        idTableColumns.add(key);
+                    }
+                    if (this.isUniqueConstraint(constraintType)) {
+                        uniqueTableColumns.add(key);
+                    }
+                }
+                statement.getResultSet().close();
+            }
+            statement.close();
+        } catch (SQLException exception) {
+            String msg = "error reading constraints from db: " + exception.getMessage();
+            this.logger.severe(msg);
+            throw new RepoException(msg, exception);
+        }
+    }
+
+
+    private boolean isIdConstraint(String constraintType) {
+        switch (constraintType.toUpperCase()) {
+            case "P":
+            case "PRIMARY KEY":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+
+    private boolean isUniqueConstraint(String constraintType) {
+        switch (constraintType.toUpperCase()) {
+            case "U":
+            case "UNIQUE":
+            case "P":
+            case "PRIMARY KEY":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+
+    private String getTableColumnKey(String tableName, String columnName) {
+        return tableName + " " + columnName;
+    }
+
+
+    private RepoFieldType getRepoFieldType(String dataType) {
+        switch (dataType.toUpperCase()) {
+            case "INT":
+            case "NUMBER":
+                return RepoFieldType.LONG;
+            case "DATE":
+                return RepoFieldType.DATE;
+            case "VARCHAR":
+            case "VARCHAR2":
+            default:
+                return RepoFieldType.STRING;
+        }
+    }
+
+
+    private boolean getIsNullable(String isNullable) {
+        return isNullable.toUpperCase().charAt(0) == 'Y';
+    }
 }

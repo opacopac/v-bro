@@ -6,9 +6,7 @@ import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFac
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.JdbcQueryBuilder;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.RowFilter;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -86,16 +84,21 @@ public class JdbcRepoDataService {
     private FieldValue parseFieldValue(RepoField field, ResultSet resultSet) throws SQLException {
         switch (field.getType()) {
             case BOOL:
-                return new FieldValue(field, resultSet.getBoolean(this.queryBuilder.createFieldName(field)));
+                boolean boolResult = resultSet.getBoolean(field.getName());
+                return new FieldValue(field, resultSet.wasNull() ? null : boolResult);
             case LONG:
-                return new FieldValue(field, resultSet.getLong(this.queryBuilder.createFieldName(field)));
+                long longResult = resultSet.getLong(field.getName());
+                return new FieldValue(field, resultSet.wasNull() ? null : longResult);
             case DATE:
-                return new FieldValue(field, resultSet.getDate(this.queryBuilder.createFieldName(field)));
+                Date dateResult = resultSet.getDate(field.getName());
+                return new FieldValue(field, resultSet.wasNull() ? null : dateResult);
             case TIMESTAMP:
-                return new FieldValue(field, resultSet.getTimestamp(this.queryBuilder.createFieldName(field)));
+                Timestamp timestampResult = resultSet.getTimestamp(field.getName());
+                return new FieldValue(field, resultSet.wasNull() ? null : timestampResult);
             case STRING:
             default:
-                return new FieldValue(field, resultSet.getString(this.queryBuilder.createFieldName(field)));
+                String stringResult = resultSet.getString(field.getName());
+                return new FieldValue(field, resultSet.wasNull() ? null : stringResult);
         }
     }
 }

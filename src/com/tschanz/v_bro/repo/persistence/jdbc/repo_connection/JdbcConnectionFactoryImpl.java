@@ -24,12 +24,14 @@ public class JdbcConnectionFactoryImpl implements JdbcConnectionFactory {
 
 
     @Override
-    public boolean isCurrentConnectionMySql() {
-        if (this.getCurrentConnection() == null) {
-            return false;
+    public JdbcServerType getJdbcServerType() {
+        if (this.currentConnectionUrl.trim().toLowerCase().startsWith("jdbc:mysql")) {
+            return JdbcServerType.MYSQL;
+        } else if (this.currentConnectionUrl.trim().toLowerCase().startsWith("jdbc:oracle")) {
+            return JdbcServerType.ORACLE;
+        } else {
+            throw new IllegalArgumentException("unknown jdbc server type");
         }
-
-        return this.currentConnectionUrl.toLowerCase().startsWith("jdbc:mysql");
     }
 
 

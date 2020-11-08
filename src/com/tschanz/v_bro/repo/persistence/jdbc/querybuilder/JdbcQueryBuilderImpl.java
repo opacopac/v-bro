@@ -3,11 +3,12 @@ package com.tschanz.v_bro.repo.persistence.jdbc.querybuilder;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.FieldValue;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoField;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactory;
+import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcServerType;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,12 +24,6 @@ public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
 
 
     @Override
-    public String createFieldName(RepoField field) {
-        return field.getName();
-    }
-
-
-    @Override
     public String buildQuery(String tableName, List<RepoField> selectFields, List<RowFilter> rowFilters) {
         return "select " + this.getSelectFields(selectFields)
             + " from " + tableName
@@ -39,27 +34,27 @@ public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
     private String getSelectFields(List<RepoField> fields) {
         return fields
             .stream()
-            .map(this::createFieldName)
+            .map(RepoField::getName)
             .collect(Collectors.joining(","));
     }
 
 
     private String getWhereCondition(RowFilter rowFilter) {
-        return this.createFieldName(rowFilter.getFieldValue().getField())
-            + this.getOperator(rowFilter.getOperator())
-            + this.getFilterValue(rowFilter.getFieldValue());
+        return rowFilter.getField().getName() + this.getOperatorAndValue(rowFilter);
     }
 
 
-    private String getOperator(RowFilterOperator operator) {
-        switch (operator) {
+    private String getOperatorAndValue(RowFilter rowFilter) {
+        switch (rowFilter.getOperator()) {
             case LESS_OR_EQUAL:
-                return "<=";
+                return "<=" + this.getFilterValue(rowFilter.getValue());
             case GREATER_OR_EQUAL:
-                return ">=";
+                return ">=" + this.getFilterValue(rowFilter.getValue());
+            case IN:
+                return " IN (" + rowFilter.getValues().stream().map(this::getFilterValue).collect(Collectors.joining(",")) + ")";
             case EQUALS:
             default:
-                return "=";
+                return "=" + this.getFilterValue(rowFilter.getValue());
         }
     }
 
@@ -85,11 +80,14 @@ public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
 
 
     private String getDateFilterValue(LocalDate date) {
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        if (this.connectionFactory.isCurrentConnectionMySql()) {
-            return "str_to_date('" + formatter.format(date) + "','%Y-%m-%d')";
-        } else {
-            return "to_date('" + formatter.format(date) + "','YYYY-MM-DD')";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        switch (this.connectionFactory.getJdbcServerType()) {
+            case MYSQL:
+                return "str_to_date('" + formatter.format(date) + "','%Y-%m-%d')";
+            case ORACLE:
+            default:
+                return "to_date('" + formatter.format(date) + "','YYYY-MM-DD')";
         }
     }
 
@@ -103,7 +101,7 @@ public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
                 .collect(Collectors.joining(" and "));
         }
 
-        if (!this.connectionFactory.isCurrentConnectionMySql()) {
+        if (this.connectionFactory.getJdbcServerType() == JdbcServerType.ORACLE) {
             whereClause += whereClause.isEmpty() ? " where " : " and ";
             whereClause += "ROWNUM<=" + MAX_ROW_NUM;
         }
@@ -113,10 +111,10 @@ public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
 
 
     private String getLimitClause() {
-        if (!this.connectionFactory.isCurrentConnectionMySql()) {
+        if (this.connectionFactory.getJdbcServerType() == JdbcServerType.MYSQL) {
+            return " limit " + MAX_ROW_NUM;
+        } else {
             return "";
         }
-
-        return " limit " + MAX_ROW_NUM;
     }
 }

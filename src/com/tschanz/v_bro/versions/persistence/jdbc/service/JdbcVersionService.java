@@ -45,12 +45,21 @@ public class JdbcVersionService implements VersionService {
 
     @Override
     public List<VersionData> readVersionTimeline(String elementClass, String elementId) throws RepoException {
+        if (elementClass == null || elementId == null) {
+            throw new IllegalArgumentException("elementClass or elementId must not be null");
+        }
+
         if (!this.repo.isConnected()) {
             throw new RepoException("Not connected to repo!");
         }
 
         RepoTable elementTable = this.elementService.readElementTable(elementClass);
         RepoTable versionTable = this.readVersionTable(elementTable);
+
+        if (versionTable == null) {
+            return List.of(VersionData.ETERNAL_VERSION);
+        }
+
         RepoField idField = versionTable.findfirstIdField();
 
         List<RepoTableRecord> versionRecords = this.repoData.readRepoTableRecords(
@@ -86,7 +95,7 @@ public class JdbcVersionService implements VersionService {
             .orElse(null);
 
         if (versionTableName == null) {
-            throw new RepoException("version table not not for element table '" + elementTable.getName() + "'");
+            return null;
         } else {
             return this.repoMetaData.readTableStructure(versionTableName);
         }
@@ -94,11 +103,11 @@ public class JdbcVersionService implements VersionService {
 
 
     private List<RowFilter> getRowFilters(RepoTable versionTable, String elementId) {
-        FieldValue fieldValue = new FieldValue(
+        RowFilter rowFilter = new RowFilter(
             versionTable.findField(ELEMENT_ID_COLNAME), // TODO: make more generic
+            RowFilterOperator.EQUALS,
             Long.valueOf(elementId)
         );
-        RowFilter rowFilter = new RowFilter(RowFilterOperator.EQUALS, fieldValue);
 
         // TODO von/bis/pflegestatus
 

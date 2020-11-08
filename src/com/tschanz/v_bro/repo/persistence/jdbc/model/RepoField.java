@@ -2,19 +2,20 @@ package com.tschanz.v_bro.repo.persistence.jdbc.model;
 
 
 public class RepoField {
+    public String tableName; // TODO
     private final String name;
     private final RepoFieldType type;
-    private final boolean isId;
-    private final boolean isNullable;
-    private final boolean isUnique;
+    private final boolean _isId;
+    private final boolean _isNullable;
+    private final boolean _isUnique;
 
     public String getName() { return this.name; }
     public RepoFieldType getType() {
         return this.type;
     }
-    public boolean getIsId() { return this.isId; }
-    public boolean getIsNullable() { return this.isNullable; }
-    public boolean getIsUnique() { return this.isUnique; }
+    public boolean isId() { return this._isId; }
+    public boolean isNullable() { return this._isNullable; }
+    public boolean isUnique() { return this._isUnique; }
 
 
     public RepoField(
@@ -26,8 +27,8 @@ public class RepoField {
     ) {
         this.name = name.toUpperCase();
         this.type = type;
-        this.isId = isId;
-        this.isNullable = isNullable;
-        this.isUnique = isUnique;
+        this._isId = isId;
+        this._isNullable = isNullable;
+        this._isUnique = isUnique;
     }
 }

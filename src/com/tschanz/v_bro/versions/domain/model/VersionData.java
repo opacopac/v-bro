@@ -7,7 +7,7 @@ public class VersionData {
     public static final LocalDate HIGH_DATE = LocalDate.of(9999, 12, 31);
     public static final LocalDate LOW_DATE = LocalDate.of(2000, 1, 1);
     public static final Pflegestatus DEFAULT_PFLEGESTATUS = Pflegestatus.PRODUKTIV;
-    public static final VersionData ETERNAL_VERSION = new VersionData("TODO", LOW_DATE, HIGH_DATE, DEFAULT_PFLEGESTATUS);
+    public static final VersionData ETERNAL_VERSION = new VersionData("0", LOW_DATE, HIGH_DATE, DEFAULT_PFLEGESTATUS);
 
     protected final String id;
     protected final LocalDate gueltigVon;

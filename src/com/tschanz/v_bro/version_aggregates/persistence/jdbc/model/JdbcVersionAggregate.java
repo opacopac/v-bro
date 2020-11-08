@@ -26,7 +26,7 @@ public class JdbcVersionAggregate extends VersionAggregate {
         List<JdbcAggregateNode> versionChildNodes
     ) {
         super(
-            getVersionInfo(versionRecord),
+            versionRecord != null ? getVersionInfo(versionRecord) : VersionData.ETERNAL_VERSION,
             getRootNode(elementRecord, versionRecord, versionChildNodes)
         );
 
@@ -71,7 +71,7 @@ public class JdbcVersionAggregate extends VersionAggregate {
     ) {
         return new JdbcAggregateNode(
             elementRecord,
-            List.of(new JdbcAggregateNode(versionRecord, versionChildNodes))
+            List.of(new JdbcAggregateNode(versionRecord != null ? versionRecord : elementRecord, versionChildNodes))
         );
     }
 

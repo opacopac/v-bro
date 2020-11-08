@@ -72,7 +72,7 @@ public class JdbcElementService implements ElementService {
     private List<RepoField> getRepoFields(RepoTable repoTable, Collection<String> fieldNames) {
         return repoTable.getFields()
             .stream()
-            .filter(field -> fieldNames.contains(field.getName()) || field.getIsId())
+            .filter(field -> fieldNames.contains(field.getName()) || field.isId())
             .collect(Collectors.toList());
     }
 }

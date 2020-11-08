@@ -11,9 +11,13 @@ import java.util.stream.Collectors;
 
 public class VersionAggregateItemConverter {
     public static VersionAggregateItem fromResponse(VersionAggregateResponse versionAggregate) {
-        return new VersionAggregateItem(
-            fromResponse(versionAggregate.rootNode)
-        );
+        if (versionAggregate == null) {
+            return null;
+        } else {
+            return new VersionAggregateItem(
+                fromResponse(versionAggregate.rootNode)
+            );
+        }
     }
 
 

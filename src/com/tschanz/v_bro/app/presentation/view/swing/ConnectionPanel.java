@@ -18,6 +18,7 @@ import java.util.concurrent.Flow;
 
 
 public class ConnectionPanel extends JPanel implements ConnectionView {
+    private final static int MAX_NAME_LENGTH = 75;
     private final ConnectionDialog connectionDialog = new ConnectionDialog();
     private final String NOT_CONNECTED_VALUE = "(not connected)";
     private final JLabel connectionString = new JLabel(this.NOT_CONNECTED_VALUE);
@@ -55,21 +56,29 @@ public class ConnectionPanel extends JPanel implements ConnectionView {
 
     private void onRepoConnectionChanged(RepoConnectionItem repoConnection) {
         this.connectionDialog.setVisible(false);
-        this.connectionString.setText(this.createConnectionString(repoConnection));
+        String conStr = this.createConnectionString(repoConnection);
+        this.connectionString.setText(conStr);
     }
 
 
     private String createConnectionString(RepoConnectionItem repoConnection) {
+        String conStr;
         if (repoConnection == null) {
-            return NOT_CONNECTED_VALUE;
+            conStr = NOT_CONNECTED_VALUE;
         } else if (repoConnection.repoType == RepoType.JDBC) {
             JdbcRepoConnectionItem jdbcRepoConnection = (JdbcRepoConnectionItem) repoConnection;
             String user = jdbcRepoConnection.getUser();
-            return jdbcRepoConnection.getUrl() + ((user == null || user.isEmpty()) ? "" : " (" + user + ")");
+            conStr = jdbcRepoConnection.getUrl() + ((user == null || user.isEmpty()) ? "" : " (" + user + ")");
         } else if (repoConnection.repoType == RepoType.XML) {
-            return ((XmlRepoConnectionItem) repoConnection).getFilename();
+            conStr = ((XmlRepoConnectionItem) repoConnection).getFilename();
         } else {
-            return "(Mock connection)";
+            conStr = "(Mock connection)";
+        }
+
+        if (conStr.length() <= MAX_NAME_LENGTH) {
+            return conStr;
+        } else {
+            return conStr.substring(0, MAX_NAME_LENGTH) + "...";
         }
     }
 }

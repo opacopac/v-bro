@@ -82,7 +82,7 @@ public class OpenConnectionUseCaseImpl implements OpenConnectionUseCase {
             // versions
             VersionService versionService = this.versionServiceProvider.getService(connectionParameters.getRepoType());
             List<VersionData> versions = selectElementId != null ? versionService.readVersionTimeline(selectElementClass, selectElementId) : Collections.emptyList();
-            String selectVersionId = versions.size() > 0 ? versions.get(0).getId() : null;
+            String selectVersionId = versions.size() > 0 ? versions.get(versions.size() - 1).getId() : null;
 
             // version filter
             VersionFilter versionFilter = VersionFilter.DEFAULT_VERSION_FILTER;

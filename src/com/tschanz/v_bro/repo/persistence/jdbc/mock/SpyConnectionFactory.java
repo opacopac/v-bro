@@ -2,6 +2,7 @@ package com.tschanz.v_bro.repo.persistence.jdbc.mock;
 
 import com.tschanz.v_bro.common.testing.SpyHelper;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactory;
+import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcServerType;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -11,7 +12,7 @@ public class SpyConnectionFactory implements JdbcConnectionFactory {
     public SpyHelper<SQLException> spyHelper = new SpyHelper<>();
     public SpyConnection spyConnection = new SpyConnection();
     public SpyConnection getCurrentConnectionResult;
-    public boolean isCurrentConnectionMySqlResult;
+    public JdbcServerType jdbcServerType = JdbcServerType.ORACLE;
 
 
     public SpyConnectionFactory(boolean openConnection) {
@@ -36,8 +37,8 @@ public class SpyConnectionFactory implements JdbcConnectionFactory {
 
 
     @Override
-    public boolean isCurrentConnectionMySql() {
-        return this.isCurrentConnectionMySqlResult;
+    public JdbcServerType getJdbcServerType() {
+        return this.jdbcServerType;
     }
 
 

@@ -58,7 +58,7 @@ public class RepoTable {
     public List<RepoField> findAllIdFields() {
         return this.fields
             .stream()
-            .filter(RepoField::getIsId)
+            .filter(RepoField::isId)
             .collect(Collectors.toList());
     }
 
@@ -66,7 +66,7 @@ public class RepoTable {
     public List<RepoField> findUniqueFields() {
         return this.fields
             .stream()
-            .filter(RepoField::getIsUnique)
+            .filter(RepoField::isUnique)
             .collect(Collectors.toList());
     }
 }

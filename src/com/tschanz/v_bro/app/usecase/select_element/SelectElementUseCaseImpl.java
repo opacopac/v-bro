@@ -50,7 +50,7 @@ public class SelectElementUseCaseImpl implements SelectElementUseCase {
             // versions
             VersionService versionService = this.versionServiceProvider.getService(request.repoType);
             List<VersionData> versions = versionService.readVersionTimeline(request.elementClass, request.elementId);
-            String selectVersionId = versions.size() > 0 ? versions.get(0).getId() : null;
+            String selectVersionId = versions.size() > 0 ? versions.get(versions.size() - 1).getId() : null;
 
             // version filter
             VersionFilter selectedVersionFilter = VersionFilterConverter.fromRequest(request.versionFilter);

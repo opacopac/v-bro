@@ -21,7 +21,7 @@ public class RepoTableRecord {
     public FieldValue findFieldValue(String fieldName) {
         return this.fieldValues
             .stream()
-            .filter(fieldValue -> fieldValue.getName().equals(fieldName))
+            .filter(fieldValue -> fieldValue.getName().toUpperCase().equals(fieldName.toUpperCase()))
             .findFirst()
             .orElse(null);
     }

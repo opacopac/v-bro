@@ -19,10 +19,4 @@ public class SpyQueryBuilder implements JdbcQueryBuilder {
         this.spyHelper.reportMethodCall("buildQuery", tableName, selectFields, rowFilters);
         return this.query;
     }
-
-
-    @Override
-    public String createFieldName(RepoField field) {
-        return null; // TODO
-    }
 }

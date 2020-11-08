@@ -25,12 +25,18 @@ public class FieldValue {
 
 
     public String getValueString() {
-        return String.valueOf(this.value);
+        if (this.value == null) {
+            return null;
+        } else {
+            return String.valueOf(this.value);
+        }
     }
 
 
-    public long getValueLong() {
-        if (this.field.getType() == RepoFieldType.LONG) {
+    public Long getValueLong() {
+        if (this.value == null) {
+            return null;
+        } else if (this.field.getType() == RepoFieldType.LONG) {
             return (long) this.value;
         } else {
             throw new IllegalArgumentException("field must be of type LONG but is " + this.field.getType().name());
@@ -38,8 +44,10 @@ public class FieldValue {
     }
 
 
-    public boolean getValueBool() {
-        if (this.field.getType() == RepoFieldType.BOOL) {
+    public Boolean getValueBool() {
+        if (this.value == null) {
+            return null;
+        } else if (this.field.getType() == RepoFieldType.BOOL) {
             return (boolean) this.value;
         } else {
             throw new IllegalArgumentException("field must be of type BOOL but is " + this.field.getType().name());
@@ -48,7 +56,9 @@ public class FieldValue {
 
 
     public LocalDate getValueDate() {
-        if (this.field.getType() == RepoFieldType.DATE) {
+        if (this.value == null) {
+            return null;
+        } else if (this.field.getType() == RepoFieldType.DATE) {
             return ((Date) this.value).toLocalDate();
         } else if (this.field.getType() == RepoFieldType.TIMESTAMP) {
             return ((Timestamp) this.value).toLocalDateTime().toLocalDate();

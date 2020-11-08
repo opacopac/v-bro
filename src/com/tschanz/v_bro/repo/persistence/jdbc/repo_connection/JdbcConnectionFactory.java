@@ -9,7 +9,7 @@ public interface JdbcConnectionFactory {
 
     Connection getCurrentConnection();
 
-    boolean isCurrentConnectionMySql();
+    JdbcServerType getJdbcServerType();
 
     void closeConnection() throws SQLException;
 }

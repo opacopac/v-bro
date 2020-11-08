@@ -9,7 +9,7 @@ import com.tschanz.v_bro.app.usecase.select_element.SelectElementUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_element_class.SelectElementClassUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_element_denomination.SelectElementDenominationUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_version.SelectVersionUseCaseImpl;
-import com.tschanz.v_bro.common.cache.EternalCache;
+import com.tschanz.v_bro.common.cache.LastNCache;
 import com.tschanz.v_bro.dependencies.domain.service.DependencyService;
 import com.tschanz.v_bro.dependencies.persistence.jdbc.service.JdbcDependencyService;
 import com.tschanz.v_bro.dependencies.persistence.mock.service.MockDependencyService2;
@@ -34,7 +34,6 @@ import com.tschanz.v_bro.app.usecase.select_element.SelectElementUseCase;
 import com.tschanz.v_bro.repo.domain.service.RepoService;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
 import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
-import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactory;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactoryImpl;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
@@ -42,7 +41,6 @@ import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoDataService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataServiceImpl;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.JdbcQueryBuilder;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.JdbcQueryBuilderImpl;
-import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataServiceCache;
 import com.tschanz.v_bro.repo.persistence.mock.service.MockRepoService2;
 import com.tschanz.v_bro.app.usecase.disconnect_repo.CloseConnectionUseCase;
 import com.tschanz.v_bro.app.usecase.disconnect_repo.CloseConnectionUseCaseImpl;
@@ -51,6 +49,7 @@ import com.tschanz.v_bro.app.usecase.connect_repo.OpenConnectionUseCaseImpl;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
 import com.tschanz.v_bro.version_aggregates.domain.service.VersionAggregateService;
 import com.tschanz.v_bro.version_aggregates.persistence.jdbc.service.JdbcVersionAggregateService;
+import com.tschanz.v_bro.version_aggregates.persistence.jdbc.service.JdbcVersionAggregateServiceCache;
 import com.tschanz.v_bro.version_aggregates.persistence.mock.service.MockVersionAggregateService2;
 import com.tschanz.v_bro.version_aggregates.persistence.xml.service.VersionAggregateParser;
 import com.tschanz.v_bro.version_aggregates.persistence.xml.service.XmlVersionAggregateService;
@@ -80,14 +79,14 @@ public class Main {
         JdbcConnectionFactory jdbcConnectionFactory = new JdbcConnectionFactoryImpl();
         JdbcRepoService jdbcRepo = new JdbcRepoService(jdbcConnectionFactory);
         JdbcRepoMetadataServiceImpl jdbcRepoMetadata = new JdbcRepoMetadataServiceImpl(jdbcConnectionFactory);
-        JdbcRepoMetadataServiceCache jdbcRepoMetadataCached = new JdbcRepoMetadataServiceCache(jdbcRepoMetadata, new EternalCache<RepoTable>());
         JdbcQueryBuilder jdbcQueryBuilder = new JdbcQueryBuilderImpl(jdbcConnectionFactory);
         JdbcRepoDataService jdbcRepoDataService = new JdbcRepoDataService(jdbcConnectionFactory, jdbcQueryBuilder);
-        JdbcElementClassService jdbcElementClassService = new JdbcElementClassService(jdbcRepo, jdbcRepoMetadataCached);
-        JdbcElementService jdbcElementService = new JdbcElementService(jdbcRepo, jdbcRepoMetadataCached, jdbcRepoDataService);
-        JdbcVersionService jdbcVersionService = new JdbcVersionService(jdbcRepo, jdbcRepoMetadataCached, jdbcRepoDataService, jdbcElementService);
-        JdbcVersionAggregateService jdbcVersionAggregateService = new JdbcVersionAggregateService(jdbcRepo, jdbcRepoMetadataCached, jdbcRepoDataService, jdbcElementService, jdbcVersionService);
-        JdbcDependencyService jdbcDependencyService = new JdbcDependencyService(jdbcRepo, jdbcRepoMetadataCached, jdbcRepoDataService, jdbcVersionService, jdbcVersionAggregateService);
+        JdbcElementClassService jdbcElementClassService = new JdbcElementClassService(jdbcRepo, jdbcRepoMetadata);
+        JdbcElementService jdbcElementService = new JdbcElementService(jdbcRepo, jdbcRepoMetadata, jdbcRepoDataService);
+        JdbcVersionService jdbcVersionService = new JdbcVersionService(jdbcRepo, jdbcRepoMetadata, jdbcRepoDataService, jdbcElementService);
+        JdbcVersionAggregateService jdbcVersionAggregateService = new JdbcVersionAggregateService(jdbcRepo, jdbcRepoMetadata, jdbcRepoDataService, jdbcElementService, jdbcVersionService);
+        JdbcVersionAggregateServiceCache jdbcVersionAggregateServiceCache = new JdbcVersionAggregateServiceCache(jdbcVersionAggregateService, new LastNCache<>(10));
+        JdbcDependencyService jdbcDependencyService = new JdbcDependencyService(jdbcVersionService, jdbcVersionAggregateServiceCache);
 
         // persistence xml
         XmlRepoService xmlRepo = new XmlRepoService();
@@ -116,7 +115,7 @@ public class Main {
         RepoServiceProvider<ElementClassService> elementClassServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcElementClassService, RepoType.XML, xmlElementClassService, RepoType.MOCK, mockElementClassService);
         RepoServiceProvider<ElementService> elementServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcElementService, RepoType.XML, xmlElementService, RepoType.MOCK, mockElementService);
         RepoServiceProvider<VersionService> versionServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcVersionService, RepoType.XML, xmlVersionService, RepoType.MOCK, mockVersionDataService);
-        RepoServiceProvider<VersionAggregateService> versionAggregateServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcVersionAggregateService, RepoType.XML, xmlVersionAggregateService, RepoType.MOCK, mockVersionAggregateService);
+        RepoServiceProvider<VersionAggregateService> versionAggregateServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcVersionAggregateServiceCache, RepoType.XML, xmlVersionAggregateService, RepoType.MOCK, mockVersionAggregateService);
         RepoServiceProvider<DependencyService> dependencyServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcDependencyService, RepoType.XML, xmlDependencyService, RepoType.MOCK, mockDependencyService);
 
         // presentation viewmodel & presenter
