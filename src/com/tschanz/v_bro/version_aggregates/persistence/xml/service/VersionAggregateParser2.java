@@ -1,15 +1,13 @@
 package com.tschanz.v_bro.version_aggregates.persistence.xml.service;
 
+import lombok.RequiredArgsConstructor;
+
 import javax.xml.stream.XMLInputFactory;
 
 
+@RequiredArgsConstructor
 public class VersionAggregateParser2 {
     private final XMLInputFactory xmlInputFactory;
-
-
-    public VersionAggregateParser2(XMLInputFactory xmlInputFactory) {
-        this.xmlInputFactory = xmlInputFactory;
-    }
 
 
 /*    public XmlNodeInfo readVersionAggregate(InputStream xmlStream, String elementClass, String elementId, String versionId) throws RepoException {

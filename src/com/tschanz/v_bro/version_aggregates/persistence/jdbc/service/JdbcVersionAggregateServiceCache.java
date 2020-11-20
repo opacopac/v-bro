@@ -4,23 +4,16 @@ import com.tschanz.v_bro.common.cache.Cache;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.version_aggregates.domain.model.VersionAggregate;
 import com.tschanz.v_bro.version_aggregates.domain.service.VersionAggregateService;
+import lombok.RequiredArgsConstructor;
 
 import java.util.logging.Logger;
 
 
+@RequiredArgsConstructor
 public class JdbcVersionAggregateServiceCache implements VersionAggregateService {
     private final Logger logger = Logger.getLogger(JdbcVersionAggregateServiceCache.class.getName());
     private final JdbcVersionAggregateService versionAggregateService;
     private final Cache<VersionAggregate> cache;
-
-
-    public JdbcVersionAggregateServiceCache(
-        JdbcVersionAggregateService versionAggregateService,
-        Cache<VersionAggregate> cache
-    ) {
-        this.versionAggregateService = versionAggregateService;
-        this.cache = cache;
-    }
 
 
     @Override

@@ -5,6 +5,8 @@ import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
 import com.tschanz.v_bro.versions.domain.model.VersionData;
 import com.tschanz.v_bro.versions.domain.service.VersionService;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -12,18 +14,10 @@ import java.util.Collection;
 import java.util.List;
 
 
+@RequiredArgsConstructor
 public class XmlVersionService implements VersionService {
-    private final XmlRepoService repoService;
-    private final VersionParser parser;
-
-
-    public XmlVersionService(
-        XmlRepoService repoService,
-        VersionParser parser
-    ) {
-        this.repoService = repoService;
-        this.parser = parser;
-    }
+    @NonNull private final XmlRepoService repoService;
+    @NonNull private final VersionParser parser;
 
 
     @Override

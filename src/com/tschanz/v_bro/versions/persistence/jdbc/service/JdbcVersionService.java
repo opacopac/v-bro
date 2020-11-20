@@ -11,36 +11,25 @@ import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.versions.domain.model.Pflegestatus;
 import com.tschanz.v_bro.versions.domain.model.VersionData;
 import com.tschanz.v_bro.versions.domain.service.VersionService;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
+@RequiredArgsConstructor
 public class JdbcVersionService implements VersionService {
     public final static String VERSION_TABLE_SUFFIX = "_V";
     public static String ELEMENT_ID_COLNAME = "ID_ELEMENT";
     public static String GUELTIG_VON_COLNAME = "GUELTIG_VON";
     public static String GUELTIG_BIS_COLNAME = "GUELTIG_BIS";
     public static String PFLEGESTATUS_COLNAME = "PFLEGEZYKLUS";
-
-    private final JdbcRepoService repo;
-    private final JdbcRepoMetadataService repoMetaData;
-    private final JdbcRepoDataService repoData;
-    private final JdbcElementService elementService;
-
-
-    public JdbcVersionService(
-        JdbcRepoService repo,
-        JdbcRepoMetadataService repoMetaData,
-        JdbcRepoDataService repoData,
-        JdbcElementService elementService
-    ) {
-        this.repo = repo;
-        this.repoMetaData = repoMetaData;
-        this.repoData = repoData;
-        this.elementService = elementService;
-    }
+    @NonNull private final JdbcRepoService repo;
+    @NonNull private final JdbcRepoMetadataService repoMetaData;
+    @NonNull private final JdbcRepoDataService repoData;
+    @NonNull private final JdbcElementService elementService;
 
 
     @Override

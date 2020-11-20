@@ -3,6 +3,7 @@ package com.tschanz.v_bro.element_classes.persistence.xml.service;
 import com.tschanz.v_bro.element_classes.domain.model.Denomination;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
+import lombok.RequiredArgsConstructor;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -10,20 +11,14 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
+@RequiredArgsConstructor
 public class DenominationsParser {
     private final XMLInputFactory xmlInputFactory;
-
-
-    public DenominationsParser(XMLInputFactory xmlInputFactory) {
-        this.xmlInputFactory = xmlInputFactory;
-    }
 
 
     public List<Denomination> readDenominations(InputStream xmlStream, String elementClass) throws RepoException {

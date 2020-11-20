@@ -2,23 +2,17 @@ package com.tschanz.v_bro.repo.persistence.jdbc.model;
 
 import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 
+@RequiredArgsConstructor
 public class JdbcConnectionParameters implements ConnectionParameters {
-    private final String url;
-    private final String user;
-    private final String password;
+    @Getter private final String url;
+    @Getter private final String user;
+    @Getter private final String password;
+
 
     @Override
     public RepoType getRepoType() { return RepoType.JDBC; }
-    public String getUrl() { return url; }
-    public String getUser() { return user; }
-    public String getPassword() { return password; }
-
-
-    public JdbcConnectionParameters(String url, String user, String password) {
-        this.url = url;
-        this.user = user;
-        this.password = password;
-    }
 }

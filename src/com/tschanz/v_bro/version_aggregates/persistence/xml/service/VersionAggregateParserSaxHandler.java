@@ -4,6 +4,7 @@ import com.tschanz.v_bro.common.xml.XmlPathTracker2;
 import com.tschanz.v_bro.element_classes.persistence.xml.service.ElementClassParserSaxHandler;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
 import com.tschanz.v_bro.version_aggregates.persistence.xml.model.XmlNodeInfo;
+import lombok.Setter;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -12,16 +13,15 @@ import java.util.Stack;
 
 public class VersionAggregateParserSaxHandler extends DefaultHandler {
     private final Stack<XmlNodeInfo> nodeStack = new Stack<>();
-    private String elementClass;
-    private String elementId;
-    private String versionId;
+    @Setter private String elementClass;
+    @Setter private String elementId;
+    @Setter private String versionId;
     private XmlPathTracker2 pathTracker;
 
 
-    public XmlNodeInfo getNodeInfo() { return nodeStack.peek(); }
-    public void setElementClass(String elementClass) { this.elementClass = elementClass; }
-    public void setElementId(String elementId) { this.elementId = elementId; }
-    public void setVersionId(String versionId) { this.versionId = versionId; }
+    public XmlNodeInfo getNodeInfo() {
+        return nodeStack.peek();
+    }
 
 
     @Override

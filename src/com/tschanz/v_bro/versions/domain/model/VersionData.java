@@ -1,5 +1,8 @@
 package com.tschanz.v_bro.versions.domain.model;
 
+import lombok.Getter;
+import lombok.NonNull;
+
 import java.time.LocalDate;
 
 
@@ -8,17 +11,10 @@ public class VersionData {
     public static final LocalDate LOW_DATE = LocalDate.of(2000, 1, 1);
     public static final Pflegestatus DEFAULT_PFLEGESTATUS = Pflegestatus.PRODUKTIV;
     public static final VersionData ETERNAL_VERSION = new VersionData("0", LOW_DATE, HIGH_DATE, DEFAULT_PFLEGESTATUS);
-
-    protected final String id;
-    protected final LocalDate gueltigVon;
-    protected final LocalDate gueltigBis;
-    protected final Pflegestatus pflegestatus;
-
-
-    public String getId() { return this.id; }
-    public LocalDate getGueltigVon() { return this.gueltigVon; }
-    public LocalDate getGueltigBis() { return this.gueltigBis; }
-    public Pflegestatus getPflegestatus() { return pflegestatus; }
+    @Getter protected final String id;
+    @Getter protected final LocalDate gueltigVon;
+    @Getter protected final LocalDate gueltigBis;
+    @Getter protected final Pflegestatus pflegestatus;
 
 
     public VersionData(String id) {
@@ -27,25 +23,13 @@ public class VersionData {
 
 
     public VersionData(
-        String id,
-        LocalDate gueltigVon,
-        LocalDate gueltigBis,
-        Pflegestatus pflegestatus
+        @NonNull String id,
+        @NonNull LocalDate gueltigVon,
+        @NonNull LocalDate gueltigBis,
+        @NonNull Pflegestatus pflegestatus
     ) {
-        if (id == null || id.isEmpty()) {
-            throw new IllegalArgumentException("id must not be null or empty");
-        }
-
-        if (gueltigVon == null) {
-            throw new IllegalArgumentException("gueltigVon must not be null");
-        }
-
-        if (gueltigBis == null) {
-            throw new IllegalArgumentException("gueltigBis must not be null");
-        }
-
-        if (pflegestatus == null) {
-            throw new IllegalArgumentException("pflegestatus must not be null");
+        if (id.isEmpty()) {
+            throw new IllegalArgumentException("id must not be empty");
         }
 
         if (gueltigVon.isAfter(gueltigBis)) {

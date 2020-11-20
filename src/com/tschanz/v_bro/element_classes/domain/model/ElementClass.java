@@ -1,14 +1,11 @@
 package com.tschanz.v_bro.element_classes.domain.model;
 
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+
+@RequiredArgsConstructor
 public class ElementClass {
-    protected final String name;
-
-
-    public String getName() { return this.name; }
-
-
-    public ElementClass(String name) {
-        this.name = name;
-    }
+    @Getter protected final String name;
 }

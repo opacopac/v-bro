@@ -4,6 +4,8 @@ import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
 import com.tschanz.v_bro.versions.domain.model.Pflegestatus;
 import com.tschanz.v_bro.versions.domain.model.VersionData;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -14,13 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@RequiredArgsConstructor
 public class VersionParser {
-    private final XMLInputFactory xmlInputFactory;
-
-
-    public VersionParser(XMLInputFactory xmlInputFactory) {
-        this.xmlInputFactory = xmlInputFactory;
-    }
+    @NonNull private final XMLInputFactory xmlInputFactory;
 
 
     public List<VersionData> readVersions(InputStream xmlStream, String elementClass, String elementId) throws RepoException {

@@ -4,23 +4,18 @@ import com.tschanz.v_bro.repo.persistence.jdbc.model.FieldValue;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoField;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactory;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcServerType;
+import lombok.RequiredArgsConstructor;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
+@RequiredArgsConstructor
 public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
     public static int MAX_ROW_NUM = 10000;
     private final JdbcConnectionFactory connectionFactory;
-
-
-    public JdbcQueryBuilderImpl(JdbcConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
-    }
 
 
     @Override
@@ -51,7 +46,7 @@ public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
             case GREATER_OR_EQUAL:
                 return ">=" + this.getFilterValue(rowFilter.getValue());
             case IN:
-                return " IN (" + rowFilter.getValues().stream().map(this::getFilterValue).collect(Collectors.joining(",")) + ")";
+                return " IN (" + rowFilter.getFieldValues().stream().map(this::getFilterValue).collect(Collectors.joining(",")) + ")";
             case EQUALS:
             default:
                 return "=" + this.getFilterValue(rowFilter.getValue());

@@ -10,26 +10,17 @@ import com.tschanz.v_bro.version_aggregates.domain.model.VersionAggregate;
 import com.tschanz.v_bro.version_aggregates.persistence.xml.service.XmlVersionAggregateService;
 import com.tschanz.v_bro.versions.domain.model.VersionData;
 import com.tschanz.v_bro.versions.persistence.xml.service.XmlVersionService;
+import lombok.RequiredArgsConstructor;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 
+@RequiredArgsConstructor
 public class XmlDependencyService implements DependencyService {
     private final XmlRepoService repoService;
     private final XmlVersionService versionService;
     private final XmlVersionAggregateService versionAggregateService;
-
-
-    public XmlDependencyService(
-        XmlRepoService repoService,
-        XmlVersionService versionService,
-        XmlVersionAggregateService versionAggregateService
-    ) {
-        this.repoService = repoService;
-        this.versionService = versionService;
-        this.versionAggregateService = versionAggregateService;
-    }
 
 
     @Override

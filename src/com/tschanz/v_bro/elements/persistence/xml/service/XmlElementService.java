@@ -5,24 +5,17 @@ import com.tschanz.v_bro.elements.domain.service.ElementService;
 import com.tschanz.v_bro.elements.domain.model.ElementData;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
+import lombok.RequiredArgsConstructor;
 
 import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
+@RequiredArgsConstructor
 public class XmlElementService implements ElementService {
     private final XmlRepoService repoService;
     private final ElementParser elementParser;
-
-
-    public XmlElementService(
-        XmlRepoService repoService,
-        ElementParser elementParser
-    ) {
-        this.repoService = repoService;
-        this.elementParser = elementParser;
-    }
 
 
     @Override

@@ -1,6 +1,7 @@
 package com.tschanz.v_bro.versions.persistence.xml.model;
 
 import com.tschanz.v_bro.versions.domain.model.VersionData;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -8,10 +9,7 @@ import java.util.Collection;
 
 
 public class XmlVersionData extends VersionData {
-    private final Collection<String> fwdDepIds = new ArrayList<>();
-
-
-    public Collection<String> getFwdDepIds() { return fwdDepIds; }
+    @Getter private final Collection<String> fwdDepIds = new ArrayList<>();
 
 
     public XmlVersionData(String id) {

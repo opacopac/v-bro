@@ -3,24 +3,17 @@ package com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata;
 import com.tschanz.v_bro.common.cache.Cache;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.logging.Logger;
 
 
+@RequiredArgsConstructor
 public class JdbcRepoMetadataServiceCache implements JdbcRepoMetadataService {
     private final Logger logger = Logger.getLogger(JdbcRepoMetadataServiceCache.class.getName());
     private final JdbcRepoMetadataServiceImpl jdbcRepoMetadataService;
     private final Cache<RepoTable> readTableStructureCache;
-
-
-    public JdbcRepoMetadataServiceCache(
-        JdbcRepoMetadataServiceImpl jdbcRepoMetadataService,
-        Cache<RepoTable> readTableStructureCache
-    ) {
-        this.jdbcRepoMetadataService = jdbcRepoMetadataService;
-        this.readTableStructureCache = readTableStructureCache;
-    }
 
 
     @Override
@@ -41,6 +34,7 @@ public class JdbcRepoMetadataServiceCache implements JdbcRepoMetadataService {
             return result;
         }
     }
+
 
     @Override
     public String escapeUnderscore(String tableNamePattern) throws RepoException {

@@ -10,6 +10,7 @@ import com.tschanz.v_bro.version_aggregates.domain.service.VersionAggregateServi
 import com.tschanz.v_bro.version_aggregates.persistence.xml.model.XmlNodeInfo;
 import com.tschanz.v_bro.versions.domain.model.Pflegestatus;
 import com.tschanz.v_bro.versions.domain.model.VersionData;
+import lombok.RequiredArgsConstructor;
 
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -18,18 +19,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
+@RequiredArgsConstructor
 public class XmlVersionAggregateService implements VersionAggregateService {
     private final XmlRepoService repoService;
     private final VersionAggregateParser parser;
-
-
-    public XmlVersionAggregateService(
-        XmlRepoService repoService,
-        VersionAggregateParser parser
-    ) {
-        this.repoService = repoService;
-        this.parser = parser;
-    }
 
 
     @Override

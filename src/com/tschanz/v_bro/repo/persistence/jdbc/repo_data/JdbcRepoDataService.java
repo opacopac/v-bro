@@ -5,6 +5,7 @@ import com.tschanz.v_bro.repo.persistence.jdbc.model.*;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactory;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.JdbcQueryBuilder;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.RowFilter;
+import lombok.RequiredArgsConstructor;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -15,19 +16,11 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
+@RequiredArgsConstructor
 public class JdbcRepoDataService {
     private final Logger logger = Logger.getLogger(JdbcRepoDataService.class.getName());
     private final JdbcConnectionFactory connectionFactory;
     private final JdbcQueryBuilder queryBuilder;
-
-
-    public JdbcRepoDataService(
-        JdbcConnectionFactory connectionFactory,
-        JdbcQueryBuilder queryBuilder
-    ) {
-        this.connectionFactory = connectionFactory;
-        this.queryBuilder = queryBuilder;
-    }
 
 
     public List<RepoTableRecord> readRepoTableRecords(RepoTable repoTable, List<RepoField> fields, List<RowFilter> rowFilters) throws RepoException {

@@ -1,6 +1,5 @@
 package com.tschanz.v_bro.version_aggregates.persistence.jdbc.service;
 
-import com.mysql.cj.result.Row;
 import com.tschanz.v_bro.elements.persistence.jdbc.service.JdbcElementService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.service.RepoService;
@@ -15,32 +14,19 @@ import com.tschanz.v_bro.version_aggregates.persistence.jdbc.model.JdbcAggregate
 import com.tschanz.v_bro.version_aggregates.persistence.jdbc.model.JdbcVersionAggregate;
 import com.tschanz.v_bro.versions.domain.model.VersionData;
 import com.tschanz.v_bro.versions.persistence.jdbc.service.JdbcVersionService;
+import lombok.RequiredArgsConstructor;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 
+@RequiredArgsConstructor
 public class JdbcVersionAggregateService implements VersionAggregateService {
     private final RepoService repo;
     private final JdbcRepoMetadataService repoMetaData;
     private final JdbcRepoDataService repoData;
     private final JdbcElementService elementService;
     private final JdbcVersionService versionService;
-
-
-    public JdbcVersionAggregateService(
-        RepoService repo,
-        JdbcRepoMetadataService repoMetaData,
-        JdbcRepoDataService repoData,
-        JdbcElementService elementService,
-        JdbcVersionService versionService
-    ) {
-        this.repo = repo;
-        this.repoMetaData = repoMetaData;
-        this.repoData = repoData;
-        this.elementService = elementService;
-        this.versionService = versionService;
-    }
 
 
     @Override
@@ -123,7 +109,7 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
                 List<JdbcAggregateNode> recordChildNodes = relationChildNodes
                     .stream()
                     .filter(node -> {
-                        Object childFieldValue = node.getRepoTableEntry().findFieldValue(childField.getName()).getValue();
+                        Object childFieldValue = node.getRepoTableRecord().findFieldValue(childField.getName()).getValue();
                         Object ownFieldValue = record.findFieldValue(ownField.getName()).getValue();
                         return childFieldValue.equals(ownFieldValue);
                     })

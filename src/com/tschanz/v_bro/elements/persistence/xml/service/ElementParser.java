@@ -4,6 +4,7 @@ import com.tschanz.v_bro.elements.domain.model.DenominationData;
 import com.tschanz.v_bro.elements.domain.model.ElementData;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
+import lombok.RequiredArgsConstructor;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -14,13 +15,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
+@RequiredArgsConstructor
 public class ElementParser {
     private final XMLInputFactory xmlInputFactory;
-
-
-    public ElementParser(XMLInputFactory xmlInputFactory) {
-        this.xmlInputFactory = xmlInputFactory;
-    }
 
 
     public List<ElementData> readElements(InputStream xmlStream, String elementClass, Collection<String> denominationFields) throws RepoException {

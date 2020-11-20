@@ -4,6 +4,7 @@ import com.tschanz.v_bro.element_classes.persistence.xml.model.XmlElementClass;
 import com.tschanz.v_bro.element_classes.persistence.xml.model.XmlElementInfo;
 import com.tschanz.v_bro.common.xml.XmlPathTracker;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
+import lombok.Getter;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -12,12 +13,9 @@ import java.util.HashMap;
 
 
 public class ElementClassParserSaxHandler extends DefaultHandler {
-    private final HashMap<String, XmlElementClass> elementStructureMap = new HashMap<>();
+    @Getter private final HashMap<String, XmlElementClass> elementStructureMap = new HashMap<>();
     private XmlElementInfo currentElement;
     private XmlPathTracker pathTracker;
-
-
-    public HashMap<String, XmlElementClass> getElementStructureMap() { return elementStructureMap; }
 
 
     @Override

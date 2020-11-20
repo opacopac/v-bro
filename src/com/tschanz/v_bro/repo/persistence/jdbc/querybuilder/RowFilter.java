@@ -2,6 +2,7 @@ package com.tschanz.v_bro.repo.persistence.jdbc.querybuilder;
 
 import com.tschanz.v_bro.repo.persistence.jdbc.model.FieldValue;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoField;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,15 +10,14 @@ import java.util.stream.Collectors;
 
 
 public class RowFilter {
-    private final RepoField field;
-    private final RowFilterOperator operator;
-    private final List<FieldValue> fieldValues = new ArrayList<>();
+    @Getter private final RepoField field;
+    @Getter private final RowFilterOperator operator;
+    @Getter private final List<FieldValue> fieldValues = new ArrayList<>();
 
 
-    public RepoField getField() { return field; }
-    public RowFilterOperator getOperator() { return operator; }
-    public List<FieldValue> getValues() { return fieldValues; }
-    public FieldValue getValue() { return this.fieldValues.size() > 0 ? this.fieldValues.get(0) : null; }
+    public FieldValue getValue() {
+        return this.fieldValues.size() > 0 ? this.fieldValues.get(0) : null;
+    }
 
 
     public RowFilter(

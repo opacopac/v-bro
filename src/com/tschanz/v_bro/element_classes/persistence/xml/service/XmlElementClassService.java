@@ -6,24 +6,17 @@ import com.tschanz.v_bro.element_classes.domain.service.ElementClassService;
 import com.tschanz.v_bro.element_classes.persistence.xml.model.XmlElementLutInfo;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
+import lombok.RequiredArgsConstructor;
 
 import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
+@RequiredArgsConstructor
 public class XmlElementClassService implements ElementClassService {
     private final XmlRepoService repoService;
     private final DenominationsParser denominationsParser;
-
-
-    public XmlElementClassService(
-        XmlRepoService repoService,
-        DenominationsParser denominationsParser
-    ) {
-        this.repoService = repoService;
-        this.denominationsParser = denominationsParser;
-    }
 
 
     @Override

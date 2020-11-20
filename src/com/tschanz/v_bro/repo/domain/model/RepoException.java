@@ -1,16 +1,12 @@
 package com.tschanz.v_bro.repo.domain.model;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+
+@RequiredArgsConstructor
 public class RepoException extends Exception {
-    private final Exception innerException;
-
-
-    public Exception getInnerException() { return innerException; }
-
-
-    public RepoException(Exception exception) {
-        this(exception.getMessage(), exception);
-    }
+    @Getter private final Exception innerException;
 
 
     public RepoException(String message) {

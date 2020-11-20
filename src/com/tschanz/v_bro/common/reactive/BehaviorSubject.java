@@ -1,13 +1,12 @@
 package com.tschanz.v_bro.common.reactive;
 
+import lombok.Getter;
+
 import java.util.concurrent.Flow;
 
 
 public class BehaviorSubject<T> extends Subject<T> {
-    protected T currentValue;
-
-
-    public T getCurrentValue() { return currentValue; }
+    @Getter protected T currentValue;
 
 
     public BehaviorSubject(T initialValue) {

@@ -12,8 +12,8 @@ public class FwdDependencyConverter {
         return dependencies
             .stream()
             .map(fwdDep -> new FwdDependencyResponse(
-                fwdDep.elementName(),
-                fwdDep.elementId(),
+                fwdDep.getElementClass(),
+                fwdDep.getElementId(),
                 VersionConverter.toResponse(fwdDep.getVersions())
             ))
             .collect(Collectors.toList());

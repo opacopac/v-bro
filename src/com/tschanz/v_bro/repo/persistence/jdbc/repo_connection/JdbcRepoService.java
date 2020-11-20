@@ -4,19 +4,16 @@ import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
 import com.tschanz.v_bro.repo.domain.service.RepoService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.JdbcConnectionParameters;
+import lombok.RequiredArgsConstructor;
 
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
 
+@RequiredArgsConstructor
 public class JdbcRepoService implements RepoService {
     private final Logger logger = Logger.getLogger(JdbcRepoService.class.getName());
     private final JdbcConnectionFactory connectionFactory;
-
-
-    public JdbcRepoService(JdbcConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
-    }
 
 
     @Override

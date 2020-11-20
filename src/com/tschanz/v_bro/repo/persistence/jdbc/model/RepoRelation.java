@@ -1,23 +1,12 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.model;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class RepoRelation {
-    private final String bwdClassName;
-    private final String bwdFieldName;
-    private final String fwdClassName;
-    private final String fwdFieldName;
-
-
-    public String getBwdClassName() { return this.bwdClassName; }
-    public String getBwdFieldName() { return this.bwdFieldName; }
-    public String getFwdClassName() { return this.fwdClassName; }
-    public String getFwdFieldName() { return this.fwdFieldName; }
-
-
-    public RepoRelation(String bwdClassName, String bwdFieldName, String fwdClassName, String fwdFieldName) {
-        this.bwdClassName = bwdClassName;
-        this.bwdFieldName = bwdFieldName;
-        this.fwdClassName = fwdClassName;
-        this.fwdFieldName = fwdFieldName;
-    }
+    @Getter private final String bwdClassName;
+    @Getter private final String bwdFieldName;
+    @Getter private final String fwdClassName;
+    @Getter private final String fwdFieldName;
 }

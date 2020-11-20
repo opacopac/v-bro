@@ -1,26 +1,26 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.model;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
 
+@RequiredArgsConstructor
 public class FieldValue {
-    private final RepoField field;
-    private final Object value;
+    @Getter private final RepoField field;
+    @Getter private final Object value;
 
 
-    public RepoField getField() { return field; }
-    public String getName() { return this.field.getName(); }
+    public String getName() {
+        return this.field.getName();
+    }
+
+
     public RepoFieldType getType() {
         return this.field.getType();
-    }
-    public Object getValue() { return this.value; }
-
-
-    public FieldValue(RepoField field, Object value) {
-        this.field = field;
-        this.value = value;
     }
 
 

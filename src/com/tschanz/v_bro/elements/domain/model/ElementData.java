@@ -1,21 +1,16 @@
 package com.tschanz.v_bro.elements.domain.model;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
+@RequiredArgsConstructor
 public class ElementData {
-    protected final String id;
-    protected final List<DenominationData> nameFieldValues = new ArrayList<>();
-
-
-    public String getId() { return this.id; }
-    public List<DenominationData> getNameFieldValues() { return this.nameFieldValues; }
-
-
-    public ElementData(String id) {
-        this.id = id;
-    }
+    @Getter protected final String id;
+    @Getter protected final List<DenominationData> nameFieldValues = new ArrayList<>();
 
 
     public ElementData(String id, List<DenominationData> nameFieldValues) {

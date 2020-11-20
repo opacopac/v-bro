@@ -10,23 +10,16 @@ import com.tschanz.v_bro.version_aggregates.persistence.jdbc.model.JdbcVersionAg
 import com.tschanz.v_bro.versions.domain.model.VersionData;
 import com.tschanz.v_bro.versions.domain.service.VersionService;
 import com.tschanz.v_bro.versions.persistence.jdbc.service.JdbcVersionService;
+import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
+@RequiredArgsConstructor
 public class JdbcDependencyService implements DependencyService {
     private final VersionService versionService;
     private final VersionAggregateService versionAggregateService;
-
-
-    public JdbcDependencyService(
-        VersionService versionService,
-        VersionAggregateService versionAggregateService
-    ) {
-        this.versionService = versionService;
-        this.versionAggregateService = versionAggregateService;
-    }
 
 
     @Override

@@ -1,21 +1,15 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.model;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 
 
+@RequiredArgsConstructor
 public class RepoTableRecord {
-    private final RepoTable repoTable;
-    private final List<FieldValue> fieldValues;
-
-
-    public RepoTable getRepoTable() { return repoTable; }
-    public List<FieldValue> getFieldValues() { return fieldValues; }
-
-
-    public RepoTableRecord(RepoTable repoTable, List<FieldValue> fieldValues) {
-        this.repoTable = repoTable;
-        this.fieldValues = fieldValues;
-    }
+    @Getter private final RepoTable repoTable;
+    @Getter private final List<FieldValue> fieldValues;
 
 
     public FieldValue findFieldValue(String fieldName) {

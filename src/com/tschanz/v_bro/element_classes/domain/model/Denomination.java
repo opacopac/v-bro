@@ -1,20 +1,16 @@
 package com.tschanz.v_bro.element_classes.domain.model;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 
+@RequiredArgsConstructor
 public class Denomination {
-    protected final String name;
-
-
-    public String getName() { return this.name; }
-
-
-    public Denomination(String name) {
-        this.name = name;
-    }
+    @Getter protected final String name;
 
 
 

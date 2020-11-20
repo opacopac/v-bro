@@ -1,16 +1,14 @@
 package com.tschanz.v_bro.common.testing;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.ArrayList;
 
 
+@RequiredArgsConstructor
 public class SpyReturnValue<T> {
     private final String argumentName;
     private final ArrayList<T> returnValueList = new ArrayList<>();
-
-
-    public SpyReturnValue(String argumentName) {
-        this.argumentName = argumentName;
-    }
 
 
     public void add(T returnValue) {

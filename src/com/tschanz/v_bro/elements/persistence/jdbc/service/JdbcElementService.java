@@ -10,6 +10,7 @@ import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoDataService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataService;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -18,22 +19,12 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
+@RequiredArgsConstructor
 public class JdbcElementService implements ElementService {
     private final Logger logger = Logger.getLogger(JdbcElementService.class.getName());
     private final JdbcRepoService repo;
     private final JdbcRepoMetadataService repoMetaData;
     private final JdbcRepoDataService repoData;
-
-
-    public JdbcElementService(
-        JdbcRepoService repo,
-        JdbcRepoMetadataService repoMetaData,
-        JdbcRepoDataService repoData
-    ) {
-        this.repo = repo;
-        this.repoMetaData = repoMetaData;
-        this.repoData = repoData;
-    }
 
 
     @Override

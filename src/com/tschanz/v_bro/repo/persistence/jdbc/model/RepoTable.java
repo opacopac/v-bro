@@ -1,34 +1,19 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.model;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
+@RequiredArgsConstructor
 public class RepoTable {
-    protected final String name;
-    protected final List<RepoField> fields;
-    protected final List<RepoRelation> outgoingRelations;
-    protected final List<RepoRelation> incomingRelations;
-
-
-    public String getName() { return name; }
-    public List<RepoField> getFields() { return fields; }
-    public List<RepoRelation> getOutgoingRelations() { return outgoingRelations; }
-    public List<RepoRelation> getIncomingRelations() { return incomingRelations; }
-
-
-    public RepoTable(
-        String name,
-        List<RepoField> fields,
-        List<RepoRelation> outgoingRelations,
-        List<RepoRelation> incomingRelations
-    ) {
-        this.name = name;
-        this.fields = fields;
-        this.outgoingRelations = outgoingRelations;
-        this.incomingRelations = incomingRelations;
-    }
+    @Getter protected final String name;
+    @Getter protected final List<RepoField> fields;
+    @Getter protected final List<RepoRelation> outgoingRelations;
+    @Getter protected final List<RepoRelation> incomingRelations;
 
 
     public RepoField findField(String fieldName) {

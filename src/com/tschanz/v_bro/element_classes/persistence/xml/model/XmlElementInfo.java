@@ -1,28 +1,17 @@
 package com.tschanz.v_bro.element_classes.persistence.xml.model;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
 
+@RequiredArgsConstructor
 public class XmlElementInfo {
-    private final String elementId;
-    private final String name;
-    private final Collection<String> denominations = new ArrayList<>();
-
-
-    public String getElementId() {
-        return this.elementId;
-    }
-
-    public String getName() { return this.name; }
-
-    public Collection<String> getDenominations() { return denominations; }
-
-
-    public XmlElementInfo(String name, String elementId) {
-        this.name = name;
-        this.elementId = elementId;
-    }
+    @Getter private final String elementId;
+    @Getter private final String name;
+    @Getter private final Collection<String> denominations = new ArrayList<>();
 
 
     public void addFieldName(String fieldName) {

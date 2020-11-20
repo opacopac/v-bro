@@ -6,18 +6,15 @@ import com.tschanz.v_bro.version_aggregates.domain.model.VersionAggregate;
 import com.tschanz.v_bro.versions.domain.model.Pflegestatus;
 import com.tschanz.v_bro.versions.domain.model.VersionData;
 import com.tschanz.v_bro.versions.persistence.jdbc.service.JdbcVersionService;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class JdbcVersionAggregate extends VersionAggregate {
-    private final RepoTableRecord elementRecord;
-    private final RepoTableRecord versionRecord;
-
-
-    public RepoTableRecord getElementRecord() { return elementRecord; }
-    public RepoTableRecord getVersionRecord() { return versionRecord; }
+    @Getter private final RepoTableRecord elementRecord;
+    @Getter private final RepoTableRecord versionRecord;
 
 
     public JdbcVersionAggregate(
@@ -43,7 +40,7 @@ public class JdbcVersionAggregate extends VersionAggregate {
     private List<RepoTableRecord> getAllRecordsAtNode(JdbcAggregateNode jdbcAggregateNode) {
         ArrayList<RepoTableRecord> nodes = new ArrayList<>();
 
-        nodes.add(jdbcAggregateNode.getRepoTableEntry());
+        nodes.add(jdbcAggregateNode.getRepoTableRecord());
         jdbcAggregateNode.getJdbcChildNodes().forEach(childNode -> nodes.addAll(this.getAllRecordsAtNode(childNode)));
 
         return nodes;

@@ -1,5 +1,7 @@
 package com.tschanz.v_bro.common.testing;
 
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,12 +10,7 @@ import java.util.stream.Collectors;
 
 public class SpyHelper<E extends Throwable> {
     private final List<MethodCall> methodCalls = new ArrayList<>();
-    private E throwException;
-
-
-    public void setThrowException(E exception) {
-        this.throwException = exception;
-    }
+    @Setter private E throwException;
 
 
     public void checkThrowException() throws E {

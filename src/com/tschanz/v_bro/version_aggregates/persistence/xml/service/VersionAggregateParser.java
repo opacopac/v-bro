@@ -1,8 +1,8 @@
 package com.tschanz.v_bro.version_aggregates.persistence.xml.service;
 
 import com.tschanz.v_bro.repo.domain.model.RepoException;
-import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
 import com.tschanz.v_bro.version_aggregates.persistence.xml.model.XmlNodeInfo;
+import lombok.RequiredArgsConstructor;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -12,13 +12,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
+@RequiredArgsConstructor
 public class VersionAggregateParser {
     private final SAXParserFactory saxParserFactory;
-
-
-    public VersionAggregateParser(SAXParserFactory saxParserFactory) {
-        this.saxParserFactory = saxParserFactory;
-    }
 
 
     public XmlNodeInfo readVersionAggregate(

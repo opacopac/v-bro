@@ -1,5 +1,8 @@
 package com.tschanz.v_bro.version_aggregates.persistence.xml.model;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.xml.sax.Attributes;
 
 import java.util.ArrayList;
@@ -8,23 +11,12 @@ import java.util.List;
 import java.util.Map;
 
 
+@RequiredArgsConstructor
 public class XmlNodeInfo {
-    private final String name;
-    private final Map<String, String> attributes = new HashMap<>();
-    private final List<XmlNodeInfo> childNodes = new ArrayList<>();
-    private String value = null;
-
-
-    public String getName() { return name; }
-    public Map<String, String> getAttributes() { return attributes; }
-    public List<XmlNodeInfo> getChildNodes() { return childNodes; }
-    public String getValue() { return value; }
-    public void setValue(String value) { this.value = value; }
-
-
-    public XmlNodeInfo(String name) {
-        this.name = name;
-    }
+    @Getter private final String name;
+    @Getter private final Map<String, String> attributes = new HashMap<>();
+    @Getter private final List<XmlNodeInfo> childNodes = new ArrayList<>();
+    @Getter @Setter private String value = null;
 
 
     public static XmlNodeInfo parseFromSaxAttributes(String nodeName, Attributes attributes) {

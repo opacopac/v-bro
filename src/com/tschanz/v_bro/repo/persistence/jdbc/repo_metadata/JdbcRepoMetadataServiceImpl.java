@@ -6,6 +6,7 @@ import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoFieldType;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoRelation;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactory;
+import lombok.RequiredArgsConstructor;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -16,18 +17,13 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
+@RequiredArgsConstructor
 public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
     public static final String WILDCARD = "%";
-
     private final Logger logger = Logger.getLogger(JdbcRepoMetadataServiceImpl.class.getName());
     private final JdbcConnectionFactory connectionFactory;
     private List<RepoField> repoFieldLut;
     private List<RepoRelation> repoRelationLut;
-
-
-    public JdbcRepoMetadataServiceImpl(JdbcConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
-    }
 
 
     @Override
