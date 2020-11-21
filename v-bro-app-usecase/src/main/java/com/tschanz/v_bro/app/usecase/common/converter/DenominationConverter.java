@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.usecase.common.converter;
 
 import com.tschanz.v_bro.app.usecase.common.responsemodel.DenominationResponse;
-import com.tschanz.v_bro.element_classes.domain.model.Denomination;
+import com.tschanz.v_bro.structure.domain.model.Denomination;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,7 +1,6 @@
 package com.tschanz.v_bro.app.usecase.common.responsemodel;
 
-import com.tschanz.v_bro.versions.domain.model.Pflegestatus;
-import com.tschanz.v_bro.versions.domain.model.VersionData;
+import com.tschanz.v_bro.structure.domain.model.Pflegestatus;
 
 import java.time.LocalDate;
 

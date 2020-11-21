@@ -2,7 +2,7 @@ package com.tschanz.v_bro.app.presentation.viewmodel;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.*;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
-import com.tschanz.v_bro.versions.domain.model.VersionData;
+import com.tschanz.v_bro.structure.domain.model.VersionData;
 
 import java.time.LocalDate;
 import java.util.Collections;

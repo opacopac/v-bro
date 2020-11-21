@@ -4,14 +4,13 @@ import com.tschanz.v_bro.app.usecase.common.converter.FwdDependencyConverter;
 import com.tschanz.v_bro.app.usecase.common.converter.VersionAggregateConverter;
 import com.tschanz.v_bro.app.usecase.select_version.requestmodel.SelectVersionRequest;
 import com.tschanz.v_bro.app.usecase.select_version.responsemodel.SelectVersionResponse;
-import com.tschanz.v_bro.dependencies.domain.model.FwdDependency;
-import com.tschanz.v_bro.dependencies.domain.service.DependencyService;
+import com.tschanz.v_bro.structure.domain.model.FwdDependency;
+import com.tschanz.v_bro.structure.domain.service.DependencyService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
-import com.tschanz.v_bro.version_aggregates.domain.model.VersionAggregate;
-import com.tschanz.v_bro.version_aggregates.domain.service.VersionAggregateService;
+import com.tschanz.v_bro.structure.domain.model.VersionAggregate;
+import com.tschanz.v_bro.structure.domain.service.VersionAggregateService;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 

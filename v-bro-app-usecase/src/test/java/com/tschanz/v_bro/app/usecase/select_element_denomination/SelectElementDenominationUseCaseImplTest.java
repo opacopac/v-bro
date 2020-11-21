@@ -1,20 +1,6 @@
 package com.tschanz.v_bro.app.usecase.select_element_denomination;
 
-import com.tschanz.v_bro.app.presentation.presenter.spy.SpySelectElementDenominationPresenter;
-import com.tschanz.v_bro.app.usecase.select_element_denomination.requestmodel.SelectElementDenominationRequest;
-import com.tschanz.v_bro.app.usecase.select_element_denomination.responsemodel.SelectElementDenominationResponse;
-import com.tschanz.v_bro.elements.domain.model.DenominationData;
-import com.tschanz.v_bro.elements.domain.model.ElementData;
-import com.tschanz.v_bro.elements.domain.service.ElementService;
-//import com.tschanz.v_bro.elements.persistence.spy.service.SpyElementService;
-import com.tschanz.v_bro.repo.domain.model.RepoType;
-import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+//import com.tschanz.v_bro.structure.domain.service.SpyElementService;
 
 
 public class SelectElementDenominationUseCaseImplTest {

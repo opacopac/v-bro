@@ -2,8 +2,8 @@ package com.tschanz.v_bro.app.usecase.common.converter;
 
 import com.tschanz.v_bro.app.usecase.common.responsemodel.VersionAggregateNodeResponse;
 import com.tschanz.v_bro.app.usecase.common.responsemodel.VersionAggregateResponse;
-import com.tschanz.v_bro.version_aggregates.domain.model.AggregateNode;
-import com.tschanz.v_bro.version_aggregates.domain.model.VersionAggregate;
+import com.tschanz.v_bro.structure.domain.model.AggregateNode;
+import com.tschanz.v_bro.structure.domain.model.VersionAggregate;
 
 import java.util.stream.Collectors;
 

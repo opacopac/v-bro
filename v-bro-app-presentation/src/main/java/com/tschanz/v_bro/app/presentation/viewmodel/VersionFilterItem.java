@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.viewmodel;
 
-import com.tschanz.v_bro.versions.domain.model.Pflegestatus;
+import com.tschanz.v_bro.structure.domain.model.Pflegestatus;
 import java.time.LocalDate;
 
 

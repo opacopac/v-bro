@@ -4,7 +4,7 @@ import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectVersionFilterA
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.app.presentation.viewmodel.VersionFilterItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.PflegestatusItem;
-import com.tschanz.v_bro.versions.domain.model.Pflegestatus;
+import com.tschanz.v_bro.structure.domain.model.Pflegestatus;
 import com.tschanz.v_bro.app.presentation.view.VersionFilterView;
 import org.jdatepicker.JDatePicker;
 import org.jdatepicker.impl.DateComponentFormatter;

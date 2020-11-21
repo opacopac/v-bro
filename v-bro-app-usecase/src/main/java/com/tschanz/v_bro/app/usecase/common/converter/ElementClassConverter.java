@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.usecase.common.converter;
 
 import com.tschanz.v_bro.app.usecase.common.responsemodel.ElementClassResponse;
-import com.tschanz.v_bro.element_classes.domain.model.ElementClass;
+import com.tschanz.v_bro.structure.domain.model.ElementClass;
 
 import java.util.List;
 import java.util.stream.Collectors;
