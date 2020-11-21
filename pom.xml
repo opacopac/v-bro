@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.tschanz.v_bro</groupId>
+    <artifactId>v-bro-parent</artifactId>
+    <version>0.0.1</version>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>v-bro-app</module>
+        <module>v-bro-app-presentation</module>
+        <module>v-bro-app-presentation-swing</module>
+        <module>v-bro-app-usecase</module>
+        <module>v-bro-common</module>
+        <module>v-bro-repo-domain</module>
+        <module>v-bro-repo-persistence-jdbc</module>
+        <module>v-bro-repo-persistence-mock</module>
+        <module>v-bro-repo-persistence-xml</module>
+        <module>v-bro-structure-domain</module>
+        <module>v-bro-structure-persistence-jdbc</module>
+        <module>v-bro-structure-persistence-mock</module>
+        <module>v-bro-structure-persistence-xml</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <lombok.version>1.18.10</lombok.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.4.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
