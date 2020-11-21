@@ -1,8 +1,8 @@
 package com.tschanz.v_bro.app.usecase.common.converter;
 
 import com.tschanz.v_bro.app.usecase.common.responsemodel.ElementResponse;
-import com.tschanz.v_bro.structure.domain.model.DenominationData;
-import com.tschanz.v_bro.structure.domain.model.ElementData;
+import com.tschanz.v_bro.data_structure.domain.model.DenominationData;
+import com.tschanz.v_bro.data_structure.domain.model.ElementData;
 
 import java.util.Comparator;
 import java.util.List;

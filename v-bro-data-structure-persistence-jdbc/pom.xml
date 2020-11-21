@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.tschanz.v_bro</groupId>
+        <artifactId>v-bro-parent</artifactId>
+        <relativePath>../pom.xml</relativePath>
+        <version>0.0.1</version>
+    </parent>
+
+    <artifactId>v-bro-data-structure-persistence-jdbc</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.tschanz.v_bro</groupId>
+            <artifactId>v-bro-data-structure-domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tschanz.v_bro</groupId>
+            <artifactId>v-bro-repo-domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tschanz.v_bro</groupId>
+            <artifactId>v-bro-repo-persistence-jdbc</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+</project>

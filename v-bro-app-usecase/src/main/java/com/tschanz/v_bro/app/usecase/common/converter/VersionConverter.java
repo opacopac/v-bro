@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.usecase.common.converter;
 
 import com.tschanz.v_bro.app.usecase.common.responsemodel.VersionResponse;
-import com.tschanz.v_bro.structure.domain.model.VersionData;
+import com.tschanz.v_bro.data_structure.domain.model.VersionData;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.usecase.common.converter;
 
 import com.tschanz.v_bro.app.usecase.select_dependency_filter.responsemodel.FwdDependencyResponse;
-import com.tschanz.v_bro.structure.domain.model.FwdDependency;
+import com.tschanz.v_bro.data_structure.domain.model.FwdDependency;
 
 import java.util.List;
 import java.util.stream.Collectors;

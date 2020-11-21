@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.usecase.common.requestmodel;
 
-import com.tschanz.v_bro.structure.domain.model.Pflegestatus;
+import com.tschanz.v_bro.data_structure.domain.model.Pflegestatus;
 
 import java.time.LocalDate;
 

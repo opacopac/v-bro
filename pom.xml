@@ -16,14 +16,14 @@
         <module>v-bro-app-presentation-swing</module>
         <module>v-bro-app-usecase</module>
         <module>v-bro-common</module>
+        <module>v-bro-data-structure-domain</module>
+        <module>v-bro-data-structure-persistence-jdbc</module>
+        <module>v-bro-data-structure-persistence-mock</module>
+        <module>v-bro-data-structure-persistence-xml</module>
         <module>v-bro-repo-domain</module>
         <module>v-bro-repo-persistence-jdbc</module>
         <module>v-bro-repo-persistence-mock</module>
         <module>v-bro-repo-persistence-xml</module>
-        <module>v-bro-structure-domain</module>
-        <module>v-bro-structure-persistence-jdbc</module>
-        <module>v-bro-structure-persistence-mock</module>
-        <module>v-bro-structure-persistence-xml</module>
     </modules>
 
     <properties>

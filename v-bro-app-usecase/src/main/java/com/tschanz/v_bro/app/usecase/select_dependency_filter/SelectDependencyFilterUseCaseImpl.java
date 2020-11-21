@@ -3,8 +3,8 @@ package com.tschanz.v_bro.app.usecase.select_dependency_filter;
 import com.tschanz.v_bro.app.usecase.common.converter.FwdDependencyConverter;
 import com.tschanz.v_bro.app.usecase.select_dependency_filter.requestmodel.SelectDependencyFilterRequest;
 import com.tschanz.v_bro.app.usecase.select_dependency_filter.responsemodel.SelectDependencyFilterResponse;
-import com.tschanz.v_bro.structure.domain.model.FwdDependency;
-import com.tschanz.v_bro.structure.domain.service.DependencyService;
+import com.tschanz.v_bro.data_structure.domain.model.FwdDependency;
+import com.tschanz.v_bro.data_structure.domain.service.DependencyService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
 

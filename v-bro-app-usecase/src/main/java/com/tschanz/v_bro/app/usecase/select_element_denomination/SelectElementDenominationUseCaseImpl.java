@@ -3,8 +3,8 @@ package com.tschanz.v_bro.app.usecase.select_element_denomination;
 import com.tschanz.v_bro.app.usecase.common.converter.ElementConverter;
 import com.tschanz.v_bro.app.usecase.select_element_denomination.requestmodel.SelectElementDenominationRequest;
 import com.tschanz.v_bro.app.usecase.select_element_denomination.responsemodel.SelectElementDenominationResponse;
-import com.tschanz.v_bro.structure.domain.model.ElementData;
-import com.tschanz.v_bro.structure.domain.service.ElementService;
+import com.tschanz.v_bro.data_structure.domain.model.ElementData;
+import com.tschanz.v_bro.data_structure.domain.service.ElementService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
 

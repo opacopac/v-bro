@@ -2,7 +2,7 @@ package com.tschanz.v_bro.app.usecase.common.converter;
 
 import com.tschanz.v_bro.app.usecase.common.requestmodel.VersionFilterRequest;
 import com.tschanz.v_bro.app.usecase.common.responsemodel.VersionFilterResponse;
-import com.tschanz.v_bro.structure.domain.model.VersionFilter;
+import com.tschanz.v_bro.data_structure.domain.model.VersionFilter;
 
 
 public class VersionFilterConverter {

@@ -26,7 +26,7 @@
         </dependency>
         <dependency>
             <groupId>com.tschanz.v_bro</groupId>
-            <artifactId>v-bro-structure-domain</artifactId>
+            <artifactId>v-bro-data-structure-domain</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- TODO -->
