@@ -1,5 +1,4 @@
-/out/
 /lib/
 /res/
 /.idea/
-/v-bro.iml
+*.iml
