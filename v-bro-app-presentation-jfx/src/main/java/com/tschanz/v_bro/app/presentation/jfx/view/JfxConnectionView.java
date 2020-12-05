@@ -87,7 +87,6 @@ public class JfxConnectionView implements Initializable, ConnectionView {
     private void onRepoConnectionChanged(RepoConnectionItem repoConnection) {
         String conStr = this.createConnectionString(repoConnection);
         this.connectionLabel.setText(conStr);
-
         this.connectButton.setVisible(repoConnection == null);
         this.disconnectButton.setVisible(repoConnection != null);
     }
