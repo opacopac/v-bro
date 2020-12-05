@@ -2,7 +2,7 @@ package com.tschanz.v_bro.app.presentation.controller;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.DependencyFilterItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.VersionFilterItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementClassAction;
+import com.tschanz.v_bro.app.presentation.actions.SelectElementClassAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.DependencyFilterItemConverter;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.VersionFilterItemConverter;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
@@ -34,7 +34,7 @@ public class ElementClassController {
     }
 
 
-    private void onElementClassSelected(String selectedElementClass) {
+    public void onElementClassSelected(String selectedElementClass) {
         if (this.repoConnection.getCurrentValue() == null
             || selectedElementClass == null
             || this.versionFilter.getCurrentValue() == null

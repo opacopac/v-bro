@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tschanz.v_bro.app.presentation.jfx.view.JfxDependencyListEntryView">
+    <VBox>
+        <Label fx:id="dependencyName" />
+        <fx:include fx:id="versionView" source="VersionView.fxml"/>
+    </VBox>
+</AnchorPane>

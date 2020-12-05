@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.presentation.viewmodel.converter;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.ElementClassItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.SelectedItemList;
+import com.tschanz.v_bro.app.presentation.viewmodel.SelectableItemList;
 import com.tschanz.v_bro.app.usecase.common.responsemodel.ElementClassResponse;
 
 import java.util.List;
@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 
 
 public class ElementClassItemConverter {
-    public static SelectedItemList<ElementClassItem> fromResponse(List<ElementClassResponse> elementClasses, String selectElementClass) {
-        return new SelectedItemList<>(fromResponse(elementClasses), selectElementClass);
+    public static SelectableItemList<ElementClassItem> fromResponse(List<ElementClassResponse> elementClasses, String selectElementClass) {
+        return new SelectableItemList<>(fromResponse(elementClasses), selectElementClass);
     }
 
 

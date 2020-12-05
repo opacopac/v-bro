@@ -1,5 +1,7 @@
 package com.tschanz.v_bro.app;
 
+import com.tschanz.v_bro.app.presentation.actions.MainActions;
+import com.tschanz.v_bro.app.presentation.jfx.JfxApplication;
 import com.tschanz.v_bro.app.presentation.presenter.MainPresenter;
 import com.tschanz.v_bro.app.presentation.viewmodel.MainModel;
 import com.tschanz.v_bro.app.usecase.select_dependency_filter.SelectDependencyFilterUseCaseImpl;
@@ -27,8 +29,6 @@ import com.tschanz.v_bro.data_structure.persistence.mock.service.MockElementServ
 import com.tschanz.v_bro.data_structure.persistence.jdbc.service.JdbcElementService;
 import com.tschanz.v_bro.data_structure.persistence.xml.service.XmlElementService;
 import com.tschanz.v_bro.app.presentation.controller.MainController;
-import com.tschanz.v_bro.app.presentation.view.swing.MainPanel;
-import com.tschanz.v_bro.app.presentation.view.MainView;
 import com.tschanz.v_bro.app.usecase.select_element.SelectElementUseCase;
 import com.tschanz.v_bro.repo.domain.service.RepoService;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
@@ -59,6 +59,7 @@ import com.tschanz.v_bro.app.usecase.select_version.SelectVersionUseCase;
 import com.tschanz.v_bro.data_structure.persistence.xml.stax_parser.DenominationsParser;
 import com.tschanz.v_bro.data_structure.persistence.xml.stax_parser.ElementParser;
 import com.tschanz.v_bro.data_structure.persistence.xml.stax_parser.VersionParser;
+import lombok.SneakyThrows;
 
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.XMLInputFactory;
@@ -120,6 +121,7 @@ public class Main {
 
         // presentation viewmodel & presenter
         MainModel mainModel = new MainModel();
+        MainActions mainActions = new MainActions();
         MainPresenter mainPresenter = new MainPresenter(mainModel);
 
         // app use cases
@@ -132,10 +134,11 @@ public class Main {
         SelectDependencyFilterUseCase selectDependencyFilterUc = new SelectDependencyFilterUseCaseImpl(dependencyServiceProvider, mainPresenter.getSelectDependencyFilterPresenter());
         SelectDependencyVersionUseCase selectDependencyVersionUc = new SelectDependencyVersionUseCaseImpl(elementClassServiceProvider, elementServiceProvider, versionServiceProvider, dependencyServiceProvider, versionAggregateServiceProvider, mainPresenter.getSelectDependencyVersionPresenter());
 
-        // presentation controller
+        // presentation view
         MainController mainController = new MainController(
             appProperties, // TODO => move to app
             mainModel,
+            mainActions,
             openConnectionUc,
             closeConnectionUc,
             selectElementClassUc,
@@ -147,13 +150,15 @@ public class Main {
         );
 
         // presentation view
-        MainView mainView = new MainPanel();
+        JfxApplication.main(args, mainModel, mainActions);
+        /*MainView mainView = new MainPanel();
         mainView.bindViewModel(mainModel);
-        mainView.start();
+        mainView.start();*/
     }
 
 
-    private static Properties loadProperties() throws IOException {
+    @SneakyThrows
+    private static Properties loadProperties() {
         Properties prop = new Properties();
         String propFileName = "/application.properties";
 

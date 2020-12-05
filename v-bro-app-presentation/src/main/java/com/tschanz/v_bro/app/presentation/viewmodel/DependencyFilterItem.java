@@ -1,14 +1,15 @@
 package com.tschanz.v_bro.app.presentation.viewmodel;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.Accessors;
 
+
+@Getter
+@RequiredArgsConstructor
 public class DependencyFilterItem {
-    public boolean isFwd;
-
-
-
-    public DependencyFilterItem(boolean isFwd) {
-        this.isFwd = isFwd;
-    }
+    @Accessors(fluent = true)
+    private final boolean isFwd;
 
 
     @Override

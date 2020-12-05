@@ -6,6 +6,6 @@ import com.tschanz.v_bro.app.usecase.select_dependency_filter.requestmodel.Depen
 
 public class DependencyFilterItemConverter {
     public static DependencyFilterRequest toRequest(DependencyFilterItem dependencyFilter) {
-        return new DependencyFilterRequest(dependencyFilter.isFwd);
+        return new DependencyFilterRequest(dependencyFilter.isFwd());
     }
 }

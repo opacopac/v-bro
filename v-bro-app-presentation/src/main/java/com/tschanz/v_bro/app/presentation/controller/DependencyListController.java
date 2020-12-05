@@ -4,7 +4,7 @@ import com.tschanz.v_bro.app.presentation.viewmodel.DependencyFilterItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.ElementVersionVector;
 import com.tschanz.v_bro.app.presentation.viewmodel.RepoConnectionItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.VersionFilterItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectDependencyVersionAction;
+import com.tschanz.v_bro.app.presentation.actions.SelectDependencyVersionAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.DependencyFilterItemConverter;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.VersionFilterItemConverter;
 import com.tschanz.v_bro.app.usecase.select_dependency_version.SelectDependencyVersionUseCase;
@@ -36,7 +36,7 @@ public class DependencyListController {
     }
 
 
-    private void onVersionFilterSelected(ElementVersionVector selectedDependencyVersion) {
+    public void onVersionFilterSelected(ElementVersionVector selectedDependencyVersion) {
         if (this.repoConnection.getCurrentValue() == null
             || selectedDependencyVersion == null
             || this.versionFilter == null

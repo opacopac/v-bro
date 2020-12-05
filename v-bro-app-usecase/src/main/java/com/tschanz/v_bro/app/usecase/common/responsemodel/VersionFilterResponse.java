@@ -1,23 +1,14 @@
 package com.tschanz.v_bro.app.usecase.common.responsemodel;
 
 import com.tschanz.v_bro.data_structure.domain.model.Pflegestatus;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 
 
+@RequiredArgsConstructor
 public class VersionFilterResponse {
     public final LocalDate minGueltigVon;
     public final LocalDate maxGueltigBis;
     public final Pflegestatus minPflegestatus;
-
-
-    public VersionFilterResponse(
-        LocalDate minGueltigVon,
-        LocalDate maxGueltigBis,
-        Pflegestatus minPflegestatus
-    ) {
-        this.minGueltigVon = minGueltigVon;
-        this.maxGueltigBis = maxGueltigBis;
-        this.minPflegestatus = minPflegestatus;
-    }
 }

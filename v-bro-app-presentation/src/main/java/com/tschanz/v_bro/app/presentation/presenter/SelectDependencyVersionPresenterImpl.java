@@ -22,7 +22,7 @@ public class SelectDependencyVersionPresenterImpl implements SelectDependencyVer
         }
 
         if (!response.isError) {
-            SelectedItemList<ElementClassItem> newElementClasses = new SelectedItemList<>(this.mainModel.elementClasses.getCurrentValue().getItems(), response.selectElementClass);
+            SelectableItemList<ElementClassItem> newElementClasses = new SelectableItemList<>(this.mainModel.elementClasses.getCurrentValue().getItems(), response.selectElementClass);
             this.mainModel.elementClasses.next(newElementClasses);
             this.mainModel.elementDenominations.next(DenominationItemConverter.fromResponse(response.denominations, response.selectDenominations));
             this.mainModel.elements.next(ElementItemConverter.fromResponse(response.elements, response.selectElementId));

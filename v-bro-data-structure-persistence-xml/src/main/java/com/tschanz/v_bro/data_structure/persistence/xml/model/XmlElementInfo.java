@@ -9,8 +9,8 @@ import java.util.Collection;
 
 @RequiredArgsConstructor
 public class XmlElementInfo {
-    @Getter private final String elementId;
     @Getter private final String name;
+    @Getter private final String elementId;
     @Getter private final Collection<String> denominations = new ArrayList<>();
 
 

@@ -11,12 +11,13 @@ import java.util.List;
 import java.util.Map;
 
 
+@Getter
 @RequiredArgsConstructor
 public class XmlNodeInfo {
-    @Getter private final String name;
-    @Getter private final Map<String, String> attributes = new HashMap<>();
-    @Getter private final List<XmlNodeInfo> childNodes = new ArrayList<>();
-    @Getter @Setter private String value = null;
+    private final String name;
+    private final Map<String, String> attributes = new HashMap<>();
+    private final List<XmlNodeInfo> childNodes = new ArrayList<>();
+    @Setter private String value = null;
 
 
     public static XmlNodeInfo parseFromSaxAttributes(String nodeName, Attributes attributes) {

@@ -21,6 +21,11 @@
         </dependency>
         <dependency>
             <groupId>com.tschanz.v_bro</groupId>
+            <artifactId>v-bro-app-presentation-jfx</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tschanz.v_bro</groupId>
             <artifactId>v-bro-app-presentation-swing</artifactId>
             <version>${project.version}</version>
         </dependency>

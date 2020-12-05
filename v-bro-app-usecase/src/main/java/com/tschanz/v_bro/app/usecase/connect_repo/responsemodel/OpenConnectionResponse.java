@@ -54,4 +54,11 @@ public class OpenConnectionResponse extends UseCaseResponse {
         this.selectElementId = selectElementId;
         this.selectVersionId = selectVersionId;
     }
+
+
+    public OpenConnectionResponse(String errorMessage) {
+        this(null, null, null, null, null, null,
+            null, null, null, null, null,
+            null, null, errorMessage, true);
+    }
 }

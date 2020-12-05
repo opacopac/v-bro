@@ -1,8 +1,12 @@
 package com.tschanz.v_bro.app.presentation.viewmodel;
 
 import com.tschanz.v_bro.repo.domain.model.RepoType;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 
+@Getter
+@RequiredArgsConstructor
 public class QuickConnectionItem {
     private final String key;
     private final RepoType repoType;
@@ -10,31 +14,6 @@ public class QuickConnectionItem {
     private final String user;
     private final String password;
     private final String filename;
-
-
-    public String getKey() { return key; }
-    public RepoType getRepoType() { return repoType; }
-    public String getUrl() { return url; }
-    public String getUser() { return user; }
-    public String getPassword() { return password; }
-    public String getFilename() { return filename; }
-
-
-    public QuickConnectionItem(
-        String key,
-        RepoType repoType,
-        String url,
-        String user,
-        String password,
-        String filename
-    ) {
-        this.key = key;
-        this.repoType = repoType;
-        this.url = url;
-        this.user = user;
-        this.password = password;
-        this.filename = filename;
-    }
 
 
     public static QuickConnectionItem createEmptyItem(String key) {

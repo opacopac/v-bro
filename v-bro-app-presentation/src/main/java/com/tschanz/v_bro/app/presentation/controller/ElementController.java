@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.*;
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectElementAction;
+import com.tschanz.v_bro.app.presentation.actions.SelectElementAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.DependencyFilterItemConverter;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.VersionFilterItemConverter;
 import com.tschanz.v_bro.app.usecase.select_element.requestmodel.SelectElementRequest;
@@ -12,7 +12,7 @@ import com.tschanz.v_bro.app.usecase.select_element.SelectElementUseCase;
 
 public class ElementController {
     private final BehaviorSubject<RepoConnectionItem> repoConnection;
-    private final BehaviorSubject<SelectedItemList<ElementClassItem>> elementClasses;
+    private final BehaviorSubject<SelectableItemList<ElementClassItem>> elementClasses;
     private final BehaviorSubject<VersionFilterItem> versionFilter;
     private final BehaviorSubject<DependencyFilterItem> dependencyFilter;
     private final SelectElementUseCase selectElementUc;
@@ -20,7 +20,7 @@ public class ElementController {
 
     public ElementController(
         BehaviorSubject<RepoConnectionItem> repoConnection,
-        BehaviorSubject<SelectedItemList<ElementClassItem>> elementClasses,
+        BehaviorSubject<SelectableItemList<ElementClassItem>> elementClasses,
         BehaviorSubject<VersionFilterItem> versionFilter,
         BehaviorSubject<DependencyFilterItem> dependencyFilter,
         SelectElementAction selectElementAction,
@@ -36,7 +36,7 @@ public class ElementController {
     }
 
 
-    private void onElementSelected(String selectedElementId) {
+    public void onElementSelected(String selectedElementId) {
         if (this.repoConnection.getCurrentValue() == null
             || this.elementClasses.getCurrentValue() == null
             || this.elementClasses.getCurrentValue().getSelectedItem() == null

@@ -1,14 +1,11 @@
 package com.tschanz.v_bro.app.presentation.viewmodel;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+
+@Getter
+@RequiredArgsConstructor
 public class VersionAggregateItem {
     protected final AggregateNodeItem rootNode;
-
-
-    public AggregateNodeItem getRootNode() { return rootNode; }
-
-
-    public VersionAggregateItem(AggregateNodeItem rootNode) {
-        this.rootNode = rootNode;
-    }
 }

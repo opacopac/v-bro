@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.viewmodel.converter;
 
-import com.tschanz.v_bro.app.presentation.viewmodel.SelectedItemList;
+import com.tschanz.v_bro.app.presentation.viewmodel.SelectableItemList;
 import com.tschanz.v_bro.app.presentation.viewmodel.VersionItem;
 import com.tschanz.v_bro.app.usecase.common.responsemodel.VersionResponse;
 
@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 
 
 public class VersionItemConverter {
-    public static SelectedItemList<VersionItem> fromResponse(List<VersionResponse> versions, String selectVersionId) {
-        return new SelectedItemList<>(fromResponse(versions), selectVersionId);
+    public static SelectableItemList<VersionItem> fromResponse(List<VersionResponse> versions, String selectVersionId) {
+        return new SelectableItemList<>(fromResponse(versions), selectVersionId);
     }
 
 

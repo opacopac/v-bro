@@ -1,19 +1,14 @@
 package com.tschanz.v_bro.app.presentation.viewmodel;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+
+@Getter
+@RequiredArgsConstructor
 public class FieldAggregateNodeItem {
     private final String fieldName;
     private final String fieldValue;
-
-
-    public String getFieldName() { return fieldName; }
-    public String getFieldValue() { return fieldValue; }
-
-
-    public FieldAggregateNodeItem(String fieldName, String fieldValue) {
-        this.fieldName = fieldName;
-        this.fieldValue = fieldValue;
-    }
 
 
     @Override

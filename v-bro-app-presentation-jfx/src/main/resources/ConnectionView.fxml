@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tschanz.v_bro.app.presentation.jfx.view.JfxConnectionView">
+    <HBox alignment="CENTER_LEFT" spacing="5.0">
+        <StackPane alignment="CENTER_LEFT">
+            <Button fx:id="connectButton" mnemonicParsing="false" onAction="#onConnectClicked" text="Connect..." />
+            <Button fx:id="disconnectButton" mnemonicParsing="false" onAction="#onDisconnectClicked" text="Disconnect" visible="false" />
+        </StackPane>
+        <Label fx:id="connectionLabel" text="(not connected)" />
+    </HBox>
+</AnchorPane>

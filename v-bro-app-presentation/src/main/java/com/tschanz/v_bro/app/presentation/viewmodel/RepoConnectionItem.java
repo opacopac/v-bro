@@ -1,20 +1,13 @@
 package com.tschanz.v_bro.app.presentation.viewmodel;
 
 import com.tschanz.v_bro.repo.domain.model.RepoType;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 
+@Getter
+@RequiredArgsConstructor
 public abstract class RepoConnectionItem {
-    public final RepoType repoType;
-
-
-    public RepoType getRepoType() { return repoType; }
-
-
-    public RepoConnectionItem(RepoType repoType) {
-        if (repoType == null) {
-            throw new IllegalArgumentException("repoType must not be null");
-        }
-
-        this.repoType = repoType;
-    }
+    @NonNull public final RepoType repoType;
 }

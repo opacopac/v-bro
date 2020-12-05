@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.ConnectToRepoAction;
+import com.tschanz.v_bro.app.presentation.actions.ConnectToRepoAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.ConnectionItemConverter;
 import com.tschanz.v_bro.app.usecase.connect_repo.requestmodel.*;
 import com.tschanz.v_bro.app.usecase.disconnect_repo.requestmodel.CloseConnectionRequest;

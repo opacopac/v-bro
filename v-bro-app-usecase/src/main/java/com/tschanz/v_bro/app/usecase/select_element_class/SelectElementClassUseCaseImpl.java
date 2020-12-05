@@ -3,25 +3,18 @@ package com.tschanz.v_bro.app.usecase.select_element_class;
 import com.tschanz.v_bro.app.usecase.common.converter.*;
 import com.tschanz.v_bro.app.usecase.select_element_class.requestmodel.SelectElementClassRequest;
 import com.tschanz.v_bro.app.usecase.select_element_class.responsemodel.SelectElementClassResponse;
-import com.tschanz.v_bro.data_structure.domain.model.FwdDependency;
-import com.tschanz.v_bro.data_structure.domain.service.DependencyService;
-import com.tschanz.v_bro.data_structure.domain.model.Denomination;
-import com.tschanz.v_bro.data_structure.domain.service.ElementClassService;
-import com.tschanz.v_bro.data_structure.domain.model.ElementData;
-import com.tschanz.v_bro.data_structure.domain.service.ElementService;
+import com.tschanz.v_bro.data_structure.domain.model.*;
+import com.tschanz.v_bro.data_structure.domain.service.*;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
-import com.tschanz.v_bro.data_structure.domain.model.VersionAggregate;
-import com.tschanz.v_bro.data_structure.domain.service.VersionAggregateService;
-import com.tschanz.v_bro.data_structure.domain.model.VersionData;
-import com.tschanz.v_bro.data_structure.domain.model.VersionFilter;
-import com.tschanz.v_bro.data_structure.domain.service.VersionService;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
 
+@RequiredArgsConstructor
 public class SelectElementClassUseCaseImpl implements SelectElementClassUseCase {
     private final Logger logger = Logger.getLogger(SelectElementClassUseCaseImpl.class.getName());
     private final RepoServiceProvider<ElementClassService> elementClassServiceProvider;
@@ -32,60 +25,43 @@ public class SelectElementClassUseCaseImpl implements SelectElementClassUseCase 
     private final SelectElementClassPresenter presenter;
 
 
-    public SelectElementClassUseCaseImpl(
-        RepoServiceProvider<ElementClassService> elementClassServiceProvider,
-        RepoServiceProvider<ElementService> elementServiceProvider,
-        RepoServiceProvider<VersionService> versionServiceProvider,
-        RepoServiceProvider<DependencyService> dependencyServiceProvider,
-        RepoServiceProvider<VersionAggregateService> versionAggregateServiceProvider,
-        SelectElementClassPresenter presenter
-    ) {
-        this.elementClassServiceProvider = elementClassServiceProvider;
-        this.elementServiceProvider = elementServiceProvider;
-        this.versionServiceProvider = versionServiceProvider;
-        this.dependencyServiceProvider = dependencyServiceProvider;
-        this.versionAggregateServiceProvider = versionAggregateServiceProvider;
-        this.presenter = presenter;
-    }
-
-
     @Override
     public void execute(SelectElementClassRequest request) {
         this.logger.info("UC: select element class '" + request.elementClass + "'...");
 
         try {
             // element denominations
-            ElementClassService elementClassService = this.elementClassServiceProvider.getService(request.repoType);
-            List<Denomination> denominations = elementClassService.readDenominations(request.elementClass);
+            var elementClassService = this.elementClassServiceProvider.getService(request.repoType);
+            var denominations = elementClassService.readDenominations(request.elementClass);
             List<String> selectDenominations = denominations.size() > 0 ? List.of(denominations.get(0).getName()) : Collections.emptyList();
 
             // elements
-            ElementService elementService = this.elementServiceProvider.getService(request.repoType);
-            List<ElementData> elements = elementService.readElements(request.elementClass, selectDenominations);
-            String selectElementId = elements.size() > 0 ? elements.get(0).getId() : null;
+            var elementService = this.elementServiceProvider.getService(request.repoType);
+            var elements = elementService.readElements(request.elementClass, selectDenominations);
+            var selectElementId = elements.size() > 0 ? elements.get(0).getId() : null;
 
             // versions
-            VersionService versionService = this.versionServiceProvider.getService(request.repoType);
+            var versionService = this.versionServiceProvider.getService(request.repoType);
             List<VersionData> versions = selectElementId != null ? versionService.readVersionTimeline(request.elementClass, selectElementId) : Collections.emptyList();
-            String selectVersionId = versions.size() > 0 ? versions.get(versions.size() - 1).getId() : null;
+            var selectVersionId = versions.size() > 0 ? versions.get(versions.size() - 1).getId() : null;
 
             // version filter
-            VersionFilter selectedVersionFilter = VersionFilterConverter.fromRequest(request.versionFilter);
-            VersionFilter effectiveVersionFilter = selectedVersionFilter.cropToVersions(versions);
+            var selectedVersionFilter = VersionFilterConverter.fromRequest(request.versionFilter);
+            var effectiveVersionFilter = selectedVersionFilter.cropToVersions(versions);
 
             // dependencies
-            DependencyService dependencyService = this.dependencyServiceProvider.getService(request.repoType);
+            var dependencyService = this.dependencyServiceProvider.getService(request.repoType);
             List<FwdDependency> fwdDependencies = selectVersionId != null ? dependencyService.readFwdDependencies(request.elementClass, selectElementId, selectVersionId) : Collections.emptyList();
 
             // version aggregate
-            VersionAggregateService versionAggregateService = this.versionAggregateServiceProvider.getService(request.repoType);
-            VersionAggregate versionAggregate = selectVersionId != null ? versionAggregateService.readVersionAggregate(request.elementClass, selectElementId, selectVersionId) : null;
+            var versionAggregateService = this.versionAggregateServiceProvider.getService(request.repoType);
+            var versionAggregate = selectVersionId != null ? versionAggregateService.readVersionAggregate(request.elementClass, selectElementId, selectVersionId) : null;
 
-            String message = "successfully read " + denominations.size() + " denominations,  " + elements.size() + " elements"
+            var message = "successfully read " + denominations.size() + " denominations,  " + elements.size() + " elements"
                 + versions.size()  + " versions, " + fwdDependencies.size() + " dependencies and the version aggregate";
             this.logger.info(message);
 
-            SelectElementClassResponse response = new SelectElementClassResponse(
+            var response = new SelectElementClassResponse(
                 DenominationConverter.toResponse(denominations),
                 ElementConverter.toResponse(elements),
                 VersionConverter.toResponse(versions),
@@ -101,10 +77,10 @@ public class SelectElementClassUseCaseImpl implements SelectElementClassUseCase 
             );
             this.presenter.present(response);
         } catch (RepoException exception) {
-            String message = "error reading element denominations and elements: " + exception.getMessage();
+            var message = "error reading element denominations and elements: " + exception.getMessage();
             this.logger.severe(message);
 
-            SelectElementClassResponse response = new SelectElementClassResponse(null, null, null, null, null,
+            var response = new SelectElementClassResponse(null, null, null, null, null,
                 null, null, null, null, null, message, true);
             this.presenter.present(response);
         }

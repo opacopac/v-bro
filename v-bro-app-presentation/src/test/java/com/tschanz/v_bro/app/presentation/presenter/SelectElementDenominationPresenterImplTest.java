@@ -31,9 +31,9 @@ public class SelectElementDenominationPresenterImplTest {
         List<String> selectDenominations = List.of("CODE", "BEZEICHNUNG");
         String message = "success";
         SelectElementDenominationResponse response = new SelectElementDenominationResponse(elementResponses, selectDenominations, message, false);
-        SelectedItemList<ElementItem> oldElements = new SelectedItemList<>(List.of(new ElementItem("111", "eins"), new ElementItem("222", "zwei")), "222");
+        SelectableItemList<ElementItem> oldElements = new SelectableItemList<>(List.of(new ElementItem("111", "eins"), new ElementItem("222", "zwei")), "222");
         this.mainModel.elements.next(oldElements);
-        MultiSelectedItemList<DenominationItem> oldDenominations = new MultiSelectedItemList<>(List.of(new DenominationItem("CODE"), new DenominationItem("BEZEICHNUNG"), new DenominationItem("SORTORDER")), List.of("BEZEICHNUNG"));
+        MultiSelectableItemList<DenominationItem> oldDenominations = new MultiSelectableItemList<>(List.of(new DenominationItem("CODE"), new DenominationItem("BEZEICHNUNG"), new DenominationItem("SORTORDER")), List.of("BEZEICHNUNG"));
         this.mainModel.elementDenominations.next(oldDenominations);
 
         this.mainModel.elements.subscribe(new GenericSubscriber<>(elements -> {

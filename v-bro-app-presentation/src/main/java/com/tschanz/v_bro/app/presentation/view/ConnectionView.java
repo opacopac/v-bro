@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.view;
 
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.ConnectToRepoAction;
+import com.tschanz.v_bro.app.presentation.actions.ConnectToRepoAction;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.app.presentation.viewmodel.RepoConnectionItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.QuickConnectionItem;

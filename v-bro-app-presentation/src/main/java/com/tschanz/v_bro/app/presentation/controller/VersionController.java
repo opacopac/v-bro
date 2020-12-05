@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.*;
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectVersionAction;
+import com.tschanz.v_bro.app.presentation.actions.SelectVersionAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.DependencyFilterItemConverter;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.VersionFilterItemConverter;
 import com.tschanz.v_bro.app.usecase.select_version.requestmodel.SelectVersionRequest;
@@ -12,8 +12,8 @@ import com.tschanz.v_bro.app.usecase.select_version.SelectVersionUseCase;
 
 public class VersionController {
     private final BehaviorSubject<RepoConnectionItem> repoConnection;
-    private final BehaviorSubject<SelectedItemList<ElementClassItem>> elementClasses;
-    private final BehaviorSubject<SelectedItemList<ElementItem>> elements;
+    private final BehaviorSubject<SelectableItemList<ElementClassItem>> elementClasses;
+    private final BehaviorSubject<SelectableItemList<ElementItem>> elements;
     private final BehaviorSubject<VersionFilterItem> versionFilter;
     private final BehaviorSubject<DependencyFilterItem> dependencyFilter;
     private final SelectVersionUseCase selectVersionUc;
@@ -21,8 +21,8 @@ public class VersionController {
 
     public VersionController(
         BehaviorSubject<RepoConnectionItem> repoConnection,
-        BehaviorSubject<SelectedItemList<ElementClassItem>> elementClasses,
-        BehaviorSubject<SelectedItemList<ElementItem>> elements,
+        BehaviorSubject<SelectableItemList<ElementClassItem>> elementClasses,
+        BehaviorSubject<SelectableItemList<ElementItem>> elements,
         BehaviorSubject<VersionFilterItem> versionFilter,
         BehaviorSubject<DependencyFilterItem> dependencyFilter,
         SelectVersionAction selectVersionAction,
@@ -39,7 +39,7 @@ public class VersionController {
     }
 
 
-    private void onVersionSelected(String versionId) {
+    public void onVersionSelected(String versionId) {
         if (this.repoConnection.getCurrentValue() == null
             || this.elementClasses.getCurrentValue() == null
             || this.elementClasses.getCurrentValue().getSelectedItem() == null

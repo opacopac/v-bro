@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.*;
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.SelectVersionFilterAction;
+import com.tschanz.v_bro.app.presentation.actions.SelectVersionFilterAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.DependencyFilterItemConverter;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.VersionFilterItemConverter;
 import com.tschanz.v_bro.app.usecase.select_element.SelectElementUseCase;
@@ -12,16 +12,16 @@ import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 
 public class VersionFilterController {
     private final BehaviorSubject<RepoConnectionItem> repoConnection;
-    private final BehaviorSubject<SelectedItemList<ElementClassItem>> elementClasses;
-    private final BehaviorSubject<SelectedItemList<ElementItem>> elements;
+    private final BehaviorSubject<SelectableItemList<ElementClassItem>> elementClasses;
+    private final BehaviorSubject<SelectableItemList<ElementItem>> elements;
     private final BehaviorSubject<DependencyFilterItem> dependencyFilter;
     private final SelectElementUseCase selectElementUc;
 
 
     public VersionFilterController(
         BehaviorSubject<RepoConnectionItem> repoConnection,
-        BehaviorSubject<SelectedItemList<ElementClassItem>> elementClasses,
-        BehaviorSubject<SelectedItemList<ElementItem>> elements,
+        BehaviorSubject<SelectableItemList<ElementClassItem>> elementClasses,
+        BehaviorSubject<SelectableItemList<ElementItem>> elements,
         BehaviorSubject<DependencyFilterItem> dependencyFilter,
         SelectVersionFilterAction selectVersionFilterAction,
         SelectElementUseCase selectElementUc
@@ -36,7 +36,7 @@ public class VersionFilterController {
     }
 
 
-    private void onVersionFilterSelected(VersionFilterItem versionFilterItem) {
+    public void onVersionFilterSelected(VersionFilterItem versionFilterItem) {
         if (this.repoConnection.getCurrentValue() == null
             || this.elementClasses.getCurrentValue() == null
             || this.elementClasses.getCurrentValue().getSelectedItem() == null

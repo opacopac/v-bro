@@ -1,6 +1,8 @@
 package com.tschanz.v_bro.app.presentation.presenter;
 
-import com.tschanz.v_bro.app.presentation.viewmodel.*;
+import com.tschanz.v_bro.app.presentation.viewmodel.ErrorStatusItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.InfoStatusItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.MainModel;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.FwdDependencyItemConverter;
 import com.tschanz.v_bro.app.usecase.select_dependency_filter.SelectDependencyFilterPresenter;
 import com.tschanz.v_bro.app.usecase.select_dependency_filter.responsemodel.SelectDependencyFilterResponse;
