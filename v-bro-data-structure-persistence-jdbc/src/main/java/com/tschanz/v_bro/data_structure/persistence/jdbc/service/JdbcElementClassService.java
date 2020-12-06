@@ -7,28 +7,28 @@ import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoFieldType;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
-import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataServiceImpl;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataService;
+import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
+@Log
 @RequiredArgsConstructor
 public class JdbcElementClassService implements ElementClassService {
     private final static String ELEMENT_TABLE_SUFFIX = "_E";
     private final static List<String> NO_DENOMINATION_NAME = List.of("VERSIONID", "CREATED_BY", "MODIFIED_BY", "BEMERKUNG"); // TODO => app config
     private final static List<RepoFieldType> NO_DENOMINATION_TYPE = List.of(RepoFieldType.BOOL, RepoFieldType.DATE, RepoFieldType.TIMESTAMP);
-    private final Logger logger = Logger.getLogger(JdbcElementClassService.class.getName());
     private final JdbcRepoService repo;
     private final JdbcRepoMetadataService repoMetaData;
 
 
     @Override
     public List<ElementClass> readElementClasses() throws RepoException {
-        this.logger.info("finding tables with suffix " + ELEMENT_TABLE_SUFFIX);
+        log.info("finding tables with suffix " + ELEMENT_TABLE_SUFFIX);
         String tableNamePattern = JdbcRepoMetadataServiceImpl.WILDCARD + this.repoMetaData.escapeUnderscore(ELEMENT_TABLE_SUFFIX);
         List<String> tableNames = this.repoMetaData.findTableNames(tableNamePattern);
 

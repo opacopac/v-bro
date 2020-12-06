@@ -4,6 +4,7 @@ import com.tschanz.v_bro.repo.persistence.jdbc.model.FieldValue;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoField;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactory;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcServerType;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -14,16 +15,23 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
-    public static int MAX_ROW_NUM = 10000;
+    public static int MAX_ROW_NUM_HARD_LIMIT = 10000;
     private final JdbcConnectionFactory connectionFactory;
 
 
     @Override
-    public String buildQuery(String tableName, List<RepoField> selectFields, List<RowFilter> rowFilters) {
+    public String buildQuery(
+        @NonNull String tableName,
+        @NonNull List<RepoField> selectFields,
+        @NonNull List<RowFilter> andFilters,
+        @NonNull List<RowFilter> orFilters,
+        int maxResults
+    ) {
+        var resultLimit = maxResults > 0 ? Math.min(maxResults, MAX_ROW_NUM_HARD_LIMIT) : MAX_ROW_NUM_HARD_LIMIT;
         return "select " + this.getSelectFields(selectFields)
             + " from " + tableName
-            + this.getWhereClause(rowFilters)
-            + this.getLimitClause();
+            + this.getWhereClause(andFilters, orFilters, resultLimit)
+            + this.getLimitClause(resultLimit);
     }
 
     private String getSelectFields(List<RepoField> fields) {
@@ -35,7 +43,12 @@ public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
 
 
     private String getWhereCondition(RowFilter rowFilter) {
-        return rowFilter.getField().getName() + this.getOperatorAndValue(rowFilter);
+        var column = rowFilter.getField().getName();
+        if (rowFilter.getOperator() == RowFilterOperator.LIKE) {
+            column = "upper(" + column + ")";
+        }
+
+        return column + this.getOperatorAndValue(rowFilter);
     }
 
 
@@ -46,7 +59,9 @@ public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
             case GREATER_OR_EQUAL:
                 return ">=" + this.getFilterValue(rowFilter.getValue());
             case IN:
-                return " IN (" + rowFilter.getFieldValues().stream().map(this::getFilterValue).collect(Collectors.joining(",")) + ")";
+                return " in (" + rowFilter.getFieldValues().stream().map(this::getFilterValue).collect(Collectors.joining(",")) + ")";
+            case LIKE:
+                return " like " + this.getFilterValue(rowFilter.getValue()).toUpperCase();
             case EQUALS:
             default:
                 return "=" + this.getFilterValue(rowFilter.getValue());
@@ -87,27 +102,44 @@ public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
     }
 
 
-    private String getWhereClause(List<RowFilter> rowFilters) {
-        String whereClause = "";
-        if (rowFilters != null && rowFilters.size() > 0) {
-            whereClause += " where " + rowFilters
-                .stream()
-                .map(this::getWhereCondition)
-                .collect(Collectors.joining(" and "));
-        }
+    private String getWhereClause(List<RowFilter> andFilters, List<RowFilter> orFilters, int resultLimit) {
+        var andCondition = this.getAndOrConditions(andFilters, true);
+        var orCondition = this.getAndOrConditions(orFilters, false);
+        var limitCondition = this.getLimitCondition(resultLimit);
+        var conditionSql = List.of(andCondition, orCondition, limitCondition)
+            .stream()
+            .filter(c -> !c.isEmpty())
+            .collect(Collectors.joining(" and "));
 
-        if (this.connectionFactory.getJdbcServerType() == JdbcServerType.ORACLE) {
-            whereClause += whereClause.isEmpty() ? " where " : " and ";
-            whereClause += "ROWNUM<=" + MAX_ROW_NUM;
-        }
-
-        return whereClause;
+        return !conditionSql.isEmpty() ? " where " + conditionSql : "";
     }
 
 
-    private String getLimitClause() {
+    private String getAndOrConditions(List<RowFilter> andFilters, boolean isAnd) {
+        var andOrSql = isAnd ? " and " : " or ";
+        if (andFilters != null && andFilters.size() > 0) {
+            return "(" + andFilters
+                .stream()
+                .map(this::getWhereCondition)
+                .collect(Collectors.joining(andOrSql)) + ")";
+        } else {
+            return "";
+        }
+    }
+
+
+    private String getLimitCondition(int resultLimit) {
+        if (this.connectionFactory.getJdbcServerType() == JdbcServerType.ORACLE) {
+            return "ROWNUM<=" + resultLimit;
+        } else {
+            return "";
+        }
+    }
+
+
+    private String getLimitClause(int resultLimit) {
         if (this.connectionFactory.getJdbcServerType() == JdbcServerType.MYSQL) {
-            return " limit " + MAX_ROW_NUM;
+            return " limit " + resultLimit;
         } else {
             return "";
         }

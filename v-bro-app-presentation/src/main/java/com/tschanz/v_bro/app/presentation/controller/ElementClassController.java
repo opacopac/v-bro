@@ -1,19 +1,18 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
-import com.tschanz.v_bro.app.presentation.viewmodel.DependencyFilterItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.VersionFilterItem;
-import com.tschanz.v_bro.app.presentation.actions.SelectElementClassAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.*;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.DependencyFilterItemConverter;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.VersionFilterItemConverter;
+import com.tschanz.v_bro.app.usecase.select_element_class.SelectElementClassUseCase;
+import com.tschanz.v_bro.app.usecase.select_element_class.requestmodel.SelectElementClassRequest;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
-import com.tschanz.v_bro.app.usecase.select_element_class.requestmodel.SelectElementClassRequest;
-import com.tschanz.v_bro.app.usecase.select_element_class.SelectElementClassUseCase;
-import com.tschanz.v_bro.app.presentation.viewmodel.RepoConnectionItem;
 
 
 public class ElementClassController {
     private final BehaviorSubject<RepoConnectionItem> repoConnection;
+    private final BehaviorSubject<SelectableItemList<ElementClassItem>> elementClasses;
     private final BehaviorSubject<VersionFilterItem> versionFilter;
     private final BehaviorSubject<DependencyFilterItem> dependencyFilter;
     private final SelectElementClassUseCase selectElementClassUc;
@@ -21,12 +20,14 @@ public class ElementClassController {
 
     public ElementClassController(
         BehaviorSubject<RepoConnectionItem> repoConnection,
+        BehaviorSubject<SelectableItemList<ElementClassItem>> elementClasses,
         BehaviorSubject<VersionFilterItem> versionFilter,
         BehaviorSubject<DependencyFilterItem> dependencyFilter,
-        SelectElementClassAction selectElementClassAction,
+        ViewAction<String> selectElementClassAction,
         SelectElementClassUseCase selectElementClassUc
     ) {
         this.repoConnection = repoConnection;
+        this.elementClasses = elementClasses;
         this.versionFilter = versionFilter;
         this.dependencyFilter = dependencyFilter;
         this.selectElementClassUc = selectElementClassUc;

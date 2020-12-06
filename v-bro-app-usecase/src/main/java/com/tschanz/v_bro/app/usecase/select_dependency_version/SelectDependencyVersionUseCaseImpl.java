@@ -3,27 +3,18 @@ package com.tschanz.v_bro.app.usecase.select_dependency_version;
 import com.tschanz.v_bro.app.usecase.common.converter.*;
 import com.tschanz.v_bro.app.usecase.select_dependency_version.requestmodel.SelectDependencyVersionRequest;
 import com.tschanz.v_bro.app.usecase.select_dependency_version.responsemodel.SelectDependencyVersionResponse;
-import com.tschanz.v_bro.data_structure.domain.model.FwdDependency;
-import com.tschanz.v_bro.data_structure.domain.service.DependencyService;
-import com.tschanz.v_bro.data_structure.domain.model.Denomination;
-import com.tschanz.v_bro.data_structure.domain.service.ElementClassService;
-import com.tschanz.v_bro.data_structure.domain.model.ElementData;
-import com.tschanz.v_bro.data_structure.domain.service.ElementService;
+import com.tschanz.v_bro.data_structure.domain.model.*;
+import com.tschanz.v_bro.data_structure.domain.service.*;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
-import com.tschanz.v_bro.data_structure.domain.model.VersionAggregate;
-import com.tschanz.v_bro.data_structure.domain.service.VersionAggregateService;
-import com.tschanz.v_bro.data_structure.domain.model.VersionData;
-import com.tschanz.v_bro.data_structure.domain.model.VersionFilter;
-import com.tschanz.v_bro.data_structure.domain.service.VersionService;
+import lombok.extern.java.Log;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 
 
+@Log
 public class SelectDependencyVersionUseCaseImpl implements SelectDependencyVersionUseCase {
-    private final Logger logger = Logger.getLogger(SelectDependencyVersionUseCaseImpl.class.getName());
     private final RepoServiceProvider<ElementClassService> elementClassServiceProvider;
     private final RepoServiceProvider<ElementService> elementServiceProvider;
     private final RepoServiceProvider<VersionService> versionServiceProvider;
@@ -51,7 +42,7 @@ public class SelectDependencyVersionUseCaseImpl implements SelectDependencyVersi
 
     @Override
     public void execute(SelectDependencyVersionRequest request) {
-        this.logger.info("UC: select dependency version '" + request.versionId + "'...");
+        log.info("UC: select dependency version '" + request.versionId + "'...");
 
         try {
             // element denominations
@@ -61,7 +52,7 @@ public class SelectDependencyVersionUseCaseImpl implements SelectDependencyVersi
 
             // elements
             ElementService elementService = this.elementServiceProvider.getService(request.repoType);
-            List<ElementData> elements = elementService.readElements(request.elementClass, selectDenominations);
+            List<ElementData> elements = elementService.readElements(request.elementClass, selectDenominations, "", 100);
 
             // versions
             VersionService versionService = this.versionServiceProvider.getService(request.repoType);
@@ -81,7 +72,7 @@ public class SelectDependencyVersionUseCaseImpl implements SelectDependencyVersi
 
             String message = "successfully read " + elements.size()  + " elements, " + versions.size()  + " versions, "
                 + fwdDependencies.size() + " dependencies and the version aggregate";
-            this.logger.info(message);
+            log.info(message);
 
             SelectDependencyVersionResponse response = new SelectDependencyVersionResponse(
                 DenominationConverter.toResponse(denominations),
@@ -100,7 +91,7 @@ public class SelectDependencyVersionUseCaseImpl implements SelectDependencyVersi
             this.presenter.present(response);
         } catch (RepoException exception) {
             String message = "error reading dependency version: " + exception.getMessage();
-            this.logger.severe(message);
+            log.severe(message);
 
             SelectDependencyVersionResponse response = new SelectDependencyVersionResponse(null, null, null, null,null, null, null, null,null, null, message, true);
             this.presenter.present(response);

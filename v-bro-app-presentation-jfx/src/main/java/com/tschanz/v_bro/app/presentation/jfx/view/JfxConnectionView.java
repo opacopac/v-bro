@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
 
-import com.tschanz.v_bro.app.presentation.actions.ConnectToRepoAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.app.presentation.view.ConnectionView;
 import com.tschanz.v_bro.app.presentation.viewmodel.JdbcRepoConnectionItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.QuickConnectionItem;
@@ -39,7 +39,7 @@ public class JfxConnectionView implements Initializable, ConnectionView {
     @FXML private Button connectButton;
     @FXML private Button disconnectButton;
     @FXML private Label connectionLabel;
-    private ConnectToRepoAction connectToRepoAction;
+    private ViewAction<RepoConnectionItem> connectToRepoAction;
 
 
     @Override
@@ -60,7 +60,7 @@ public class JfxConnectionView implements Initializable, ConnectionView {
     @Override
     public void bindViewModel(
         Flow.Publisher<List<QuickConnectionItem>> quickConnectionList,
-        ConnectToRepoAction connectToRepoAction,
+        ViewAction<RepoConnectionItem> connectToRepoAction,
         BehaviorSubject<RepoConnectionItem> currentRepoConnection
     ) {
         this.connectToRepoAction = connectToRepoAction;

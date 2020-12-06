@@ -1,18 +1,18 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.repo_connection;
 
 import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
-import com.tschanz.v_bro.repo.domain.service.RepoService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
+import com.tschanz.v_bro.repo.domain.service.RepoService;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.JdbcConnectionParameters;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 
 import java.sql.SQLException;
-import java.util.logging.Logger;
 
 
+@Log
 @RequiredArgsConstructor
 public class JdbcRepoService implements RepoService {
-    private final Logger logger = Logger.getLogger(JdbcRepoService.class.getName());
     private final JdbcConnectionFactory connectionFactory;
 
 
@@ -30,7 +30,7 @@ public class JdbcRepoService implements RepoService {
 
         JdbcConnectionParameters connectionParameters = (JdbcConnectionParameters) parameters;
         try {
-            this.logger.info("connecting to db");
+            log.info("connecting to db");
             this.connectionFactory.openConnection(
                 connectionParameters.getUrl(),
                 connectionParameters.getUser(),
@@ -38,7 +38,7 @@ public class JdbcRepoService implements RepoService {
             );
         } catch (SQLException exception) {
             String msg = "error connecting to db: " + exception.getMessage();
-            this.logger.severe(msg);
+            log.severe(msg);
             throw new RepoException(msg, exception);
         }
     }
@@ -46,13 +46,13 @@ public class JdbcRepoService implements RepoService {
 
     @Override
     public void disconnect() throws RepoException {
-        this.logger.info("disconnect from db");
+        log.info("disconnect from db");
 
         try {
             this.connectionFactory.closeConnection();
         } catch (SQLException exception) {
             String msg = "error disconnecting from db: " + exception.getMessage();
-            this.logger.severe(msg);
+            log.severe(msg);
             throw new RepoException(msg, exception);
         }
     }

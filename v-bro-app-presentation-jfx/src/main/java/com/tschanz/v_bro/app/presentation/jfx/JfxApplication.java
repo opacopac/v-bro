@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.presentation.jfx;
 
 import com.tschanz.v_bro.app.presentation.jfx.view.JfxMainView;
-import com.tschanz.v_bro.app.presentation.actions.MainActions;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.MainActions;
 import com.tschanz.v_bro.app.presentation.viewmodel.MainModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

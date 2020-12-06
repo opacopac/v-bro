@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
-import com.tschanz.v_bro.app.presentation.actions.MainActions;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.MainActions;
 import com.tschanz.v_bro.app.presentation.view.MainView;
 import com.tschanz.v_bro.app.presentation.viewmodel.MainModel;
 
@@ -38,7 +38,7 @@ public class JfxMainView implements MainView {
         this.connectionViewController.bindViewModel(mainModel.quickConnectionList, mainActions.connectToRepoAction, mainModel.currentRepoConnection);
         this.elementClassViewController.bindViewModel(mainModel.elementClasses, mainActions.selectElementClassAction);
         this.elementDenominationViewController.bindViewModel(mainModel.elementDenominations, mainActions.selectDenominationsAction);
-        this.elementViewController.bindViewModel(mainModel.elements, mainActions.selectElementAction);
+        this.elementViewController.bindViewModel(mainModel.elements, mainActions.selectElementAction, mainActions.queryElementAction);
         this.versionFilterViewController.bindViewModel(mainModel.versionFilter, mainActions.selectVersionFilterAction);
         this.versionViewController.bindViewModel(mainModel.versions, mainModel.effectiveVersionFilter, mainActions.selectVersionAction);
         this.dependencyFilterViewController.bindViewModel(mainModel.dependencyFilter, mainActions.selectDependencyFilterAction);

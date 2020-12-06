@@ -21,4 +21,5 @@ public class MainModel {
     public final BehaviorSubject<DependencyFilterItem> dependencyFilter = new BehaviorSubject<>(new DependencyFilterItem(true));
     public final BehaviorSubject<List<FwdDependencyItem>> fwdDependencies = new BehaviorSubject<>(Collections.emptyList());
     public final BehaviorSubject<VersionAggregateItem> versionAggregate = new BehaviorSubject<>(null);
+    public Long lastElementQueryTimestamp = 0L;
 }

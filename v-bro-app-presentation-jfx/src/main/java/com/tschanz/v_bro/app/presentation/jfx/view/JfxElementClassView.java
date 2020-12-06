@@ -1,34 +1,43 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
-import com.tschanz.v_bro.app.presentation.actions.SelectElementClassAction;
 import com.tschanz.v_bro.app.presentation.view.ElementClassView;
 import com.tschanz.v_bro.app.presentation.viewmodel.ElementClassItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.SelectableItemList;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
+import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
+import impl.org.controlsfx.autocompletion.SuggestionProvider;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
-import org.controlsfx.control.textfield.AutoCompletionBinding;
-import org.controlsfx.control.textfield.TextFields;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.Flow;
 
 
 public class JfxElementClassView implements ElementClassView, Initializable {
     @FXML private ComboBox<ElementClassItem> elementClassComboBox;
-    private SelectElementClassAction selectElementClassAction;
-    private AutoCompletionBinding<ElementClassItem> completionBinding;
+    private ViewAction<String> selectElementClassAction;
+    private SuggestionProvider<ElementClassItem> suggestionProvider;
     private boolean isPopulating = false;
+
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        this.suggestionProvider = SuggestionProvider.create(new ArrayList<>());
+        this.suggestionProvider.setShowAllIfEmpty(true);
+        new AutoCompletionTextFieldBinding<>(this.elementClassComboBox.getEditor(), this.suggestionProvider);
+    }
 
 
     @Override
     public void bindViewModel(
         Flow.Publisher<SelectableItemList<ElementClassItem>> elementClassList,
-        SelectElementClassAction selectElementClassAction
+        ViewAction<String> selectElementClassAction
     ) {
         this.selectElementClassAction = selectElementClassAction;
         elementClassList.subscribe(new GenericSubscriber<>(this::onElementClassListChanged));
@@ -39,10 +48,10 @@ public class JfxElementClassView implements ElementClassView, Initializable {
         this.isPopulating = true;
         this.elementClassComboBox.setItems(FXCollections.observableArrayList(elementClassList.getItems()));
         this.elementClassComboBox.setValue(elementClassList.getSelectedItem());
-        if (this.completionBinding != null) {
-            this.completionBinding.dispose();
+        if (this.suggestionProvider != null) {
+            this.suggestionProvider.clearSuggestions();
+            this.suggestionProvider.addPossibleSuggestions(elementClassList.getItems());
         }
-        this.completionBinding = TextFields.bindAutoCompletion(this.elementClassComboBox.getEditor(), this.elementClassComboBox.getItems());
         this.isPopulating = false;
     }
 
@@ -57,10 +66,5 @@ public class JfxElementClassView implements ElementClassView, Initializable {
                 .findFirst()
                 .ifPresent(item -> this.selectElementClassAction.next(item.getName()));
         }
-    }
-
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
     }
 }

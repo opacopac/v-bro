@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
-import com.tschanz.v_bro.app.presentation.actions.SelectDenominationsAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.app.presentation.view.ElementDenominationView;
 import com.tschanz.v_bro.app.presentation.viewmodel.DenominationItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.MultiSelectableItemList;
@@ -13,6 +13,7 @@ import javafx.scene.control.ComboBox;
 import org.controlsfx.control.CheckComboBox;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.Flow;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ import java.util.stream.IntStream;
 
 public class JfxElementDenominationView implements Initializable, ElementDenominationView {
     @FXML public CheckComboBox<DenominationItem> denominationCheckComboBox;
-    private SelectDenominationsAction selectDenominationsAction;
+    private ViewAction<List<DenominationItem>> selectDenominationsAction;
     private boolean isPopulating = false;
 
 
@@ -34,7 +35,7 @@ public class JfxElementDenominationView implements Initializable, ElementDenomin
     @Override
     public void bindViewModel(
         Flow.Publisher<MultiSelectableItemList<DenominationItem>> denominationsList,
-        SelectDenominationsAction selectDenominationsAction
+        ViewAction<List<DenominationItem>> selectDenominationsAction
     ) {
         this.selectDenominationsAction = selectDenominationsAction;
         denominationsList.subscribe(new GenericSubscriber<>(this::onDenominationsListChanged));

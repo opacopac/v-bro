@@ -2,14 +2,14 @@ package com.tschanz.v_bro.repo.domain.service;
 
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
+import lombok.extern.java.Log;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 
+@Log
 public class RepoServiceProvider<T> {
-    private final Logger logger = Logger.getLogger(RepoServiceProvider.class.getName());
     private final Map<RepoType, T> serviceMap = new HashMap<>();
 
 
@@ -31,7 +31,7 @@ public class RepoServiceProvider<T> {
             return service;
         } else {
             String message = "no service found for repo type " + repoType.name();
-            this.logger.severe(message);
+            log.severe(message);
             throw new RepoException(message);
         }
     }

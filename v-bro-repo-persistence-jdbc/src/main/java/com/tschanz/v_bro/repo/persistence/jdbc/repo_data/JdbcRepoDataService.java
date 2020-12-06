@@ -2,46 +2,37 @@ package com.tschanz.v_bro.repo.persistence.jdbc.repo_data;
 
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.*;
-import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactory;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.JdbcQueryBuilder;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.RowFilter;
+import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
+@Log
 @RequiredArgsConstructor
 public class JdbcRepoDataService {
-    private final Logger logger = Logger.getLogger(JdbcRepoDataService.class.getName());
     private final JdbcConnectionFactory connectionFactory;
     private final JdbcQueryBuilder queryBuilder;
 
 
-    public List<RepoTableRecord> readRepoTableRecords(RepoTable repoTable, List<RepoField> fields, List<RowFilter> rowFilters) throws RepoException {
-        List<RowInfo> rows = this.readRows(repoTable.getName(), fields, rowFilters);
-
-        return rows
-            .stream()
-            .map(row -> new RepoTableRecord(repoTable, new ArrayList<>(row.getAllFieldValues())))
-            .collect(Collectors.toList());
-    }
-
-
-    private List<RowInfo> readRows(String tableName, List<RepoField> fields, List<RowFilter> rowFilters) throws RepoException {
-        this.logger.info("reading rows from table " + tableName);
+    public List<RepoTableRecord> readRepoTableRecords(RepoTable repoTable, List<RepoField> fields, List<RowFilter> andFilters, List<RowFilter> orFilters, int maxResults) throws RepoException {
+        log.info("reading rows from table " + repoTable.getName());
 
         ArrayList<RowInfo> rows = new ArrayList<>();
         try {
-            String query = this.queryBuilder.buildQuery(tableName, fields, rowFilters);
-            Statement statement = this.connectionFactory.getCurrentConnection().createStatement();
+            var query = this.queryBuilder.buildQuery(repoTable.getName(), fields, andFilters, orFilters, maxResults);
+            var statement = this.connectionFactory.getCurrentConnection().createStatement();
 
-            this.logger.info("executing query " + query);
+            log.info("executing query " + query);
 
             if (statement.execute(query)) {
                 while (statement.getResultSet().next()) {
@@ -52,11 +43,14 @@ public class JdbcRepoDataService {
             statement.close();
         } catch (SQLException exception) {
             String msg = "error reading rows: " + exception.getMessage();
-            this.logger.severe(msg);
+            log.severe(msg);
             throw new RepoException(msg, exception);
         }
 
-        return rows;
+        return rows
+            .stream()
+            .map(row -> new RepoTableRecord(repoTable, new ArrayList<>(row.getAllFieldValues())))
+            .collect(Collectors.toList());
     }
 
 
@@ -77,20 +71,20 @@ public class JdbcRepoDataService {
     private FieldValue parseFieldValue(RepoField field, ResultSet resultSet) throws SQLException {
         switch (field.getType()) {
             case BOOL:
-                boolean boolResult = resultSet.getBoolean(field.getName());
+                var boolResult = resultSet.getBoolean(field.getName());
                 return new FieldValue(field, resultSet.wasNull() ? null : boolResult);
             case LONG:
-                long longResult = resultSet.getLong(field.getName());
+                var longResult = resultSet.getLong(field.getName());
                 return new FieldValue(field, resultSet.wasNull() ? null : longResult);
             case DATE:
-                Date dateResult = resultSet.getDate(field.getName());
+                var dateResult = resultSet.getDate(field.getName());
                 return new FieldValue(field, resultSet.wasNull() ? null : dateResult);
             case TIMESTAMP:
-                Timestamp timestampResult = resultSet.getTimestamp(field.getName());
+                var timestampResult = resultSet.getTimestamp(field.getName());
                 return new FieldValue(field, resultSet.wasNull() ? null : timestampResult);
             case STRING:
             default:
-                String stringResult = resultSet.getString(field.getName());
+                var stringResult = resultSet.getString(field.getName());
                 return new FieldValue(field, resultSet.wasNull() ? null : stringResult);
         }
     }

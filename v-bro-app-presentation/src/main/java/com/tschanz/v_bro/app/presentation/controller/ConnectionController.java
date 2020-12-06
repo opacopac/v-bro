@@ -1,16 +1,16 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
-import com.tschanz.v_bro.app.presentation.actions.ConnectToRepoAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.QuickConnectionItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.RepoConnectionItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.ConnectionItemConverter;
-import com.tschanz.v_bro.app.usecase.connect_repo.requestmodel.*;
+import com.tschanz.v_bro.app.usecase.connect_repo.OpenConnectionUseCase;
+import com.tschanz.v_bro.app.usecase.connect_repo.requestmodel.OpenConnectionRequest;
+import com.tschanz.v_bro.app.usecase.disconnect_repo.CloseConnectionUseCase;
 import com.tschanz.v_bro.app.usecase.disconnect_repo.requestmodel.CloseConnectionRequest;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
-import com.tschanz.v_bro.app.presentation.viewmodel.QuickConnectionItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.RepoConnectionItem;
-import com.tschanz.v_bro.app.usecase.disconnect_repo.CloseConnectionUseCase;
-import com.tschanz.v_bro.app.usecase.connect_repo.OpenConnectionUseCase;
 
 import java.util.List;
 import java.util.Properties;
@@ -29,7 +29,7 @@ public class ConnectionController {
         Properties appProperties,
         BehaviorSubject<List<QuickConnectionItem>> quickConnectionList,
         BehaviorSubject<RepoConnectionItem> repoConnection,
-        ConnectToRepoAction connectToRepoAction,
+        ViewAction<RepoConnectionItem> connectToRepoAction,
         OpenConnectionUseCase openConnectionUc,
         CloseConnectionUseCase closeConnectionUc
     ) {

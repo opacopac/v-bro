@@ -11,7 +11,7 @@ import java.util.List;
 
 public class MockElementService implements ElementService {
     @Override
-    public List<ElementData> readElements(String elementClass, Collection<String> fieldNames) throws RepoException {
+    public List<ElementData> readElements(String elementClass, Collection<String> fieldNames, String query, int maxResults) throws RepoException {
         return List.of(
             new ElementData(
                 "111",

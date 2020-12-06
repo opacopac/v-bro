@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
-import com.tschanz.v_bro.app.presentation.actions.SelectVersionFilterAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.app.presentation.view.VersionFilterView;
 import com.tschanz.v_bro.app.presentation.viewmodel.PflegestatusItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.VersionFilterItem;
@@ -17,13 +17,13 @@ public class JfxVersionFilterView implements VersionFilterView {
     @FXML private DatePicker minVonDatePicker;
     @FXML private DatePicker maxBisDatePicker;
     @FXML private ComboBox<PflegestatusItem> pflegestatusComboBox;
-    private SelectVersionFilterAction selectVersionFilterAction;
+    private ViewAction<VersionFilterItem> selectVersionFilterAction;
 
 
     @Override
     public void bindViewModel(
         Flow.Publisher<VersionFilterItem> versionFilter,
-        SelectVersionFilterAction selectVersionFilterAction
+        ViewAction<VersionFilterItem> selectVersionFilterAction
     ) {
         this.selectVersionFilterAction = selectVersionFilterAction;
         versionFilter.subscribe(new GenericSubscriber<>(this::onVersionFilterChanged));

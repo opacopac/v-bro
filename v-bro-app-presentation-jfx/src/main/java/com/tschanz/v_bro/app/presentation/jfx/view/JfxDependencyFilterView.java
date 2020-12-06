@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
-import com.tschanz.v_bro.app.presentation.actions.SelectDependencyFilterAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.app.presentation.view.DependencyFilterView;
 import com.tschanz.v_bro.app.presentation.viewmodel.DependencyFilterItem;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
@@ -14,13 +14,13 @@ import java.util.concurrent.Flow;
 public class JfxDependencyFilterView implements DependencyFilterView {
     @FXML private RadioButton fwdDependencyRadio;
     @FXML private RadioButton bwdDependencyRadio;
-    private SelectDependencyFilterAction selectDependencyFilterAction;
+    private ViewAction<DependencyFilterItem> selectDependencyFilterAction;
 
 
     @Override
     public void bindViewModel(
         Flow.Publisher<DependencyFilterItem> dependencyFilter,
-        SelectDependencyFilterAction selectDependencyFilterAction
+        ViewAction<DependencyFilterItem> selectDependencyFilterAction
     ) {
         this.selectDependencyFilterAction = selectDependencyFilterAction;
         dependencyFilter.subscribe(new GenericSubscriber<>(this::onInitialFilterChanged));

@@ -3,26 +3,19 @@ package com.tschanz.v_bro.app.presentation.presenter;
 import com.tschanz.v_bro.app.presentation.viewmodel.*;
 import com.tschanz.v_bro.app.usecase.disconnect_repo.CloseConnectionPresenter;
 import com.tschanz.v_bro.app.usecase.disconnect_repo.responsemodel.CloseConnectionResponse;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Collections;
 
 
+@RequiredArgsConstructor
 public class CloseConnectionPresenterImpl implements CloseConnectionPresenter {
     private final MainModel mainModel;
 
 
-    public CloseConnectionPresenterImpl(MainModel mainModel) {
-        this.mainModel = mainModel;
-    }
-
-
-
     @Override
-    public void present(CloseConnectionResponse response) {
-        if (response == null) {
-            throw new IllegalArgumentException("response must not be null");
-        }
-
+    public void present(@NonNull CloseConnectionResponse response) {
         if (!response.isError) {
             this.mainModel.currentRepoConnection.next(null);
             this.mainModel.elementClasses.next(new SelectableItemList<>(Collections.emptyList(), null));

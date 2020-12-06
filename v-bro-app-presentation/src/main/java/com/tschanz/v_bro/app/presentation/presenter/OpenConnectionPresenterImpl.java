@@ -6,23 +6,17 @@ import com.tschanz.v_bro.app.presentation.viewmodel.InfoStatusItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.*;
 import com.tschanz.v_bro.app.usecase.connect_repo.OpenConnectionPresenter;
 import com.tschanz.v_bro.app.usecase.connect_repo.responsemodel.OpenConnectionResponse;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 
+@RequiredArgsConstructor
 public class OpenConnectionPresenterImpl implements OpenConnectionPresenter {
     private final MainModel mainModel;
 
 
-    public OpenConnectionPresenterImpl(MainModel mainModel) {
-        this.mainModel = mainModel;
-    }
-
-
     @Override
-    public void present(OpenConnectionResponse response) {
-        if (response == null) {
-            throw new IllegalArgumentException("response must not be null");
-        }
-
+    public void present(@NonNull OpenConnectionResponse response) {
         if (!response.isError) {
             this.mainModel.currentRepoConnection.next(ConnectionItemConverter.fromResponse(response.repoConnection));
             this.mainModel.elementClasses.next(ElementClassItemConverter.fromResponse(response.elementClasses, response.selectElementClass));

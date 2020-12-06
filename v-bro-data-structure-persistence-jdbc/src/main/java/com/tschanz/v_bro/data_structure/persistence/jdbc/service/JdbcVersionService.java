@@ -14,6 +14,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,30 +33,27 @@ public class JdbcVersionService implements VersionService {
 
 
     @Override
-    public List<VersionData> readVersionTimeline(String elementClass, String elementId) throws RepoException {
-        if (elementClass == null || elementId == null) {
-            throw new IllegalArgumentException("elementClass or elementId must not be null");
-        }
-
+    public List<VersionData> readVersionTimeline(@NonNull String elementClass, @NonNull String elementId) throws RepoException {
         if (!this.repo.isConnected()) {
             throw new RepoException("Not connected to repo!");
         }
 
-        RepoTable elementTable = this.elementService.readElementTable(elementClass);
-        RepoTable versionTable = this.readVersionTable(elementTable);
+        var elementTable = this.elementService.readElementTable(elementClass);
+        var versionTable = this.readVersionTable(elementTable);
 
         if (versionTable == null) {
             return List.of(VersionData.ETERNAL_VERSION);
         }
 
-        RepoField idField = versionTable.findfirstIdField();
-
-        List<RepoTableRecord> versionRecords = this.repoData.readRepoTableRecords(
+        var idField = versionTable.findfirstIdField();
+        var versionRecords = this.repoData.readRepoTableRecords(
             versionTable,
             versionTable.findAllFields(idField.getName(), GUELTIG_VON_COLNAME, GUELTIG_BIS_COLNAME),
-            this.getRowFilters(versionTable, elementId)
+            this.getRowFilters(versionTable, elementId),
+            Collections.emptyList(),
+            -1
         );
-        List<VersionData> versions = versionRecords
+        var versions = versionRecords
             .stream()
             .map(row -> {
                 String id = row.findIdFieldValue().getValueString();
@@ -74,7 +72,7 @@ public class JdbcVersionService implements VersionService {
 
 
     public RepoTable readVersionTable(RepoTable elementTable) throws RepoException {
-        String versionTableName = elementTable.getIncomingRelations()
+        var versionTableName = elementTable.getIncomingRelations()
             .stream()
             .filter(rel -> rel.getBwdFieldName().toUpperCase().equals(ELEMENT_ID_COLNAME)) // TODO: make more generic
             .filter(rel -> rel.getBwdClassName().toUpperCase().endsWith(VERSION_TABLE_SUFFIX)) // TODO: make more generic (e.g. check for von/bis fields)
@@ -91,7 +89,7 @@ public class JdbcVersionService implements VersionService {
 
 
     private List<RowFilter> getRowFilters(RepoTable versionTable, String elementId) {
-        RowFilter rowFilter = new RowFilter(
+        var rowFilter = new RowFilter(
             versionTable.findField(ELEMENT_ID_COLNAME), // TODO: make more generic
             RowFilterOperator.EQUALS,
             Long.valueOf(elementId)

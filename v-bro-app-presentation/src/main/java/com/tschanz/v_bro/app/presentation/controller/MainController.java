@@ -1,7 +1,8 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
-import com.tschanz.v_bro.app.presentation.actions.MainActions;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.MainActions;
 import com.tschanz.v_bro.app.presentation.viewmodel.MainModel;
+import com.tschanz.v_bro.app.usecase.query_element.QueryElementUseCase;
 import com.tschanz.v_bro.app.usecase.select_dependency_filter.SelectDependencyFilterUseCase;
 import com.tschanz.v_bro.app.usecase.select_dependency_version.SelectDependencyVersionUseCase;
 import com.tschanz.v_bro.app.usecase.select_element_class.SelectElementClassUseCase;
@@ -15,14 +16,15 @@ import lombok.Getter;
 import java.util.Properties;
 
 
+@Getter
 public class MainController {
-    @Getter private final ConnectionController connectionController;
-    @Getter private final ElementClassController elementClassController;
-    @Getter private final ElementDenominationController elementDenominationController;
-    @Getter private final ElementController elementController;
-    @Getter private final VersionFilterController versionFilterController;
-    @Getter private final VersionController versionController;
-    @Getter private final DependencyListController dependencyListController;
+    private final ConnectionController connectionController;
+    private final ElementClassController elementClassController;
+    private final ElementDenominationController elementDenominationController;
+    private final ElementController elementController;
+    private final VersionFilterController versionFilterController;
+    private final VersionController versionController;
+    private final DependencyListController dependencyListController;
 
 
     public MainController(
@@ -33,6 +35,7 @@ public class MainController {
         CloseConnectionUseCase closeConnectionUc,
         SelectElementClassUseCase selectElementClassUc,
         SelectElementDenominationUseCase selectElementDenominationUc,
+        QueryElementUseCase queryElementUc,
         SelectElementUseCase selectElementUc,
         SelectVersionUseCase selectVersionUc,
         SelectDependencyFilterUseCase selectDependencyFilterUc,
@@ -49,6 +52,7 @@ public class MainController {
 
         this.elementClassController = new ElementClassController(
             mainModel.currentRepoConnection,
+            mainModel.elementClasses,
             mainModel.versionFilter,
             mainModel.dependencyFilter,
             mainActions.selectElementClassAction,
@@ -65,9 +69,12 @@ public class MainController {
         this.elementController = new ElementController(
             mainModel.currentRepoConnection,
             mainModel.elementClasses,
+            mainModel.elementDenominations,
             mainModel.versionFilter,
             mainModel.dependencyFilter,
+            mainActions.queryElementAction,
             mainActions.selectElementAction,
+            queryElementUc,
             selectElementUc
         );
 

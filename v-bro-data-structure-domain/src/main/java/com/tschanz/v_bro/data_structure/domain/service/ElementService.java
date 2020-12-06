@@ -8,5 +8,5 @@ import java.util.List;
 
 
 public interface ElementService {
-    List<ElementData> readElements(String elementClass, Collection<String> fieldNames) throws RepoException;
+    List<ElementData> readElements(String elementClass, Collection<String> fieldNames, String query, int maxResults) throws RepoException;
 }

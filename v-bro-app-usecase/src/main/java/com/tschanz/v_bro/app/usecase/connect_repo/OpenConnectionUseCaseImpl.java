@@ -9,15 +9,15 @@ import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.service.RepoService;
 import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 
 
+@Log
 @RequiredArgsConstructor
 public class OpenConnectionUseCaseImpl implements OpenConnectionUseCase {
-    private final Logger logger = Logger.getLogger(OpenConnectionUseCaseImpl.class.getName());
     private final RepoServiceProvider<RepoService> repoServiceProvider;
     private final RepoServiceProvider<ElementClassService> elementClassServiceProvider;
     private final RepoServiceProvider<ElementService> elementServiceProvider;
@@ -29,7 +29,7 @@ public class OpenConnectionUseCaseImpl implements OpenConnectionUseCase {
 
     @Override
     public void execute(OpenConnectionRequest request) {
-        this.logger.info("UC: connecting to repo...");
+        log.info("UC: connecting to repo...");
 
         try {
             // repo connection
@@ -48,7 +48,7 @@ public class OpenConnectionUseCaseImpl implements OpenConnectionUseCase {
 
             // elements
             var elementService = this.elementServiceProvider.getService(connectionParameters.getRepoType());
-            List<ElementData> elements = selectElementClass != null ? elementService.readElements(selectElementClass, selectDenominations) : Collections.emptyList();
+            List<ElementData> elements = selectElementClass != null ? elementService.readElements(selectElementClass, selectDenominations, "", 100) : Collections.emptyList(); // TODO
             var selectElementId = elements.size() > 0 ? elements.get(0).getId() : null;
 
             // versions
@@ -71,7 +71,7 @@ public class OpenConnectionUseCaseImpl implements OpenConnectionUseCase {
             String message = "successfully connected to " + connectionParameters.getRepoType() + " repo and read "
                 + elementClasses.size()  + " element classes, " + elements.size()  + " elements, " + versions.size()  + " versions, "
                 + fwdDependencies.size() + " dependencies and the version aggregate";
-            this.logger.info(message);
+            log.info(message);
 
             var response = new OpenConnectionResponse(
                 RepoConnectionConverter.toResponse(connectionParameters),
@@ -93,7 +93,7 @@ public class OpenConnectionUseCaseImpl implements OpenConnectionUseCase {
             this.openConnectionPresenter.present(response);
         } catch (RepoException exception) {
             var message = "error connecting to repo & reading classes/elements/versions: " + exception.getMessage();
-            this.logger.severe(message);
+            log.severe(message);
 
             var response = new OpenConnectionResponse(message);
             this.openConnectionPresenter.present(response);

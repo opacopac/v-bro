@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
-import com.tschanz.v_bro.app.presentation.actions.SelectVersionAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.app.presentation.view.VersionsView;
 import com.tschanz.v_bro.app.presentation.viewmodel.SelectableItemList;
 import com.tschanz.v_bro.app.presentation.viewmodel.VersionFilterItem;
@@ -53,14 +53,14 @@ public class JfxVersionView implements VersionsView {
     private SelectableItemList<VersionItem> versionList;
     private VersionFilterItem effectiveVersionFilter;
     private final Set<VersionVonBisPx> versionVonBisXPixelCache = new HashSet<>();
-    private SelectVersionAction selectVersionAction;
+    private ViewAction<String> selectVersionAction;
 
 
     @Override
     public void bindViewModel(
         Flow.Publisher<SelectableItemList<VersionItem>> versionList,
         Flow.Publisher<VersionFilterItem> effectiveVersionFilter,
-        SelectVersionAction selectVersionAction
+        ViewAction<String> selectVersionAction
     ) {
         this.selectVersionAction = selectVersionAction;
         effectiveVersionFilter.subscribe(new GenericSubscriber<>(this::onEffectiveVersionFilterChanged));

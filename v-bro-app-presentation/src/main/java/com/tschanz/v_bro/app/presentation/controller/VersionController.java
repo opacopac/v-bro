@@ -1,13 +1,13 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.*;
-import com.tschanz.v_bro.app.presentation.actions.SelectVersionAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.DependencyFilterItemConverter;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.VersionFilterItemConverter;
+import com.tschanz.v_bro.app.usecase.select_version.SelectVersionUseCase;
 import com.tschanz.v_bro.app.usecase.select_version.requestmodel.SelectVersionRequest;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
-import com.tschanz.v_bro.app.usecase.select_version.SelectVersionUseCase;
 
 
 public class VersionController {
@@ -25,7 +25,7 @@ public class VersionController {
         BehaviorSubject<SelectableItemList<ElementItem>> elements,
         BehaviorSubject<VersionFilterItem> versionFilter,
         BehaviorSubject<DependencyFilterItem> dependencyFilter,
-        SelectVersionAction selectVersionAction,
+        ViewAction<String> selectVersionAction,
         SelectVersionUseCase selectVersionUc
     ) {
         this.repoConnection = repoConnection;

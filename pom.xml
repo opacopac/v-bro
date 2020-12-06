@@ -14,7 +14,6 @@
         <module>v-bro-app</module>
         <module>v-bro-app-presentation</module>
         <module>v-bro-app-presentation-jfx</module>
-        <module>v-bro-app-presentation-swing</module>
         <module>v-bro-app-usecase</module>
         <module>v-bro-common</module>
         <module>v-bro-data-structure-domain</module>

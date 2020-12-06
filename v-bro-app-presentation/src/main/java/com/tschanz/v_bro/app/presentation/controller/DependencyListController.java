@@ -1,10 +1,10 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.DependencyFilterItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.ElementVersionVector;
 import com.tschanz.v_bro.app.presentation.viewmodel.RepoConnectionItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.VersionFilterItem;
-import com.tschanz.v_bro.app.presentation.actions.SelectDependencyVersionAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.DependencyFilterItemConverter;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.VersionFilterItemConverter;
 import com.tschanz.v_bro.app.usecase.select_dependency_version.SelectDependencyVersionUseCase;
@@ -24,7 +24,7 @@ public class DependencyListController {
         BehaviorSubject<RepoConnectionItem> repoConnection,
         BehaviorSubject<VersionFilterItem> versionFilter,
         BehaviorSubject<DependencyFilterItem> dependencyFilter,
-        SelectDependencyVersionAction selectDependencyVersionAction,
+        ViewAction<ElementVersionVector> selectDependencyVersionAction,
         SelectDependencyVersionUseCase selectDependencyVersionUc
     ) {
         this.repoConnection = repoConnection;

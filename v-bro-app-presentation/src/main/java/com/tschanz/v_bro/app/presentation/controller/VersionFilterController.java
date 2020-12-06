@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.*;
-import com.tschanz.v_bro.app.presentation.actions.SelectVersionFilterAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.DependencyFilterItemConverter;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.VersionFilterItemConverter;
 import com.tschanz.v_bro.app.usecase.select_element.SelectElementUseCase;
@@ -23,7 +23,7 @@ public class VersionFilterController {
         BehaviorSubject<SelectableItemList<ElementClassItem>> elementClasses,
         BehaviorSubject<SelectableItemList<ElementItem>> elements,
         BehaviorSubject<DependencyFilterItem> dependencyFilter,
-        SelectVersionFilterAction selectVersionFilterAction,
+        ViewAction<VersionFilterItem> selectVersionFilterAction,
         SelectElementUseCase selectElementUc
     ) {
         this.repoConnection = repoConnection;

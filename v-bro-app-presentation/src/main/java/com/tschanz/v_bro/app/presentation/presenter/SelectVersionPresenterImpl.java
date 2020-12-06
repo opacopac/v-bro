@@ -8,23 +8,17 @@ import com.tschanz.v_bro.app.presentation.viewmodel.converter.FwdDependencyItemC
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.VersionAggregateItemConverter;
 import com.tschanz.v_bro.app.usecase.select_version.SelectVersionPresenter;
 import com.tschanz.v_bro.app.usecase.select_version.responsemodel.SelectVersionResponse;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 
+@RequiredArgsConstructor
 public class SelectVersionPresenterImpl implements SelectVersionPresenter {
     private final MainModel mainModel;
 
 
-    public SelectVersionPresenterImpl(MainModel mainModel) {
-        this.mainModel = mainModel;
-    }
-
-
     @Override
-    public void present(SelectVersionResponse response) {
-        if (response == null) {
-            throw new IllegalArgumentException("response must not be null");
-        }
-
+    public void present(@NonNull SelectVersionResponse response) {
         if (!response.isError) {
             this.mainModel.versions.next(new SelectableItemList<>(this.mainModel.versions.getCurrentValue().getItems(), response.selectVersionId));
             this.mainModel.fwdDependencies.next(FwdDependencyItemConverter.fromResponse(response.fwdDependencies));

@@ -15,8 +15,8 @@ public class SpyQueryBuilder implements JdbcQueryBuilder {
 
 
     @Override
-    public String buildQuery(String tableName, List<RepoField> selectFields, List<RowFilter> rowFilters) {
-        this.spyHelper.reportMethodCall("buildQuery", tableName, selectFields, rowFilters);
+    public String buildQuery(String tableName, List<RepoField> selectFields, List<RowFilter> andFilters, List<RowFilter> orFilters, int maxResults) {
+        this.spyHelper.reportMethodCall("buildQuery", tableName, selectFields, andFilters, orFilters, maxResults);
         return this.query;
     }
 }

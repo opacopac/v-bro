@@ -7,22 +7,22 @@ import com.tschanz.v_bro.app.usecase.common.converter.VersionFilterConverter;
 import com.tschanz.v_bro.app.usecase.select_element.requestmodel.SelectElementRequest;
 import com.tschanz.v_bro.app.usecase.select_element.responsemodel.SelectElementResponse;
 import com.tschanz.v_bro.data_structure.domain.model.FwdDependency;
-import com.tschanz.v_bro.data_structure.domain.service.DependencyService;
-import com.tschanz.v_bro.repo.domain.model.RepoException;
-import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
 import com.tschanz.v_bro.data_structure.domain.model.VersionAggregate;
-import com.tschanz.v_bro.data_structure.domain.service.VersionAggregateService;
 import com.tschanz.v_bro.data_structure.domain.model.VersionData;
 import com.tschanz.v_bro.data_structure.domain.model.VersionFilter;
+import com.tschanz.v_bro.data_structure.domain.service.DependencyService;
+import com.tschanz.v_bro.data_structure.domain.service.VersionAggregateService;
 import com.tschanz.v_bro.data_structure.domain.service.VersionService;
+import com.tschanz.v_bro.repo.domain.model.RepoException;
+import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
+import lombok.extern.java.Log;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 
 
+@Log
 public class SelectElementUseCaseImpl implements SelectElementUseCase {
-    private final Logger logger = Logger.getLogger(SelectElementUseCaseImpl.class.getName());
     private final RepoServiceProvider<VersionService> versionServiceProvider;
     private final RepoServiceProvider<DependencyService> dependencyServiceProvider;
     private final RepoServiceProvider<VersionAggregateService> versionAggregateServiceProvider;
@@ -44,7 +44,7 @@ public class SelectElementUseCaseImpl implements SelectElementUseCase {
 
     @Override
     public void execute(SelectElementRequest request) {
-        this.logger.info("UC: select element '" + request.elementId + "'...");
+        log.info("UC: select element '" + request.elementId + "'...");
 
         try {
             // versions
@@ -66,7 +66,7 @@ public class SelectElementUseCaseImpl implements SelectElementUseCase {
 
             String message = "successfully read " + versions.size() + " versions, ";
             message += " displaying timeline between " + effectiveVersionFilter.getMinGueltigVon() + " till " + effectiveVersionFilter.getMaxGueltigBis();
-            this.logger.info(message);
+            log.info(message);
 
             SelectElementResponse response = new SelectElementResponse(
                 VersionConverter.toResponse(versions),
@@ -81,7 +81,7 @@ public class SelectElementUseCaseImpl implements SelectElementUseCase {
             this.presenter.present(response);
         } catch (RepoException exception) {
             String message = "error reading versions: " + exception.getMessage();
-            this.logger.severe(message);
+            log.severe(message);
 
             SelectElementResponse response = new SelectElementResponse(null, null, null, null, null, null, message, true);
             this.presenter.present(response);

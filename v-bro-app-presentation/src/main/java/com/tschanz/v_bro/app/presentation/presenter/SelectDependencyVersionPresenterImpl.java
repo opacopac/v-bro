@@ -4,23 +4,17 @@ import com.tschanz.v_bro.app.presentation.viewmodel.*;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.*;
 import com.tschanz.v_bro.app.usecase.select_dependency_version.SelectDependencyVersionPresenter;
 import com.tschanz.v_bro.app.usecase.select_dependency_version.responsemodel.SelectDependencyVersionResponse;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 
+@RequiredArgsConstructor
 public class SelectDependencyVersionPresenterImpl implements SelectDependencyVersionPresenter {
     private final MainModel mainModel;
 
 
-    public SelectDependencyVersionPresenterImpl(MainModel mainModel) {
-        this.mainModel = mainModel;
-    }
-
-
     @Override
-    public void present(SelectDependencyVersionResponse response) {
-        if (response == null) {
-            throw new IllegalArgumentException("response must not be null");
-        }
-
+    public void present(@NonNull SelectDependencyVersionResponse response) {
         if (!response.isError) {
             SelectableItemList<ElementClassItem> newElementClasses = new SelectableItemList<>(this.mainModel.elementClasses.getCurrentValue().getItems(), response.selectElementClass);
             this.mainModel.elementClasses.next(newElementClasses);

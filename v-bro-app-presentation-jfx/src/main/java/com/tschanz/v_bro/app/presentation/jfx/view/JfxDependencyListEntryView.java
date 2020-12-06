@@ -1,7 +1,6 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
-import com.tschanz.v_bro.app.presentation.actions.SelectDependencyVersionAction;
-import com.tschanz.v_bro.app.presentation.actions.SelectVersionAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.*;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
@@ -14,7 +13,7 @@ import java.util.concurrent.Flow;
 
 public class JfxDependencyListEntryView {
     private final BehaviorSubject<SelectableItemList<VersionItem>> versionList = new BehaviorSubject<>(new SelectableItemList<>(Collections.emptyList(), null)); // TODO
-    private SelectDependencyVersionAction selectDependencyVersionAction;
+    private ViewAction<ElementVersionVector> selectDependencyVersionAction;
     private FwdDependencyItem fwdDependencyItem;
     @FXML private Label dependencyName;
     @FXML private JfxVersionView versionViewController;
@@ -23,14 +22,14 @@ public class JfxDependencyListEntryView {
     public void bindViewModel(
         FwdDependencyItem fwdDependency,
         Flow.Publisher<VersionFilterItem> versionFilter,
-        SelectDependencyVersionAction selectDependencyVersionAction
+        ViewAction<ElementVersionVector> selectDependencyVersionAction
     ) {
         this.fwdDependencyItem = fwdDependency;
         this.selectDependencyVersionAction = selectDependencyVersionAction;
         this.dependencyName.setText(this.createDependencyName(fwdDependency));
         this.versionList.next(new SelectableItemList<>(fwdDependency.getVersions(), null)); // TODO
 
-        SelectVersionAction selectVersionAction = new SelectVersionAction();
+        ViewAction<String> selectVersionAction = new ViewAction<>();
         selectVersionAction.subscribe(new GenericSubscriber<>(this::onVersionSelected));
 
         this.versionViewController.bindViewModel(this.versionList, versionFilter, selectVersionAction);

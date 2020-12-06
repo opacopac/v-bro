@@ -4,12 +4,12 @@ import com.tschanz.v_bro.app.presentation.viewmodel.DenominationItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.ElementClassItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.RepoConnectionItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.SelectableItemList;
-import com.tschanz.v_bro.app.presentation.actions.SelectDenominationsAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.app.presentation.viewmodel.converter.DenominationItemConverter;
+import com.tschanz.v_bro.app.usecase.select_element_denomination.SelectElementDenominationUseCase;
 import com.tschanz.v_bro.app.usecase.select_element_denomination.requestmodel.SelectElementDenominationRequest;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
-import com.tschanz.v_bro.app.usecase.select_element_denomination.SelectElementDenominationUseCase;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class ElementDenominationController {
     public ElementDenominationController(
         BehaviorSubject<RepoConnectionItem> repoConnection,
         BehaviorSubject<SelectableItemList<ElementClassItem>> elementClasses,
-        SelectDenominationsAction selectDenominationsAction,
+        ViewAction<List<DenominationItem>> selectDenominationsAction,
         SelectElementDenominationUseCase selectElementDenominationUc
     ) {
         this.repoConnection = repoConnection;

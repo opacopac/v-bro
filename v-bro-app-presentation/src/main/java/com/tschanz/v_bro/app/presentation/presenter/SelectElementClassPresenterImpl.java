@@ -7,23 +7,17 @@ import com.tschanz.v_bro.app.usecase.select_element_class.SelectElementClassPres
 import com.tschanz.v_bro.app.usecase.select_element_class.responsemodel.SelectElementClassResponse;
 import com.tschanz.v_bro.app.presentation.viewmodel.ErrorStatusItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.InfoStatusItem;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 
+@RequiredArgsConstructor
 public class SelectElementClassPresenterImpl implements SelectElementClassPresenter {
     private final MainModel mainModel;
 
 
-    public SelectElementClassPresenterImpl(MainModel mainModel) {
-        this.mainModel = mainModel;
-    }
-
-
     @Override
-    public void present(SelectElementClassResponse response) {
-        if (response == null) {
-            throw new IllegalArgumentException("response must not be null");
-        }
-
+    public void present(@NonNull SelectElementClassResponse response) {
         if (!response.isError) {
             this.mainModel.elementClasses.next(new SelectableItemList<>(this.mainModel.elementClasses.getCurrentValue().getItems(), response.selectElementClass));
             this.mainModel.elementDenominations.next(DenominationItemConverter.fromResponse(response.denominations, response.selectDenominations));

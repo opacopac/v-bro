@@ -20,12 +20,12 @@ public class ElementParser {
     private final XMLInputFactory xmlInputFactory;
 
 
-    public List<ElementData> readElements(InputStream xmlStream, String elementClass, Collection<String> denominationFields) throws RepoException {
+    public List<ElementData> readElements(InputStream xmlStream, String elementClass, Collection<String> denominationFields, String query, int maxResults) throws RepoException {
         List<ElementData> elements;
 
         try {
             XMLStreamReader reader = this.xmlInputFactory.createXMLStreamReader(xmlStream);
-            elements = parseDocument(reader, elementClass, denominationFields);
+            elements = parseDocument(reader, elementClass, denominationFields, query, maxResults);
         } catch (XMLStreamException exception) {
             throw new RepoException(exception);
         }
@@ -34,16 +34,19 @@ public class ElementParser {
     }
 
 
-    private List<ElementData> parseDocument(XMLStreamReader reader, String elementClass, Collection<String> denominationFields) throws XMLStreamException {
+    private List<ElementData> parseDocument(XMLStreamReader reader, String elementClass, Collection<String> denominationFields, String query, int maxResults) throws XMLStreamException {
         List<ElementData> elements = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (reader.hasNext() && elements.size() < maxResults) {
             switch (reader.next()) {
                 case XMLStreamReader.START_ELEMENT:
                     if (reader.getLocalName().equals(elementClass)) {
                         String elementId = XmlRepoService.findId(reader);
                         if (elementId != null) {
-                            elements.add(parseSingleElement(reader, elementClass, elementId, denominationFields));
+                            var elementData = parseSingleElement(reader, elementClass, elementId, denominationFields, query);
+                            if (elementData != null) {
+                                elements.add(elementData);
+                            }
                         }
                     }
                     break;
@@ -56,7 +59,7 @@ public class ElementParser {
     }
 
 
-    private ElementData parseSingleElement(XMLStreamReader reader, String elementClass, String elementId, Collection<String> denominationFields) throws XMLStreamException {
+    private ElementData parseSingleElement(XMLStreamReader reader, String elementClass, String elementId, Collection<String> denominationFields, String query) throws XMLStreamException {
         int subLevel = 0;
         StringBuilder value = new StringBuilder();
         List<DenominationData> denominations = new ArrayList<>();
@@ -86,13 +89,19 @@ public class ElementParser {
                             );
                         }
                     } else if (subLevel < 1) {
-                        return new ElementData(
-                            elementId,
-                            denominations
-                                .stream()
-                                .distinct()
-                                .collect(Collectors.toList())
-                        );
+                        if (elementId.toUpperCase().contains(query.toUpperCase())
+                            || denominations.stream().anyMatch(d -> d.getValue().toUpperCase().contains(query.toUpperCase()))
+                        ) {
+                            return new ElementData(
+                                elementId,
+                                denominations
+                                    .stream()
+                                    .distinct()
+                                    .collect(Collectors.toList())
+                            );
+                        } else {
+                            return null;
+                        }
                     }
                     subLevel--;
                     break;

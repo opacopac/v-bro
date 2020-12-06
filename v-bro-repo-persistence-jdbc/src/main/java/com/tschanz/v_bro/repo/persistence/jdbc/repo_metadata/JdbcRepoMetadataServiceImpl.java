@@ -7,20 +7,20 @@ import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoRelation;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
+@Log
 @RequiredArgsConstructor
 public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
     public static final String WILDCARD = "%";
-    private final Logger logger = Logger.getLogger(JdbcRepoMetadataServiceImpl.class.getName());
     private final JdbcConnectionFactory connectionFactory;
     private List<RepoField> repoFieldLut;
     private List<RepoRelation> repoRelationLut;
@@ -46,7 +46,7 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
             return tableNames;
         } catch (SQLException exception) {
             String msg = "error reading element structure: " + exception.getMessage();
-            this.logger.severe(msg);
+            log.severe(msg);
             throw new RepoException(msg, exception);
         }
     }
@@ -91,7 +91,7 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
             return tableNamePattern.replace("_", escapeChar + "_");
         } catch (SQLException exception) {
             String msg = "error reading wildcard from repo_metadata: " + exception.getMessage();
-            this.logger.severe(msg);
+            log.severe(msg);
             throw new RepoException(msg, exception);
         }
     }
@@ -115,7 +115,7 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
                 break;
         }
 
-        this.logger.info("executing query " + query);
+        log.info("executing query " + query);
 
         List<RepoRelation> repoRelations = new ArrayList<>();
         try {
@@ -134,7 +134,7 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
             statement.close();
         } catch (SQLException exception) {
             String msg = "error reading all relations from db: " + exception.getMessage();
-            this.logger.severe(msg);
+            log.severe(msg);
             throw new RepoException(msg, exception);
         }
 
@@ -160,7 +160,7 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
                 break;
         }
 
-        this.logger.info("executing query " + query);
+        log.info("executing query " + query);
 
         List<RepoField> repoFields = new ArrayList<>();
 
@@ -190,7 +190,7 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
             statement.close();
         } catch (SQLException exception) {
             String msg = "error reading all columns from db: " + exception.getMessage();
-            this.logger.severe(msg);
+            log.severe(msg);
             throw new RepoException(msg, exception);
         }
 
@@ -216,7 +216,7 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
                 break;
         }
 
-        this.logger.info("executing query " + query);
+        log.info("executing query " + query);
 
         try {
             Statement statement = this.connectionFactory.getCurrentConnection().createStatement();
@@ -239,7 +239,7 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
             statement.close();
         } catch (SQLException exception) {
             String msg = "error reading constraints from db: " + exception.getMessage();
-            this.logger.severe(msg);
+            log.severe(msg);
             throw new RepoException(msg, exception);
         }
     }

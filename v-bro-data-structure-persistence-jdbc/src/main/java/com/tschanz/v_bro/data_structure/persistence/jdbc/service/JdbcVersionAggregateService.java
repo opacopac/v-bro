@@ -52,7 +52,7 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
     private RepoTableRecord readSingleIdRecord(RepoTable repoTable, long id) throws RepoException {
         RowFilter filter = new RowFilter(repoTable.findfirstIdField(), RowFilterOperator.EQUALS, id);
 
-        List<RepoTableRecord> records = this.repoData.readRepoTableRecords(repoTable, repoTable.getFields(), List.of(filter));
+        List<RepoTableRecord> records = this.repoData.readRepoTableRecords(repoTable, repoTable.getFields(), List.of(filter), Collections.emptyList(), -1);
         if (records.size() != 1) {
             throw new IllegalArgumentException("multiple records for same id");
         }
@@ -81,7 +81,7 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
 
 
     private List<JdbcAggregateNode> readNode(RepoTable table, RowFilter filter) throws RepoException {
-        List<RepoTableRecord> records = this.repoData.readRepoTableRecords(table, table.getFields(), List.of(filter));
+        List<RepoTableRecord> records = this.repoData.readRepoTableRecords(table, table.getFields(), List.of(filter), Collections.emptyList(), -1);
         if (records.size() == 0) {
             return Collections.emptyList();
         }

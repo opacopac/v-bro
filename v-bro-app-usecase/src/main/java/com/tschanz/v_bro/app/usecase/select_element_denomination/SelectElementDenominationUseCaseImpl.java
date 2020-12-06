@@ -7,13 +7,13 @@ import com.tschanz.v_bro.data_structure.domain.model.ElementData;
 import com.tschanz.v_bro.data_structure.domain.service.ElementService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
+import lombok.extern.java.Log;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 
+@Log
 public class SelectElementDenominationUseCaseImpl implements SelectElementDenominationUseCase {
-    private final Logger logger = Logger.getLogger(SelectElementDenominationUseCaseImpl.class.getName());
     private final RepoServiceProvider<ElementService> elementServiceProvider;
     private final SelectElementDenominationPresenter presenter;
 
@@ -29,14 +29,14 @@ public class SelectElementDenominationUseCaseImpl implements SelectElementDenomi
 
     @Override
     public void execute(SelectElementDenominationRequest request) {
-        this.logger.info("UC: select element denominations...");
+        log.info("UC: select element denominations...");
 
         try {
             ElementService elementService = this.elementServiceProvider.getService(request.repoType);
-            List<ElementData> elements = elementService.readElements(request.elementClass, request.denominations);
+            List<ElementData> elements = elementService.readElements(request.elementClass, request.denominations, "", 100); // TODO
 
             String message = "successfully read " + elements.size() + " elements";
-            this.logger.info(message);
+            log.info(message);
 
             SelectElementDenominationResponse response = new SelectElementDenominationResponse(
                 ElementConverter.toResponse(elements),
@@ -47,7 +47,7 @@ public class SelectElementDenominationUseCaseImpl implements SelectElementDenomi
             this.presenter.present(response);
         } catch (RepoException exception) {
             String message = "error reading element denominations and elements: " + exception.getMessage();
-            this.logger.severe(message);
+            log.severe(message);
 
             SelectElementDenominationResponse response = new SelectElementDenominationResponse(null, null, message, true);
             this.presenter.present(response);

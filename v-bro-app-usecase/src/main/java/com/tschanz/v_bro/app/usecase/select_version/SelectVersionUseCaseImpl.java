@@ -5,18 +5,18 @@ import com.tschanz.v_bro.app.usecase.common.converter.VersionAggregateConverter;
 import com.tschanz.v_bro.app.usecase.select_version.requestmodel.SelectVersionRequest;
 import com.tschanz.v_bro.app.usecase.select_version.responsemodel.SelectVersionResponse;
 import com.tschanz.v_bro.data_structure.domain.model.FwdDependency;
+import com.tschanz.v_bro.data_structure.domain.model.VersionAggregate;
 import com.tschanz.v_bro.data_structure.domain.service.DependencyService;
+import com.tschanz.v_bro.data_structure.domain.service.VersionAggregateService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
-import com.tschanz.v_bro.data_structure.domain.model.VersionAggregate;
-import com.tschanz.v_bro.data_structure.domain.service.VersionAggregateService;
+import lombok.extern.java.Log;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 
+@Log
 public class SelectVersionUseCaseImpl implements SelectVersionUseCase {
-    private final Logger logger = Logger.getLogger(SelectVersionUseCaseImpl.class.getName());
     private final RepoServiceProvider<DependencyService> dependencyServiceProvider;
     private final RepoServiceProvider<VersionAggregateService> versionAggregateServiceProvider;
     private final SelectVersionPresenter presenter;
@@ -35,7 +35,7 @@ public class SelectVersionUseCaseImpl implements SelectVersionUseCase {
 
     @Override
     public void execute(SelectVersionRequest request) {
-        this.logger.info("UC: select version '" + request.versionId + "'...");
+        log.info("UC: select version '" + request.versionId + "'...");
 
         try {
             // dependencies
@@ -47,7 +47,7 @@ public class SelectVersionUseCaseImpl implements SelectVersionUseCase {
             VersionAggregate versionAggregate = versionAggregateService.readVersionAggregate(request.elementClass, request.elementId, request.versionId);
 
             String message = "successfully read " + fwdDependencies.size() + " FWD dependencies and version aggregate";
-            this.logger.info(message);
+            log.info(message);
 
             SelectVersionResponse response = new SelectVersionResponse(
                 FwdDependencyConverter.toResponse(fwdDependencies),
@@ -59,7 +59,7 @@ public class SelectVersionUseCaseImpl implements SelectVersionUseCase {
             this.presenter.present(response);
         } catch (RepoException exception) {
             String message = "error reading dependencies and version aggregate: " + exception.getMessage();
-            this.logger.severe(message);
+            log.severe(message);
 
             SelectVersionResponse response = new SelectVersionResponse(null, null, null, message, true);
             this.presenter.present(response);

@@ -16,8 +16,8 @@ public class SpyElementService implements ElementService {
 
 
     @Override
-    public List<ElementData> readElements(String elementClass, Collection<String> fieldNames) throws RepoException {
-        this.spyHelper.reportMethodCall("readElementData", elementClass, fieldNames);
+    public List<ElementData> readElements(String elementClass, Collection<String> fieldNames, String query, int maxResults) throws RepoException {
+        this.spyHelper.reportMethodCall("readElementData", elementClass, fieldNames, query, maxResults);
         this.spyHelper.checkThrowException();
         return new ArrayList<>(this.readElementDataResults.next());
     }
