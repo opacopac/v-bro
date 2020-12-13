@@ -5,6 +5,7 @@ import com.tschanz.v_bro.data_structure.domain.model.ElementData;
 import com.tschanz.v_bro.data_structure.domain.service.ElementService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoField;
+import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoFieldType;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.RowFilter;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.RowFilterOperator;
@@ -75,6 +76,7 @@ public class JdbcElementService implements ElementService {
         } else {
             return repoFields
                 .stream()
+                .map(f -> new RepoField(f.getName(), RepoFieldType.STRING, f.isId(), f.isNullable(), f.isUnique()))
                 .map(f -> new RowFilter(f, RowFilterOperator.LIKE, JdbcRepoMetadataServiceImpl.WILDCARD + query + JdbcRepoMetadataServiceImpl.WILDCARD))
                 .collect(Collectors.toList());
         }
