@@ -1,9 +1,9 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
 import com.tschanz.v_bro.app.presentation.view.ElementView;
-import com.tschanz.v_bro.app.presentation.viewmodel.ElementItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.QueryElementItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.SelectableItemList;
+import com.tschanz.v_bro.app.presentation.viewmodel.element.ElementItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.element.QueryElementItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.common.SelectableItemList;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
@@ -14,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyEvent;
+import lombok.extern.java.Log;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.TimerTask;
 import java.util.concurrent.Flow;
 
 
+@Log
 public class JfxElementView implements ElementView, Initializable {
     private static final int DEBOUNCE_TIME_MS = 250;
     @FXML private ComboBox<ElementItem> elementComboBox;

@@ -1,7 +1,11 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
-import com.tschanz.v_bro.app.presentation.viewmodel.*;
+import com.tschanz.v_bro.app.presentation.viewmodel.common.SelectableItemList;
+import com.tschanz.v_bro.app.presentation.viewmodel.dependency.ElementVersionVector;
+import com.tschanz.v_bro.app.presentation.viewmodel.dependency.FwdDependencyItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.version.VersionFilterItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.version.VersionItem;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import javafx.fxml.FXML;

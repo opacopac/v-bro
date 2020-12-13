@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
 import com.tschanz.v_bro.app.presentation.view.StatusBarView;
-import com.tschanz.v_bro.app.presentation.viewmodel.StatusItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.status.StatusItem;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -22,7 +22,7 @@ public class JfxStatusBarView implements StatusBarView {
 
     private void onStatusChanged(StatusItem status) {
         boolean isErr = status != null && status.isError();
-        String text = status != null ? status.getStatusText() : "";
+        String text = status != null ? status.getMessage() : "";
 
         this.infoLabel.setVisible(!isErr);
         this.errorLabel.setVisible(isErr);

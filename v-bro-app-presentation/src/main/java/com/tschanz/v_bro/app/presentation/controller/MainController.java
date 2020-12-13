@@ -1,16 +1,16 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
+import com.tschanz.v_bro.app.presentation.viewmodel.MainViewModel;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.MainActions;
-import com.tschanz.v_bro.app.presentation.viewmodel.MainModel;
-import com.tschanz.v_bro.app.usecase.query_element.QueryElementUseCase;
-import com.tschanz.v_bro.app.usecase.select_dependency_filter.SelectDependencyFilterUseCase;
-import com.tschanz.v_bro.app.usecase.select_dependency_version.SelectDependencyVersionUseCase;
-import com.tschanz.v_bro.app.usecase.select_element_class.SelectElementClassUseCase;
-import com.tschanz.v_bro.app.usecase.select_element_denomination.SelectElementDenominationUseCase;
-import com.tschanz.v_bro.app.usecase.select_element.SelectElementUseCase;
-import com.tschanz.v_bro.app.usecase.disconnect_repo.CloseConnectionUseCase;
-import com.tschanz.v_bro.app.usecase.connect_repo.OpenConnectionUseCase;
-import com.tschanz.v_bro.app.usecase.select_version.SelectVersionUseCase;
+import com.tschanz.v_bro.app.usecase.close_repo.CloseRepoUseCase;
+import com.tschanz.v_bro.app.usecase.open_dependency_version.OpenDependencyVersionUseCase;
+import com.tschanz.v_bro.app.usecase.open_element.OpenElementUseCase;
+import com.tschanz.v_bro.app.usecase.open_element_class.OpenElementClassUseCase;
+import com.tschanz.v_bro.app.usecase.open_repo.OpenRepoUseCase;
+import com.tschanz.v_bro.app.usecase.open_version.OpenVersionUseCase;
+import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsUseCase;
+import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsUseCase;
+import com.tschanz.v_bro.app.usecase.select_version_filter.SelectVersionFilterUseCase;
 import lombok.Getter;
 
 import java.util.Properties;
@@ -29,80 +29,57 @@ public class MainController {
 
     public MainController(
         Properties appProperties,
-        MainModel mainModel,
+        MainViewModel mainViewModel,
         MainActions mainActions,
-        OpenConnectionUseCase openConnectionUc,
-        CloseConnectionUseCase closeConnectionUc,
-        SelectElementClassUseCase selectElementClassUc,
-        SelectElementDenominationUseCase selectElementDenominationUc,
-        QueryElementUseCase queryElementUc,
-        SelectElementUseCase selectElementUc,
-        SelectVersionUseCase selectVersionUc,
-        SelectDependencyFilterUseCase selectDependencyFilterUc,
-        SelectDependencyVersionUseCase selectDependencyVersionUc
+        OpenRepoUseCase openRepoUseCase,
+        CloseRepoUseCase closeRepoUseCase,
+        OpenElementClassUseCase openElementClassUc,
+        SelectDenominationsUseCase selectDenominationsUc,
+        QueryElementsUseCase queryElementsUc,
+        OpenElementUseCase openElementUc,
+        SelectVersionFilterUseCase selectVersionFilterUc,
+        OpenVersionUseCase openVersionUc,
+        OpenDependencyVersionUseCase openDependencyVersionUc
     ) {
         this.connectionController = new ConnectionController(
             appProperties,
-            mainModel.quickConnectionList,
-            mainModel.currentRepoConnection,
+            mainViewModel.quickConnectionList,
+            mainViewModel.currentRepoConnection,
             mainActions.connectToRepoAction,
-            openConnectionUc,
-            closeConnectionUc
+            openRepoUseCase,
+            closeRepoUseCase
         );
 
         this.elementClassController = new ElementClassController(
-            mainModel.currentRepoConnection,
-            mainModel.elementClasses,
-            mainModel.versionFilter,
-            mainModel.dependencyFilter,
             mainActions.selectElementClassAction,
-            selectElementClassUc
+            openElementClassUc
         );
 
         this.elementDenominationController = new ElementDenominationController(
-            mainModel.currentRepoConnection,
-            mainModel.elementClasses,
             mainActions.selectDenominationsAction,
-            selectElementDenominationUc
+            selectDenominationsUc
         );
 
         this.elementController = new ElementController(
-            mainModel.currentRepoConnection,
-            mainModel.elementClasses,
-            mainModel.elementDenominations,
-            mainModel.versionFilter,
-            mainModel.dependencyFilter,
             mainActions.queryElementAction,
             mainActions.selectElementAction,
-            queryElementUc,
-            selectElementUc
+            queryElementsUc,
+            openElementUc
         );
 
         this.versionFilterController = new VersionFilterController(
-            mainModel.currentRepoConnection,
-            mainModel.elementClasses,
-            mainModel.elements,
-            mainModel.dependencyFilter,
             mainActions.selectVersionFilterAction,
-            selectElementUc
+            selectVersionFilterUc
         );
 
         this.versionController = new VersionController(
-            mainModel.currentRepoConnection,
-            mainModel.elementClasses,
-            mainModel.elements,
-            mainModel.versionFilter,
-            mainModel.dependencyFilter,
             mainActions.selectVersionAction,
-            selectVersionUc
+            openVersionUc
         );
 
         this.dependencyListController = new DependencyListController(
-            mainModel.currentRepoConnection,
-            mainModel.versionFilter,
-            mainModel.dependencyFilter,
             mainActions.selectDependencyVersionAction,
-            selectDependencyVersionUc
+            openDependencyVersionUc
         );
     }
 }

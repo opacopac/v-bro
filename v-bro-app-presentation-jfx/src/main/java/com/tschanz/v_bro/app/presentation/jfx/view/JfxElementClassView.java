@@ -1,8 +1,8 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
 import com.tschanz.v_bro.app.presentation.view.ElementClassView;
-import com.tschanz.v_bro.app.presentation.viewmodel.ElementClassItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.SelectableItemList;
+import com.tschanz.v_bro.app.presentation.viewmodel.element_class.ElementClassItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.common.SelectableItemList;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
+import lombok.extern.java.Log;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -19,10 +20,12 @@ import java.util.ResourceBundle;
 import java.util.concurrent.Flow;
 
 
+@Log
 public class JfxElementClassView implements ElementClassView, Initializable {
     @FXML private ComboBox<ElementClassItem> elementClassComboBox;
     private ViewAction<String> selectElementClassAction;
     private SuggestionProvider<ElementClassItem> suggestionProvider;
+    private String lastQuery;
     private boolean isPopulating = false;
 
 
@@ -58,6 +61,12 @@ public class JfxElementClassView implements ElementClassView, Initializable {
 
     @FXML
     private void onElementClassSelected(ActionEvent actionEvent) {
+        var queryText = this.elementClassComboBox.getEditor().getText();
+        if (queryText.equals(this.lastQuery)) {
+            return;
+        }
+        this.lastQuery = queryText;
+
         var selectedText = this.elementClassComboBox.getEditor().getText();
         if (!this.isPopulating && selectedText != null) {
             this.elementClassComboBox.getItems()

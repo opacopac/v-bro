@@ -1,17 +1,17 @@
 package com.tschanz.v_bro.data_structure.domain.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public class Denomination {
     @Getter protected final String name;
-
 
 
     public static List<String> getNameList(List<Denomination> denominations) {
@@ -19,20 +19,5 @@ public class Denomination {
             .stream()
             .map(Denomination::getName)
             .collect(Collectors.toList());
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Denomination that = (Denomination) o;
-        return Objects.equals(name, that.name);
-    }
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
     }
 }

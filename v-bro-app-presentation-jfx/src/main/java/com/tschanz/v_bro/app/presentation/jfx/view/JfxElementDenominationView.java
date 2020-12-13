@@ -2,8 +2,8 @@ package com.tschanz.v_bro.app.presentation.jfx.view;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.app.presentation.view.ElementDenominationView;
-import com.tschanz.v_bro.app.presentation.viewmodel.DenominationItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.MultiSelectableItemList;
+import com.tschanz.v_bro.app.presentation.viewmodel.denominations.DenominationItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.common.MultiSelectableItemList;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import javafx.collections.FXCollections;
 import javafx.event.Event;
@@ -44,8 +44,13 @@ public class JfxElementDenominationView implements Initializable, ElementDenomin
 
     private void onDenominationsListChanged(MultiSelectableItemList<DenominationItem> denominationItems) {
         this.isPopulating = true;
-        this.denominationCheckComboBox.getItems().setAll(FXCollections.observableArrayList(denominationItems.getItems()));
+        var items = this.denominationCheckComboBox.getItems();
         var checkModel = this.denominationCheckComboBox.getCheckModel();
+
+        checkModel.clearChecks();
+        items.clear();
+
+        items.setAll(FXCollections.observableArrayList(denominationItems.getItems()));
         for (int i = 0; i < denominationItems.getItems().size(); i++) {
             var item = denominationItems.getItems().get(i);
             if (denominationItems.getSelectedItems().contains(item)) {

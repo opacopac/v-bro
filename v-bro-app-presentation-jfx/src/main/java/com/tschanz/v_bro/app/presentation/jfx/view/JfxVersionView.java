@@ -2,10 +2,10 @@ package com.tschanz.v_bro.app.presentation.jfx.view;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.app.presentation.view.VersionsView;
-import com.tschanz.v_bro.app.presentation.viewmodel.SelectableItemList;
-import com.tschanz.v_bro.app.presentation.viewmodel.VersionFilterItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.VersionItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.VersionVonBisPx;
+import com.tschanz.v_bro.app.presentation.viewmodel.common.SelectableItemList;
+import com.tschanz.v_bro.app.presentation.viewmodel.version.VersionFilterItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.version.VersionItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.version.VersionVonBisPx;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;

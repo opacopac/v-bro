@@ -1,13 +1,11 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
+import com.tschanz.v_bro.app.presentation.viewmodel.repo.QuickConnectionItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.repo.RepoConnectionItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
-import com.tschanz.v_bro.app.presentation.viewmodel.QuickConnectionItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.RepoConnectionItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.converter.ConnectionItemConverter;
-import com.tschanz.v_bro.app.usecase.connect_repo.OpenConnectionUseCase;
-import com.tschanz.v_bro.app.usecase.connect_repo.requestmodel.OpenConnectionRequest;
-import com.tschanz.v_bro.app.usecase.disconnect_repo.CloseConnectionUseCase;
-import com.tschanz.v_bro.app.usecase.disconnect_repo.requestmodel.CloseConnectionRequest;
+import com.tschanz.v_bro.app.usecase.close_repo.CloseRepoRequest;
+import com.tschanz.v_bro.app.usecase.close_repo.CloseRepoUseCase;
+import com.tschanz.v_bro.app.usecase.open_repo.OpenRepoUseCase;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
@@ -21,8 +19,8 @@ public class ConnectionController {
     private static final String QUICKCONNECTIONS_PROPERTY_PREFIX = "quickconnection."; // TODO: move to app
     private final BehaviorSubject<List<QuickConnectionItem>> quickConnectionList;
     private final BehaviorSubject<RepoConnectionItem> repoConnection;
-    private final OpenConnectionUseCase openConnectionUc;
-    private final CloseConnectionUseCase closeConnectionUc;
+    private final OpenRepoUseCase openRepoUc;
+    private final CloseRepoUseCase closeRepoUc;
 
 
     public ConnectionController(
@@ -30,13 +28,13 @@ public class ConnectionController {
         BehaviorSubject<List<QuickConnectionItem>> quickConnectionList,
         BehaviorSubject<RepoConnectionItem> repoConnection,
         ViewAction<RepoConnectionItem> connectToRepoAction,
-        OpenConnectionUseCase openConnectionUc,
-        CloseConnectionUseCase closeConnectionUc
+        OpenRepoUseCase openRepoUc,
+        CloseRepoUseCase closeRepoUc
     ) {
         this.quickConnectionList = quickConnectionList;
         this.repoConnection = repoConnection;
-        this.openConnectionUc = openConnectionUc;
-        this.closeConnectionUc = closeConnectionUc;
+        this.openRepoUc = openRepoUc;
+        this.closeRepoUc = closeRepoUc;
 
         connectToRepoAction.subscribe(new GenericSubscriber<>(this::onConnectToRepoAction));
 
@@ -72,13 +70,11 @@ public class ConnectionController {
 
     private void onConnectToRepoAction(RepoConnectionItem connection) {
         if (connection != null) {
-            OpenConnectionRequest request = new OpenConnectionRequest(
-                ConnectionItemConverter.toRequest(connection)
-            );
-            this.openConnectionUc.execute(request);
+            var request = RepoConnectionItem.toRequest(connection);
+            this.openRepoUc.execute(request);
         } else if (this.repoConnection.getCurrentValue() != null) {
-            CloseConnectionRequest request = new CloseConnectionRequest(this.repoConnection.getCurrentValue().repoType);
-            this.closeConnectionUc.execute(request);
+            var request = new CloseRepoRequest();
+            this.closeRepoUc.execute(request);
         }
     }
 }

@@ -1,9 +1,9 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
 import com.tschanz.v_bro.app.presentation.view.VersionAggregateView;
-import com.tschanz.v_bro.app.presentation.viewmodel.AggregateNodeItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.FieldAggregateNodeItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.VersionAggregateItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.version_aggregate.VersionAggregateNodeItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.version_aggregate.FieldAggregateNodeItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.version_aggregate.VersionAggregateItem;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeItem;
@@ -30,7 +30,7 @@ public class JfxVersionAggregateView implements VersionAggregateView {
     }
 
 
-    private TreeItem<Object> createTreeNode(AggregateNodeItem aggregateNode) {
+    private TreeItem<Object> createTreeNode(VersionAggregateNodeItem aggregateNode) {
         var node = new TreeItem<Object>(aggregateNode);
 
         aggregateNode.getFieldNodes().forEach(field -> node.getChildren().add(this.createFieldNode(field)));

@@ -1,58 +1,36 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
+import com.tschanz.v_bro.app.presentation.viewmodel.dependency.ElementVersionVector;
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
-import com.tschanz.v_bro.app.presentation.viewmodel.DependencyFilterItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.ElementVersionVector;
-import com.tschanz.v_bro.app.presentation.viewmodel.RepoConnectionItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.VersionFilterItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.converter.DependencyFilterItemConverter;
-import com.tschanz.v_bro.app.presentation.viewmodel.converter.VersionFilterItemConverter;
-import com.tschanz.v_bro.app.usecase.select_dependency_version.SelectDependencyVersionUseCase;
-import com.tschanz.v_bro.app.usecase.select_dependency_version.requestmodel.SelectDependencyVersionRequest;
-import com.tschanz.v_bro.common.reactive.BehaviorSubject;
+import com.tschanz.v_bro.app.usecase.open_dependency_version.OpenDependencyVersionRequest;
+import com.tschanz.v_bro.app.usecase.open_dependency_version.OpenDependencyVersionUseCase;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 
 
 public class DependencyListController {
-    private final BehaviorSubject<RepoConnectionItem> repoConnection;
-    private final BehaviorSubject<VersionFilterItem> versionFilter;
-    private final BehaviorSubject<DependencyFilterItem> dependencyFilter;
-    private final SelectDependencyVersionUseCase selectDependencyVersionUc;
+    private final OpenDependencyVersionUseCase openDependencyVersionUc;
 
 
     public DependencyListController(
-        BehaviorSubject<RepoConnectionItem> repoConnection,
-        BehaviorSubject<VersionFilterItem> versionFilter,
-        BehaviorSubject<DependencyFilterItem> dependencyFilter,
         ViewAction<ElementVersionVector> selectDependencyVersionAction,
-        SelectDependencyVersionUseCase selectDependencyVersionUc
+        OpenDependencyVersionUseCase openDependencyVersionUc
     ) {
-        this.repoConnection = repoConnection;
-        this.dependencyFilter = dependencyFilter;
-        this.versionFilter = versionFilter;
-        this.selectDependencyVersionUc = selectDependencyVersionUc;
+        this.openDependencyVersionUc = openDependencyVersionUc;
 
         selectDependencyVersionAction.subscribe(new GenericSubscriber<>(this::onVersionFilterSelected));
     }
 
 
     public void onVersionFilterSelected(ElementVersionVector selectedDependencyVersion) {
-        if (this.repoConnection.getCurrentValue() == null
-            || selectedDependencyVersion == null
-            || this.versionFilter == null
-            || this.dependencyFilter == null
-        ) {
+        if (selectedDependencyVersion == null) {
             return;
         }
 
-        SelectDependencyVersionRequest request = new SelectDependencyVersionRequest(
-            this.repoConnection.getCurrentValue().repoType,
+        var request = new OpenDependencyVersionRequest(
             selectedDependencyVersion.getElementClass(),
             selectedDependencyVersion.getElementId(),
-            selectedDependencyVersion.getVersionId(),
-            VersionFilterItemConverter.toRequest(this.versionFilter.getCurrentValue()),
-            DependencyFilterItemConverter.toRequest(this.dependencyFilter.getCurrentValue())
+            selectedDependencyVersion.getVersionId()
         );
-        this.selectDependencyVersionUc.execute(request);
+        this.openDependencyVersionUc.execute(request);
     }
 }

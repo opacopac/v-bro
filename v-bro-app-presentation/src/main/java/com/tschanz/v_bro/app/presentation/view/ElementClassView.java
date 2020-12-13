@@ -1,8 +1,8 @@
 package com.tschanz.v_bro.app.presentation.view;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
-import com.tschanz.v_bro.app.presentation.viewmodel.ElementClassItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.SelectableItemList;
+import com.tschanz.v_bro.app.presentation.viewmodel.element_class.ElementClassItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.common.SelectableItemList;
 
 import java.util.concurrent.Flow;
 

@@ -3,10 +3,10 @@ package com.tschanz.v_bro.app.presentation.jfx.view;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.app.presentation.view.ConnectionView;
-import com.tschanz.v_bro.app.presentation.viewmodel.JdbcRepoConnectionItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.QuickConnectionItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.RepoConnectionItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.XmlRepoConnectionItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.repo.JdbcRepoConnectionItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.repo.QuickConnectionItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.repo.RepoConnectionItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.repo.XmlRepoConnectionItem;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import com.tschanz.v_bro.repo.domain.model.RepoType;

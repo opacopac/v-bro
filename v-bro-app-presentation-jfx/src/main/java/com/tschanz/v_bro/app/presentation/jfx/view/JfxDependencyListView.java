@@ -2,9 +2,9 @@ package com.tschanz.v_bro.app.presentation.jfx.view;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.app.presentation.view.DependencyListView;
-import com.tschanz.v_bro.app.presentation.viewmodel.ElementVersionVector;
-import com.tschanz.v_bro.app.presentation.viewmodel.FwdDependencyItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.VersionFilterItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.dependency.ElementVersionVector;
+import com.tschanz.v_bro.app.presentation.viewmodel.dependency.FwdDependencyItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.version.VersionFilterItem;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

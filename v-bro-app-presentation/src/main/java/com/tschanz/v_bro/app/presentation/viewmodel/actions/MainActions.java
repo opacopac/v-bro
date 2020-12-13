@@ -1,9 +1,14 @@
 package com.tschanz.v_bro.app.presentation.viewmodel.actions;
 
-
-import com.tschanz.v_bro.app.presentation.viewmodel.*;
+import com.tschanz.v_bro.app.presentation.viewmodel.denominations.DenominationItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.dependency.DependencyFilterItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.dependency.ElementVersionVector;
+import com.tschanz.v_bro.app.presentation.viewmodel.element.QueryElementItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.repo.RepoConnectionItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.version.VersionFilterItem;
 
 import java.util.List;
+
 
 public class MainActions {
     public final ViewAction<RepoConnectionItem> connectToRepoAction = new ViewAction<>();

@@ -2,8 +2,8 @@ package com.tschanz.v_bro.app.presentation.jfx.view;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.app.presentation.view.VersionFilterView;
-import com.tschanz.v_bro.app.presentation.viewmodel.PflegestatusItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.VersionFilterItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.version.PflegestatusItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.version.VersionFilterItem;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

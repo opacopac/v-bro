@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.view;
 
-import com.tschanz.v_bro.app.presentation.viewmodel.StatusItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.status.StatusItem;
 
 import java.util.concurrent.Flow;
 

@@ -2,7 +2,7 @@ package com.tschanz.v_bro.app.presentation.jfx.view;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.app.presentation.view.DependencyFilterView;
-import com.tschanz.v_bro.app.presentation.viewmodel.DependencyFilterItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.dependency.DependencyFilterItem;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
