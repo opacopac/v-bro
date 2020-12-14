@@ -1,9 +1,9 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
+import com.tschanz.v_bro.app.presentation.controller.ElementClassController;
 import com.tschanz.v_bro.app.presentation.view.ElementClassView;
-import com.tschanz.v_bro.app.presentation.viewmodel.element_class.ElementClassItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.common.SelectableItemList;
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
+import com.tschanz.v_bro.app.presentation.viewmodel.element_class.ElementClassItem;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
 import impl.org.controlsfx.autocompletion.SuggestionProvider;
@@ -23,7 +23,7 @@ import java.util.concurrent.Flow;
 @Log
 public class JfxElementClassView implements ElementClassView, Initializable {
     @FXML private ComboBox<ElementClassItem> elementClassComboBox;
-    private ViewAction<String> selectElementClassAction;
+    private ElementClassController elementClassController;
     private SuggestionProvider<ElementClassItem> suggestionProvider;
     private String lastQuery;
     private boolean isPopulating = false;
@@ -40,9 +40,9 @@ public class JfxElementClassView implements ElementClassView, Initializable {
     @Override
     public void bindViewModel(
         Flow.Publisher<SelectableItemList<ElementClassItem>> elementClassList,
-        ViewAction<String> selectElementClassAction
+        ElementClassController elementClassController
     ) {
-        this.selectElementClassAction = selectElementClassAction;
+        this.elementClassController = elementClassController;
         elementClassList.subscribe(new GenericSubscriber<>(this::onElementClassListChanged));
     }
 
@@ -73,7 +73,7 @@ public class JfxElementClassView implements ElementClassView, Initializable {
                 .stream()
                 .filter(item -> item.getName().equals(selectedText))
                 .findFirst()
-                .ifPresent(item -> this.selectElementClassAction.next(item.getName()));
+                .ifPresent(item -> this.elementClassController.onElementClassSelected(item.getName()));
         }
     }
 }

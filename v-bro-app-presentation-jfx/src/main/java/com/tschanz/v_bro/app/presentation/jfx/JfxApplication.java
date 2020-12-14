@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.presentation.jfx;
 
+import com.tschanz.v_bro.app.presentation.controller.MainController;
 import com.tschanz.v_bro.app.presentation.jfx.view.JfxMainView;
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.MainActions;
 import com.tschanz.v_bro.app.presentation.viewmodel.MainViewModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -15,12 +15,12 @@ public class JfxApplication extends Application {
     private static final String MAIN_VIEW_FXML = "MainView.fxml";
     private static final String WINDOW_TITLE = "V-Bro - Version Browser";
     private static MainViewModel mainViewModel;
-    private static MainActions mainActions;
+    private static MainController mainController;
 
 
-    public static void main(String[] args, MainViewModel mainViewModel, MainActions mainActions) {
+    public static void main(String[] args, MainViewModel mainViewModel, MainController mainController) {
         JfxApplication.mainViewModel = mainViewModel;
-        JfxApplication.mainActions = mainActions;
+        JfxApplication.mainController = mainController;
         launch(args);
     }
 
@@ -32,7 +32,7 @@ public class JfxApplication extends Application {
         var fxmlLoader = new FXMLLoader(mainViewUrl);
         Parent root = fxmlLoader.load();
         JfxMainView jfxMainView = fxmlLoader.getController();
-        jfxMainView.bindViewModel(mainViewModel, mainActions);
+        jfxMainView.bindViewModel(mainViewModel, mainController);
         stage.setTitle(WINDOW_TITLE);
         stage.setScene(new Scene(root));
         stage.show();

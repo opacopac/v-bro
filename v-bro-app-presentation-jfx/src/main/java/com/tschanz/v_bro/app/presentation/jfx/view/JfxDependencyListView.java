@@ -1,8 +1,7 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
+import com.tschanz.v_bro.app.presentation.controller.DependencyListController;
 import com.tschanz.v_bro.app.presentation.view.DependencyListView;
-import com.tschanz.v_bro.app.presentation.viewmodel.dependency.ElementVersionVector;
 import com.tschanz.v_bro.app.presentation.viewmodel.dependency.FwdDependencyItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.version.VersionFilterItem;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
@@ -19,17 +18,17 @@ import java.util.concurrent.Flow;
 public class JfxDependencyListView implements DependencyListView {
     @FXML private VBox depListVBox;
     private Flow.Publisher<VersionFilterItem> effectiveVersionFilter;
-    private ViewAction<ElementVersionVector> selectDependencyVersionAction;
+    private DependencyListController dependencyListController;
 
 
     @Override
     public void bindViewModel(
         Flow.Publisher<List<FwdDependencyItem>> fwdDependencyList,
         Flow.Publisher<VersionFilterItem> versionFilter,
-        ViewAction<ElementVersionVector> selectDependencyVersionAction
+        DependencyListController dependencyListController
     ) {
         this.effectiveVersionFilter = versionFilter;
-        this.selectDependencyVersionAction = selectDependencyVersionAction;
+        this.dependencyListController = dependencyListController;
         fwdDependencyList.subscribe(new GenericSubscriber<>(this::onFwdDependenciesChanged));
     }
 
@@ -48,7 +47,7 @@ public class JfxDependencyListView implements DependencyListView {
                 dependencyListEntry.bindViewModel(
                     dependency,
                     this.effectiveVersionFilter,
-                    this.selectDependencyVersionAction
+                    this.dependencyListController
                 );
                 this.depListVBox.getChildren().add(node);
             }

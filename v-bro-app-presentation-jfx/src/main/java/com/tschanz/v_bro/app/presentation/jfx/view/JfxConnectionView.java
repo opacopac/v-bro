@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
 
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
+import com.tschanz.v_bro.app.presentation.controller.ConnectionController;
 import com.tschanz.v_bro.app.presentation.view.ConnectionView;
 import com.tschanz.v_bro.app.presentation.viewmodel.repo.JdbcRepoConnectionItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.repo.QuickConnectionItem;
@@ -39,7 +39,7 @@ public class JfxConnectionView implements Initializable, ConnectionView {
     @FXML private Button connectButton;
     @FXML private Button disconnectButton;
     @FXML private Label connectionLabel;
-    private ViewAction<RepoConnectionItem> connectToRepoAction;
+    private ConnectionController connectionController;
 
 
     @Override
@@ -60,11 +60,11 @@ public class JfxConnectionView implements Initializable, ConnectionView {
     @Override
     public void bindViewModel(
         Flow.Publisher<List<QuickConnectionItem>> quickConnectionList,
-        ViewAction<RepoConnectionItem> connectToRepoAction,
-        BehaviorSubject<RepoConnectionItem> currentRepoConnection
+        BehaviorSubject<RepoConnectionItem> currentRepoConnection,
+        ConnectionController connectionController
     ) {
-        this.connectToRepoAction = connectToRepoAction;
-        this.connectionDialogView.bindViewModel(quickConnectionList, connectToRepoAction, currentRepoConnection);
+        this.connectionController = connectionController;
+        this.connectionDialogView.bindViewModel(quickConnectionList, currentRepoConnection, connectionController);
         currentRepoConnection.subscribe(new GenericSubscriber<>(this::onRepoConnectionChanged));
     }
 
@@ -80,7 +80,7 @@ public class JfxConnectionView implements Initializable, ConnectionView {
 
     @FXML
     private void onDisconnectClicked(ActionEvent actionEvent) {
-        this.connectToRepoAction.next(null);
+        this.connectionController.onConnectToRepoAction(null);
     }
 
 

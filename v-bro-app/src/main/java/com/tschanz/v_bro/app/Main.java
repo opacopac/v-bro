@@ -1,10 +1,9 @@
 package com.tschanz.v_bro.app;
 
-import com.tschanz.v_bro.app.presentation.controller.MainController;
+import com.tschanz.v_bro.app.presentation.controller.MainControllerImpl;
 import com.tschanz.v_bro.app.presentation.jfx.JfxApplication;
 import com.tschanz.v_bro.app.presentation.jfx.presenter.JfxMainPresenter;
 import com.tschanz.v_bro.app.presentation.viewmodel.MainViewModel;
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.MainActions;
 import com.tschanz.v_bro.app.state.MainState;
 import com.tschanz.v_bro.app.usecase.close_repo.CloseRepoUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.open_dependency_version.OpenDependencyVersionUseCaseImpl;
@@ -97,7 +96,6 @@ public class Main {
 
         // presentation viewmodel & presenter
         var mainModel = new MainViewModel();
-        var mainActions = new MainActions();
         var mainPresenter = new JfxMainPresenter(mainModel);
 
         // app use cases
@@ -118,10 +116,9 @@ public class Main {
         var openDependencyVersionUc = new OpenDependencyVersionUseCaseImpl(openElementClassUc, queryElementsUc, openVersionUc);
 
         // presentation controller
-        var mainController = new MainController(
+        var mainController = new MainControllerImpl(
             appProperties, // TODO => move to app
             mainModel,
-            mainActions,
             openRepoUc,
             closeRepoUc,
             openElementClassUc,
@@ -134,7 +131,7 @@ public class Main {
         );
 
         // presentation view
-        JfxApplication.main(args, mainModel, mainActions);
+        JfxApplication.main(args, mainModel, mainController);
     }
 
 

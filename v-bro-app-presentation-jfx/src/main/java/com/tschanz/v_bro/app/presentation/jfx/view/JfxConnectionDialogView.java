@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
+import com.tschanz.v_bro.app.presentation.controller.ConnectionController;
 import com.tschanz.v_bro.app.presentation.viewmodel.repo.*;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
@@ -39,16 +39,16 @@ public class JfxConnectionDialogView {
     @FXML private Button connectButton;
     @FXML private Button cancelButton;
     @Setter private Stage stage;
-    private ViewAction<RepoConnectionItem> connectToRepoAction;
     private BehaviorSubject<RepoConnectionItem> currentRepoConnection;
+    private ConnectionController connectionController;
 
 
     public void bindViewModel(
         Flow.Publisher<List<QuickConnectionItem>> quickConnectionList,
-        ViewAction<RepoConnectionItem> connectToRepoAction,
-        BehaviorSubject<RepoConnectionItem> currentRepoConnection
+        BehaviorSubject<RepoConnectionItem> currentRepoConnection,
+        ConnectionController connectionController
     ) {
-        this.connectToRepoAction = connectToRepoAction;
+        this.connectionController = connectionController;
         this.currentRepoConnection = currentRepoConnection;
         quickConnectionList.subscribe(new GenericSubscriber<>(this::onQuickConnectionListChanged));
         this.showHideConnectionFields(RepoType.JDBC);
@@ -101,7 +101,7 @@ public class JfxConnectionDialogView {
                 break;
         }
 
-        this.connectToRepoAction.next(nextRepoConnection);
+        this.connectionController.onConnectToRepoAction(nextRepoConnection);
         this.stage.close();
     }
 

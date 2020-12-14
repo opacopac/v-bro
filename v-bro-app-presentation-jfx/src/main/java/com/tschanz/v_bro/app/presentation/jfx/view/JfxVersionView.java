@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
+import com.tschanz.v_bro.app.presentation.controller.VersionController;
 import com.tschanz.v_bro.app.presentation.view.VersionsView;
 import com.tschanz.v_bro.app.presentation.viewmodel.common.SelectableItemList;
 import com.tschanz.v_bro.app.presentation.viewmodel.version.VersionFilterItem;
@@ -53,16 +53,16 @@ public class JfxVersionView implements VersionsView {
     private SelectableItemList<VersionItem> versionList;
     private VersionFilterItem effectiveVersionFilter;
     private final Set<VersionVonBisPx> versionVonBisXPixelCache = new HashSet<>();
-    private ViewAction<String> selectVersionAction;
+    private VersionController versionController;
 
 
     @Override
     public void bindViewModel(
         Flow.Publisher<SelectableItemList<VersionItem>> versionList,
         Flow.Publisher<VersionFilterItem> effectiveVersionFilter,
-        ViewAction<String> selectVersionAction
+        VersionController versionController
     ) {
-        this.selectVersionAction = selectVersionAction;
+        this.versionController = versionController;
         effectiveVersionFilter.subscribe(new GenericSubscriber<>(this::onEffectiveVersionFilterChanged));
         versionList.subscribe(new GenericSubscriber<>(this::onVersionListChanged));
     }
@@ -94,11 +94,11 @@ public class JfxVersionView implements VersionsView {
     public void onMouseClicked(MouseEvent mouseEvent) {
         VersionItem selectedVersionItem = this.getMousPosVersion(mouseEvent.getX(), mouseEvent.getY());
 
-        if (this.selectVersionAction == null || selectedVersionItem == null) {
+        if (this.versionController == null || selectedVersionItem == null) {
             return;
         }
 
-        this.selectVersionAction.next(selectedVersionItem.getId());
+        this.versionController.onVersionSelected(selectedVersionItem.getId());
         this.repaint();
     }
 

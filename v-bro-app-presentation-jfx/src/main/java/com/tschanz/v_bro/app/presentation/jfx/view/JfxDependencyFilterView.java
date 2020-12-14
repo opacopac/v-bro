@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
+import com.tschanz.v_bro.app.presentation.controller.DependencyFilterController;
 import com.tschanz.v_bro.app.presentation.view.DependencyFilterView;
 import com.tschanz.v_bro.app.presentation.viewmodel.dependency.DependencyFilterItem;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
@@ -14,15 +14,15 @@ import java.util.concurrent.Flow;
 public class JfxDependencyFilterView implements DependencyFilterView {
     @FXML private RadioButton fwdDependencyRadio;
     @FXML private RadioButton bwdDependencyRadio;
-    private ViewAction<DependencyFilterItem> selectDependencyFilterAction;
+    private DependencyFilterController dependencyFilterController;
 
 
     @Override
     public void bindViewModel(
         Flow.Publisher<DependencyFilterItem> dependencyFilter,
-        ViewAction<DependencyFilterItem> selectDependencyFilterAction
+        DependencyFilterController dependencyFilterController
     ) {
-        this.selectDependencyFilterAction = selectDependencyFilterAction;
+        this.dependencyFilterController = dependencyFilterController;
         dependencyFilter.subscribe(new GenericSubscriber<>(this::onInitialFilterChanged));
     }
 
@@ -38,21 +38,21 @@ public class JfxDependencyFilterView implements DependencyFilterView {
             this.bwdDependencyRadio.setSelected(true);
         }
 
-        if (this.selectDependencyFilterAction != null) {
-            this.selectDependencyFilterAction.next(dependencyFilter);
+        if (this.dependencyFilterController != null) {
+            this.dependencyFilterController.onDependencyFilterSelected(dependencyFilter);
         }
     }
 
 
     @FXML private void onFwdDependencySelected(ActionEvent actionEvent) {
-        this.selectDependencyFilterAction.next(
+        this.dependencyFilterController.onDependencyFilterSelected(
             new DependencyFilterItem(true)
         );
     }
 
 
     @FXML private void onBwdDependencySelected(ActionEvent actionEvent) {
-        this.selectDependencyFilterAction.next(
+        this.dependencyFilterController.onDependencyFilterSelected(
             new DependencyFilterItem(false)
         );
     }

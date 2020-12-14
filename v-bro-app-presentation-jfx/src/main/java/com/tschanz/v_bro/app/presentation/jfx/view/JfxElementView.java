@@ -1,10 +1,10 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
+import com.tschanz.v_bro.app.presentation.controller.ElementController;
 import com.tschanz.v_bro.app.presentation.view.ElementView;
+import com.tschanz.v_bro.app.presentation.viewmodel.common.SelectableItemList;
 import com.tschanz.v_bro.app.presentation.viewmodel.element.ElementItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.element.QueryElementItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.common.SelectableItemList;
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
 import impl.org.controlsfx.autocompletion.SuggestionProvider;
@@ -28,14 +28,12 @@ import java.util.concurrent.Flow;
 public class JfxElementView implements ElementView, Initializable {
     private static final int DEBOUNCE_TIME_MS = 250;
     @FXML private ComboBox<ElementItem> elementComboBox;
-    private ViewAction<String> selectElementAction;
-    private ViewAction<QueryElementItem> queryElementAction;
+    private ElementController elementController;
     private SuggestionProvider<ElementItem> suggestionProvider;
     private boolean isPopulating = false;
     private String lastQuery;
     private Timer timer;
     private TimerTask timerTask;
-
 
 
     @Override
@@ -48,11 +46,9 @@ public class JfxElementView implements ElementView, Initializable {
     @Override
     public void bindViewModel(
         Flow.Publisher<SelectableItemList<ElementItem>> elementList,
-        ViewAction<String> selectElementAction,
-        ViewAction<QueryElementItem> queryElementAction
+        ElementController elementController
     ) {
-        this.selectElementAction = selectElementAction;
-        this.queryElementAction = queryElementAction;
+        this.elementController = elementController;
         elementList.subscribe(new GenericSubscriber<>(this::onElementListChanged));
     }
 
@@ -80,10 +76,11 @@ public class JfxElementView implements ElementView, Initializable {
                 .stream()
                 .filter(item -> item.getName().equals(selectedText))
                 .findFirst()
-                .ifPresent(selectedItem -> this.selectElementAction.next(selectedItem.getId()));
+                .ifPresent(selectedItem -> this.elementController.onElementSelected(selectedItem.getId()));
 
         }
     }
+
 
     @FXML public void onKeyReleased(KeyEvent keyEvent) {
         var queryText = this.elementComboBox.getEditor().getText();
@@ -104,7 +101,7 @@ public class JfxElementView implements ElementView, Initializable {
         this.timerTask = new TimerTask() {
             @Override
             public void run() {
-                queryElementAction.next(
+                elementController.onQueryElement(
                     new QueryElementItem(queryText, this.scheduledExecutionTime())
                 );
             }

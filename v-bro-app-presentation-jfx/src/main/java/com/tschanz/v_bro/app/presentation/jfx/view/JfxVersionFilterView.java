@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.ViewAction;
+import com.tschanz.v_bro.app.presentation.controller.VersionFilterController;
 import com.tschanz.v_bro.app.presentation.view.VersionFilterView;
 import com.tschanz.v_bro.app.presentation.viewmodel.version.PflegestatusItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.version.VersionFilterItem;
@@ -17,15 +17,15 @@ public class JfxVersionFilterView implements VersionFilterView {
     @FXML private DatePicker minVonDatePicker;
     @FXML private DatePicker maxBisDatePicker;
     @FXML private ComboBox<PflegestatusItem> pflegestatusComboBox;
-    private ViewAction<VersionFilterItem> selectVersionFilterAction;
+    private VersionFilterController versionFilterController;
 
 
     @Override
     public void bindViewModel(
         Flow.Publisher<VersionFilterItem> versionFilter,
-        ViewAction<VersionFilterItem> selectVersionFilterAction
+        VersionFilterController versionFilterController
     ) {
-        this.selectVersionFilterAction = selectVersionFilterAction;
+        this.versionFilterController = versionFilterController;
         versionFilter.subscribe(new GenericSubscriber<>(this::onVersionFilterChanged));
     }
 
@@ -43,7 +43,7 @@ public class JfxVersionFilterView implements VersionFilterView {
 
     @FXML
     private void onMinVonSelected(ActionEvent actionEvent) {
-        this.selectVersionFilterAction.next(
+        this.versionFilterController.onVersionFilterSelected(
             this.getVersionFilterItem()
         );
     }
@@ -51,7 +51,7 @@ public class JfxVersionFilterView implements VersionFilterView {
 
     @FXML
     private void onMaxBisSelected(ActionEvent actionEvent) {
-        this.selectVersionFilterAction.next(
+        this.versionFilterController.onVersionFilterSelected(
             this.getVersionFilterItem()
         );
     }
@@ -59,7 +59,7 @@ public class JfxVersionFilterView implements VersionFilterView {
 
     @FXML
     private void onPflegestatusSelected(ActionEvent actionEvent) {
-        this.selectVersionFilterAction.next(
+        this.versionFilterController.onVersionFilterSelected(
             this.getVersionFilterItem()
         );
     }

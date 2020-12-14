@@ -1,9 +1,8 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
-import com.tschanz.v_bro.app.presentation.viewmodel.actions.MainActions;
+import com.tschanz.v_bro.app.presentation.controller.MainController;
 import com.tschanz.v_bro.app.presentation.view.MainView;
 import com.tschanz.v_bro.app.presentation.viewmodel.MainViewModel;
-
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
 
@@ -33,16 +32,16 @@ public class JfxMainView implements MainView {
 
 
     @Override
-    public void bindViewModel(MainViewModel mainViewModel, MainActions mainActions) {
+    public void bindViewModel(MainViewModel mainViewModel, MainController mainController) {
         this.statusBarViewController.bindViewModel(mainViewModel.appStatus);
-        this.connectionViewController.bindViewModel(mainViewModel.quickConnectionList, mainActions.connectToRepoAction, mainViewModel.currentRepoConnection);
-        this.elementClassViewController.bindViewModel(mainViewModel.elementClasses, mainActions.selectElementClassAction);
-        this.elementDenominationViewController.bindViewModel(mainViewModel.elementDenominations, mainActions.selectDenominationsAction);
-        this.elementViewController.bindViewModel(mainViewModel.elements, mainActions.selectElementAction, mainActions.queryElementAction);
-        this.versionFilterViewController.bindViewModel(mainViewModel.versionFilter, mainActions.selectVersionFilterAction);
-        this.versionViewController.bindViewModel(mainViewModel.versions, mainViewModel.effectiveVersionFilter, mainActions.selectVersionAction);
-        this.dependencyFilterViewController.bindViewModel(mainViewModel.dependencyFilter, mainActions.selectDependencyFilterAction);
-        this.dependenciesViewController.bindViewModel(mainViewModel.fwdDependencies, mainViewModel.effectiveVersionFilter, mainActions.selectDependencyVersionAction);
+        this.connectionViewController.bindViewModel(mainViewModel.quickConnectionList, mainViewModel.currentRepoConnection, mainController.getConnectionController());
+        this.elementClassViewController.bindViewModel(mainViewModel.elementClasses, mainController.getElementClassController());
+        this.elementDenominationViewController.bindViewModel(mainViewModel.elementDenominations, mainController.getElementDenominationController());
+        this.elementViewController.bindViewModel(mainViewModel.elements, mainController.getElementController());
+        this.versionFilterViewController.bindViewModel(mainViewModel.versionFilter, mainController.getVersionFilterController());
+        this.versionViewController.bindViewModel(mainViewModel.versions, mainViewModel.effectiveVersionFilter, mainController.getVersionController());
+        this.dependencyFilterViewController.bindViewModel(mainViewModel.dependencyFilter, mainController.getDependencyFilterController());
+        this.dependenciesViewController.bindViewModel(mainViewModel.fwdDependencies, mainViewModel.effectiveVersionFilter, mainController.getDependencyListController());
         this.versionAggregateViewController.bindViewModel(mainViewModel.versionAggregate);
     }
 }
