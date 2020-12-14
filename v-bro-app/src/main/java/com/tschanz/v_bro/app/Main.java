@@ -105,14 +105,14 @@ public class Main {
         var openVersionUc = new OpenVersionUseCaseImpl(mainState, readVersionAggregateUc, readDependenciesUc, mainPresenter.getVersionTimelinePresenter());
         var readVersionsUc = new ReadVersionsUseCaseImpl(mainState, versionServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getVersionTimelinePresenter(), openVersionUc);
         var selectVersionFilterUc = new SelectVersionFilterUseCaseImpl(mainState, readVersionsUc);
-        var openElementUc = new OpenElementUseCaseImpl(mainState, mainPresenter.getElementListPresenter(), readVersionsUc);
-        var queryElementsUc = new QueryElementsUseCaseImpl(mainState, elementServiceProvider, mainPresenter.getElementListPresenter(), mainPresenter.getStatusPresenter(), openElementUc);
+        var openElementUc = new OpenElementUseCaseImpl(mainState, readVersionsUc);
+        var queryElementsUc = new QueryElementsUseCaseImpl(mainState, elementServiceProvider);
         var selectDenominationsUc = new SelectDenominationsUseCaseImpl(mainState, mainPresenter.getDenominationsPresenter(), queryElementsUc);
         var readDenominationUc = new ReadDenominationUseCaseImpl(mainState, elementClassServiceProvider, mainPresenter.getDenominationsPresenter(), mainPresenter.getStatusPresenter(), selectDenominationsUc);
         var openElementClassUc = new OpenElementClassUseCaseImpl(mainState, mainPresenter.getElementClassListPresenter(), readDenominationUc);
         var readElementClassesUc = new ReadElementClassesUseCaseImpl(mainState, elementClassServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getElementClassListPresenter(), openElementClassUc);
         var openRepoUc = new OpenRepoUseCaseImpl(mainState, repoServiceProvider, mainPresenter.getRepoPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc);
-        var closeRepoUc = new CloseRepoUseCaseImpl(mainState, repoServiceProvider, mainPresenter.getRepoPresenter(), mainPresenter.getElementClassListPresenter(), mainPresenter.getDenominationsPresenter(), mainPresenter.getElementListPresenter(), mainPresenter.getVersionTimelinePresenter(), mainPresenter.getDependencyPresenter(), mainPresenter.getVersionAggregatePresenter(), mainPresenter.getStatusPresenter());
+        var closeRepoUc = new CloseRepoUseCaseImpl(mainState, repoServiceProvider, mainPresenter.getRepoPresenter(), mainPresenter.getElementClassListPresenter(), mainPresenter.getDenominationsPresenter(), mainPresenter.getVersionTimelinePresenter(), mainPresenter.getDependencyPresenter(), mainPresenter.getVersionAggregatePresenter(), mainPresenter.getStatusPresenter());
         var openDependencyVersionUc = new OpenDependencyVersionUseCaseImpl(openElementClassUc, queryElementsUc, openVersionUc);
 
         // presentation controller

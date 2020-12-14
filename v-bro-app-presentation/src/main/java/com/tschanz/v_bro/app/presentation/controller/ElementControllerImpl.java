@@ -1,10 +1,13 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
-import com.tschanz.v_bro.app.presentation.viewmodel.element.QueryElementItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.element.ElementItem;
 import com.tschanz.v_bro.app.usecase.open_element.OpenElementRequest;
 import com.tschanz.v_bro.app.usecase.open_element.OpenElementUseCase;
 import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsRequest;
 import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsUseCase;
+
+import java.util.Collections;
+import java.util.List;
 
 
 public class ElementControllerImpl implements ElementController {
@@ -22,13 +25,15 @@ public class ElementControllerImpl implements ElementController {
 
 
     @Override
-    public void onQueryElement(QueryElementItem queryElementItem) {
-        if (queryElementItem == null) {
-            return;
+    public List<ElementItem> onQueryElement(String queryText) {
+        if (queryText == null) {
+            return Collections.emptyList();
         }
 
-        var request = new QueryElementsRequest(queryElementItem.getQueryText(), false);
-        this.queryElementsUc.execute(request);
+        var request = new QueryElementsRequest(queryText, false);
+        var response = this.queryElementsUc.execute(request);
+
+        return ElementItem.fromResponse(response);
     }
 
 

@@ -31,7 +31,7 @@ public class ReadVersionsUseCaseImpl implements ReadVersionsUseCase {
     public void execute(ReadVersionsRequest request) {
         var repoType = Objects.requireNonNull(mainState.getRepoState().getConnectionParameters().getRepoType());
         var elementClass = Objects.requireNonNull(mainState.getElementClassState().getSelectedName());
-        var elementId = Objects.requireNonNull(mainState.getElementState().getSelectedId());
+        var elementId = Objects.requireNonNull(mainState.getElementState().getCurrentElementId());
 
         try {
             log.info(String.format("UC: reading versions of element class '%s' element id '%s'...", elementClass, elementId));

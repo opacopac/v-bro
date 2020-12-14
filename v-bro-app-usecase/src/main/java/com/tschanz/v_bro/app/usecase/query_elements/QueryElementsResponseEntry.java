@@ -1,8 +1,7 @@
-package com.tschanz.v_bro.app.presenter.element_list;
+package com.tschanz.v_bro.app.usecase.query_elements;
 
 import com.tschanz.v_bro.data_structure.domain.model.DenominationData;
 import com.tschanz.v_bro.data_structure.domain.model.ElementData;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -11,15 +10,14 @@ import java.util.stream.Collectors;
 
 
 @Getter
-@EqualsAndHashCode
 @RequiredArgsConstructor
-public class ElementResponse {
+public class QueryElementsResponseEntry {
     private final String id;
     private final List<String> names;
 
 
-    public static ElementResponse fromDomain(ElementData elementData) {
-        return new ElementResponse(
+    public static QueryElementsResponseEntry fromDomain(ElementData elementData) {
+        return new QueryElementsResponseEntry(
             elementData.getId(),
             elementData.getNameFieldValues()
                 .stream()

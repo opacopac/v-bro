@@ -27,7 +27,7 @@ public class MainViewModel {
     public final BehaviorSubject<RepoConnectionItem> currentRepoConnection = new BehaviorSubject<>(null);
     public final BehaviorSubject<SelectableItemList<ElementClassItem>> elementClasses = new BehaviorSubject<>(new SelectableItemList<>(Collections.emptyList(), null));
     public final BehaviorSubject<MultiSelectableItemList<DenominationItem>> elementDenominations = new BehaviorSubject<>(new MultiSelectableItemList<>(Collections.emptyList(), Collections.emptyList()));
-    public final BehaviorSubject<SelectableItemList<ElementItem>> elements = new BehaviorSubject<>(new SelectableItemList<>(Collections.emptyList(), null));
+    public final BehaviorSubject<ElementItem> currentElement = new BehaviorSubject<>(null);
     public final BehaviorSubject<SelectableItemList<VersionItem>> versions = new BehaviorSubject<>(new SelectableItemList<>(Collections.emptyList(), null));
     public final BehaviorSubject<VersionFilterItem> versionFilter = new BehaviorSubject<>(new VersionFilterItem(LocalDate.of(2015, 1, 1), VersionData.HIGH_DATE, VersionData.DEFAULT_PFLEGESTATUS));
     public final BehaviorSubject<VersionFilterItem> effectiveVersionFilter = new BehaviorSubject<>(new VersionFilterItem(LocalDate.of(2015, 1, 1), LocalDate.of(2025, 1, 1), VersionData.DEFAULT_PFLEGESTATUS));

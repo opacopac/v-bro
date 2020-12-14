@@ -1,12 +1,12 @@
 package com.tschanz.v_bro.app.presentation.viewmodel.element;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.common.IdItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.common.SelectableItemList;
-import com.tschanz.v_bro.app.presenter.element_list.ElementListResponse;
-import com.tschanz.v_bro.app.presenter.element_list.ElementResponse;
+import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsResponse;
+import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsResponseEntry;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -18,21 +18,16 @@ public class ElementItem implements IdItem {
     private final String name;
 
 
-    public static SelectableItemList<ElementItem> fromResponse(ElementListResponse response) {
-        var items = response.getSelectedElementList().getItems()
+    public static List<ElementItem> fromResponse(QueryElementsResponse response) {
+        return response.getElementResponseList()
             .stream()
             .map(ElementItem::fromResponse)
             .collect(Collectors.toList());
-        var selectedId = response.getSelectedElementList().getSelectedItem() != null
-            ? response.getSelectedElementList().getSelectedItem().getId()
-            : null;
-
-        return new SelectableItemList<>(items, selectedId);
     }
 
 
-    public static ElementItem fromResponse(ElementResponse element) {
-        var concatName = String.join(" - ", element.getNames());
+    public static ElementItem fromResponse(QueryElementsResponseEntry element) {
+        var concatName = String.join( " - ", element.getNames());
 
         return new ElementItem(element.getId(), concatName);
     }

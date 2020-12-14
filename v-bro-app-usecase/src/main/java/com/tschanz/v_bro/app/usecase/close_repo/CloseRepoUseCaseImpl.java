@@ -6,8 +6,6 @@ import com.tschanz.v_bro.app.presenter.dependencies.DependencyListResponse;
 import com.tschanz.v_bro.app.presenter.dependencies.DependencyPresenter;
 import com.tschanz.v_bro.app.presenter.element_class_list.ElementClassListPresenter;
 import com.tschanz.v_bro.app.presenter.element_class_list.ElementClassListResponse;
-import com.tschanz.v_bro.app.presenter.element_list.ElementListPresenter;
-import com.tschanz.v_bro.app.presenter.element_list.ElementListResponse;
 import com.tschanz.v_bro.app.presenter.repo.RepoPresenter;
 import com.tschanz.v_bro.app.presenter.repo.RepoResponse;
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
@@ -37,7 +35,6 @@ public class CloseRepoUseCaseImpl implements CloseRepoUseCase {
     private final RepoPresenter repoPresenter;
     private final ElementClassListPresenter elementClassListPresenter;
     private final DenominationsPresenter denominationsPresenter;
-    private final ElementListPresenter elementListPresenter;
     private final VersionTimelinePresenter versionTimelinePresenter;
     private final DependencyPresenter dependencyPresenter;
     private final VersionAggregatePresenter versionAggregatePresenter;
@@ -70,9 +67,6 @@ public class CloseRepoUseCaseImpl implements CloseRepoUseCase {
 
             var denominationListResponse = DenominationListResponse.fromDomain(MultiSelectedList.createEmpty());
             this.denominationsPresenter.present(denominationListResponse);
-
-            var elementListResponse = ElementListResponse.fromDomain(SelectedList.createEmpty());
-            this.elementListPresenter.present(elementListResponse);
 
             var versionTimelineResponse = VersionTimelineResponse.fromDomain(SelectedList.createEmpty());
             this.versionTimelinePresenter.present(versionTimelineResponse);
