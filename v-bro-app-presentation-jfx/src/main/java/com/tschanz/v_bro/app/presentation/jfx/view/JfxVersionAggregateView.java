@@ -1,24 +1,38 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
 import com.tschanz.v_bro.app.presentation.view.VersionAggregateView;
-import com.tschanz.v_bro.app.presentation.viewmodel.version_aggregate.VersionAggregateNodeItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.version_aggregate.FieldAggregateNodeItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.version_aggregate.VersionAggregateItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.version_aggregate.VersionAggregateNodeItem;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
 import java.util.concurrent.Flow;
 
-
 public class JfxVersionAggregateView implements VersionAggregateView {
-    @FXML public TreeView<Object> aggregateTreeView;
+    @FXML private TreeView<Object> aggregateTreeView;
 
 
     @Override
     public void bindViewModel(Flow.Publisher<VersionAggregateItem> versionAggregate) {
         versionAggregate.subscribe(new GenericSubscriber<>(this::onVersionAggregateChanged));
+    }
+
+
+    @FXML
+    private void onMouseClicked(MouseEvent mouseEvent) {
+        var selectedItem = this.aggregateTreeView.getSelectionModel().getSelectedItem();
+        if (selectedItem != null && mouseEvent.getButton() == MouseButton.SECONDARY) {
+            var content = new ClipboardContent();
+            content.putString(selectedItem.getValue().toString());
+            Clipboard.getSystemClipboard().setContent(content);
+        }
     }
 
 
