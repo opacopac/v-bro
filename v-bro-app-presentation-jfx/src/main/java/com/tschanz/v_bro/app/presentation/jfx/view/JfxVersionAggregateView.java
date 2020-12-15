@@ -26,6 +26,8 @@ public class JfxVersionAggregateView implements VersionAggregateView {
         if (versionAggregate != null) {
             var root = this.createTreeNode(versionAggregate.getRootNode());
             this.aggregateTreeView.setRoot(root);
+        } else {
+            this.aggregateTreeView.setRoot(null);
         }
     }
 

@@ -51,7 +51,7 @@ public class ReadDenominationUseCaseImpl implements ReadDenominationUseCase {
             var denominationResponse = DenominationListResponse.fromDomain(mslist);
             this.presenter.present(denominationResponse);
 
-            if (request.isAutoSelectFirstDenomination() && mslist.getItems().size() > 0) {
+            if (mslist.getItems().size() > 0) {
                 var denominationNames = List.of(mslist.getItems().get(0).getName());
                 var selectDenominationsRequest = new SelectDenominationsRequest(denominationNames);
                 this.selectDenominationsUc.execute(selectDenominationsRequest);

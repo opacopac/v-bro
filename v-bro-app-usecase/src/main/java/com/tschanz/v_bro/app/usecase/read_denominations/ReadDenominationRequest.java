@@ -8,5 +8,4 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReadDenominationRequest {
     private final String elementClassName;
-    private final boolean autoSelectFirstDenomination;
 }

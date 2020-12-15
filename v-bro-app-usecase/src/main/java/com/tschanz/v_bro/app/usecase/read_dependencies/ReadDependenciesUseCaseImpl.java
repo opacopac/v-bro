@@ -29,7 +29,7 @@ public class ReadDependenciesUseCaseImpl implements ReadDependenciesUseCase {
     public void execute(ReadDependenciesRequest request) {
         var repoType = Objects.requireNonNull(mainState.getRepoState().getConnectionParameters().getRepoType());
         var elementClass = Objects.requireNonNull(mainState.getElementClassState().getSelectedName());
-        var elementId = Objects.requireNonNull(mainState.getElementState().getCurrentElementId());
+        var elementId = Objects.requireNonNull(mainState.getElementState().getCurrentElement().getId());
         var versionId = Objects.requireNonNull(request.getVersionId());
 
         try {

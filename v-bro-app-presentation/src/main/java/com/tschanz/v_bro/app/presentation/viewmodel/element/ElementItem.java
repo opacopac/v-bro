@@ -1,8 +1,8 @@
 package com.tschanz.v_bro.app.presentation.viewmodel.element;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.common.IdItem;
+import com.tschanz.v_bro.app.presenter.element.ElementResponse;
 import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsResponse;
-import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsResponseEntry;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -19,15 +19,15 @@ public class ElementItem implements IdItem {
 
 
     public static List<ElementItem> fromResponse(QueryElementsResponse response) {
-        return response.getElementResponseList()
+        return response.getElements()
             .stream()
             .map(ElementItem::fromResponse)
             .collect(Collectors.toList());
     }
 
 
-    public static ElementItem fromResponse(QueryElementsResponseEntry element) {
-        var concatName = String.join( " - ", element.getNames());
+    public static ElementItem fromResponse(ElementResponse element) {
+        var concatName = String.join( " - ", element.getDenominations());
 
         return new ElementItem(element.getId(), concatName);
     }

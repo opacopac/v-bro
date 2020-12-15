@@ -38,7 +38,7 @@ public class SelectDenominationsUseCaseImpl implements SelectDenominationsUseCas
         var denominationListResponse = DenominationListResponse.fromDomain(newDenominations);
         this.denominationsPresenter.present(denominationListResponse);
 
-        var queryElementsRequest = new QueryElementsRequest(this.mainState.getElementState().getQuery(), true);
+        var queryElementsRequest = new QueryElementsRequest(this.mainState.getElementState().getQuery());
         this.queryElementsUc.execute(queryElementsRequest);
     }
 }

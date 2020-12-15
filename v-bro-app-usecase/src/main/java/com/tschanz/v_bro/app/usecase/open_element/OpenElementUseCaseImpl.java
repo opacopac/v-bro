@@ -18,13 +18,18 @@ public class OpenElementUseCaseImpl implements OpenElementUseCase {
 
     @Override
     public void execute(OpenElementRequest request) {
-        var requestTimestamp = System.currentTimeMillis();
         var elementId = Objects.requireNonNull(request.getElementId());
 
         log.info(String.format("UC: opening element id '%s'...", elementId));
-        this.mainState.getElementState().setCurrentElementId(elementId);
 
-        var readVersionRequest = new ReadVersionsRequest(elementId, true);
+        var element = this.mainState.getElementState().getQueryResult()
+            .stream()
+            .filter(e -> e.getId().equals(elementId))
+            .findFirst()
+            .orElse(null);
+        this.mainState.getElementState().setCurrentElement(element);
+
+        var readVersionRequest = new ReadVersionsRequest(elementId);
         this.readVersionsUc.execute(readVersionRequest);
     }
 }

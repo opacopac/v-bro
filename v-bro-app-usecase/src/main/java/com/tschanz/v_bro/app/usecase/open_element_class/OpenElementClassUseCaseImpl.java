@@ -39,7 +39,7 @@ public class OpenElementClassUseCaseImpl implements OpenElementClassUseCase {
         this.elementClassListPresenter.present(response);
 
         if (selectedElementClass != null) {
-            var readDenominationRequest = new ReadDenominationRequest(selectedElementClass.getName(), true);
+            var readDenominationRequest = new ReadDenominationRequest(selectedElementClass.getName());
             this.readDenominationUc.execute(readDenominationRequest);
         }
     }

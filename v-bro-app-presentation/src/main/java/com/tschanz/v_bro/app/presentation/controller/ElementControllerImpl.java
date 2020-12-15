@@ -30,7 +30,7 @@ public class ElementControllerImpl implements ElementController {
             return Collections.emptyList();
         }
 
-        var request = new QueryElementsRequest(queryText, false);
+        var request = new QueryElementsRequest(queryText);
         var response = this.queryElementsUc.execute(request);
 
         return ElementItem.fromResponse(response);

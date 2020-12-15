@@ -3,6 +3,8 @@ package com.tschanz.v_bro.app.presentation.jfx.view;
 import com.tschanz.v_bro.app.presentation.controller.ElementController;
 import com.tschanz.v_bro.app.presentation.view.ElementView;
 import com.tschanz.v_bro.app.presentation.viewmodel.element.ElementItem;
+import com.tschanz.v_bro.common.reactive.BehaviorSubject;
+import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
 import impl.org.controlsfx.autocompletion.SuggestionProvider;
 import javafx.fxml.FXML;
@@ -32,8 +34,20 @@ public class JfxElementView implements ElementView, Initializable {
 
 
     @Override
-    public void bindViewModel(ElementController elementController) {
+    public void bindViewModel(
+        BehaviorSubject<ElementItem> currentElement,
+        ElementController elementController
+    ) {
         this.elementController = elementController;
+        currentElement.subscribe(new GenericSubscriber<>(this::onCurrentElementChanged));
+    }
+
+
+    private void onCurrentElementChanged(ElementItem elementItem) {
+        var displayName = elementItem != null
+            ? elementItem.getName()
+            : "";
+        this.elementQueryTextField.setText(displayName);
     }
 
 
@@ -43,7 +57,7 @@ public class JfxElementView implements ElementView, Initializable {
     }
 
 
-    public class ElementSuggestionProvider extends SuggestionProvider<ElementItem> {
+    private class ElementSuggestionProvider extends SuggestionProvider<ElementItem> {
         @Override
         public Collection<ElementItem> call(AutoCompletionBinding.ISuggestionRequest request) {
             return JfxElementView.this.elementController.onQueryElement(request.getUserText());

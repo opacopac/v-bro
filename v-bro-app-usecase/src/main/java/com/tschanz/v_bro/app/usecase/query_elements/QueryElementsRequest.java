@@ -8,5 +8,4 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class QueryElementsRequest {
     private final String query;
-    private final boolean autoOpenFirstElement;
 }

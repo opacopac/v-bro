@@ -37,7 +37,7 @@ public class JfxMainView implements MainView {
         this.connectionViewController.bindViewModel(mainViewModel.quickConnectionList, mainViewModel.currentRepoConnection, mainController.getConnectionController());
         this.elementClassViewController.bindViewModel(mainViewModel.elementClasses, mainController.getElementClassController());
         this.elementDenominationViewController.bindViewModel(mainViewModel.elementDenominations, mainController.getElementDenominationController());
-        this.elementViewController.bindViewModel(mainController.getElementController());
+        this.elementViewController.bindViewModel(mainViewModel.currentElement, mainController.getElementController());
         this.versionFilterViewController.bindViewModel(mainViewModel.versionFilter, mainController.getVersionFilterController());
         this.versionViewController.bindViewModel(mainViewModel.versions, mainViewModel.effectiveVersionFilter, mainController.getVersionController());
         this.dependencyFilterViewController.bindViewModel(mainViewModel.dependencyFilter, mainController.getDependencyFilterController());

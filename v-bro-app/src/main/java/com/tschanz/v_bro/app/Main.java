@@ -112,8 +112,8 @@ public class Main {
         var openElementClassUc = new OpenElementClassUseCaseImpl(mainState, mainPresenter.getElementClassListPresenter(), readDenominationUc);
         var readElementClassesUc = new ReadElementClassesUseCaseImpl(mainState, elementClassServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getElementClassListPresenter(), openElementClassUc);
         var openRepoUc = new OpenRepoUseCaseImpl(mainState, repoServiceProvider, mainPresenter.getRepoPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc);
-        var closeRepoUc = new CloseRepoUseCaseImpl(mainState, repoServiceProvider, mainPresenter.getRepoPresenter(), mainPresenter.getElementClassListPresenter(), mainPresenter.getDenominationsPresenter(), mainPresenter.getVersionTimelinePresenter(), mainPresenter.getDependencyPresenter(), mainPresenter.getVersionAggregatePresenter(), mainPresenter.getStatusPresenter());
-        var openDependencyVersionUc = new OpenDependencyVersionUseCaseImpl(openElementClassUc, queryElementsUc, openVersionUc);
+        var closeRepoUc = new CloseRepoUseCaseImpl(mainState, repoServiceProvider, mainPresenter.getRepoPresenter(), mainPresenter.getElementClassListPresenter(), mainPresenter.getDenominationsPresenter(), mainPresenter.getElementPresenter(), mainPresenter.getVersionTimelinePresenter(), mainPresenter.getDependencyPresenter(), mainPresenter.getVersionAggregatePresenter(), mainPresenter.getStatusPresenter());
+        var openDependencyVersionUc = new OpenDependencyVersionUseCaseImpl(openElementClassUc, queryElementsUc, openElementUc, openVersionUc);
 
         // presentation controller
         var mainController = new MainControllerImpl(

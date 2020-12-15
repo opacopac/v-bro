@@ -21,7 +21,6 @@ public class QueryElementsUseCaseImpl implements QueryElementsUseCase {
 
     @Override
     public QueryElementsResponse execute(QueryElementsRequest request) {
-        var requestTimestamp = System.currentTimeMillis();
         var repoType = Objects.requireNonNull(mainState.getRepoState().getConnectionParameters().getRepoType());
         var elementClassName = Objects.requireNonNull(mainState.getElementClassState().getSelectedName());
         var query = Objects.requireNonNull(request.getQuery());
@@ -33,6 +32,8 @@ public class QueryElementsUseCaseImpl implements QueryElementsUseCase {
             var elementService = this.elementServiceProvider.getService(repoType);
             var elements = elementService.readElements(elementClassName, selectedDenominationNames, query, MAX_RESULTS);
 
+            this.mainState.getElementState().setQueryResult(elements);
+
             var message = String.format("found %d elements", elements.size());
             log.info(message);
 
@@ -40,6 +41,8 @@ public class QueryElementsUseCaseImpl implements QueryElementsUseCase {
         } catch (RepoException exception) {
             var message = String.format("error querying elements: %s", exception.getMessage());
             log.severe(message);
+
+            this.mainState.getElementState().setQueryResult(Collections.emptyList());
 
             return new QueryElementsResponse(Collections.emptyList());
         }
