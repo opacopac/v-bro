@@ -105,7 +105,7 @@ public class Main {
         var openVersionUc = new OpenVersionUseCaseImpl(mainState, readVersionAggregateUc, readDependenciesUc, mainPresenter.getVersionTimelinePresenter());
         var readVersionsUc = new ReadVersionsUseCaseImpl(mainState, versionServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getVersionTimelinePresenter(), openVersionUc);
         var selectVersionFilterUc = new SelectVersionFilterUseCaseImpl(mainState, readVersionsUc);
-        var openElementUc = new OpenElementUseCaseImpl(mainState, readVersionsUc);
+        var openElementUc = new OpenElementUseCaseImpl(mainState, mainPresenter.getElementPresenter(), readVersionsUc);
         var queryElementsUc = new QueryElementsUseCaseImpl(mainState, elementServiceProvider);
         var selectDenominationsUc = new SelectDenominationsUseCaseImpl(mainState, mainPresenter.getDenominationsPresenter(), queryElementsUc);
         var readDenominationUc = new ReadDenominationUseCaseImpl(mainState, elementClassServiceProvider, mainPresenter.getDenominationsPresenter(), mainPresenter.getStatusPresenter(), selectDenominationsUc);

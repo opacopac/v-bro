@@ -1,5 +1,7 @@
 package com.tschanz.v_bro.app.usecase.open_element;
 
+import com.tschanz.v_bro.app.presenter.element.ElementPresenter;
+import com.tschanz.v_bro.app.presenter.element.ElementResponse;
 import com.tschanz.v_bro.app.state.MainState;
 import com.tschanz.v_bro.app.usecase.read_versions.ReadVersionsRequest;
 import com.tschanz.v_bro.app.usecase.read_versions.ReadVersionsUseCase;
@@ -13,6 +15,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class OpenElementUseCaseImpl implements OpenElementUseCase {
     private final MainState mainState;
+    private final ElementPresenter elementPresenter;
     private final ReadVersionsUseCase readVersionsUc;
 
 
@@ -28,6 +31,9 @@ public class OpenElementUseCaseImpl implements OpenElementUseCase {
             .findFirst()
             .orElse(null);
         this.mainState.getElementState().setCurrentElement(element);
+
+        var elementResponse = ElementResponse.fromDomain(element);
+        this.elementPresenter.present(elementResponse);
 
         var readVersionRequest = new ReadVersionsRequest(elementId);
         this.readVersionsUc.execute(readVersionRequest);
