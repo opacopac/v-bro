@@ -6,8 +6,6 @@ import com.tschanz.v_bro.app.usecase.open_element_class.OpenElementClassRequest;
 import com.tschanz.v_bro.app.usecase.open_element_class.OpenElementClassUseCase;
 import com.tschanz.v_bro.app.usecase.open_version.OpenVersionRequest;
 import com.tschanz.v_bro.app.usecase.open_version.OpenVersionUseCase;
-import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsRequest;
-import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
@@ -18,7 +16,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class OpenDependencyVersionUseCaseImpl implements OpenDependencyVersionUseCase {
     private final OpenElementClassUseCase openElementClassUc;
-    private final QueryElementsUseCase queryElementsUc;
     private final OpenElementUseCase openElementUc;
     private final OpenVersionUseCase openVersionUc;
 
@@ -32,13 +29,10 @@ public class OpenDependencyVersionUseCaseImpl implements OpenDependencyVersionUs
 
         log.info(String.format("UC: opening dependency version of element class '%s' element id '%s' version id '%s'...", elementClassName, elementId, versionId));
 
-        var openElementClassRequest = new OpenElementClassRequest(elementClassName);
+        var openElementClassRequest = new OpenElementClassRequest(elementClassName, false);
         this.openElementClassUc.execute(openElementClassRequest);
 
-        var queryElementsRequest = new QueryElementsRequest(elementId);
-        this.queryElementsUc.execute(queryElementsRequest);
-
-        var openElementRequest = new OpenElementRequest(elementId);
+        var openElementRequest = new OpenElementRequest(elementId, false);
         this.openElementUc.execute(openElementRequest);
 
         var openVersionRequest = new OpenVersionRequest(versionId);

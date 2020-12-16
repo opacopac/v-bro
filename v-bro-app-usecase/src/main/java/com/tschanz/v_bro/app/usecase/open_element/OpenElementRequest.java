@@ -8,4 +8,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OpenElementRequest {
     private final String elementId;
+    private final boolean autoOpenLastVersion;
 }

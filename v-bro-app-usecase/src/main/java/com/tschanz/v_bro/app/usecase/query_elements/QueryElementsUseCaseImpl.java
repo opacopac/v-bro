@@ -21,26 +21,34 @@ public class QueryElementsUseCaseImpl implements QueryElementsUseCase {
 
     @Override
     public QueryElementsResponse execute(QueryElementsRequest request) {
-        var repoType = Objects.requireNonNull(mainState.getRepoState().getConnectionParameters().getRepoType());
-        var elementClassName = Objects.requireNonNull(mainState.getElementClassState().getSelectedName());
+        var repoType = mainState.getRepoState().getRepoType();
+        var elementClassName = mainState.getElementClassState().getSelectedName();
         var query = Objects.requireNonNull(request.getQuery());
         var selectedDenominationNames = this.mainState.getDenominationState().getSelectedNames();
 
-        try {
-            log.info(String.format("UC: query elements of class '%s' for text '%s'...", elementClassName, query));
+        if (repoType != null && elementClassName != null) {
+            try {
+                log.info(String.format("UC: query elements of class '%s' for text '%s'...", elementClassName, query));
 
-            var elementService = this.elementServiceProvider.getService(repoType);
-            var elements = elementService.readElements(elementClassName, selectedDenominationNames, query, MAX_RESULTS);
+                var elementService = this.elementServiceProvider.getService(repoType);
+                var elements = elementService.readElements(elementClassName, selectedDenominationNames, query, MAX_RESULTS);
 
-            this.mainState.getElementState().setQueryResult(elements);
+                this.mainState.getElementState().setQueryResult(elements);
 
-            var message = String.format("found %d elements", elements.size());
-            log.info(message);
+                var message = String.format("found %d elements", elements.size());
+                log.info(message);
 
-            return QueryElementsResponse.fromDomain(elements);
-        } catch (RepoException exception) {
-            var message = String.format("error querying elements: %s", exception.getMessage());
-            log.severe(message);
+                return QueryElementsResponse.fromDomain(elements);
+            } catch (RepoException exception) {
+                var message = String.format("error querying elements: %s", exception.getMessage());
+                log.severe(message);
+
+                this.mainState.getElementState().setQueryResult(Collections.emptyList());
+
+                return new QueryElementsResponse(Collections.emptyList());
+            }
+        } else {
+            log.info("UC: clearing query results");
 
             this.mainState.getElementState().setQueryResult(Collections.emptyList());
 

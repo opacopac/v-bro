@@ -11,8 +11,6 @@ import com.tschanz.v_bro.common.selected_list.SelectedList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
-import java.util.Objects;
-
 
 @Log
 @RequiredArgsConstructor
@@ -25,30 +23,33 @@ public class OpenVersionUseCaseImpl implements OpenVersionUseCase {
 
     @Override
     public void execute(OpenVersionRequest request) {
-        var versionId = Objects.requireNonNull(request.getVersionId());
+        var versionId = request.getVersionId();
+        var oldVersionList = this.mainState.getVersionState().getVersions().getItems();
 
-        log.info(String.format("UC: opening version id '%s'...", versionId));
+        if (versionId != null) {
+            log.info(String.format("UC: opening version id '%s'...", versionId));
 
-        var oldVersions = this.mainState.getVersionState().getVersions().getItems();
-        var selectedVersion = oldVersions
-            .stream()
-            .filter(v -> v.getId().equals(versionId))
-            .findFirst()
-            .orElse(null);
-        var newSelectedVersions = new SelectedList<>(oldVersions, selectedVersion);
-        this.mainState.getVersionState().setVersions(newSelectedVersions);
+            var selectedVersion = oldVersionList
+                .stream()
+                .filter(v -> v.getId().equals(versionId))
+                .findFirst()
+                .orElse(null);
+            var versionList = new SelectedList<>(oldVersionList, selectedVersion);
+            this.mainState.getVersionState().setVersions(versionList);
+        } else {
+            log.info("UC: clearing selected version...");
 
-        var versionTimelineResponse = VersionTimelineResponse.fromDomain(newSelectedVersions);
+            var versionList = new SelectedList<>(oldVersionList, null);
+            this.mainState.getVersionState().setVersions(versionList);
+        }
+
+        var versionTimelineResponse = VersionTimelineResponse.fromDomain(this.mainState.getVersionState().getVersions());
         this.versionTimelinePresenter.present(versionTimelineResponse);
 
-        if (newSelectedVersions.getSelectedItem() != null) {
-            var selectVersionId = newSelectedVersions.getSelectedItem().getId();
+        var readVersionAggregateRequest = new ReadVersionAggregateRequest();
+        this.readVersionAggregateUc.execute(readVersionAggregateRequest);
 
-            var readVersionAggregateRequest = new ReadVersionAggregateRequest(selectVersionId);
-            this.readVersionAggregateUc.execute(readVersionAggregateRequest);
-
-            var readDependenciesRequest = new ReadDependenciesRequest(selectVersionId);
-            this.readDependenciesUc.execute(readDependenciesRequest);
-        }
+        var readDependenciesRequest = new ReadDependenciesRequest();
+        this.readDependenciesUc.execute(readDependenciesRequest);
     }
 }

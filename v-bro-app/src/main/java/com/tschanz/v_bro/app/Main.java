@@ -103,17 +103,17 @@ public class Main {
         var readVersionAggregateUc = new ReadVersionAggregateUseCaseImpl(mainState, versionAggregateServiceProvider, mainPresenter.getVersionAggregatePresenter(), mainPresenter.getStatusPresenter());
         var readDependenciesUc = new ReadDependenciesUseCaseImpl(mainState, dependencyServiceProvider, mainPresenter.getDependencyPresenter(), mainPresenter.getStatusPresenter());
         var openVersionUc = new OpenVersionUseCaseImpl(mainState, readVersionAggregateUc, readDependenciesUc, mainPresenter.getVersionTimelinePresenter());
-        var readVersionsUc = new ReadVersionsUseCaseImpl(mainState, versionServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getVersionTimelinePresenter(), openVersionUc);
+        var readVersionsUc = new ReadVersionsUseCaseImpl(mainState, versionServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getVersionTimelinePresenter());
         var selectVersionFilterUc = new SelectVersionFilterUseCaseImpl(mainState, readVersionsUc);
-        var openElementUc = new OpenElementUseCaseImpl(mainState, mainPresenter.getElementPresenter(), readVersionsUc);
         var queryElementsUc = new QueryElementsUseCaseImpl(mainState, elementServiceProvider);
-        var selectDenominationsUc = new SelectDenominationsUseCaseImpl(mainState, mainPresenter.getDenominationsPresenter(), queryElementsUc);
-        var readDenominationUc = new ReadDenominationUseCaseImpl(mainState, elementClassServiceProvider, mainPresenter.getDenominationsPresenter(), mainPresenter.getStatusPresenter(), selectDenominationsUc);
-        var openElementClassUc = new OpenElementClassUseCaseImpl(mainState, mainPresenter.getElementClassListPresenter(), readDenominationUc);
-        var readElementClassesUc = new ReadElementClassesUseCaseImpl(mainState, elementClassServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getElementClassListPresenter(), openElementClassUc);
-        var openRepoUc = new OpenRepoUseCaseImpl(mainState, repoServiceProvider, mainPresenter.getRepoPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc);
-        var closeRepoUc = new CloseRepoUseCaseImpl(mainState, repoServiceProvider, mainPresenter.getRepoPresenter(), mainPresenter.getElementClassListPresenter(), mainPresenter.getDenominationsPresenter(), mainPresenter.getElementPresenter(), mainPresenter.getVersionTimelinePresenter(), mainPresenter.getDependencyPresenter(), mainPresenter.getVersionAggregatePresenter(), mainPresenter.getStatusPresenter());
-        var openDependencyVersionUc = new OpenDependencyVersionUseCaseImpl(openElementClassUc, queryElementsUc, openElementUc, openVersionUc);
+        var openElementUc = new OpenElementUseCaseImpl(mainState, mainPresenter.getElementPresenter(), queryElementsUc, readVersionsUc, openVersionUc);
+        var selectDenominationsUc = new SelectDenominationsUseCaseImpl(mainState, mainPresenter.getDenominationsPresenter());
+        var readDenominationUc = new ReadDenominationUseCaseImpl(mainState, elementClassServiceProvider, mainPresenter.getDenominationsPresenter(), mainPresenter.getStatusPresenter());
+        var openElementClassUc = new OpenElementClassUseCaseImpl(mainState, mainPresenter.getElementClassListPresenter(), readDenominationUc, selectDenominationsUc, queryElementsUc, openElementUc);
+        var readElementClassesUc = new ReadElementClassesUseCaseImpl(mainState, elementClassServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getElementClassListPresenter());
+        var openRepoUc = new OpenRepoUseCaseImpl(mainState, repoServiceProvider, mainPresenter.getRepoPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc);
+        var closeRepoUc = new CloseRepoUseCaseImpl(mainState, repoServiceProvider, mainPresenter.getRepoPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc);
+        var openDependencyVersionUc = new OpenDependencyVersionUseCaseImpl(openElementClassUc, openElementUc, openVersionUc);
 
         // presentation controller
         var mainController = new MainControllerImpl(

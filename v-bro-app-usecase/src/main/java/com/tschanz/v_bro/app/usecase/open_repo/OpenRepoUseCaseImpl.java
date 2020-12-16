@@ -5,6 +5,8 @@ import com.tschanz.v_bro.app.presenter.repo.RepoResponse;
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusResponse;
 import com.tschanz.v_bro.app.state.MainState;
+import com.tschanz.v_bro.app.usecase.open_element_class.OpenElementClassRequest;
+import com.tschanz.v_bro.app.usecase.open_element_class.OpenElementClassUseCase;
 import com.tschanz.v_bro.app.usecase.read_element_classes.ReadElementClassesRequest;
 import com.tschanz.v_bro.app.usecase.read_element_classes.ReadElementClassesUseCase;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
@@ -22,6 +24,7 @@ public class OpenRepoUseCaseImpl implements OpenRepoUseCase {
     private final RepoPresenter repoPresenter;
     private final StatusPresenter statusPresenter;
     private final ReadElementClassesUseCase readElementClassesUc;
+    private final OpenElementClassUseCase openElementClassUc;
 
 
     @Override
@@ -43,14 +46,21 @@ public class OpenRepoUseCaseImpl implements OpenRepoUseCase {
 
             var response = RepoResponse.fromDomain(connectionParameters);
             this.repoPresenter.present(response);
-
-            var readElementClassesRequest = new ReadElementClassesRequest(true);
-            this.readElementClassesUc.execute(readElementClassesRequest);
         } catch (RepoException exception) {
             var message = "error connecting to repo: " + exception.getMessage();
             log.severe(message);
             var statusResponse = new StatusResponse(message, true);
             this.statusPresenter.present(statusResponse);
         }
+
+        var readElementClassesRequest = new ReadElementClassesRequest();
+        this.readElementClassesUc.execute(readElementClassesRequest);
+
+        var classes = this.mainState.getElementClassState().getElementClasses().getItems();
+        var selectClass = classes.size() > 0
+            ? classes.get(0).getName()
+            : null;
+        var openElementClassRequest = new OpenElementClassRequest(selectClass, true);
+        this.openElementClassUc.execute(openElementClassRequest);
     }
 }

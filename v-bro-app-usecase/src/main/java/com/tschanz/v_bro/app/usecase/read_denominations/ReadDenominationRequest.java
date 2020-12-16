@@ -7,5 +7,4 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class ReadDenominationRequest {
-    private final String elementClassName;
 }

@@ -8,4 +8,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OpenElementClassRequest {
     private final String elementClassName;
+    private final boolean autoOpenFirstElement;
 }

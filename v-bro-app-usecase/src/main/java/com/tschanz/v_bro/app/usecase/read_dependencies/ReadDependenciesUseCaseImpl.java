@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.usecase.read_dependencies;
 
-import com.tschanz.v_bro.app.presenter.dependencies.DependencyPresenter;
 import com.tschanz.v_bro.app.presenter.dependencies.DependencyListResponse;
+import com.tschanz.v_bro.app.presenter.dependencies.DependencyPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusResponse;
 import com.tschanz.v_bro.app.state.MainState;
@@ -12,8 +12,8 @@ import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 
 @Log
@@ -27,29 +27,38 @@ public class ReadDependenciesUseCaseImpl implements ReadDependenciesUseCase {
 
     @Override
     public void execute(ReadDependenciesRequest request) {
-        var repoType = Objects.requireNonNull(mainState.getRepoState().getConnectionParameters().getRepoType());
-        var elementClass = Objects.requireNonNull(mainState.getElementClassState().getSelectedName());
-        var elementId = Objects.requireNonNull(mainState.getElementState().getCurrentElement().getId());
-        var versionId = Objects.requireNonNull(request.getVersionId());
+        var repoType = mainState.getRepoState().getRepoType();
+        var elementClass = mainState.getElementClassState().getSelectedName();
+        var elementId = mainState.getElementState().getCurrentElementId();
+        var versionId = mainState.getVersionState().getSelectedVersionId();
 
-        try {
-            log.info(String.format("UC: reading FWD dependencies of element class '%s' element id '%s' version '%s'...", elementClass, elementId, versionId));
+        if (repoType != null && elementClass != null && elementId != null && versionId != null) {
+            try {
+                log.info(String.format("UC: reading FWD dependencies of element class '%s' element id '%s' version '%s'...", elementClass, elementId, versionId));
 
-            DependencyService dependencyService = this.dependencyServiceProvider.getService(repoType);
-            List<FwdDependency> fwdDependencies = dependencyService.readFwdDependencies(elementClass, elementId, versionId);
+                DependencyService dependencyService = this.dependencyServiceProvider.getService(repoType);
+                List<FwdDependency> fwdDependencies = dependencyService.readFwdDependencies(elementClass, elementId, versionId);
 
-            String message = "successfully read " + fwdDependencies.size() + " FWD dependencies";
-            log.info(message);
-            var statusResponse = new StatusResponse(message, false);
-            this.statusPresenter.present(statusResponse);
+                String message = String.format("successfully read %d FWD dependencies", fwdDependencies.size());
+                log.info(message);
+                var statusResponse = new StatusResponse(message, false);
+                this.statusPresenter.present(statusResponse);
 
-            var response = DependencyListResponse.fromDomain(fwdDependencies);
+                var response = DependencyListResponse.fromDomain(fwdDependencies);
+                this.dependencyPresenter.present(response);
+            } catch (RepoException exception) {
+                String message = String.format("error reading FWD dependencies: %s", exception.getMessage());
+                log.severe(message);
+                var statusResponse = new StatusResponse(message, true);
+                this.statusPresenter.present(statusResponse);
+            }
+        } else {
+            log.info("UC: clearing dependency list");
+
+            this.mainState.getDependencyState().setFwdDependencies(Collections.emptyList());
+
+            var response = DependencyListResponse.fromDomain(Collections.emptyList());
             this.dependencyPresenter.present(response);
-        } catch (RepoException exception) {
-            String message = String.format("error reading FWD dependencies: %s", exception.getMessage());
-            log.severe(message);
-            var statusResponse = new StatusResponse(message, true);
-            this.statusPresenter.present(statusResponse);
         }
     }
 }
