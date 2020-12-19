@@ -32,7 +32,10 @@ public class ReadDenominationUseCaseImpl implements ReadDenominationUseCase {
 
         if (repoType != null && elementClass != null) {
             try {
-                log.info(String.format("UC: reading denominations for element class '%s'...", elementClass));
+                var msgStart =  String.format("UC: reading denominations for element class '%s'...", elementClass);
+                log.info(msgStart);
+                var statusResponse1 = new StatusResponse(msgStart, false, true);
+                this.statusPresenter.present(statusResponse1);
 
                 var elementClassService = this.elementClassServiceProvider.getService(repoType);
                 var denominations = elementClassService.readDenominations(elementClass);
@@ -40,9 +43,9 @@ public class ReadDenominationUseCaseImpl implements ReadDenominationUseCase {
                 var mslist = new MultiSelectedList<>(denominations, Collections.emptyList());
                 this.mainState.getDenominationState().setDenominations(mslist);
 
-                var message = String.format("successfully read %d denominations.", denominations.size());
-                log.info(message);
-                var statusResponse = new StatusResponse(message, false);
+                var msgSuccess = String.format("successfully read %d denominations.", denominations.size());
+                log.info(msgSuccess);
+                var statusResponse = new StatusResponse(msgSuccess, false, false);
                 this.statusPresenter.present(statusResponse);
 
                 var denominationResponse = DenominationListResponse.fromDomain(mslist);
@@ -50,7 +53,7 @@ public class ReadDenominationUseCaseImpl implements ReadDenominationUseCase {
             } catch (RepoException exception) {
                 var message = String.format("error reading denominations: %s", exception.getMessage());
                 log.severe(message);
-                var statusResponse = new StatusResponse(message, true);
+                var statusResponse = new StatusResponse(message, true, false);
                 this.statusPresenter.present(statusResponse);
             }
         } else {

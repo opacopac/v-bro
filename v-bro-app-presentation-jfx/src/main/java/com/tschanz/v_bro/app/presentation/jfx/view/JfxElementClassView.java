@@ -69,11 +69,13 @@ public class JfxElementClassView implements ElementClassView, Initializable {
 
         var selectedText = this.elementClassComboBox.getEditor().getText();
         if (!this.isPopulating && selectedText != null) {
-            this.elementClassComboBox.getItems()
-                .stream()
-                .filter(item -> item.getName().equals(selectedText))
-                .findFirst()
-                .ifPresent(item -> this.elementClassController.onElementClassSelected(item.getName()));
+            new Thread(() -> {
+                this.elementClassComboBox.getItems()
+                    .stream()
+                    .filter(item -> item.getName().equals(selectedText))
+                    .findFirst()
+                    .ifPresent(item -> this.elementClassController.onElementClassSelected(item.getName()));
+            }).start();
         }
     }
 }

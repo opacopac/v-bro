@@ -7,11 +7,9 @@ import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
 import impl.org.controlsfx.autocompletion.SuggestionProvider;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
-import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 
@@ -55,27 +53,15 @@ public class JfxElementView implements ElementView, Initializable {
 
     @FXML private void onElementSelected(AutoCompletionBinding.AutoCompletionEvent<ElementItem> event) {
         var elementId = event.getCompletion().getId();
-        this.elementController.onElementSelected(elementId);
+
+        new Thread(() -> this.elementController.onElementSelected(elementId)).start();
     }
 
 
     private class ElementSuggestionProvider extends SuggestionProvider<ElementItem> {
-        @SneakyThrows
         @Override
         public Collection<ElementItem> call(AutoCompletionBinding.ISuggestionRequest request) {
-            // remark: ugly wrapping in a second thread because the current thread can be interrupted by controlsfx autocompletion
-            // which leads to oracle dropping the connection during a query
-            var task = new Task<Collection<ElementItem>>() {
-                @Override
-                protected Collection<ElementItem> call() {
-                    return JfxElementView.this.elementController.onQueryElement(request.getUserText());
-                }
-            };
-            var thread = new Thread(task);
-            thread.start();
-            thread.join();
-
-            return task.getValue();
+            return JfxElementView.this.elementController.onQueryElement(request.getUserText());
         }
 
 

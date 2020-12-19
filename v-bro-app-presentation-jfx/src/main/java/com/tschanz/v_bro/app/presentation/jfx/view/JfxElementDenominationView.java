@@ -67,7 +67,7 @@ public class JfxElementDenominationView implements Initializable, ElementDenomin
                 .mapToObj(i -> this.denominationCheckComboBox.getCheckModel().getItem(i))
                 .collect(Collectors.toList());
 
-            this.elementDenominationController.onDenominationsSelected(selectedItems);
+            new Thread(() -> this.elementDenominationController.onDenominationsSelected(selectedItems)).start();
         }
     }
 }

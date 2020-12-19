@@ -31,23 +31,26 @@ public class ReadVersionAggregateUseCaseImpl implements ReadVersionAggregateUseC
 
         if (repoType != null && elementClass != null && elementId != null && versionId != null) {
             try {
-                log.info(String.format("UC: reading version aggregate of element class '%s' element id '%s' version id '%s'...", elementClass, elementId, versionId));
+                var msgStart = String.format("UC: reading version aggregate of element class '%s' element id '%s' version id '%s'...", elementClass, elementId, versionId);
+                log.info(msgStart);
+                var statusResponse1 = new StatusResponse(msgStart, false, true);
+                this.statusPresenter.present(statusResponse1);
 
                 VersionAggregateService versionAggregateService = this.versionAggregateServiceProvider.getService(repoType);
                 VersionAggregate versionAggregate = versionAggregateService.readVersionAggregate(elementClass, elementId, versionId);
                 this.mainState.getVersionAggregateState().setVersionAggregate(versionAggregate);
 
-                String message = "successfully read version aggregate";
-                log.info(message);
-                var statusResponse = new StatusResponse(message, false);
-                this.statusPresenter.present(statusResponse);
+                String msgSuccess = "successfully read version aggregate";
+                log.info(msgSuccess);
+                var statusResponse2 = new StatusResponse(msgSuccess, false, false);
+                this.statusPresenter.present(statusResponse2);
 
                 var response = VersionAggregateResponse.fromDomain(versionAggregate);
                 this.presenter.present(response);
             } catch (RepoException exception) {
                 String message = String.format("error reading version aggregate: %s", exception.getMessage());
                 log.severe(message);
-                var statusResponse = new StatusResponse(message, true);
+                var statusResponse = new StatusResponse(message, true, false);
                 this.statusPresenter.present(statusResponse);
             }
         } else {

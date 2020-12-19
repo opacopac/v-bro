@@ -80,7 +80,7 @@ public class JfxConnectionView implements Initializable, ConnectionView {
 
     @FXML
     private void onDisconnectClicked(ActionEvent actionEvent) {
-        this.connectionController.onConnectToRepoAction(null);
+        new Thread(() -> this.connectionController.onConnectToRepoAction(null)).start();
     }
 
 

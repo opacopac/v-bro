@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 
@@ -33,14 +34,33 @@ public class JdbcRepoDataService {
             var statement = this.connectionFactory.getCurrentConnection().createStatement();
 
             log.info("executing query " + query);
-
-            if (statement.execute(query)) {
-                while (statement.getResultSet().next()) {
-                    rows.add(this.parseRow(fields, statement.getResultSet()));
+            AtomicReference<SQLException> readException = new AtomicReference<>();
+            // reason for ugly hack with separate thread: caller (e.g. controlfx autocomplete) may interrupt the thread, resulting in a db connection close in some cases
+            Thread t = new Thread(() -> {
+                try {
+                    if (statement.execute(query)) {
+                        while (statement.getResultSet().next()) {
+                            rows.add(this.parseRow(fields, statement.getResultSet()));
+                        }
+                        statement.getResultSet().close();
+                    }
+                } catch (SQLException exception) {
+                    readException.set(exception);
                 }
-                statement.getResultSet().close();
+            });
+            t.start();
+            try {
+                t.join();
+            } catch (InterruptedException exception) {
+                statement.cancel();
             }
             statement.close();
+
+            if (readException.get() != null) {
+                String msg = "error reading rows: " + readException.get().getMessage();
+                log.severe(msg);
+                throw new RepoException(msg, readException.get());
+            }
         } catch (SQLException exception) {
             String msg = "error reading rows: " + exception.getMessage();
             log.severe(msg);

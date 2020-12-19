@@ -98,8 +98,7 @@ public class JfxVersionView implements VersionsView {
             return;
         }
 
-        this.versionController.onVersionSelected(selectedVersionItem.getId());
-        this.repaint();
+        new Thread(() -> this.versionController.onVersionSelected(selectedVersionItem.getId())).start();
     }
 
 

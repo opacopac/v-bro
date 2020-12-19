@@ -6,10 +6,10 @@
 <AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tschanz.v_bro.app.presentation.jfx.view.JfxVersionFilterView">
    <HBox alignment="CENTER_LEFT" spacing="5.0">
       <Label text="min von" />
-      <DatePicker fx:id="minVonDatePicker" onAction="#onMinVonSelected" prefWidth="120.0" />
+      <DatePicker fx:id="minVonDatePicker" onAction="#onFilterSelected" prefWidth="120.0" />
       <Label text="max bis" />
-      <DatePicker fx:id="maxBisDatePicker" onAction="#onMaxBisSelected" prefWidth="120.0" />
+      <DatePicker fx:id="maxBisDatePicker" onAction="#onFilterSelected" prefWidth="120.0" />
       <Label text="min status" />
-      <ComboBox fx:id="pflegestatusComboBox" onAction="#onPflegestatusSelected" />
+      <ComboBox fx:id="pflegestatusComboBox" onAction="#onFilterSelected" />
    </HBox>
 </AnchorPane>

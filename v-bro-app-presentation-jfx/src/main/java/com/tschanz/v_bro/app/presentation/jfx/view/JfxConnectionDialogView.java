@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 import lombok.Setter;
+import lombok.SneakyThrows;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +86,7 @@ public class JfxConnectionDialogView {
 
 
     @FXML
+    @SneakyThrows
     private void onConnectClicked(ActionEvent actionEvent) {
         RepoType repoType = this.getSelectedRepoType();
         RepoConnectionItem nextRepoConnection;
@@ -101,7 +103,7 @@ public class JfxConnectionDialogView {
                 break;
         }
 
-        this.connectionController.onConnectToRepoAction(nextRepoConnection);
+        new Thread(() -> this.connectionController.onConnectToRepoAction(nextRepoConnection)).start();
         this.stage.close();
     }
 

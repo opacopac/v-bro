@@ -1,5 +1,7 @@
 package com.tschanz.v_bro.app.usecase.open_version;
 
+import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
+import com.tschanz.v_bro.app.presenter.status.StatusResponse;
 import com.tschanz.v_bro.app.presenter.version_timeline.VersionTimelinePresenter;
 import com.tschanz.v_bro.app.presenter.version_timeline.VersionTimelineResponse;
 import com.tschanz.v_bro.app.state.MainState;
@@ -19,6 +21,7 @@ public class OpenVersionUseCaseImpl implements OpenVersionUseCase {
     private final ReadVersionAggregateUseCase readVersionAggregateUc;
     private final ReadDependenciesUseCase readDependenciesUc;
     private final VersionTimelinePresenter versionTimelinePresenter;
+    private final StatusPresenter statusPresenter;
 
 
     @Override
@@ -27,7 +30,10 @@ public class OpenVersionUseCaseImpl implements OpenVersionUseCase {
         var oldVersionList = this.mainState.getVersionState().getVersions().getItems();
 
         if (versionId != null) {
-            log.info(String.format("UC: opening version id '%s'...", versionId));
+            var msgStart = String.format("UC: opening version id '%s'...", versionId);
+            log.info(msgStart);
+            var statusResponse1 = new StatusResponse(msgStart, false, true);
+            this.statusPresenter.present(statusResponse1);
 
             var selectedVersion = oldVersionList
                 .stream()

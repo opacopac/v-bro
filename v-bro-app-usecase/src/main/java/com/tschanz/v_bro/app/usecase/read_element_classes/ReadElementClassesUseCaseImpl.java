@@ -28,7 +28,10 @@ public class ReadElementClassesUseCaseImpl implements ReadElementClassesUseCase 
 
         if (repoType != null) {
             try {
-                log.info("UC: reading element classes...");
+                var msgStart =  "UC: reading element classes...";
+                log.info(msgStart);
+                var statusResponse1 = new StatusResponse(msgStart, false, true);
+                this.statusPresenter.present(statusResponse1);
 
                 var elementClassService = this.elementClassServiceProvider.getService(repoType);
                 var elementClasses = elementClassService.readElementClasses();
@@ -36,14 +39,14 @@ public class ReadElementClassesUseCaseImpl implements ReadElementClassesUseCase 
 
                 this.mainState.getElementClassState().setElementClasses(slist);
 
-                var message = String.format("successfully read %d element classes.", elementClasses.size());
-                log.info(message);
-                var statusResponse = new StatusResponse(message, false);
-                this.statusPresenter.present(statusResponse);
+                var msgSuccess = String.format("successfully read %d element classes.", elementClasses.size());
+                log.info(msgSuccess);
+                var statusResponse2 = new StatusResponse(msgSuccess, false, false);
+                this.statusPresenter.present(statusResponse2);
             } catch (RepoException exception) {
                 var message = String.format("error reading version timeline: %s", exception.getMessage());
                 log.severe(message);
-                var statusResponse = new StatusResponse(message, true);
+                var statusResponse = new StatusResponse(message, true, false);
                 this.statusPresenter.present(statusResponse);
             }
         } else {

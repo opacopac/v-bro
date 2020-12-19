@@ -34,22 +34,25 @@ public class ReadDependenciesUseCaseImpl implements ReadDependenciesUseCase {
 
         if (repoType != null && elementClass != null && elementId != null && versionId != null) {
             try {
-                log.info(String.format("UC: reading FWD dependencies of element class '%s' element id '%s' version '%s'...", elementClass, elementId, versionId));
+                var msgStart =  String.format("UC: reading FWD dependencies of element class '%s' element id '%s' version '%s'...", elementClass, elementId, versionId);
+                log.info(msgStart);
+                var statusResponse1 = new StatusResponse(msgStart, false, true);
+                this.statusPresenter.present(statusResponse1);
 
                 DependencyService dependencyService = this.dependencyServiceProvider.getService(repoType);
                 List<FwdDependency> fwdDependencies = dependencyService.readFwdDependencies(elementClass, elementId, versionId);
 
-                String message = String.format("successfully read %d FWD dependencies", fwdDependencies.size());
-                log.info(message);
-                var statusResponse = new StatusResponse(message, false);
-                this.statusPresenter.present(statusResponse);
+                String msgSuccess = String.format("successfully read %d FWD dependencies", fwdDependencies.size());
+                log.info(msgSuccess);
+                var statusResponse2 = new StatusResponse(msgSuccess, false, false);
+                this.statusPresenter.present(statusResponse2);
 
                 var response = DependencyListResponse.fromDomain(fwdDependencies);
                 this.dependencyPresenter.present(response);
             } catch (RepoException exception) {
                 String message = String.format("error reading FWD dependencies: %s", exception.getMessage());
                 log.severe(message);
-                var statusResponse = new StatusResponse(message, true);
+                var statusResponse = new StatusResponse(message, true, false);
                 this.statusPresenter.present(statusResponse);
             }
         } else {

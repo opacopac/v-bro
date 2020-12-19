@@ -2,6 +2,8 @@ package com.tschanz.v_bro.app.usecase.open_element;
 
 import com.tschanz.v_bro.app.presenter.element.ElementPresenter;
 import com.tschanz.v_bro.app.presenter.element.ElementResponse;
+import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
+import com.tschanz.v_bro.app.presenter.status.StatusResponse;
 import com.tschanz.v_bro.app.state.MainState;
 import com.tschanz.v_bro.app.usecase.open_version.OpenVersionRequest;
 import com.tschanz.v_bro.app.usecase.open_version.OpenVersionUseCase;
@@ -21,6 +23,7 @@ public class OpenElementUseCaseImpl implements OpenElementUseCase {
     private final QueryElementsUseCase queryElementsUc;
     private final ReadVersionsUseCase readVersionsUc;
     private final OpenVersionUseCase openVersionUc;
+    private final StatusPresenter statusPresenter;
 
 
     @Override
@@ -28,7 +31,10 @@ public class OpenElementUseCaseImpl implements OpenElementUseCase {
         var elementId = request.getElementId();
 
         if (elementId != null) {
-            log.info(String.format("UC: opening element id '%s'...", elementId));
+            var msgStart = String.format("UC: opening element id '%s'...", elementId);
+            log.info(msgStart);
+            var statusResponse1 = new StatusResponse(msgStart, false, true);
+            this.statusPresenter.present(statusResponse1);
 
             var queryRequest = new QueryElementsRequest(elementId);
             this.queryElementsUc.execute(queryRequest);

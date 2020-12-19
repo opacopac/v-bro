@@ -39,21 +39,19 @@ public class JfxDependencyFilterView implements DependencyFilterView {
         }
 
         if (this.dependencyFilterController != null) {
-            this.dependencyFilterController.onDependencyFilterSelected(dependencyFilter);
+            new Thread(() -> this.dependencyFilterController.onDependencyFilterSelected(dependencyFilter)).start();
         }
     }
 
 
     @FXML private void onFwdDependencySelected(ActionEvent actionEvent) {
-        this.dependencyFilterController.onDependencyFilterSelected(
-            new DependencyFilterItem(true)
-        );
+        var dependencyFilter = new DependencyFilterItem(true);
+        new Thread(() -> this.dependencyFilterController.onDependencyFilterSelected(dependencyFilter)).start();
     }
 
 
     @FXML private void onBwdDependencySelected(ActionEvent actionEvent) {
-        this.dependencyFilterController.onDependencyFilterSelected(
-            new DependencyFilterItem(false)
-        );
+        var dependencyFilter = new DependencyFilterItem(false);
+        new Thread(() -> this.dependencyFilterController.onDependencyFilterSelected(dependencyFilter)).start();
     }
 }

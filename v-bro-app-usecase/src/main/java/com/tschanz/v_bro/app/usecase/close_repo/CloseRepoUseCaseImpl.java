@@ -35,24 +35,27 @@ public class CloseRepoUseCaseImpl implements CloseRepoUseCase {
         var repoType = connectionParams.getRepoType();
 
         try {
-            log.info(String.format("UC: disconnecting from repo %s...", repoType));
+            var msgStart =  String.format("UC: disconnecting from repo %s...", repoType);
+            log.info(msgStart);
+            var statusResponse1 = new StatusResponse(msgStart, false, true);
+            this.statusPresenter.present(statusResponse1);
 
             var repoService = this.repoServiceProvider.getService(repoType);
             repoService.disconnect();
 
             this.mainState.getRepoState().setConnectionParameters(null);
 
-            String message = String.format("successfully disconnected from repo %s", repoType);
-            log.info(message);
-            var statusResponse = new StatusResponse(message, false);
-            this.statusPresenter.present(statusResponse);
+            String msgSuccess = String.format("successfully disconnected from repo %s", repoType);
+            log.info(msgSuccess);
+            var statusResponse2 = new StatusResponse(msgSuccess, false, false);
+            this.statusPresenter.present(statusResponse2);
 
             var repoResponse = RepoResponse.fromDomain(null);
             this.repoPresenter.present(repoResponse);
         } catch (RepoException exception) {
             var message = String.format("error disconnecting from repo: %s", exception.getMessage());
             log.severe(message);
-            var statusResponse = new StatusResponse(message, true);
+            var statusResponse = new StatusResponse(message, true, false);
             this.statusPresenter.present(statusResponse);
         }
 

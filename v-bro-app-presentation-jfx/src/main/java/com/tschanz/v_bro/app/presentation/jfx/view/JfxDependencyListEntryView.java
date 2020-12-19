@@ -55,6 +55,7 @@ public class JfxDependencyListEntryView {
             this.fwdDependencyItem.getElementId(),
             versionId
         );
-        this.dependencyListController.onVersionFilterSelected(dependencyVersion);
+
+        new Thread(() -> this.dependencyListController.onVersionFilterSelected(dependencyVersion)).start();
     }
 }

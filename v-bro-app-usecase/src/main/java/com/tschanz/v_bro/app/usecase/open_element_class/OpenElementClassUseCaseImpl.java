@@ -2,6 +2,8 @@ package com.tschanz.v_bro.app.usecase.open_element_class;
 
 import com.tschanz.v_bro.app.presenter.element_class_list.ElementClassListPresenter;
 import com.tschanz.v_bro.app.presenter.element_class_list.ElementClassListResponse;
+import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
+import com.tschanz.v_bro.app.presenter.status.StatusResponse;
 import com.tschanz.v_bro.app.state.MainState;
 import com.tschanz.v_bro.app.usecase.open_element.OpenElementRequest;
 import com.tschanz.v_bro.app.usecase.open_element.OpenElementUseCase;
@@ -28,6 +30,7 @@ public class OpenElementClassUseCaseImpl implements OpenElementClassUseCase {
     private final SelectDenominationsUseCase selectDenominationsUc;
     private final QueryElementsUseCase queryElementsUc;
     private final OpenElementUseCase openElementUseCase;
+    private final StatusPresenter statusPresenter;
 
 
     @Override
@@ -36,7 +39,10 @@ public class OpenElementClassUseCaseImpl implements OpenElementClassUseCase {
         var oldElementClassList = this.mainState.getElementClassState().getElementClasses();
 
         if (elementClassName != null) {
-            log.info(String.format("UC: opening element class '%s'...", elementClassName));
+            var msgStart = String.format("UC: opening element class '%s'...", elementClassName);
+            log.info(msgStart);
+            var statusResponse1 = new StatusResponse(msgStart, false, true);
+            this.statusPresenter.present(statusResponse1);
 
             var selectedElementClass = oldElementClassList.getItems()
                 .stream()

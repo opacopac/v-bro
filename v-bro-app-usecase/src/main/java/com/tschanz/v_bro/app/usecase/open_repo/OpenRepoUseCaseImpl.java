@@ -32,24 +32,27 @@ public class OpenRepoUseCaseImpl implements OpenRepoUseCase {
         var connectionParameters = ConnectionParametersRequest.fromRequest(request.getConnectionParameters());
 
         try {
-            log.info("UC: connecting to repo...");
+            var msgStart = "UC: connecting to repo...";
+            log.info(msgStart);
+            var statusResponse1 = new StatusResponse(msgStart, false, true);
+            this.statusPresenter.present(statusResponse1);
 
             var repoService = this.repoServiceProvider.getService(connectionParameters.getRepoType());
             repoService.connect(connectionParameters);
 
             this.mainState.getRepoState().setConnectionParameters(connectionParameters);
 
-            String message = String.format("successfully connected to %s repo", connectionParameters.getRepoType());
-            log.info(message);
-            var statusResponse = new StatusResponse(message, false);
-            this.statusPresenter.present(statusResponse);
+            var msgSuccess = String.format("successfully connected to %s repo", connectionParameters.getRepoType());
+            log.info(msgSuccess);
+            var statusResponse2 = new StatusResponse(msgSuccess, false, false);
+            this.statusPresenter.present(statusResponse2);
 
             var response = RepoResponse.fromDomain(connectionParameters);
             this.repoPresenter.present(response);
         } catch (RepoException exception) {
             var message = "error connecting to repo: " + exception.getMessage();
             log.severe(message);
-            var statusResponse = new StatusResponse(message, true);
+            var statusResponse = new StatusResponse(message, true, false);
             this.statusPresenter.present(statusResponse);
         }
 

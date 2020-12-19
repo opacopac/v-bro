@@ -10,11 +10,14 @@ import lombok.RequiredArgsConstructor;
 public class StatusItem {
     private final String message;
     private final boolean isError;
+    private final boolean isWaiting;
 
 
     public static StatusItem fromResponse(StatusResponse response) {
-        return response.isError()
-            ? new StatusItem(response.getMessage(), true)
-            : new StatusItem(response.getMessage(), false);
+        return new StatusItem(
+            response.getMessage(),
+            response.isError(),
+            response.isWaiting()
+        );
     }
 }

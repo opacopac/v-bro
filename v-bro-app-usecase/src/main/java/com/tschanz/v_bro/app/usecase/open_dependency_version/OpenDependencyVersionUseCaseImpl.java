@@ -1,5 +1,7 @@
 package com.tschanz.v_bro.app.usecase.open_dependency_version;
 
+import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
+import com.tschanz.v_bro.app.presenter.status.StatusResponse;
 import com.tschanz.v_bro.app.usecase.open_element.OpenElementRequest;
 import com.tschanz.v_bro.app.usecase.open_element.OpenElementUseCase;
 import com.tschanz.v_bro.app.usecase.open_element_class.OpenElementClassRequest;
@@ -18,7 +20,7 @@ public class OpenDependencyVersionUseCaseImpl implements OpenDependencyVersionUs
     private final OpenElementClassUseCase openElementClassUc;
     private final OpenElementUseCase openElementUc;
     private final OpenVersionUseCase openVersionUc;
-
+    private final StatusPresenter statusPresenter;
 
 
     @Override
@@ -27,7 +29,10 @@ public class OpenDependencyVersionUseCaseImpl implements OpenDependencyVersionUs
         var elementId = Objects.requireNonNull(request.getElementId());
         var versionId = Objects.requireNonNull(request.getVersionId());
 
-        log.info(String.format("UC: opening dependency version of element class '%s' element id '%s' version id '%s'...", elementClassName, elementId, versionId));
+        var msgStart =  String.format("UC: opening dependency version of element class '%s' element id '%s' version id '%s'...", elementClassName, elementId, versionId);
+        log.info(msgStart);
+        var statusResponse1 = new StatusResponse(msgStart, false, true);
+        this.statusPresenter.present(statusResponse1);
 
         var openElementClassRequest = new OpenElementClassRequest(elementClassName, false);
         this.openElementClassUc.execute(openElementClassRequest);

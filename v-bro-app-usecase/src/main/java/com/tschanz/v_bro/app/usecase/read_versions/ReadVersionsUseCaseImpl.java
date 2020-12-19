@@ -31,7 +31,10 @@ public class ReadVersionsUseCaseImpl implements ReadVersionsUseCase {
 
         if (repoType != null && elementClass != null && elementId != null) {
             try {
-                log.info(String.format("UC: reading versions of element class '%s' element id '%s'...", elementClass, elementId));
+                var msgStart = String.format("UC: reading versions of element class '%s' element id '%s'...", elementClass, elementId);
+                log.info(msgStart);
+                var statusResponse1 = new StatusResponse(msgStart, false, true);
+                this.statusPresenter.present(statusResponse1);
 
                 var versionService = this.versionServiceProvider.getService(repoType);
                 var versions = versionService.readVersionTimeline(elementClass, elementId);
@@ -41,7 +44,7 @@ public class ReadVersionsUseCaseImpl implements ReadVersionsUseCase {
 
                 var message = String.format("successfully read %d versions.", versions.size());
                 log.info(message);
-                var statusResponse = new StatusResponse(message, false);
+                var statusResponse = new StatusResponse(message, false, false);
                 this.statusPresenter.present(statusResponse);
 
                 var versionTimelineResponse = VersionTimelineResponse.fromDomain(versionList);
@@ -49,7 +52,7 @@ public class ReadVersionsUseCaseImpl implements ReadVersionsUseCase {
             } catch (RepoException exception) {
                 var message = String.format("error reading versions: %s", exception.getMessage());
                 log.severe(message);
-                var statusResponse = new StatusResponse(message, true);
+                var statusResponse = new StatusResponse(message, true, false);
                 this.statusPresenter.present(statusResponse);
             }
         } else {
