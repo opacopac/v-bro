@@ -4,52 +4,52 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<DialogPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.tschanz.v_bro.app.presentation.jfx.view.JfxConnectionDialogView">
+<DialogPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tschanz.v_bro.app.presentation.jfx.view.JfxConnectionDialogView">
     <content>
         <AnchorPane>
             <GridPane alignment="CENTER_LEFT" hgap="5.0" vgap="5.0">
                 <columnConstraints>
-                    <ColumnConstraints/>
-                    <ColumnConstraints/>
+                    <ColumnConstraints />
+                    <ColumnConstraints />
                 </columnConstraints>
                 <rowConstraints>
-                    <RowConstraints/>
-                    <RowConstraints/>
+                    <RowConstraints />
+                    <RowConstraints />
                     <RowConstraints fx:id="urlRow" />
                     <RowConstraints fx:id="userRow" />
-                    <RowConstraints fx:id="passwordRow"/>
+                    <RowConstraints fx:id="passwordRow" />
                     <RowConstraints fx:id="fileRow" />
-                    <RowConstraints/>
+                    <RowConstraints />
                 </rowConstraints>
-                <Label text="Quick Links"/>
-                <ComboBox fx:id="quickLinkComboBox" onAction="#onQuickLinkSelected" GridPane.columnIndex="1"/>
-                <Label text="Repo Type" GridPane.rowIndex="1"/>
+                <Label text="Quick Links" />
+                <ComboBox fx:id="quickLinkComboBox" onAction="#onQuickLinkSelected" GridPane.columnIndex="1" />
+                <Label text="Repo Type" GridPane.rowIndex="1" />
                 <HBox GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <RadioButton fx:id="jdbcRadioButton" mnemonicParsing="false" onAction="#onJdbcRadioButtonSelected" selected="true" text="JDBC">
                         <toggleGroup>
-                            <ToggleGroup fx:id="repoType"/>
+                            <ToggleGroup fx:id="repoType" />
                         </toggleGroup>
                     </RadioButton>
-                    <RadioButton mnemonicParsing="false" onAction="#onXmlRadioButtonSelected" text="XML"
-                                 toggleGroup="$repoType" fx:id="xmlRadioButton"/>
-                    <RadioButton fx:id="mockRadioButton" mnemonicParsing="false" onAction="#onMockRadioButtonSelected"
-                                 text="Mock" toggleGroup="$repoType"/>
+                    <RadioButton mnemonicParsing="false" onAction="#onXmlRadioButtonSelected" text="XML" toggleGroup="$repoType" fx:id="xmlRadioButton" />
+                    <RadioButton fx:id="mockRadioButton" mnemonicParsing="false" onAction="#onMockRadioButtonSelected" text="Mock" toggleGroup="$repoType" />
                 </HBox>
-                <Label fx:id="urlLabel" text="URL" GridPane.rowIndex="2"/>
-                <TextField fx:id="urlTextField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                <Label fx:id="userLabel" text="User" GridPane.rowIndex="3"/>
-                <TextField fx:id="userTextField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-                <Label fx:id="passwordLabel" text="Password" GridPane.rowIndex="4"/>
-                <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-                <Label fx:id="fileLabel" text="File" GridPane.rowIndex="5"/>
-                <TextField fx:id="fileTextField" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                <Label fx:id="urlLabel" text="URL" GridPane.rowIndex="2" />
+                <TextField fx:id="urlTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <Label fx:id="userLabel" text="User" GridPane.rowIndex="3" />
+                <TextField fx:id="userTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <Label fx:id="passwordLabel" text="Password" GridPane.rowIndex="4" />
+                <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                <Label fx:id="fileLabel" text="File" GridPane.rowIndex="5" />
+                <HBox GridPane.columnIndex="1" GridPane.rowIndex="5">
+                    <TextField fx:id="fileTextField" HBox.hgrow="ALWAYS" />
+                    <Button fx:id="selectFileButton" mnemonicParsing="false" onAction="#onSelectFileClicked" text="Select..." />
+                </HBox>
                 <HBox GridPane.columnIndex="1" GridPane.rowIndex="6">
-                    <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#onCancelClicked" text="Cancel"/>
-                    <Button fx:id="connectButton" mnemonicParsing="false" onAction="#onConnectClicked" text="Connect"/>
+                    <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#onCancelClicked" text="Cancel" />
+                    <Button fx:id="connectButton" mnemonicParsing="false" onAction="#onConnectClicked" text="Connect" />
                 </HBox>
                 <padding>
-                    <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                    <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                 </padding>
             </GridPane>
         </AnchorPane>

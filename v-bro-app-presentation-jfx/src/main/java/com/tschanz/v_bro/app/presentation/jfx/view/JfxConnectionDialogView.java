@@ -8,18 +8,23 @@ import com.tschanz.v_bro.repo.domain.model.RepoType;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.RowConstraints;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lombok.Setter;
 import lombok.SneakyThrows;
 
+import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.Flow;
 
 
-public class JfxConnectionDialogView {
+public class JfxConnectionDialogView implements Initializable {
     @FXML private Label urlLabel;
     @FXML private Label userLabel;
     @FXML private Label passwordLabel;
@@ -37,11 +42,27 @@ public class JfxConnectionDialogView {
     @FXML private TextField userTextField;
     @FXML private PasswordField passwordField;
     @FXML private TextField fileTextField;
+    @FXML private Button selectFileButton;
     @FXML private Button connectButton;
     @FXML private Button cancelButton;
+    private FileChooser fileChooser;
     @Setter private Stage stage;
     private BehaviorSubject<RepoConnectionItem> currentRepoConnection;
     private ConnectionController connectionController;
+
+
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        this.fileChooser = new FileChooser();
+        this.fileChooser.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("XML Files", "*.xml"),
+            new FileChooser.ExtensionFilter("All Files", "*")
+        );
+        var currentDir = new File("./");
+        this.fileChooser.setInitialDirectory(currentDir);
+    }
+
 
 
     public void bindViewModel(
@@ -82,6 +103,15 @@ public class JfxConnectionDialogView {
     @FXML
     private void onMockRadioButtonSelected(ActionEvent actionEvent) {
         this.showHideConnectionFields(RepoType.MOCK);
+    }
+
+
+    @FXML
+    private void onSelectFileClicked(ActionEvent actionEvent) {
+        var selectedFile = this.fileChooser.showOpenDialog(this.fileTextField.getScene().getWindow());
+        if (selectedFile != null) {
+            this.fileTextField.setText(selectedFile.getAbsolutePath());
+        }
     }
 
 
@@ -145,6 +175,7 @@ public class JfxConnectionDialogView {
         this.userTextField.setVisible(repoType == RepoType.JDBC);
         this.passwordField.setVisible(repoType == RepoType.JDBC);
         this.fileTextField.setVisible(repoType == RepoType.XML);
+        this.selectFileButton.setVisible(repoType == RepoType.XML);
 
         var jdbcMaxHeight = repoType == RepoType.JDBC ? Double.MAX_VALUE : 0;
         var xmlMaxHeight = repoType == RepoType.XML ? Double.MAX_VALUE : 0;
@@ -153,5 +184,7 @@ public class JfxConnectionDialogView {
         this.userRow.setMaxHeight(jdbcMaxHeight);
         this.passwordRow.setMaxHeight(jdbcMaxHeight);
         this.fileRow.setMaxHeight(xmlMaxHeight);
+
+        this.stage.sizeToScene(); // TODO: doesn't work
     }
 }
