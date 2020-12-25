@@ -10,7 +10,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -27,12 +26,11 @@ public class XmlElementService implements ElementService {
         int maxResults
     ) throws RepoException {
         var xmlFileStream = this.repoService.getElementClassInputStream(elementClass.getName());
-        var denominationFieldNames = denominationFields.stream().map(Denomination::getName).collect(Collectors.toList());
 
         var elementDataList = this.elementParser.readElements(
             xmlFileStream,
             elementClass,
-            denominationFieldNames,
+            denominationFields,
             query,
             maxResults
         );

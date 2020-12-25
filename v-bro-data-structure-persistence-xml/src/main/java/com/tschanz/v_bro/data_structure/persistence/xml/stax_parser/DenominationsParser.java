@@ -1,8 +1,8 @@
 package com.tschanz.v_bro.data_structure.persistence.xml.stax_parser;
 
 import com.tschanz.v_bro.data_structure.domain.model.Denomination;
-import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.data_structure.persistence.xml.service.XmlRepoService;
+import com.tschanz.v_bro.repo.domain.model.RepoException;
 import lombok.RequiredArgsConstructor;
 
 import javax.xml.stream.XMLInputFactory;
@@ -63,6 +63,8 @@ public class DenominationsParser {
         int subLevel = 0;
         StringBuilder value = new StringBuilder();
 
+        this.addAttributesDenominations(elementDenominations, reader, Denomination.ELEMENT_PATH);
+
         while (reader.hasNext()) {
             switch (reader.next()) {
                 case XMLStreamReader.START_ELEMENT:
@@ -84,11 +86,7 @@ public class DenominationsParser {
                     if (subLevel == 1) {
                         addDenomination(elementDenominations, Denomination.ELEMENT_PATH, reader.getLocalName(), value.toString()); // TODO => use name of container node
                     } else if (subLevel < 1) {
-                        return Stream.concat(
-                            elementDenominations.stream(),
-                            versionDenominations.stream()
-                        )
-                            .collect(Collectors.toList());
+                        return Stream.concat(elementDenominations.stream(), versionDenominations.stream()).collect(Collectors.toList());
                     }
                     subLevel--;
                     break;
@@ -103,6 +101,8 @@ public class DenominationsParser {
         List<Denomination> denominations = new ArrayList<>();
         int subLevel = 0;
         StringBuilder value = new StringBuilder();
+
+        this.addAttributesDenominations(denominations, reader, Denomination.VERSION_PATH);
 
         while (reader.hasNext()) {
             switch (reader.next()) {
@@ -132,13 +132,22 @@ public class DenominationsParser {
     }
 
 
-    private void addDenomination(List<Denomination> denominations, String container, String name, String value) {
+    private void addAttributesDenominations(List<Denomination> denominations, XMLStreamReader reader, String path) {
+        for (var i = 0; i < reader.getAttributeCount(); i++) {
+            this.addDenomination(denominations, path, reader.getAttributeLocalName(i), reader.getAttributeValue(i));
+        }
+    }
+
+
+    private void addDenomination(List<Denomination> denominations, String path, String name, String value) {
         if (value == null || value.trim().isEmpty()) {
             return;
         } else if (value.equals("true") || value.equals("false")) {
             return;
-        } else if (!denominations.contains(new Denomination(container, name))) {
-            denominations.add(new Denomination(container, name));
+        } else if (value.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
+            return;
+        } else if (!denominations.contains(new Denomination(path, name))) {
+            denominations.add(new Denomination(path, name));
         }
 
         // TODO: exclude some other formats

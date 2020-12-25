@@ -1,5 +1,6 @@
 package com.tschanz.v_bro.data_structure.persistence.xml.stax_parser;
 
+import com.tschanz.v_bro.data_structure.domain.model.Denomination;
 import com.tschanz.v_bro.data_structure.domain.model.DenominationData;
 import com.tschanz.v_bro.data_structure.domain.model.ElementClass;
 import com.tschanz.v_bro.data_structure.domain.model.ElementData;
@@ -12,7 +13,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -21,7 +23,7 @@ public class ElementParser {
     private final XMLInputFactory xmlInputFactory;
 
 
-    public List<ElementData> readElements(InputStream xmlStream, ElementClass elementClass, Collection<String> denominationFields, String query, int maxResults) throws RepoException {
+    public List<ElementData> readElements(InputStream xmlStream, ElementClass elementClass, List<Denomination> denominationFields, String query, int maxResults) throws RepoException {
         List<ElementData> elements;
 
         try {
@@ -35,7 +37,7 @@ public class ElementParser {
     }
 
 
-    private List<ElementData> parseDocument(XMLStreamReader reader, ElementClass elementClass, Collection<String> denominationFields, String query, int maxResults) throws XMLStreamException {
+    private List<ElementData> parseDocument(XMLStreamReader reader, ElementClass elementClass, List<Denomination> denominationFields, String query, int maxResults) throws XMLStreamException {
         List<ElementData> elements = new ArrayList<>();
 
         while (reader.hasNext() && elements.size() < maxResults) {
@@ -60,10 +62,12 @@ public class ElementParser {
     }
 
 
-    private ElementData parseSingleElement(XMLStreamReader reader, ElementClass elementClass, String elementId, Collection<String> denominationFields, String query) throws XMLStreamException {
+    private ElementData parseSingleElement(XMLStreamReader reader, ElementClass elementClass, String elementId, List<Denomination> denominationFields, String query) throws XMLStreamException {
         int subLevel = 0;
         StringBuilder value = new StringBuilder();
         List<DenominationData> denominations = new ArrayList<>();
+
+        this.addAttributesDenominations(denominations, reader, denominationFields, Denomination.ELEMENT_PATH);
 
         while (reader.hasNext()) {
             switch (reader.next()) {
@@ -84,10 +88,10 @@ public class ElementParser {
                     break;
                 case XMLStreamReader.END_ELEMENT:
                     if (subLevel == 1) {
-                        if (denominationFields.contains(reader.getLocalName())) {
-                            denominations.add(
-                                new DenominationData(reader.getLocalName(), value.toString())
-                            );
+                        var denominationCandidate = new Denomination(Denomination.ELEMENT_PATH, reader.getLocalName());
+                        if (denominationFields.contains(denominationCandidate)) {
+                            var denominationData = new DenominationData(reader.getLocalName(), value.toString());
+                            denominations.add(denominationData);
                         }
                     } else if (subLevel < 1) {
                         if (elementId.toUpperCase().contains(query.toUpperCase())
@@ -114,10 +118,12 @@ public class ElementParser {
     }
 
 
-    private List<DenominationData> parseVersion(XMLStreamReader reader, Collection<String> denominationFields) throws XMLStreamException {
+    private List<DenominationData> parseVersion(XMLStreamReader reader, List<Denomination> denominationFields) throws XMLStreamException {
         List<DenominationData> denominations = new ArrayList<>();
         int subLevel = 0;
         StringBuilder value = new StringBuilder();
+
+        this.addAttributesDenominations(denominations, reader, denominationFields, Denomination.VERSION_PATH);
 
         while (reader.hasNext()) {
             switch (reader.next()) {
@@ -134,10 +140,10 @@ public class ElementParser {
                     break;
                 case XMLStreamReader.END_ELEMENT:
                     if (subLevel == 1) {
-                        if (denominationFields.contains(reader.getLocalName())) {
-                            denominations.add(
-                                new DenominationData(reader.getLocalName(), value.toString())
-                            );
+                        var denominationCandidate = new Denomination(Denomination.VERSION_PATH, reader.getLocalName());
+                        if (denominationFields.contains(denominationCandidate)) {
+                            var denominationData = new DenominationData(reader.getLocalName(), value.toString());
+                            denominations.add(denominationData);
                         }
                     } else if (subLevel == 0) {
                         return denominations;
@@ -148,5 +154,16 @@ public class ElementParser {
         }
 
         throw new XMLStreamException("premature end of file");
+    }
+
+
+    private void addAttributesDenominations(List<DenominationData> denominations, XMLStreamReader reader, List<Denomination> denominationFields, String path) {
+        for (var i = 0; i < reader.getAttributeCount(); i++) {
+            var denominationCandidate = new Denomination(path, reader.getAttributeLocalName(i));
+            if (denominationFields.contains(denominationCandidate)) {
+                var denominationData = new DenominationData(reader.getAttributeLocalName(i), reader.getAttributeValue(i));
+                denominations.add(denominationData);
+            }
+        }
     }
 }

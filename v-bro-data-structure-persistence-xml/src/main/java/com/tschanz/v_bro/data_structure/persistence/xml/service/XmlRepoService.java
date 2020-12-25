@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 
 public class XmlRepoService implements RepoService {
+    // TODO => config file
     public static final String ID_ATTRIBUTE_NAME = "id";
     public static final String ID_VALUE_PREFIX_1 = "idd__";
     public static final String ID_VALUE_PREFIX_2 = "ids__";
