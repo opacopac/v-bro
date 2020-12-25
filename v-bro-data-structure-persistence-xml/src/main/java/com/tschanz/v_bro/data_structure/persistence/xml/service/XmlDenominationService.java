@@ -23,9 +23,9 @@ public class XmlDenominationService implements DenominationService {
         var elementLutInfo = this.repoService.getElementLut().values()
             .stream()
             .filter(element -> elementClassName.equals(element.getName()))
-            .findFirst() // TODO: better: find all and create set
+            .findFirst() // TODO: better: merge all and create set
             .orElseThrow(() -> new RepoException(String.format("no element with name '%s' found", elementClassName)));
-        var xmlFileStream = this.repoService.getNewXmlFileStream(elementLutInfo.getStartBytePos(), elementLutInfo.getEndBytePos());
+        var xmlFileStream = this.repoService.getElementInputStream(elementLutInfo.getElementId());
         var denominations = this.denominationsParser.readDenominations(xmlFileStream, elementClassName);
 
         return denominations;

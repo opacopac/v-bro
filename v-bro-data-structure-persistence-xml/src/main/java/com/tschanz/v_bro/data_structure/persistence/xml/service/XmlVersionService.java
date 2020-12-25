@@ -28,7 +28,7 @@ public class XmlVersionService implements VersionService {
             throw new IllegalArgumentException("element id not found");
         }
 
-        InputStream xmlFileStream = this.repoService.getNewXmlFileStream(elementLut.getStartBytePos(), elementLut.getEndBytePos());
+        InputStream xmlFileStream = this.repoService.getElementInputStream(element.getId());
         Collection<VersionData> versions = this.parser.readVersions(
             xmlFileStream,
             element

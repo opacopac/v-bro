@@ -33,12 +33,4 @@ public class SpyXmlRepoService extends XmlRepoService {
         this.spyHelper.reportMethodCall("disconnect");
         this.spyHelper.checkThrowException();
     }
-
-
-    @Override
-    public InputStream getNewXmlFileStream() throws RepoException {
-        this.spyHelper.reportMethodCall("getNewXmlFileStream");
-        this.spyHelper.checkThrowException();
-        return this.getNewXmlFileStreamResult.next();
-    }
 }

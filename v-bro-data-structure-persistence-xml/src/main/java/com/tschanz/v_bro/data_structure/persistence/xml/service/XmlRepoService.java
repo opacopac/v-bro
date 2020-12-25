@@ -1,18 +1,19 @@
 package com.tschanz.v_bro.data_structure.persistence.xml.service;
 
-import com.tschanz.v_bro.data_structure.persistence.xml.stax_parser.ElementLutParser;
 import com.tschanz.v_bro.data_structure.persistence.xml.model.XmlElementLutInfo;
+import com.tschanz.v_bro.data_structure.persistence.xml.stax_parser.ElementLutParser;
 import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
-import com.tschanz.v_bro.repo.domain.service.RepoService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
+import com.tschanz.v_bro.repo.domain.service.RepoService;
 import com.tschanz.v_bro.repo.persistence.model.XmlConnectionParameters;
 
 import javax.xml.stream.XMLStreamReader;
 import java.io.*;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class XmlRepoService implements RepoService {
@@ -44,7 +45,7 @@ public class XmlRepoService implements RepoService {
         }
 
         this.connectionParameters = ((XmlConnectionParameters) parameters);
-        File xmlFile = new File(connectionParameters.getFilename());
+        var xmlFile = new File(connectionParameters.getFilename());
         if (!xmlFile.exists()) {
             throw new RepoException("File not found: " + connectionParameters.getFilename());
         }
@@ -70,7 +71,54 @@ public class XmlRepoService implements RepoService {
     }
 
 
-    public InputStream getNewXmlFileStream() throws RepoException {
+    public InputStream getElementClassInputStream(String elementClassName) throws RepoException {
+        var elementLuts = this.getElementLut().values()
+            .stream()
+            .filter(element -> elementClassName.equals(element.getName()))
+            .sorted(Comparator.comparingInt(XmlElementLutInfo::getStartBytePos))
+            .collect(Collectors.toList());
+
+        return this.getNewXmlFileStream(elementLuts.get(0).getStartBytePos(), elementLuts.get(elementLuts.size() - 1).getEndBytePos());
+    }
+
+
+    public InputStream getElementInputStream(String elementId) throws RepoException {
+        var elementLutInfo = this.getElementLut().get(elementId);
+        if (elementLutInfo == null) {
+            throw new IllegalArgumentException(String.format("element id '%s' not found in xml lookup table", elementId));
+        }
+
+        return this.getNewXmlFileStream(elementLutInfo.getStartBytePos(), elementLutInfo.getEndBytePos());
+    }
+
+
+    private InputStream getNewXmlFileStream(int startBytePos, int endBytePos) throws RepoException {
+        if (!this.isConnected()) {
+            throw new RepoException("Repo not connected!");
+        }
+
+        if (startBytePos > endBytePos) {
+            throw new IllegalArgumentException("start position must be smaller than end position");
+        }
+
+        byte[] bytes;
+        try {
+            var xmlFileStream = new FileInputStream(this.connectionParameters.getFilename());
+            xmlFileStream.skip(startBytePos);
+            bytes = xmlFileStream.readNBytes(endBytePos - startBytePos + 1);
+            xmlFileStream.close();
+
+        } catch (IOException exception) {
+            throw new RepoException(exception.getMessage(), exception);
+        }
+
+        return new ByteArrayInputStream(
+            this.wrapInRootNodeAndAddPreamble(bytes)
+        );
+    }
+
+
+    private InputStream getNewXmlFileStream() throws RepoException {
         if (!this.isConnected()) {
             throw new RepoException("Repo not connected!");
         }
@@ -83,32 +131,6 @@ public class XmlRepoService implements RepoService {
         }
 
         return xmlFileStream;
-    }
-
-
-    public InputStream getNewXmlFileStream(int startBytePos, int endBytePos) throws RepoException {
-        if (!this.isConnected()) {
-            throw new RepoException("Repo not connected!");
-        }
-
-        if (startBytePos > endBytePos) {
-            throw new IllegalArgumentException("start position must be smaller than end position");
-        }
-
-        byte[] bytes;
-        try {
-            FileInputStream xmlFileStream = new FileInputStream(this.connectionParameters.getFilename());
-            long skippedBytes = xmlFileStream.skip(startBytePos);
-            bytes = xmlFileStream.readNBytes(endBytePos - startBytePos + 1);
-            xmlFileStream.close();
-
-        } catch (IOException exception) {
-            throw new RepoException(exception.getMessage(), exception);
-        }
-
-        return new ByteArrayInputStream(
-            this.wrapInRootNodeAndAddPreamble(bytes)
-        );
     }
 
 
@@ -126,9 +148,9 @@ public class XmlRepoService implements RepoService {
 
 
     private void readElementLut() throws RepoException {
-        InputStream xmlFileStream = this.getNewXmlFileStream();
-        ElementLutParser parser = new ElementLutParser();
-        List<XmlElementLutInfo> elements = parser.readElementLut(xmlFileStream);
+        var xmlFileStream = this.getNewXmlFileStream();
+        var parser = new ElementLutParser();
+        var elements = parser.readElementLut(xmlFileStream);
 
         this.elementStructureMap = new HashMap<>();
         elements.forEach(element -> this.elementStructureMap.put(element.getElementId(), element));
