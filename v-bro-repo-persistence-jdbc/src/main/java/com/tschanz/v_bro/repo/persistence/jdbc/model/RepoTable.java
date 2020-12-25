@@ -1,6 +1,7 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.model;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
@@ -8,12 +9,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+@Getter
 @RequiredArgsConstructor
 public class RepoTable {
-    @Getter protected final String name;
-    @Getter protected final List<RepoField> fields;
-    @Getter protected final List<RepoRelation> outgoingRelations;
-    @Getter protected final List<RepoRelation> incomingRelations;
+    @NonNull private final String name;
+    @NonNull private final List<RepoField> fields;
+    @NonNull private final List<RepoRelation> outgoingRelations;
+    @NonNull private final List<RepoRelation> incomingRelations;
 
 
     public RepoField findField(String fieldName) {

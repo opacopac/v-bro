@@ -13,7 +13,7 @@ public class RepoState {
     private ConnectionParameters connectionParameters;
 
 
-    public RepoType getRepoType() {
+    public RepoType getCurrentRepoType() {
         return this.connectionParameters != null
             ? this.connectionParameters.getRepoType()
             : null;

@@ -57,7 +57,7 @@ public class OpenElementUseCaseImpl implements OpenElementUseCase {
         var elementResponse = ElementResponse.fromDomain(currentElement);
         this.elementPresenter.present(elementResponse);
 
-        var readVersionRequest = new ReadVersionsRequest(elementId);
+        var readVersionRequest = new ReadVersionsRequest();
         this.readVersionsUc.execute(readVersionRequest);
 
         if (request.isAutoOpenLastVersion()) {

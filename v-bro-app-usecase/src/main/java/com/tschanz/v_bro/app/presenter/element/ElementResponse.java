@@ -22,7 +22,7 @@ public class ElementResponse {
             return new ElementResponse(null, Collections.emptyList());
         }
 
-        var denominations = elementData.getNameFieldValues()
+        var denominations = elementData.getDenominations()
             .stream()
             .map(DenominationData::getValue)
             .collect(Collectors.toList());

@@ -27,20 +27,18 @@ public class ReadDependenciesUseCaseImpl implements ReadDependenciesUseCase {
 
     @Override
     public void execute(ReadDependenciesRequest request) {
-        var repoType = mainState.getRepoState().getRepoType();
-        var elementClass = mainState.getElementClassState().getSelectedName();
-        var elementId = mainState.getElementState().getCurrentElementId();
-        var versionId = mainState.getVersionState().getSelectedVersionId();
+        var repoType = mainState.getRepoState().getCurrentRepoType();
+        var version = mainState.getVersionState().getCurrentVersion();
 
-        if (repoType != null && elementClass != null && elementId != null && versionId != null) {
+        if (repoType != null && version != null) {
             try {
-                var msgStart =  String.format("UC: reading FWD dependencies of element class '%s' element id '%s' version '%s'...", elementClass, elementId, versionId);
+                var msgStart =  String.format("UC: reading FWD dependencies of version '%s'...", version.getId());
                 log.info(msgStart);
                 var statusResponse1 = new StatusResponse(msgStart, false, true);
                 this.statusPresenter.present(statusResponse1);
 
                 DependencyService dependencyService = this.dependencyServiceProvider.getService(repoType);
-                List<FwdDependency> fwdDependencies = dependencyService.readFwdDependencies(elementClass, elementId, versionId);
+                List<FwdDependency> fwdDependencies = dependencyService.readFwdDependencies(version);
 
                 String msgSuccess = String.format("successfully read %d FWD dependencies", fwdDependencies.size());
                 log.info(msgSuccess);

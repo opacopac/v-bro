@@ -21,17 +21,17 @@ public class QueryElementsUseCaseImpl implements QueryElementsUseCase {
 
     @Override
     public QueryElementsResponse execute(QueryElementsRequest request) {
-        var repoType = mainState.getRepoState().getRepoType();
-        var elementClassName = mainState.getElementClassState().getSelectedName();
+        var repoType = mainState.getRepoState().getCurrentRepoType();
+        var elementClass = mainState.getElementClassState().getCurrentElementClass();
         var query = Objects.requireNonNull(request.getQuery());
-        var selectedDenominationNames = this.mainState.getDenominationState().getSelectedNames();
+        var selectedDenominationFields = this.mainState.getDenominationState().getCurrentDenominations();
 
-        if (repoType != null && elementClassName != null) {
+        if (repoType != null && elementClass != null) {
             try {
-                log.info(String.format("UC: query elements of class '%s' for text '%s'...", elementClassName, query));
+                log.info(String.format("UC: query elements of class '%s' for text '%s'...", elementClass, query));
 
                 var elementService = this.elementServiceProvider.getService(repoType);
-                var elements = elementService.readElements(elementClassName, selectedDenominationNames, query, MAX_RESULTS);
+                var elements = elementService.readElements(elementClass, selectedDenominationFields, query, MAX_RESULTS);
 
                 this.mainState.getElementState().setQueryResult(elements);
 

@@ -1,12 +1,10 @@
 package com.tschanz.v_bro.data_structure.persistence.xml.service;
 
-import com.tschanz.v_bro.data_structure.domain.model.FwdDependency;
+import com.tschanz.v_bro.data_structure.domain.model.*;
 import com.tschanz.v_bro.data_structure.domain.service.DependencyService;
 import com.tschanz.v_bro.data_structure.persistence.xml.model.XmlElementLutInfo;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
-import com.tschanz.v_bro.data_structure.domain.model.AggregateNode;
-import com.tschanz.v_bro.data_structure.domain.model.VersionAggregate;
-import com.tschanz.v_bro.data_structure.domain.model.VersionData;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.util.*;
@@ -21,10 +19,10 @@ public class XmlDependencyService implements DependencyService {
 
 
     @Override
-    public List<FwdDependency> readFwdDependencies(String elemenClass, String elementId, String versionId) throws RepoException {
+    public List<FwdDependency> readFwdDependencies(@NonNull VersionData version) throws RepoException {
         Map<String, XmlElementLutInfo> elementLutInfos = this.repoService.getElementLut();
-        VersionAggregate versionAggregate = this.versionAggregateService.readVersionAggregate(elemenClass, elementId, versionId);
-        List<FwdDependency> fwdDependencies = this.findNodeDependencies(versionAggregate.getRootNode(), elementId, elementLutInfos);
+        VersionAggregate versionAggregate = this.versionAggregateService.readVersionAggregate(version);
+        List<FwdDependency> fwdDependencies = this.findNodeDependencies(versionAggregate.getRootNode(), version.getElement().getId(), elementLutInfos);
 
         return fwdDependencies;
     }
@@ -43,8 +41,11 @@ public class XmlDependencyService implements DependencyService {
             .collect(Collectors.toList());
 
         for (XmlElementLutInfo fwdElement: fwdElements) {
-            List<VersionData> versions = this.versionService.readVersionTimeline(fwdElement.getName(), fwdElement.getElementId());
-            fwdDependencies.add(new FwdDependency(fwdElement.getName(), fwdElement.getElementId(), versions));
+            var elementClass = new ElementClass(fwdElement.getName());
+            var element = new ElementData(elementClass, fwdElement.getElementId(), Collections.emptyList());
+            var versions = this.versionService.readVersions(element);
+            var fwdDependency = new FwdDependency(elementClass, element, versions);
+            fwdDependencies.add(fwdDependency);
         }
 
         for (AggregateNode childNode: aggregateNode.getChildNodes()) {

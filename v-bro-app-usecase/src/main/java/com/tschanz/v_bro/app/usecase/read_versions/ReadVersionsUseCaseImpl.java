@@ -25,19 +25,18 @@ public class ReadVersionsUseCaseImpl implements ReadVersionsUseCase {
 
     @Override
     public void execute(ReadVersionsRequest request) {
-        var repoType = mainState.getRepoState().getRepoType();
-        var elementClass = mainState.getElementClassState().getSelectedName();
-        var elementId = request.getElementId();
+        var repoType = mainState.getRepoState().getCurrentRepoType();
+        var element = mainState.getElementState().getCurrentElement();
 
-        if (repoType != null && elementClass != null && elementId != null) {
+        if (repoType != null && element != null) {
             try {
-                var msgStart = String.format("UC: reading versions of element class '%s' element id '%s'...", elementClass, elementId);
+                var msgStart = String.format("UC: reading versions of element id '%s'...", element.getId());
                 log.info(msgStart);
                 var statusResponse1 = new StatusResponse(msgStart, false, true);
                 this.statusPresenter.present(statusResponse1);
 
                 var versionService = this.versionServiceProvider.getService(repoType);
-                var versions = versionService.readVersionTimeline(elementClass, elementId);
+                var versions = versionService.readVersions(element);
 
                 var versionList = new SelectedList<>(versions, null);
                 this.mainState.getVersionState().setVersions(versionList);

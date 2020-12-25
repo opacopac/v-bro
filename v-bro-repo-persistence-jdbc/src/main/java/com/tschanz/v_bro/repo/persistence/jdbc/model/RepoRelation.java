@@ -1,12 +1,15 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.model;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+
+@Getter
 @RequiredArgsConstructor
 public class RepoRelation {
-    @Getter private final String bwdClassName;
-    @Getter private final String bwdFieldName;
-    @Getter private final String fwdClassName;
-    @Getter private final String fwdFieldName;
+    @NonNull private final String bwdClassName;
+    @NonNull private final String bwdFieldName;
+    @NonNull private final String fwdClassName;
+    @NonNull private final String fwdFieldName;
 }

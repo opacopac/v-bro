@@ -1,19 +1,27 @@
 package com.tschanz.v_bro.data_structure.persistence.mock.service;
 
+import com.tschanz.v_bro.data_structure.domain.model.Denomination;
 import com.tschanz.v_bro.data_structure.domain.model.DenominationData;
-import com.tschanz.v_bro.data_structure.domain.service.ElementService;
+import com.tschanz.v_bro.data_structure.domain.model.ElementClass;
 import com.tschanz.v_bro.data_structure.domain.model.ElementData;
+import com.tschanz.v_bro.data_structure.domain.service.ElementService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
+import lombok.NonNull;
 
-import java.util.Collection;
 import java.util.List;
 
 
 public class MockElementService implements ElementService {
     @Override
-    public List<ElementData> readElements(String elementClass, Collection<String> fieldNames, String query, int maxResults) throws RepoException {
+    public List<ElementData> readElements(
+        @NonNull ElementClass elementClass,
+        @NonNull List<Denomination> denominationFields,
+        @NonNull String query,
+        int maxResults
+    ) throws RepoException {
         return List.of(
             new ElementData(
+                elementClass,
                 "111",
                 List.of(
                     new DenominationData("PRODUKTNUMMER", "125"),
@@ -21,6 +29,7 @@ public class MockElementService implements ElementService {
                 )
             ),
             new ElementData(
+                elementClass,
                 "222",
                 List.of(
                     new DenominationData("PRODUKTNUMMER", "7"),

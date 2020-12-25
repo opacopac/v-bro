@@ -14,9 +14,7 @@ public class ElementClassState {
     @NonNull private SelectedList<ElementClass> elementClasses = SelectedList.createEmpty();
 
 
-    public String getSelectedName() {
-        return this.elementClasses.getSelectedItem() != null
-            ? this.elementClasses.getSelectedItem().getName()
-            : null;
+    public ElementClass getCurrentElementClass() {
+        return this.elementClasses.getSelectedItem();
     }
 }

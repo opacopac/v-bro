@@ -82,7 +82,7 @@ public class DenominationsParser {
                     break;
                 case XMLStreamReader.END_ELEMENT:
                     if (subLevel == 1) {
-                        checkAddDenomination(elementDenominations, reader.getLocalName(), value.toString());
+                        addDenomination(elementDenominations, Denomination.ELEMENT_PATH, reader.getLocalName(), value.toString()); // TODO => use name of container node
                     } else if (subLevel < 1) {
                         return Stream.concat(
                             elementDenominations.stream(),
@@ -119,7 +119,7 @@ public class DenominationsParser {
                     break;
                 case XMLStreamReader.END_ELEMENT:
                     if (subLevel == 1) {
-                        checkAddDenomination(denominations, reader.getLocalName(), value.toString());
+                        addDenomination(denominations, Denomination.VERSION_PATH, reader.getLocalName(), value.toString()); // TODO => use name of container node
                     } else if (subLevel == 0) {
                         return denominations;
                     }
@@ -132,13 +132,13 @@ public class DenominationsParser {
     }
 
 
-    private void checkAddDenomination(List<Denomination> denominations, String name, String value) {
+    private void addDenomination(List<Denomination> denominations, String container, String name, String value) {
         if (value == null || value.trim().isEmpty()) {
             return;
         } else if (value.equals("true") || value.equals("false")) {
             return;
-        } else if (!denominations.contains(name)) {
-            denominations.add(new Denomination(name));
+        } else if (!denominations.contains(new Denomination(container, name))) {
+            denominations.add(new Denomination(container, name));
         }
 
         // TODO: exclude some other formats

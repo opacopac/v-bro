@@ -12,8 +12,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 class VersionFilterTest {
+    private ElementData elementData;
+
+
     @BeforeEach
     void setUp() {
+        ElementClass elementClass = new ElementClass("P_PRODUKTDEF_E");
+        this.elementData = new ElementData(elementClass, "123", Collections.emptyList());
     }
 
 
@@ -25,9 +30,9 @@ class VersionFilterTest {
         // ->               v            b
         VersionFilter versionFilter = new VersionFilter(LocalDate.of(2015, 6, 1), LocalDate.of(2020, 6, 1), Pflegestatus.PRODUKTIV);
         List<VersionData> versions = List.of(
-            new VersionData("0", LocalDate.of(2015, 1, 1), LocalDate.of(2016, 12, 31), Pflegestatus.PRODUKTIV),
-            new VersionData("1", LocalDate.of(2017, 1, 1), LocalDate.of(2018, 12, 31), Pflegestatus.PRODUKTIV),
-            new VersionData("2", LocalDate.of(2019, 1, 1), LocalDate.of(2020, 12, 31), Pflegestatus.PRODUKTIV)
+            new VersionData(elementData, "0", LocalDate.of(2015, 1, 1), LocalDate.of(2016, 12, 31), Pflegestatus.PRODUKTIV),
+            new VersionData(elementData, "1", LocalDate.of(2017, 1, 1), LocalDate.of(2018, 12, 31), Pflegestatus.PRODUKTIV),
+            new VersionData(elementData, "2", LocalDate.of(2019, 1, 1), LocalDate.of(2020, 12, 31), Pflegestatus.PRODUKTIV)
         );
 
         VersionFilter croppedFilter = versionFilter.cropToVersions(versions);
@@ -45,9 +50,9 @@ class VersionFilterTest {
         // ->                     v   b
         VersionFilter versionFilter = new VersionFilter(LocalDate.of(2017, 6, 1), LocalDate.of(2018, 6, 1), Pflegestatus.PRODUKTIV);
         List<VersionData> versions = List.of(
-            new VersionData("0", LocalDate.of(2015, 1, 1), LocalDate.of(2016, 12, 31), Pflegestatus.PRODUKTIV),
-            new VersionData("1", LocalDate.of(2017, 1, 1), LocalDate.of(2018, 12, 31), Pflegestatus.PRODUKTIV),
-            new VersionData("2", LocalDate.of(2019, 1, 1), LocalDate.of(2020, 12, 31), Pflegestatus.PRODUKTIV)
+            new VersionData(elementData, "0", LocalDate.of(2015, 1, 1), LocalDate.of(2016, 12, 31), Pflegestatus.PRODUKTIV),
+            new VersionData(elementData, "1", LocalDate.of(2017, 1, 1), LocalDate.of(2018, 12, 31), Pflegestatus.PRODUKTIV),
+            new VersionData(elementData, "2", LocalDate.of(2019, 1, 1), LocalDate.of(2020, 12, 31), Pflegestatus.PRODUKTIV)
         );
 
         VersionFilter croppedFilter = versionFilter.cropToVersions(versions);
@@ -65,7 +70,7 @@ class VersionFilterTest {
         // ->               v            b
         VersionFilter versionFilter = new VersionFilter(LocalDate.of(2015, 6, 1), LocalDate.of(2020, 6, 1), Pflegestatus.PRODUKTIV);
         List<VersionData> versions = List.of(
-            new VersionData("1", LocalDate.of(2015, 1, 1), LocalDate.of(2020, 12, 31), Pflegestatus.PRODUKTIV)
+            new VersionData(elementData, "1", LocalDate.of(2015, 1, 1), LocalDate.of(2020, 12, 31), Pflegestatus.PRODUKTIV)
         );
 
         VersionFilter croppedFilter = versionFilter.cropToVersions(versions);
@@ -100,9 +105,9 @@ class VersionFilterTest {
         // ->             v                   b
         VersionFilter versionFilter = new VersionFilter(LocalDate.of(2013, 6, 1), LocalDate.of(2020, 6, 1), Pflegestatus.PRODUKTIV);
         List<VersionData> versions = List.of(
-            new VersionData("0", LocalDate.of(2015, 1, 1), LocalDate.of(2016, 12, 31), Pflegestatus.PRODUKTIV),
-            new VersionData("1", LocalDate.of(2017, 1, 1), LocalDate.of(2018, 12, 31), Pflegestatus.PRODUKTIV),
-            new VersionData("2", LocalDate.of(2019, 1, 1), LocalDate.of(2020, 12, 31), Pflegestatus.PRODUKTIV)
+            new VersionData(elementData, "0", LocalDate.of(2015, 1, 1), LocalDate.of(2016, 12, 31), Pflegestatus.PRODUKTIV),
+            new VersionData(elementData, "1", LocalDate.of(2017, 1, 1), LocalDate.of(2018, 12, 31), Pflegestatus.PRODUKTIV),
+            new VersionData(elementData, "2", LocalDate.of(2019, 1, 1), LocalDate.of(2020, 12, 31), Pflegestatus.PRODUKTIV)
         );
 
         VersionFilter croppedFilter = versionFilter.cropToVersions(versions);
@@ -120,9 +125,9 @@ class VersionFilterTest {
         // ->                  v                   b
         VersionFilter versionFilter = new VersionFilter(LocalDate.of(2015, 6, 1), LocalDate.of(2022, 6, 1), Pflegestatus.PRODUKTIV);
         List<VersionData> versions = List.of(
-            new VersionData("0", LocalDate.of(2015, 1, 1), LocalDate.of(2016, 12, 31), Pflegestatus.PRODUKTIV),
-            new VersionData("1", LocalDate.of(2017, 1, 1), LocalDate.of(2018, 12, 31), Pflegestatus.PRODUKTIV),
-            new VersionData("2", LocalDate.of(2019, 1, 1), LocalDate.of(2020, 12, 31), Pflegestatus.PRODUKTIV)
+            new VersionData(elementData, "0", LocalDate.of(2015, 1, 1), LocalDate.of(2016, 12, 31), Pflegestatus.PRODUKTIV),
+            new VersionData(elementData, "1", LocalDate.of(2017, 1, 1), LocalDate.of(2018, 12, 31), Pflegestatus.PRODUKTIV),
+            new VersionData(elementData, "2", LocalDate.of(2019, 1, 1), LocalDate.of(2020, 12, 31), Pflegestatus.PRODUKTIV)
         );
 
         VersionFilter croppedFilter = versionFilter.cropToVersions(versions);
@@ -140,9 +145,9 @@ class VersionFilterTest {
         // ->             v                        b
         VersionFilter versionFilter = new VersionFilter(LocalDate.of(2013, 6, 1), LocalDate.of(2022, 6, 1), Pflegestatus.PRODUKTIV);
         List<VersionData> versions = List.of(
-            new VersionData("0", LocalDate.of(2015, 1, 1), LocalDate.of(2016, 12, 31), Pflegestatus.PRODUKTIV),
-            new VersionData("1", LocalDate.of(2017, 1, 1), LocalDate.of(2018, 12, 31), Pflegestatus.PRODUKTIV),
-            new VersionData("2", LocalDate.of(2019, 1, 1), LocalDate.of(2020, 12, 31), Pflegestatus.PRODUKTIV)
+            new VersionData(elementData, "0", LocalDate.of(2015, 1, 1), LocalDate.of(2016, 12, 31), Pflegestatus.PRODUKTIV),
+            new VersionData(elementData, "1", LocalDate.of(2017, 1, 1), LocalDate.of(2018, 12, 31), Pflegestatus.PRODUKTIV),
+            new VersionData(elementData, "2", LocalDate.of(2019, 1, 1), LocalDate.of(2020, 12, 31), Pflegestatus.PRODUKTIV)
         );
 
         VersionFilter croppedFilter = versionFilter.cropToVersions(versions);
@@ -160,9 +165,9 @@ class VersionFilterTest {
         // ->                 v          <padding>b
         VersionFilter versionFilter = new VersionFilter(LocalDate.of(2015, 6, 1), VersionData.HIGH_DATE, Pflegestatus.PRODUKTIV);
         List<VersionData> versions = List.of(
-            new VersionData("0", LocalDate.of(2015, 1, 1), LocalDate.of(2016, 12, 31), Pflegestatus.PRODUKTIV),
-            new VersionData("1", LocalDate.of(2017, 1, 1), LocalDate.of(2018, 12, 31), Pflegestatus.PRODUKTIV),
-            new VersionData("2", LocalDate.of(2019, 1, 1), VersionData.HIGH_DATE, Pflegestatus.PRODUKTIV)
+            new VersionData(elementData, "0", LocalDate.of(2015, 1, 1), LocalDate.of(2016, 12, 31), Pflegestatus.PRODUKTIV),
+            new VersionData(elementData, "1", LocalDate.of(2017, 1, 1), LocalDate.of(2018, 12, 31), Pflegestatus.PRODUKTIV),
+            new VersionData(elementData, "2", LocalDate.of(2019, 1, 1), VersionData.HIGH_DATE, Pflegestatus.PRODUKTIV)
         );
 
         VersionFilter croppedFilter = versionFilter.cropToVersions(versions);
@@ -180,7 +185,7 @@ class VersionFilterTest {
         // ->                 v<default timespan>b
         VersionFilter versionFilter = new VersionFilter(LocalDate.of(2015, 6, 1), VersionData.HIGH_DATE, Pflegestatus.PRODUKTIV);
         List<VersionData> versions = List.of(
-            new VersionData("0", VersionData.LOW_DATE, VersionData.HIGH_DATE, Pflegestatus.PRODUKTIV)
+            new VersionData(elementData, "0", VersionData.LOW_DATE, VersionData.HIGH_DATE, Pflegestatus.PRODUKTIV)
         );
 
         VersionFilter croppedFilter = versionFilter.cropToVersions(versions);

@@ -1,15 +1,13 @@
 package com.tschanz.v_bro.data_structure.persistence.xml.service;
 
 import com.tschanz.v_bro.common.KeyValue;
-import com.tschanz.v_bro.data_structure.persistence.xml.sax_parser.VersionAggregateParser;
-import com.tschanz.v_bro.data_structure.persistence.xml.model.XmlElementLutInfo;
-import com.tschanz.v_bro.repo.domain.model.RepoException;
-import com.tschanz.v_bro.data_structure.domain.model.AggregateNode;
-import com.tschanz.v_bro.data_structure.domain.model.VersionAggregate;
+import com.tschanz.v_bro.data_structure.domain.model.*;
 import com.tschanz.v_bro.data_structure.domain.service.VersionAggregateService;
+import com.tschanz.v_bro.data_structure.persistence.xml.model.XmlElementLutInfo;
 import com.tschanz.v_bro.data_structure.persistence.xml.model.XmlNodeInfo;
-import com.tschanz.v_bro.data_structure.domain.model.Pflegestatus;
-import com.tschanz.v_bro.data_structure.domain.model.VersionData;
+import com.tschanz.v_bro.data_structure.persistence.xml.sax_parser.VersionAggregateParser;
+import com.tschanz.v_bro.repo.domain.model.RepoException;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.io.InputStream;
@@ -26,21 +24,21 @@ public class XmlVersionAggregateService implements VersionAggregateService {
 
 
     @Override
-    public VersionAggregate readVersionAggregate(String elementClass, String elementId, String versionId) throws RepoException {
-        XmlElementLutInfo elementLutInfo = this.repoService.getElementLut().get(elementId);
+    public VersionAggregate readVersionAggregate(@NonNull VersionData version) throws RepoException {
+        XmlElementLutInfo elementLutInfo = this.repoService.getElementLut().get(version.getElement().getId());
         InputStream xmlInputStream = this.repoService.getNewXmlFileStream(elementLutInfo.getStartBytePos(), elementLutInfo.getEndBytePos());
-        XmlNodeInfo rootNode = this.parser.readVersionAggregate(xmlInputStream, elementClass, elementId, versionId);
+        XmlNodeInfo rootNode = this.parser.readVersionAggregate(xmlInputStream, version.getElement().getElementClass().getName(), version.getElement().getId(), version.getId());
 
         return new VersionAggregate(
-            this.getVersionInfo(rootNode),
+            this.getVersionInfo(rootNode, version.getElement()),
             this.getAggregateNode(rootNode)
         );
     }
 
 
-    private VersionData getVersionInfo(XmlNodeInfo nodeInfo) {
+    private VersionData getVersionInfo(XmlNodeInfo nodeInfo, ElementData element) {
         if (nodeInfo.getChildNodes().isEmpty()) {
-            return VersionData.ETERNAL_VERSION;
+            return VersionData.createEternal(element);
         }
 
         XmlNodeInfo versionNode = nodeInfo.getChildNodes().get(0);
@@ -49,10 +47,11 @@ public class XmlVersionAggregateService implements VersionAggregateService {
         String gueltigBis = versionNode.getAttributes().get(XmlRepoService.VERSION_BIS_ATTRIBUTE_NAME);
 
         if (id == null || gueltigVon == null || gueltigBis == null) {
-            return VersionData.ETERNAL_VERSION;
+            return VersionData.createEternal(element);
         }
 
         return new VersionData(
+            element,
             id,
             LocalDate.parse(gueltigVon),
             LocalDate.parse(gueltigBis),

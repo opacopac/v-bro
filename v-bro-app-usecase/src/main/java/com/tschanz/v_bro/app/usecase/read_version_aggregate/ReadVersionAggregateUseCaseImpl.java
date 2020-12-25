@@ -24,20 +24,18 @@ public class ReadVersionAggregateUseCaseImpl implements ReadVersionAggregateUseC
 
     @Override
     public void execute(ReadVersionAggregateRequest request) {
-        var repoType = mainState.getRepoState().getRepoType();
-        var elementClass = mainState.getElementClassState().getSelectedName();
-        var elementId = mainState.getElementState().getCurrentElementId();
-        var versionId = mainState.getVersionState().getSelectedVersionId();
+        var repoType = mainState.getRepoState().getCurrentRepoType();
+        var version = mainState.getVersionState().getCurrentVersion();
 
-        if (repoType != null && elementClass != null && elementId != null && versionId != null) {
+        if (repoType != null && version != null) {
             try {
-                var msgStart = String.format("UC: reading version aggregate of element class '%s' element id '%s' version id '%s'...", elementClass, elementId, versionId);
+                var msgStart = String.format("UC: reading version aggregate of version id '%s'...", version.getId());
                 log.info(msgStart);
                 var statusResponse1 = new StatusResponse(msgStart, false, true);
                 this.statusPresenter.present(statusResponse1);
 
                 VersionAggregateService versionAggregateService = this.versionAggregateServiceProvider.getService(repoType);
-                VersionAggregate versionAggregate = versionAggregateService.readVersionAggregate(elementClass, elementId, versionId);
+                VersionAggregate versionAggregate = versionAggregateService.readVersionAggregate(version);
                 this.mainState.getVersionAggregateState().setVersionAggregate(versionAggregate);
 
                 String msgSuccess = "successfully read version aggregate";

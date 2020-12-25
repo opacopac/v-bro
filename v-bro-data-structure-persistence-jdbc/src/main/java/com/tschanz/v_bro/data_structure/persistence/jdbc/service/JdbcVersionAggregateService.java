@@ -1,20 +1,27 @@
 package com.tschanz.v_bro.data_structure.persistence.jdbc.service;
 
+import com.tschanz.v_bro.data_structure.domain.model.VersionAggregate;
+import com.tschanz.v_bro.data_structure.domain.model.VersionData;
+import com.tschanz.v_bro.data_structure.domain.service.VersionAggregateService;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.JdbcAggregateNode;
+import com.tschanz.v_bro.data_structure.persistence.jdbc.model.JdbcVersionAggregate;
+import com.tschanz.v_bro.data_structure.persistence.jdbc.model.VersionRecord;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.service.RepoService;
-import com.tschanz.v_bro.repo.persistence.jdbc.model.*;
+import com.tschanz.v_bro.repo.persistence.jdbc.model.FieldValue;
+import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoRelation;
+import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
+import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTableRecord;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.RowFilter;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.RowFilterOperator;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoDataService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataService;
-import com.tschanz.v_bro.data_structure.domain.model.VersionAggregate;
-import com.tschanz.v_bro.data_structure.domain.service.VersionAggregateService;
-import com.tschanz.v_bro.data_structure.persistence.jdbc.model.JdbcVersionAggregate;
-import com.tschanz.v_bro.data_structure.domain.model.VersionData;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -28,51 +35,39 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
 
 
     @Override
-    public VersionAggregate readVersionAggregate(String elementClass, String elementId, String versionId) throws RepoException {
+    public VersionAggregate readVersionAggregate(@NonNull VersionData version) throws RepoException {
         if (!this.repo.isConnected()) {
             throw new RepoException("Not connected to repo!");
         }
 
-        RepoTable elementTable = this.elementService.readElementTable(elementClass);
-        RepoTable versionTable = this.versionService.readVersionTable(elementTable);
+        var elementTable = this.elementService.readElementTable(version.getElement().getElementClass().getName());
+        var versionTable = this.elementService.readVersionTable(elementTable);
 
-        RepoTableRecord elementRecord = this.readSingleIdRecord(elementTable, Long.parseLong(elementId));
-        RepoTableRecord versionRecord = !VersionData.ETERNAL_VERSION.getId().equals(versionId)
-            ? this.readSingleIdRecord(versionTable, Long.parseLong(versionId))
+        var elementRecord = this.elementService.readElementRecord(elementTable, Long.parseLong(version.getElement().getId()), elementTable.getFields());
+        var versionRecord = !version.isEternal()
+            ? this.versionService.readVersionRecord(versionTable, Long.parseLong(version.getId()), versionTable.getFields())
             : null;
 
         List<JdbcAggregateNode> childNodes = versionRecord != null
             ? this.readChildNodes(versionRecord)
             : Collections.emptyList();
 
-        return new JdbcVersionAggregate(elementRecord, versionRecord, childNodes);
+        return new JdbcVersionAggregate(version.getElement(), elementRecord, versionRecord, childNodes);
     }
 
 
-    private RepoTableRecord readSingleIdRecord(RepoTable repoTable, long id) throws RepoException {
-        RowFilter filter = new RowFilter(repoTable.findfirstIdField(), RowFilterOperator.EQUALS, id);
-
-        List<RepoTableRecord> records = this.repoData.readRepoTableRecords(repoTable, repoTable.getFields(), List.of(filter), Collections.emptyList(), -1);
-        if (records.size() != 1) {
-            throw new IllegalArgumentException("multiple records for same id");
-        }
-
-        return records.get(0);
-    }
-
-
-    private List<JdbcAggregateNode> readChildNodes(RepoTableRecord versionRecord) throws RepoException {
+    private List<JdbcAggregateNode> readChildNodes(VersionRecord versionRecord) throws RepoException {
         List<JdbcAggregateNode> nodes = new ArrayList<>();
 
-        RepoTable versionTable = versionRecord.getRepoTable();
-        for (RepoRelation relation: versionTable.getIncomingRelations()) {
-            RepoField ownField = versionTable.findField(relation.getFwdFieldName());
-            Object ownFieldValue = versionRecord.findFieldValue(ownField.getName()).getValue();
-            RepoTable childRepoTable = this.repoMetaData.readTableStructure(relation.getBwdClassName());
-            RepoField childField = childRepoTable.findField(relation.getBwdFieldName());
-            RowFilter childFilter = new RowFilter(childField, RowFilterOperator.EQUALS, ownFieldValue);
+        var versionTable = versionRecord.getRecord().getRepoTable();
+        for (var relation: versionTable.getIncomingRelations()) {
+            var ownField = versionTable.findField(relation.getFwdFieldName());
+            var ownFieldValue = versionRecord.getRecord().findFieldValue(ownField.getName()).getValue();
+            var childRepoTable = this.repoMetaData.readTableStructure(relation.getBwdClassName());
+            var childField = childRepoTable.findField(relation.getBwdFieldName());
+            var childFilter = new RowFilter(childField, RowFilterOperator.EQUALS, ownFieldValue);
 
-            List<JdbcAggregateNode> childNodes = this.readNode(childRepoTable, childFilter);
+            var childNodes = this.readNode(childRepoTable, childFilter);
             nodes.addAll(childNodes);
         }
 
@@ -81,7 +76,7 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
 
 
     private List<JdbcAggregateNode> readNode(RepoTable table, RowFilter filter) throws RepoException {
-        List<RepoTableRecord> records = this.repoData.readRepoTableRecords(table, table.getFields(), List.of(filter), Collections.emptyList(), -1);
+        List<RepoTableRecord> records = this.repoData.readRepoTableRecords(table, Collections.emptyList(), table.getFields(), List.of(filter), Collections.emptyList(), -1);
         if (records.size() == 0) {
             return Collections.emptyList();
         }
@@ -89,26 +84,26 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
         List<JdbcAggregateNode> childNodes = new ArrayList<>();
 
         for (RepoRelation relation: table.getIncomingRelations()) {
-            RepoField ownField = table.findField(relation.getFwdFieldName());
-            List<Object> ownFieldValues = records
+            var ownField = table.findField(relation.getFwdFieldName());
+            var ownFieldValues = records
                 .stream()
                 .map(record -> record.findFieldValue(ownField.getName()))
                 .map(FieldValue::getValue)
                 .collect(Collectors.toList());
-            RepoTable childRepoTable = this.repoMetaData.readTableStructure(relation.getBwdClassName());
-            RepoField childField = childRepoTable.findField(relation.getBwdFieldName());
-            RowFilter childFilter = new RowFilter(childField, ownFieldValues);
+            var childRepoTable = this.repoMetaData.readTableStructure(relation.getBwdClassName());
+            var childField = childRepoTable.findField(relation.getBwdFieldName());
+            var childFilter = new RowFilter(childField, ownFieldValues);
 
             // first: bulk read children of a relation for all parent records at once (performance)
-            List<JdbcAggregateNode> relationChildNodes = this.readNode(childRepoTable, childFilter);
+            var relationChildNodes = this.readNode(childRepoTable, childFilter);
 
             // second: distribute children to each each parent record separately
             for (RepoTableRecord record: records) {
-                List<JdbcAggregateNode> recordChildNodes = relationChildNodes
+                var recordChildNodes = relationChildNodes
                     .stream()
                     .filter(node -> {
-                        Object childFieldValue = node.getRepoTableRecord().findFieldValue(childField.getName()).getValue();
-                        Object ownFieldValue = record.findFieldValue(ownField.getName()).getValue();
+                        var childFieldValue = node.getRepoTableRecord().findFieldValue(childField.getName()).getValue();
+                        var ownFieldValue = record.findFieldValue(ownField.getName()).getValue();
                         return childFieldValue.equals(ownFieldValue);
                     })
                     .collect(Collectors.toList());
@@ -122,7 +117,6 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
                 childNodes.add(new JdbcAggregateNode(record, Collections.emptyList()));
             }
         }
-
 
         return childNodes;
     }

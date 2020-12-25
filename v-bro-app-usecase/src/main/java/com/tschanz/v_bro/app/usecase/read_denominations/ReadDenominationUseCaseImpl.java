@@ -7,7 +7,7 @@ import com.tschanz.v_bro.app.presenter.status.StatusResponse;
 import com.tschanz.v_bro.app.state.MainState;
 import com.tschanz.v_bro.common.selected_list.MultiSelectedList;
 import com.tschanz.v_bro.data_structure.domain.model.Denomination;
-import com.tschanz.v_bro.data_structure.domain.service.ElementClassService;
+import com.tschanz.v_bro.data_structure.domain.service.DenominationService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
 import lombok.RequiredArgsConstructor;
@@ -20,15 +20,15 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class ReadDenominationUseCaseImpl implements ReadDenominationUseCase {
     private final MainState mainState;
-    private final RepoServiceProvider<ElementClassService> elementClassServiceProvider;
+    private final RepoServiceProvider<DenominationService> denominationServiceProvider;
     private final DenominationsPresenter denominationsPresenter;
     private final StatusPresenter statusPresenter;
 
 
     @Override
     public void execute(ReadDenominationRequest request) {
-        var repoType = mainState.getRepoState().getRepoType();
-        var elementClass = mainState.getElementClassState().getSelectedName();
+        var repoType = mainState.getRepoState().getCurrentRepoType();
+        var elementClass = mainState.getElementClassState().getCurrentElementClass();
 
         if (repoType != null && elementClass != null) {
             try {
@@ -37,8 +37,8 @@ public class ReadDenominationUseCaseImpl implements ReadDenominationUseCase {
                 var statusResponse1 = new StatusResponse(msgStart, false, true);
                 this.statusPresenter.present(statusResponse1);
 
-                var elementClassService = this.elementClassServiceProvider.getService(repoType);
-                var denominations = elementClassService.readDenominations(elementClass);
+                var denominationService = this.denominationServiceProvider.getService(repoType);
+                var denominations = denominationService.readDenominations(elementClass);
 
                 var mslist = new MultiSelectedList<>(denominations, Collections.emptyList());
                 this.mainState.getDenominationState().setDenominations(mslist);

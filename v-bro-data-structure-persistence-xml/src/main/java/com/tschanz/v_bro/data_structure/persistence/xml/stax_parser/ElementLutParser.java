@@ -55,10 +55,6 @@ public class ElementLutParser {
                         this.elementId = new String(this.tag, this.idAttributeStartIdx, this.idAttributeEndIdx - this.idAttributeStartIdx);
                         this.elementTagOpenBytePos = this.tagOpenBytePos;
                     }
-
-                    if (this.elementName != null && this.elementName.equals("haltestelle")) {
-                        int a = 1;
-                    }
                 }
 
                 if (this.isClosingTag()) { // can be the same like the opening tag

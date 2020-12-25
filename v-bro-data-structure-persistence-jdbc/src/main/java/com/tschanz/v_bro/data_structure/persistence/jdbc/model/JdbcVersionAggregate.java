@@ -1,11 +1,9 @@
 package com.tschanz.v_bro.data_structure.persistence.jdbc.model;
 
-import com.tschanz.v_bro.data_structure.persistence.jdbc.service.JdbcVersionService;
-import com.tschanz.v_bro.repo.persistence.jdbc.model.FieldValue;
-import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTableRecord;
+import com.tschanz.v_bro.data_structure.domain.model.ElementData;
 import com.tschanz.v_bro.data_structure.domain.model.VersionAggregate;
-import com.tschanz.v_bro.data_structure.domain.model.Pflegestatus;
 import com.tschanz.v_bro.data_structure.domain.model.VersionData;
+import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTableRecord;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -13,17 +11,18 @@ import java.util.List;
 
 
 public class JdbcVersionAggregate extends VersionAggregate {
-    @Getter private final RepoTableRecord elementRecord;
-    @Getter private final RepoTableRecord versionRecord;
+    @Getter private final ElementRecord elementRecord;
+    @Getter private final VersionRecord versionRecord;
 
 
     public JdbcVersionAggregate(
-        RepoTableRecord elementRecord,
-        RepoTableRecord versionRecord,
+        ElementData element,
+        ElementRecord elementRecord,
+        VersionRecord versionRecord,
         List<JdbcAggregateNode> versionChildNodes
     ) {
         super(
-            versionRecord != null ? getVersionInfo(versionRecord) : VersionData.ETERNAL_VERSION,
+            versionRecord != null ? versionRecord.createVersion(element) : VersionData.createEternal(element),
             getRootNode(elementRecord, versionRecord, versionChildNodes)
         );
 
@@ -47,29 +46,14 @@ public class JdbcVersionAggregate extends VersionAggregate {
     }
 
 
-
-    private static VersionData getVersionInfo(RepoTableRecord versionRecord) {
-        FieldValue statusField = versionRecord.findFieldValue(JdbcVersionService.PFLEGESTATUS_COLNAME);
-        Pflegestatus pflegestatus = statusField != null ? Pflegestatus.valueOf(statusField.getValueString()) : Pflegestatus.PRODUKTIV;
-
-        return new VersionData(
-            versionRecord.findIdFieldValue().getValueString(),
-            versionRecord.findFieldValue(JdbcVersionService.GUELTIG_VON_COLNAME).getValueDate(),
-            versionRecord.findFieldValue(JdbcVersionService.GUELTIG_BIS_COLNAME).getValueDate(),
-            pflegestatus
-        );
-    }
-
-
     private static JdbcAggregateNode getRootNode(
-        RepoTableRecord elementRecord,
-        RepoTableRecord versionRecord,
+        ElementRecord elementRecord,
+        VersionRecord versionRecord,
         List<JdbcAggregateNode> versionChildNodes
     ) {
         return new JdbcAggregateNode(
-            elementRecord,
-            List.of(new JdbcAggregateNode(versionRecord != null ? versionRecord : elementRecord, versionChildNodes))
+            elementRecord.getRecord(),
+            List.of(new JdbcAggregateNode(versionRecord != null ? versionRecord.getRecord() : elementRecord.getRecord(), versionChildNodes))
         );
     }
-
 }

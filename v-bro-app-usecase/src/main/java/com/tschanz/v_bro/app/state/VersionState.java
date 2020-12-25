@@ -14,9 +14,7 @@ public class VersionState {
     @NonNull private SelectedList<VersionData> versions = SelectedList.createEmpty();
 
 
-    public String getSelectedVersionId() {
-        return this.versions.getSelectedItem() != null
-            ? this.versions.getSelectedItem().getId()
-            : null;
+    public VersionData getCurrentVersion() {
+        return this.versions.getSelectedItem();
     }
 }

@@ -28,7 +28,7 @@ public class XmlElementClass extends ElementClass {
         Collection<Denomination> newDenominations = elementData.getDenominations()
             .stream()
             .filter(fieldName -> !existingNameFields.contains(fieldName))
-            .map(Denomination::new)
+            .map(fieldName -> new Denomination(Denomination.ELEMENT_PATH, fieldName)) // TODO: use name of container node
             .collect(Collectors.toList());
 
         this.denominations.addAll(newDenominations);

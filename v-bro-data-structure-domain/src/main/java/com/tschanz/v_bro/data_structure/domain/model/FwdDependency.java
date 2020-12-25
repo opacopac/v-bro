@@ -8,8 +8,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class FwdDependency {
-    @Getter protected final String elementClass;
-    @Getter protected final String elementId;
+    @Getter protected final ElementClass elementClass;
+    @Getter protected final ElementData element;
     @Getter protected final List<VersionData> versions;
 }
-

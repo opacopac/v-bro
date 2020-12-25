@@ -4,6 +4,9 @@ import com.tschanz.v_bro.app.presentation.viewmodel.common.IdItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.common.MultiSelectableItemList;
 import com.tschanz.v_bro.app.presenter.denominations.DenominationListResponse;
 import com.tschanz.v_bro.app.presenter.denominations.DenominationResponse;
+import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsRequest;
+import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsRequestItem;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -12,17 +15,24 @@ import java.util.stream.Collectors;
 
 
 @Getter
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public class DenominationItem implements IdItem {
-    public static final int MAX_DENOMINATIONS = 5;
+    private final String path;
     private final String name;
 
 
-    public static List<String> toRequest(List<DenominationItem> denominations) {
-        return denominations
+    public static SelectDenominationsRequest toRequest(List<DenominationItem> denominations) {
+        var items = denominations
             .stream()
-            .map(DenominationItem::getName)
+            .map(DenominationItem::toRequest)
             .collect(Collectors.toList());
+        return new SelectDenominationsRequest(items);
+    }
+
+
+    public static SelectDenominationsRequestItem toRequest(DenominationItem denomination) {
+        return new SelectDenominationsRequestItem(denomination.path, denomination.name);
     }
 
 
@@ -35,7 +45,6 @@ public class DenominationItem implements IdItem {
         var selectedItems = response.getDenominations().getSelectedItems()
             .stream()
             .map(DenominationItem::fromResponse)
-            .map(DenominationItem::getName)
             .collect(Collectors.toList());
 
         return new MultiSelectableItemList<>(items, selectedItems);
@@ -51,18 +60,21 @@ public class DenominationItem implements IdItem {
 
 
     public static DenominationItem fromResponse(DenominationResponse denomination) {
-        return new DenominationItem(denomination.getName());
+        return new DenominationItem(
+            denomination.getPath(),
+            denomination.getName()
+        );
     }
 
 
     @Override
     public String getId() {
-        return this.name;
+        return String.format("%s___%s", this.path, this.name);
     }
 
 
     @Override
     public String toString() {
-        return this.name;
+        return String.format("%s (%s)", this.name, this.path);
     }
 }

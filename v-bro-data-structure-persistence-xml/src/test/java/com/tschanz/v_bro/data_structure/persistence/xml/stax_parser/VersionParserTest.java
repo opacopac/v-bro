@@ -1,17 +1,18 @@
 package com.tschanz.v_bro.data_structure.persistence.xml.stax_parser;
 
-import com.tschanz.v_bro.repo.domain.model.RepoException;
+import com.tschanz.v_bro.data_structure.domain.model.ElementClass;
+import com.tschanz.v_bro.data_structure.domain.model.ElementData;
 import com.tschanz.v_bro.data_structure.domain.model.VersionData;
+import com.tschanz.v_bro.repo.domain.model.RepoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.stream.XMLInputFactory;
-
-import java.io.*;
+import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 class VersionParserTest {
@@ -20,14 +21,14 @@ class VersionParserTest {
 
     @BeforeEach
     void setUp() {
-        XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+        var xmlInputFactory = XMLInputFactory.newInstance();
         this.parser = new VersionParser(xmlInputFactory);
     }
 
 
     @Test
     void readVersions_reads_single_versioned_entry() throws RepoException {
-        String xmlText = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        var xmlText = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<ns2:datenrelease xmlns:ns2=\"ch.voev.nova.pflege.common.exporter.datenrelease\" xmlns:ns3=\"ch.voev.nova.pflege.common.exporter.datenrelease.tarifcommons\" xmlns:ns4=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ns5=\"ch.voev.nova.pflege.common.exporter.datenrelease.dvmodell\" xmlns:ns6=\"ch.voev.nova.pflege.common.exporter.datenrelease.netz\" id=\"D555.0\">\n" +
             " <subsystemNetz>\n" +
             "  <gattungen>\n" +
@@ -40,13 +41,11 @@ class VersionParserTest {
             "  </gattungen>\n" +
             " </subsystemNetz>\n" +
             "</ns2:datenrelease>";
-        InputStream stream = new ByteArrayInputStream(xmlText.getBytes());
+        var stream = new ByteArrayInputStream(xmlText.getBytes());
+        var elementClass = new ElementClass("gattung");
+        var element = new ElementData(elementClass, "ids__2433574", Collections.emptyList());
 
-        List<VersionData> versionList = this.parser.readVersions(
-            stream,
-            "gattung",
-            "ids__2433574"
-        );
+        var versionList = this.parser.readVersions(stream, element);
 
         assertEquals(1, versionList.size());
         assertEquals("idd__245406", versionList.get(0).getId());
@@ -57,7 +56,7 @@ class VersionParserTest {
 
     @Test
     void readVersions_reads_multiple_versioned_entries() throws RepoException {
-        String xmlText = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        var xmlText = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<ns2:datenrelease xmlns:ns2=\"ch.voev.nova.pflege.common.exporter.datenrelease\" xmlns:ns3=\"ch.voev.nova.pflege.common.exporter.datenrelease.tarifcommons\" xmlns:ns4=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ns5=\"ch.voev.nova.pflege.common.exporter.datenrelease.dvmodell\" xmlns:ns6=\"ch.voev.nova.pflege.common.exporter.datenrelease.netz\" id=\"D555.0\">\n" +
             " <subsystemNetz>\n" +
             "  <betreibers>\n" +
@@ -80,13 +79,11 @@ class VersionParserTest {
             "  </betreibers>\n" +
             " </subsystemNetz>\n" +
             "</ns2:datenrelease>";
-        InputStream stream = new ByteArrayInputStream(xmlText.getBytes());
+        var stream = new ByteArrayInputStream(xmlText.getBytes());
+        var elementClass = new ElementClass("betreiber");
+        var element = new ElementData(elementClass, "ids__23395", Collections.emptyList());
 
-        List<VersionData> versionList = this.parser.readVersions(
-            stream,
-            "betreiber",
-            "ids__23395"
-        );
+        var versionList = this.parser.readVersions(stream, element);
 
         assertEquals(2, versionList.size());
         assertEquals("ids__7724792549", versionList.get(0).getId());
@@ -100,7 +97,7 @@ class VersionParserTest {
 
     @Test
     void readVersions_reads_single_non_versioned_entry() throws RepoException {
-        String xmlText = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        var xmlText = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<ns2:datenrelease xmlns:ns2=\"ch.voev.nova.pflege.common.exporter.datenrelease\" xmlns:ns3=\"ch.voev.nova.pflege.common.exporter.datenrelease.tarifcommons\" xmlns:ns4=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ns5=\"ch.voev.nova.pflege.common.exporter.datenrelease.dvmodell\" xmlns:ns6=\"ch.voev.nova.pflege.common.exporter.datenrelease.netz\" id=\"D555.0\">\n" +
             " <subsystemFQF>\n" +
             "  <partners>\n" +
@@ -115,13 +112,11 @@ class VersionParserTest {
             "  </partners>\n" +
             " </subsystemFQF>\n" +
             "</ns2:datenrelease>";
-        InputStream stream = new ByteArrayInputStream(xmlText.getBytes());
+        var stream = new ByteArrayInputStream(xmlText.getBytes());
+        var elementClass = new ElementClass("partner");
+        var element = new ElementData(elementClass, "ids__12004", Collections.emptyList());
 
-        List<VersionData> versionList = this.parser.readVersions(
-            stream,
-            "partner",
-            "ids__12004"
-        );
+        var versionList = this.parser.readVersions(stream, element);
 
         assertEquals(1, versionList.size());
         assertEquals("ids__12004", versionList.get(0).getId());
@@ -133,7 +128,7 @@ class VersionParserTest {
 
     /*@Test
     void readVersions_finds_fwd_dep_in_versioned_entries() throws RepoException {
-        String xmlText = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        var xmlText = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<ns2:datenrelease xmlns:ns2=\"ch.voev.nova.pflege.common.exporter.datenrelease\" xmlns:ns3=\"ch.voev.nova.pflege.common.exporter.datenrelease.tarifcommons\" xmlns:ns4=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ns5=\"ch.voev.nova.pflege.common.exporter.datenrelease.dvmodell\" xmlns:ns6=\"ch.voev.nova.pflege.common.exporter.datenrelease.netz\" id=\"D555.0\">\n" +
             " <subsystemNetz>\n" +
             "  <kanten>\n" +
@@ -158,9 +153,9 @@ class VersionParserTest {
             "  </kanten>\n" +
             " </subsystemNetz>\n" +
             "</ns2:datenrelease>";
-        InputStream stream = new ByteArrayInputStream(xmlText.getBytes());
+        var stream = new ByteArrayInputStream(xmlText.getBytes());
 
-        List<VersionInfo> versionList = this.parser.readVersions(
+        var versionList = this.parser.readVersions(
             stream,
             "kante",
             "ids__1634307168"
@@ -180,7 +175,7 @@ class VersionParserTest {
 
     @Test
     void readVersions_finds_fwd_dep_in_unversioned_entry() throws RepoException {
-        String xmlText = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+        var xmlText = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<ns2:datenrelease xmlns:ns2=\"ch.voev.nova.pflege.common.exporter.datenrelease\" xmlns:ns3=\"ch.voev.nova.pflege.common.exporter.datenrelease.tarifcommons\" xmlns:ns4=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ns5=\"ch.voev.nova.pflege.common.exporter.datenrelease.dvmodell\" xmlns:ns6=\"ch.voev.nova.pflege.common.exporter.datenrelease.netz\" id=\"D555.0\">\n" +
             " <subsystemFQF>\n" +
             "  <transportunternehmungen>\n" +
@@ -192,9 +187,9 @@ class VersionParserTest {
             "  </transportunternehmungen>" +
             " </subsystemFQF>\n" +
             "</ns2:datenrelease>";
-        InputStream stream = new ByteArrayInputStream(xmlText.getBytes());
+        var stream = new ByteArrayInputStream(xmlText.getBytes());
 
-        List<VersionInfo> versionList = this.parser.readVersions(
+        var versionList = this.parser.readVersions(
             stream,
             "transportunternehmung",
             "ids__14031"

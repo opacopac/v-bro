@@ -19,8 +19,8 @@ public class DependencyResponse {
 
     public static DependencyResponse fromDependency(FwdDependency fwdDependency) {
         return new DependencyResponse(
-            fwdDependency.getElementClass(),
-            fwdDependency.getElementId(),
+            fwdDependency.getElementClass().getName(),
+            fwdDependency.getElement().getId(),
             fwdDependency.getVersions()
                 .stream()
                 .map(VersionResponse::fromVersionData)

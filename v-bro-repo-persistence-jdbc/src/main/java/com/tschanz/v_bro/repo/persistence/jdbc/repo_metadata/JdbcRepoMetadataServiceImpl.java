@@ -29,7 +29,7 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
     @Override
     public List<String> findTableNames(String tableNamePattern) throws RepoException {
         try {
-            ResultSet tablesResult = this.connectionFactory.getCurrentConnection().getMetaData().getTables(
+            var tablesResult = this.connectionFactory.getCurrentConnection().getMetaData().getTables(
                 null,
                 null,
                 tableNamePattern,
@@ -38,14 +38,14 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
 
             List<String> tableNames = new ArrayList<>();
             while (tablesResult.next()) {
-                String name = tablesResult.getString("TABLE_NAME").toUpperCase();
+                var name = tablesResult.getString("TABLE_NAME").toUpperCase();
                 tableNames.add(name);
             }
             tablesResult.close();
 
             return tableNames;
         } catch (SQLException exception) {
-            String msg = "error reading element structure: " + exception.getMessage();
+            var msg = "error reading element structure: " + exception.getMessage();
             log.severe(msg);
             throw new RepoException(msg, exception);
         }
@@ -62,15 +62,15 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
             this.repoRelationLut = this.readAllRelations();
         }
 
-        List<RepoField> repoFields = this.repoFieldLut
+        var repoFields = this.repoFieldLut
             .stream()
-            .filter(field -> field.tableName.equals(tableName.toUpperCase()))
+            .filter(field -> field.getTableName().equals(tableName.toUpperCase()))
             .collect(Collectors.toList());
-        List<RepoRelation> outgoingRelations = this.repoRelationLut
+        var outgoingRelations = this.repoRelationLut
             .stream()
             .filter(relation -> relation.getBwdClassName().equals(tableName.toUpperCase()))
             .collect(Collectors.toList());
-        List<RepoRelation> incomingRelations = this.repoRelationLut
+        var incomingRelations = this.repoRelationLut
             .stream()
             .filter(relation -> relation.getFwdClassName().equals(tableName.toUpperCase()))
             .collect(Collectors.toList());
@@ -87,10 +87,10 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
     @Override
     public String escapeUnderscore(String tableNamePattern) throws RepoException {
         try {
-            String escapeChar = this.connectionFactory.getCurrentConnection().getMetaData().getSearchStringEscape();
+            var escapeChar = this.connectionFactory.getCurrentConnection().getMetaData().getSearchStringEscape();
             return tableNamePattern.replace("_", escapeChar + "_");
         } catch (SQLException exception) {
-            String msg = "error reading wildcard from repo_metadata: " + exception.getMessage();
+            var msg = "error reading wildcard from repo_metadata: " + exception.getMessage();
             log.severe(msg);
             throw new RepoException(msg, exception);
         }
@@ -119,21 +119,21 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
 
         List<RepoRelation> repoRelations = new ArrayList<>();
         try {
-            Statement statement = this.connectionFactory.getCurrentConnection().createStatement();
+            var statement = this.connectionFactory.getCurrentConnection().createStatement();
             if (statement.execute(query)) {
-                ResultSet resultSet = statement.getResultSet();
+                var resultSet = statement.getResultSet();
                 while (resultSet.next()) {
-                    String pwdTable = resultSet.getString("BWD_TABLE").toUpperCase();
-                    String pwdColumn = resultSet.getString("BWD_COLUMN").toUpperCase();
-                    String fwdTable = resultSet.getString("FWD_TABLE").toUpperCase();
-                    String fwdColumn = resultSet.getString("FWD_COLUMN").toUpperCase();
+                    var pwdTable = resultSet.getString("BWD_TABLE").toUpperCase();
+                    var pwdColumn = resultSet.getString("BWD_COLUMN").toUpperCase();
+                    var fwdTable = resultSet.getString("FWD_TABLE").toUpperCase();
+                    var fwdColumn = resultSet.getString("FWD_COLUMN").toUpperCase();
                     repoRelations.add(new RepoRelation(pwdTable, pwdColumn, fwdTable, fwdColumn));
                 }
                 statement.getResultSet().close();
             }
             statement.close();
         } catch (SQLException exception) {
-            String msg = "error reading all relations from db: " + exception.getMessage();
+            var msg = "error reading all relations from db: " + exception.getMessage();
             log.severe(msg);
             throw new RepoException(msg, exception);
         }
@@ -165,31 +165,31 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
         List<RepoField> repoFields = new ArrayList<>();
 
         try {
-            Statement statement = this.connectionFactory.getCurrentConnection().createStatement();
+            var statement = this.connectionFactory.getCurrentConnection().createStatement();
             if (statement.execute(query)) {
-                ResultSet resultSet = statement.getResultSet();
+                var resultSet = statement.getResultSet();
                 while (resultSet.next()) {
-                    String tableName = resultSet.getString("TABLE_NAME").toUpperCase();
-                    String colName = resultSet.getString("COLUMN_NAME").toUpperCase();
-                    String dataType = resultSet.getString("DATA_TYPE").toUpperCase();
-                    String isNullable = resultSet.getString("NULLABLE").toUpperCase();
+                    var tableName = resultSet.getString("TABLE_NAME").toUpperCase();
+                    var colName = resultSet.getString("COLUMN_NAME").toUpperCase();
+                    var dataType = resultSet.getString("DATA_TYPE").toUpperCase();
+                    var isNullable = resultSet.getString("NULLABLE").toUpperCase();
 
-                    String key = this.getTableColumnKey(tableName, colName);
-                    RepoField repoField = new RepoField(
+                    var key = this.getTableColumnKey(tableName, colName);
+                    var repoField = new RepoField(
+                        tableName,
                         colName,
                         this.getRepoFieldType(dataType),
                         idTableColumns.contains(key),
                         this.getIsNullable(isNullable),
                         uniqueTableColumns.contains(key)
                     );
-                    repoField.tableName = tableName;
                     repoFields.add(repoField);
                 }
                 statement.getResultSet().close();
             }
             statement.close();
         } catch (SQLException exception) {
-            String msg = "error reading all columns from db: " + exception.getMessage();
+            var msg = "error reading all columns from db: " + exception.getMessage();
             log.severe(msg);
             throw new RepoException(msg, exception);
         }
@@ -219,14 +219,14 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
         log.info("executing query " + query);
 
         try {
-            Statement statement = this.connectionFactory.getCurrentConnection().createStatement();
+            var statement = this.connectionFactory.getCurrentConnection().createStatement();
             if (statement.execute(query)) {
-                ResultSet resultSet = statement.getResultSet();
+                var resultSet = statement.getResultSet();
                 while (resultSet.next()) {
-                    String tableName = resultSet.getString("TABLE_NAME").toUpperCase();
-                    String colName = resultSet.getString("COLUMN_NAME").toUpperCase();
-                    String constraintType = resultSet.getString("CONSTRAINT_TYPE").toUpperCase();
-                    String key = this.getTableColumnKey(tableName, colName);
+                    var tableName = resultSet.getString("TABLE_NAME").toUpperCase();
+                    var colName = resultSet.getString("COLUMN_NAME").toUpperCase();
+                    var constraintType = resultSet.getString("CONSTRAINT_TYPE").toUpperCase();
+                    var key = this.getTableColumnKey(tableName, colName);
                     if (this.isIdConstraint(constraintType)) {
                         idTableColumns.add(key);
                     }
@@ -238,7 +238,7 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
             }
             statement.close();
         } catch (SQLException exception) {
-            String msg = "error reading constraints from db: " + exception.getMessage();
+            var msg = "error reading constraints from db: " + exception.getMessage();
             log.severe(msg);
             throw new RepoException(msg, exception);
         }

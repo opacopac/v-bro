@@ -1,6 +1,7 @@
 package com.tschanz.v_bro.data_structure.persistence.xml.stax_parser;
 
 import com.tschanz.v_bro.data_structure.domain.model.DenominationData;
+import com.tschanz.v_bro.data_structure.domain.model.ElementClass;
 import com.tschanz.v_bro.data_structure.domain.model.ElementData;
 import com.tschanz.v_bro.data_structure.persistence.xml.service.XmlRepoService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
@@ -20,7 +21,7 @@ public class ElementParser {
     private final XMLInputFactory xmlInputFactory;
 
 
-    public List<ElementData> readElements(InputStream xmlStream, String elementClass, Collection<String> denominationFields, String query, int maxResults) throws RepoException {
+    public List<ElementData> readElements(InputStream xmlStream, ElementClass elementClass, Collection<String> denominationFields, String query, int maxResults) throws RepoException {
         List<ElementData> elements;
 
         try {
@@ -34,13 +35,13 @@ public class ElementParser {
     }
 
 
-    private List<ElementData> parseDocument(XMLStreamReader reader, String elementClass, Collection<String> denominationFields, String query, int maxResults) throws XMLStreamException {
+    private List<ElementData> parseDocument(XMLStreamReader reader, ElementClass elementClass, Collection<String> denominationFields, String query, int maxResults) throws XMLStreamException {
         List<ElementData> elements = new ArrayList<>();
 
         while (reader.hasNext() && elements.size() < maxResults) {
             switch (reader.next()) {
                 case XMLStreamReader.START_ELEMENT:
-                    if (reader.getLocalName().equals(elementClass)) {
+                    if (reader.getLocalName().equals(elementClass.getName())) {
                         String elementId = XmlRepoService.findId(reader);
                         if (elementId != null) {
                             var elementData = parseSingleElement(reader, elementClass, elementId, denominationFields, query);
@@ -59,7 +60,7 @@ public class ElementParser {
     }
 
 
-    private ElementData parseSingleElement(XMLStreamReader reader, String elementClass, String elementId, Collection<String> denominationFields, String query) throws XMLStreamException {
+    private ElementData parseSingleElement(XMLStreamReader reader, ElementClass elementClass, String elementId, Collection<String> denominationFields, String query) throws XMLStreamException {
         int subLevel = 0;
         StringBuilder value = new StringBuilder();
         List<DenominationData> denominations = new ArrayList<>();
@@ -93,6 +94,7 @@ public class ElementParser {
                             || denominations.stream().anyMatch(d -> d.getValue().toUpperCase().contains(query.toUpperCase()))
                         ) {
                             return new ElementData(
+                                elementClass,
                                 elementId,
                                 denominations
                                     .stream()

@@ -1,12 +1,15 @@
 package com.tschanz.v_bro.data_structure.persistence.jdbc.service;
 
+import com.tschanz.v_bro.data_structure.domain.model.Denomination;
 import com.tschanz.v_bro.data_structure.domain.model.DenominationData;
+import com.tschanz.v_bro.data_structure.domain.model.ElementClass;
 import com.tschanz.v_bro.data_structure.domain.model.ElementData;
 import com.tschanz.v_bro.data_structure.domain.service.ElementService;
+import com.tschanz.v_bro.data_structure.persistence.jdbc.model.ElementRecord;
+import com.tschanz.v_bro.data_structure.persistence.jdbc.model.ElementTable;
+import com.tschanz.v_bro.data_structure.persistence.jdbc.model.VersionTable;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
-import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoField;
-import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoFieldType;
-import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
+import com.tschanz.v_bro.repo.persistence.jdbc.model.*;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.RowFilter;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.RowFilterOperator;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
@@ -16,10 +19,10 @@ import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataSer
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @RequiredArgsConstructor
@@ -30,55 +33,112 @@ public class JdbcElementService implements ElementService {
 
 
     @Override
-    public List<ElementData> readElements(@NonNull String elementClass, @NonNull Collection<String> fieldNames, @NonNull String query, int maxResults) throws RepoException {
+    public List<ElementData> readElements(
+        @NonNull ElementClass elementClass,
+        @NonNull List<Denomination> denominationFields,
+        @NonNull String query,
+        int maxResults
+    ) throws RepoException {
         if (!this.repo.isConnected()) {
             throw new RepoException("Not connected to repo!");
         }
 
-        var repoTable = this.readElementTable(elementClass);
-        var repoFields = this.getRepoFields(repoTable, fieldNames);
-        var orFilter = this.getOrFilter(repoTable, repoFields, query);
+        var elementTable = this.readElementTable(elementClass.getName());
+        var elementDenominationFieldNames = this.getDenominationFieldNames(denominationFields, Denomination.ELEMENT_PATH);
+        var elementFields = elementTable.getFields(elementDenominationFieldNames);
+        // TODO: hack to ensure element id is always present
+        if (!elementFields.contains(elementTable.getIdField())) {
+            elementFields.add(elementTable.getIdField());
+        }
 
-        var elementRows = this.repoData.readRepoTableRecords(repoTable, repoFields, Collections.emptyList(), orFilter, maxResults);
-        var elementList = elementRows
+        var versionTable = this.readVersionTable(elementTable);
+        List<String> versionDenominationFieldNames = versionTable != null
+            ? this.getDenominationFieldNames(denominationFields, Denomination.VERSION_PATH)
+            : Collections.emptyList();
+        List<RepoField> versionFields = versionTable != null
+            ? versionTable.getFields(versionDenominationFieldNames)
+            : Collections.emptyList();
+
+        var allFields = Stream.concat(elementFields.stream(), versionFields.stream()).collect(Collectors.toList());
+        var optFilter = this.getQueryFilter(allFields, query);
+        List<RepoTableJoin> joins = versionTable != null
+            ? List.of(new RepoTableJoin(elementTable.getRepoTable(), versionTable.getRepoTable(), elementTable.getIdField(), versionTable.getElementIdField()))
+            : Collections.emptyList();
+        var rows = this.repoData.readRepoTableRecords(elementTable.getRepoTable(), joins, allFields, Collections.emptyList(), optFilter, maxResults);
+
+        return rows
             .stream()
-            .map(row -> {
-                String id = row.findIdFieldValue().getValueString();
-                List<DenominationData> denominationDataList = fieldNames
-                    .stream()
-                    .map(fieldName -> new DenominationData(fieldName, row.findFieldValue(fieldName).getValueString()))
-                    .collect(Collectors.toList());
-
-                return new ElementData(id, denominationDataList);
-            })
-            .collect(Collectors.toList());
-
-        return elementList;
-    }
-
-
-    public RepoTable readElementTable(String elementClass) throws RepoException {
-        return this.repoMetaData.readTableStructure(elementClass);
-    }
-
-
-    private List<RepoField> getRepoFields(RepoTable repoTable, Collection<String> fieldNames) {
-        return repoTable.getFields()
-            .stream()
-            .filter(field -> fieldNames.contains(field.getName()) || field.isId())
+            .map(row -> this.getElementFromRow(row, elementClass))
+            .distinct()
             .collect(Collectors.toList());
     }
 
 
-    private List<RowFilter> getOrFilter(RepoTable repoTable, List<RepoField> repoFields, String query) {
+    public ElementTable readElementTable(String elementClassName) throws RepoException {
+        var table = this.repoMetaData.readTableStructure(elementClassName);
+        return new ElementTable(table);
+    }
+
+
+    public VersionTable readVersionTable(ElementTable elementTable) throws RepoException {
+        var versionTableName = elementTable.getIncomingRelations()
+            .stream()
+            .filter(rel -> rel.getBwdFieldName().toUpperCase().equals(VersionTable.ELEMENT_ID_COLNAME)) // TODO: make more generic
+            .filter(rel -> rel.getBwdClassName().toUpperCase().endsWith(VersionTable.TABLE_SUFFIX)) // TODO: make more generic (e.g. check for von/bis fields)
+            .map(RepoRelation::getBwdClassName)
+            .findFirst()
+            .orElse(null);
+
+        if (versionTableName == null) {
+            return null;
+        } else {
+            var table = this.repoMetaData.readTableStructure(versionTableName);
+            return new VersionTable(table);
+        }
+    }
+
+
+    public ElementRecord readElementRecord(ElementTable elementTable, long elementId, List<RepoField> fields) throws RepoException {
+        var filter = new RowFilter(elementTable.getIdField(), RowFilterOperator.EQUALS, elementId);
+
+        var records = this.repoData.readRepoTableRecords(elementTable.getRepoTable(), Collections.emptyList(), fields, List.of(filter), Collections.emptyList(), -1);
+        if (records.size() != 1) {
+            throw new IllegalArgumentException("multiple records for same id");
+        }
+
+        return new ElementRecord(records.get(0));
+    }
+
+
+    private List<String> getDenominationFieldNames(List<Denomination> denominationFields, String pathName) {
+        return denominationFields
+            .stream()
+            .filter(field -> field.getPath().equals(pathName))
+            .map(Denomination::getName)
+            .collect(Collectors.toList());
+    }
+
+
+    private List<RowFilter> getQueryFilter(List<RepoField> fields, String query) {
         if (query.isEmpty()) {
             return Collections.emptyList();
         } else {
-            return repoFields
+            return fields
                 .stream()
-                .map(f -> new RepoField(f.getName(), RepoFieldType.STRING, f.isId(), f.isNullable(), f.isUnique()))
+                .map(f -> new RepoField(f.getTableName(), f.getName(), RepoFieldType.STRING, f.isId(), f.isNullable(), f.isUnique()))
                 .map(f -> new RowFilter(f, RowFilterOperator.LIKE, JdbcRepoMetadataServiceImpl.WILDCARD + query + JdbcRepoMetadataServiceImpl.WILDCARD))
                 .collect(Collectors.toList());
         }
+    }
+
+
+    private ElementData getElementFromRow(RepoTableRecord row, ElementClass elementClass) {
+        var elementId = row.findIdFieldValue().getValueString();
+        var denominations = row.getFieldValues()
+            .stream()
+            .map(field -> new DenominationData(field.getName(), field.getValueString()))
+            .collect(Collectors.toList());
+
+        return new ElementData(elementClass, elementId, denominations);
     }
 }

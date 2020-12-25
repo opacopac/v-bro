@@ -10,11 +10,13 @@ import lombok.RequiredArgsConstructor;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class DenominationResponse {
+    private final String path;
     private final String name;
 
 
     public static DenominationResponse fromDomain(Denomination denomination) {
         return new DenominationResponse(
+            denomination.getPath(),
             denomination.getName()
         );
     }

@@ -24,7 +24,7 @@ public class ReadElementClassesUseCaseImpl implements ReadElementClassesUseCase 
 
     @Override
     public void execute(ReadElementClassesRequest request) {
-        var repoType = mainState.getRepoState().getRepoType();
+        var repoType = mainState.getRepoState().getCurrentRepoType();
 
         if (repoType != null) {
             try {
@@ -34,7 +34,7 @@ public class ReadElementClassesUseCaseImpl implements ReadElementClassesUseCase 
                 this.statusPresenter.present(statusResponse1);
 
                 var elementClassService = this.elementClassServiceProvider.getService(repoType);
-                var elementClasses = elementClassService.readElementClasses();
+                var elementClasses = elementClassService.readAllElementClasses();
                 var slist = new SelectedList<>(elementClasses, null);
 
                 this.mainState.getElementClassState().setElementClasses(slist);

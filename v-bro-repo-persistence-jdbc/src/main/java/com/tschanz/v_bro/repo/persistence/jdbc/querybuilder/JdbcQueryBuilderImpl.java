@@ -2,6 +2,7 @@ package com.tschanz.v_bro.repo.persistence.jdbc.querybuilder;
 
 import com.tschanz.v_bro.repo.persistence.jdbc.model.FieldValue;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoField;
+import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTableJoin;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactory;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcServerType;
 import lombok.NonNull;
@@ -22,59 +23,106 @@ public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
     @Override
     public String buildQuery(
         @NonNull String tableName,
+        @NonNull List<RepoTableJoin> tableJoins,
         @NonNull List<RepoField> selectFields,
-        @NonNull List<RowFilter> andFilters,
-        @NonNull List<RowFilter> orFilters,
+        @NonNull List<RowFilter> mandatoryFilters,
+        @NonNull List<RowFilter> optFilters,
         int maxResults
     ) {
         var resultLimit = maxResults > 0 ? Math.min(maxResults, MAX_ROW_NUM_HARD_LIMIT) : MAX_ROW_NUM_HARD_LIMIT;
-        return "select " + this.getSelectFields(selectFields)
-            + " from " + tableName
-            + this.getWhereClause(andFilters, orFilters, resultLimit)
-            + this.getLimitClause(resultLimit);
+        return this.buildSelectClause(selectFields)
+            + this.buildFromClause(tableName)
+            + this.buildJoinClause(tableJoins)
+            + this.buildWhereClause(mandatoryFilters, optFilters, resultLimit)
+            + this.buildLimitClause(resultLimit);
     }
 
-    private String getSelectFields(List<RepoField> fields) {
-        return fields
+    private String buildSelectClause(List<RepoField> fields) {
+        return "select " + fields
             .stream()
-            .map(RepoField::getName)
+            .map(f -> String.format("%s.%s", f.getTableName(), f.getName()))
             .collect(Collectors.joining(","));
     }
 
 
-    private String getWhereCondition(RowFilter rowFilter) {
-        var column = rowFilter.getField().getName();
+    private String buildFromClause(String tableName) {
+        return " from " + tableName;
+    }
+
+
+    private String buildJoinClause(List<RepoTableJoin> joins) {
+        return joins
+            .stream()
+            .map(j -> String.format(" left join %s on %s.%s=%s.%s",
+                j.getSecondaryTable().getName(),
+                j.getPrimaryTable().getName(),
+                j.getPrimaryTableField().getName(),
+                j.getSecondaryTable().getName(),
+                j.getSecondaryTableField().getName()
+            ))
+            .collect(Collectors.joining());
+    }
+
+
+    private String buildWhereClause(List<RowFilter> mandatoryFilters, List<RowFilter> optFilters, int resultLimit) {
+        var andCondition = this.buildAndOrConditions(mandatoryFilters, true);
+        var orCondition = this.buildAndOrConditions(optFilters, false);
+        var limitCondition = this.buildLimitCondition(resultLimit);
+        var conditionSql = List.of(andCondition, orCondition, limitCondition)
+            .stream()
+            .filter(c -> !c.isEmpty())
+            .collect(Collectors.joining(" and "));
+
+        return !conditionSql.isEmpty() ? " where " + conditionSql : "";
+    }
+
+
+    private String buildAndOrConditions(List<RowFilter> andFilters, boolean isAnd) {
+        var andOrSql = isAnd ? " and " : " or ";
+        if (andFilters != null && andFilters.size() > 0) {
+            return "(" + andFilters
+                .stream()
+                .map(this::buildWhereCondition)
+                .collect(Collectors.joining(andOrSql)) + ")";
+        } else {
+            return "";
+        }
+    }
+
+
+    private String buildWhereCondition(RowFilter rowFilter) {
+        var column = String.format("%s.%s", rowFilter.getField().getTableName(), rowFilter.getField().getName());
         if (rowFilter.getOperator() == RowFilterOperator.LIKE) {
             column = "upper(" + column + ")";
         }
 
-        return column + this.getOperatorAndValue(rowFilter);
+        return column + this.buildOperatorAndValue(rowFilter);
     }
 
 
-    private String getOperatorAndValue(RowFilter rowFilter) {
+    private String buildOperatorAndValue(RowFilter rowFilter) {
         switch (rowFilter.getOperator()) {
             case LESS_OR_EQUAL:
-                return "<=" + this.getFilterValue(rowFilter.getValue());
+                return "<=" + this.buildFilterValue(rowFilter.getValue());
             case GREATER_OR_EQUAL:
-                return ">=" + this.getFilterValue(rowFilter.getValue());
+                return ">=" + this.buildFilterValue(rowFilter.getValue());
             case IN:
-                return " in (" + rowFilter.getFieldValues().stream().map(this::getFilterValue).collect(Collectors.joining(",")) + ")";
+                return " in (" + rowFilter.getFieldValues().stream().map(this::buildFilterValue).collect(Collectors.joining(",")) + ")";
             case LIKE:
-                return " like " + this.getFilterValue(rowFilter.getValue()).toUpperCase();
+                return " like " + this.buildFilterValue(rowFilter.getValue()).toUpperCase();
             case EQUALS:
             default:
-                return "=" + this.getFilterValue(rowFilter.getValue());
+                return "=" + this.buildFilterValue(rowFilter.getValue());
         }
     }
 
 
-    private String getFilterValue(FieldValue filterValue) {
+    private String buildFilterValue(FieldValue filterValue) {
         switch (filterValue.getType()) {
             case BOOL:
                 return filterValue.getValueBool() ? "1" : "0";
             case DATE:
-                return this.getDateFilterValue(filterValue.getValueDate());
+                return this.buildDateFilterValue(filterValue.getValueDate());
             case LONG:
                 return String.valueOf(filterValue.getValueLong());
             case STRING:
@@ -84,12 +132,7 @@ public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
     }
 
 
-    private String escapeString(String value) {
-        return value.replace("'", "''");
-    }
-
-
-    private String getDateFilterValue(LocalDate date) {
+    private String buildDateFilterValue(LocalDate date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         switch (this.connectionFactory.getJdbcServerType()) {
@@ -102,33 +145,12 @@ public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
     }
 
 
-    private String getWhereClause(List<RowFilter> andFilters, List<RowFilter> orFilters, int resultLimit) {
-        var andCondition = this.getAndOrConditions(andFilters, true);
-        var orCondition = this.getAndOrConditions(orFilters, false);
-        var limitCondition = this.getLimitCondition(resultLimit);
-        var conditionSql = List.of(andCondition, orCondition, limitCondition)
-            .stream()
-            .filter(c -> !c.isEmpty())
-            .collect(Collectors.joining(" and "));
-
-        return !conditionSql.isEmpty() ? " where " + conditionSql : "";
+    private String escapeString(String value) {
+        return value.replace("'", "''");
     }
 
 
-    private String getAndOrConditions(List<RowFilter> andFilters, boolean isAnd) {
-        var andOrSql = isAnd ? " and " : " or ";
-        if (andFilters != null && andFilters.size() > 0) {
-            return "(" + andFilters
-                .stream()
-                .map(this::getWhereCondition)
-                .collect(Collectors.joining(andOrSql)) + ")";
-        } else {
-            return "";
-        }
-    }
-
-
-    private String getLimitCondition(int resultLimit) {
+    private String buildLimitCondition(int resultLimit) {
         if (this.connectionFactory.getJdbcServerType() == JdbcServerType.ORACLE) {
             return "ROWNUM<=" + resultLimit;
         } else {
@@ -137,7 +159,7 @@ public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
     }
 
 
-    private String getLimitClause(int resultLimit) {
+    private String buildLimitClause(int resultLimit) {
         if (this.connectionFactory.getJdbcServerType() == JdbcServerType.MYSQL) {
             return " limit " + resultLimit;
         } else {

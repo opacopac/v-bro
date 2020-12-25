@@ -1,7 +1,6 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.denominations.DenominationItem;
-import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsRequest;
 import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsUseCase;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public class ElementDenominationControllerImpl implements ElementDenominationCon
             return;
         }
 
-        var request = new SelectDenominationsRequest(DenominationItem.toRequest(denominations));
+        var request = DenominationItem.toRequest(denominations);
         this.selectElementDenominationUc.execute(request);
     }
 }

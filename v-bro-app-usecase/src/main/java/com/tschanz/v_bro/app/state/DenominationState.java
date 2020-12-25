@@ -8,7 +8,6 @@ import lombok.Setter;
 import lombok.Synchronized;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Getter(onMethod = @__({@Synchronized}))
@@ -17,10 +16,7 @@ public class DenominationState {
     @NonNull private MultiSelectedList<Denomination> denominations = MultiSelectedList.createEmpty();
 
 
-    public List<String> getSelectedNames() {
-        return this.denominations.getSelectedItems()
-            .stream()
-            .map(Denomination::getName)
-            .collect(Collectors.toList());
+    public List<Denomination> getCurrentDenominations() {
+        return this.denominations.getSelectedItems();
     }
 }

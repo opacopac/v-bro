@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class Denomination {
+    public static final String ELEMENT_PATH = "E"; // TODO: just temp
+    public static final String VERSION_PATH = "V"; // TODO: just temp
+    @Getter protected final String path; // TODO: just temp
     @Getter protected final String name;
 
 
