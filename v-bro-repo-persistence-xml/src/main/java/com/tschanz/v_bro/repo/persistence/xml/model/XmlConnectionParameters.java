@@ -1,4 +1,4 @@
-package com.tschanz.v_bro.repo.persistence.model;
+package com.tschanz.v_bro.repo.persistence.xml.model;
 
 import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
 import com.tschanz.v_bro.repo.domain.model.RepoType;

@@ -1,11 +1,11 @@
-package com.tschanz.v_bro.data_structure.persistence.xml.model;
+package com.tschanz.v_bro.repo.persistence.xml.parser;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 
 @RequiredArgsConstructor
-public class XmlElementLutInfo {
+public class XmlIdElementPosInfo {
     @Getter private final String name;
     @Getter private final String elementId;
     @Getter private final int startBytePos;

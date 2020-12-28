@@ -3,7 +3,7 @@ package com.tschanz.v_bro.app.presenter.repo;
 import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.JdbcConnectionParameters;
-import com.tschanz.v_bro.repo.persistence.model.XmlConnectionParameters;
+import com.tschanz.v_bro.repo.persistence.xml.model.XmlConnectionParameters;
 import lombok.RequiredArgsConstructor;
 
 

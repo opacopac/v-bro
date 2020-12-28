@@ -2,7 +2,7 @@ package com.tschanz.v_bro.data_structure.persistence.xml.service;
 
 import com.tschanz.v_bro.data_structure.domain.model.ElementClass;
 import com.tschanz.v_bro.data_structure.domain.service.ElementClassService;
-import com.tschanz.v_bro.data_structure.persistence.xml.model.XmlElementLutInfo;
+import com.tschanz.v_bro.repo.persistence.xml.parser.XmlIdElementPosInfo;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +19,7 @@ public class XmlElementClassService implements ElementClassService {
     public List<ElementClass> readAllElementClasses() throws RepoException {
         return this.repoService.getElementLut().values()
             .stream()
-            .map(XmlElementLutInfo::getName)
+            .map(XmlIdElementPosInfo::getName)
             .distinct()
             .sorted()
             .map(ElementClass::new)

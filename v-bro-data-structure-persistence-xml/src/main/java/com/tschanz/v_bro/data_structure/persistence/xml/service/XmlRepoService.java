@@ -1,17 +1,18 @@
 package com.tschanz.v_bro.data_structure.persistence.xml.service;
 
-import com.tschanz.v_bro.data_structure.persistence.xml.model.XmlElementLutInfo;
-import com.tschanz.v_bro.data_structure.persistence.xml.stax_parser.ElementLutParser;
+import com.tschanz.v_bro.repo.persistence.xml.parser.XmlIdElementPosInfo;
+import com.tschanz.v_bro.repo.persistence.xml.parser.XmlIdRefParser;
 import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.service.RepoService;
-import com.tschanz.v_bro.repo.persistence.model.XmlConnectionParameters;
+import com.tschanz.v_bro.repo.persistence.xml.model.XmlConnectionParameters;
 
 import javax.xml.stream.XMLStreamReader;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,7 @@ public class XmlRepoService implements RepoService {
     private static final String ROOT_NODE_END = "</ns2:datenrelease>";
 
     private XmlConnectionParameters connectionParameters;
-    private Map<String, XmlElementLutInfo> elementStructureMap;
+    private Map<String, XmlIdElementPosInfo> elementStructureMap;
 
 
     @Override
@@ -63,7 +64,7 @@ public class XmlRepoService implements RepoService {
     }
 
 
-    public Map<String, XmlElementLutInfo> getElementLut() throws RepoException {
+    public Map<String, XmlIdElementPosInfo> getElementLut() throws RepoException {
         if (this.elementStructureMap == null) {
             this.readElementLut();
         }
@@ -76,7 +77,7 @@ public class XmlRepoService implements RepoService {
         var elementLuts = this.getElementLut().values()
             .stream()
             .filter(element -> elementClassName.equals(element.getName()))
-            .sorted(Comparator.comparingInt(XmlElementLutInfo::getStartBytePos))
+            .sorted(Comparator.comparingInt(XmlIdElementPosInfo::getStartBytePos))
             .collect(Collectors.toList());
 
         return this.getNewXmlFileStream(elementLuts.get(0).getStartBytePos(), elementLuts.get(elementLuts.size() - 1).getEndBytePos());
@@ -150,11 +151,17 @@ public class XmlRepoService implements RepoService {
 
     private void readElementLut() throws RepoException {
         var xmlFileStream = this.getNewXmlFileStream();
-        var parser = new ElementLutParser();
-        var elements = parser.readElementLut(xmlFileStream);
+        var parser = new XmlIdRefParser(
+            xmlFileStream,
+            ID_ATTRIBUTE_NAME,
+            List.of(ID_VALUE_PREFIX_1, ID_VALUE_PREFIX_2)
+        );
+        parser.parse();
+        var idElements = parser.getIdElementPositions();
+        var idRefs = parser.getIdRefPositions();
 
         this.elementStructureMap = new HashMap<>();
-        elements.forEach(element -> this.elementStructureMap.put(element.getElementId(), element));
+        idElements.forEach(element -> this.elementStructureMap.put(element.getElementId(), element));
     }
 
 
