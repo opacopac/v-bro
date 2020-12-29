@@ -1,4 +1,4 @@
-package com.tschanz.v_bro.repo.persistence.xml.parser;
+package com.tschanz.v_bro.repo.persistence.xml.idref_parser;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

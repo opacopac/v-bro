@@ -3,7 +3,7 @@ package com.tschanz.v_bro.data_structure.persistence.xml.service;
 import com.tschanz.v_bro.data_structure.domain.model.ElementData;
 import com.tschanz.v_bro.data_structure.domain.model.VersionData;
 import com.tschanz.v_bro.data_structure.domain.service.VersionService;
-import com.tschanz.v_bro.repo.persistence.xml.parser.XmlIdElementPosInfo;
+import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdElementPosInfo;
 import com.tschanz.v_bro.data_structure.persistence.xml.stax_parser.VersionParser;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import lombok.NonNull;

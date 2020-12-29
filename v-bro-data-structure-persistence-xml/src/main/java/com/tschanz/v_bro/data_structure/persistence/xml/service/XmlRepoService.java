@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.data_structure.persistence.xml.service;
 
-import com.tschanz.v_bro.repo.persistence.xml.parser.XmlIdElementPosInfo;
-import com.tschanz.v_bro.repo.persistence.xml.parser.XmlIdRefParser;
+import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdElementPosInfo;
+import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdRefParser;
 import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.service.RepoService;
