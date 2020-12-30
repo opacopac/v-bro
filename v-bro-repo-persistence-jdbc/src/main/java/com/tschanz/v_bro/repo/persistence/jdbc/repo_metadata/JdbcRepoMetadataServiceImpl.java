@@ -54,23 +54,15 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
 
     @Override
     public RepoTable readTableStructure(String tableName) throws RepoException {
-        if (this.repoFieldLut == null) {
-            this.repoFieldLut = this.readAllRepoFields();
-        }
-
-        if (this.repoRelationLut == null) {
-            this.repoRelationLut = this.readAllRelations();
-        }
-
-        var repoFields = this.repoFieldLut
+        var repoFields = this.getRepoFieldLut()
             .stream()
             .filter(field -> field.getTableName().equals(tableName.toUpperCase()))
             .collect(Collectors.toList());
-        var outgoingRelations = this.repoRelationLut
+        var outgoingRelations = this.getRepoRelationLut()
             .stream()
             .filter(relation -> relation.getBwdClassName().equals(tableName.toUpperCase()))
             .collect(Collectors.toList());
-        var incomingRelations = this.repoRelationLut
+        var incomingRelations = this.getRepoRelationLut()
             .stream()
             .filter(relation -> relation.getFwdClassName().equals(tableName.toUpperCase()))
             .collect(Collectors.toList());
@@ -94,6 +86,24 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
             log.severe(msg);
             throw new RepoException(msg, exception);
         }
+    }
+
+
+    private List<RepoField> getRepoFieldLut() throws RepoException {
+        if (this.repoFieldLut == null) {
+            this.repoFieldLut = this.readAllRepoFields();
+        }
+
+        return this.repoFieldLut;
+    }
+
+
+    private List<RepoRelation> getRepoRelationLut() throws RepoException {
+        if (this.repoRelationLut == null) {
+            this.repoRelationLut = this.readAllRelations();
+        }
+
+        return this.repoRelationLut;
     }
 
 

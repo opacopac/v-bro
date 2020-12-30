@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class XmlDependencyService implements DependencyService {
     private final XmlDataStructureService xmlDataStructureService;
+    private final XmlElementService elementService;
     private final XmlVersionService versionService;
     private final XmlVersionAggregateService versionAggregateService;
 
@@ -23,17 +24,43 @@ public class XmlDependencyService implements DependencyService {
         Map<String, XmlIdElementPosInfo> elementLutInfos = this.xmlDataStructureService.getElementLut();
         VersionAggregate versionAggregate = this.versionAggregateService.readVersionAggregate(version);
 
-        return this.findNodeDependencies(versionAggregate.getRootNode(), version.getElement().getId(), elementLutInfos);
+        return this.findNodeDependencies(versionAggregate.getRootNode(), elementLutInfos);
     }
 
 
     @Override
     public List<Dependency> readBwdDependencies(@NonNull ElementData element) throws RepoException {
-        return Collections.emptyList(); // TODO
+        var bwdElementInfos = this.findBwdElementInfos(element.getId());
+        List<Dependency> dependencies = new ArrayList<>();
+        for (var bwdElementInfo: bwdElementInfos) {
+            var bwdElementClass = new ElementClass(bwdElementInfo.getName());
+            var bwdElement = this.elementService.readElement(bwdElementClass, Collections.emptyList(), bwdElementInfo.getElementId());
+            var bwdVersions = this.versionService.readVersions(bwdElement);
+            var bwdDependency = new Dependency(bwdElementClass, bwdElement, bwdVersions);
+            dependencies.add(bwdDependency);
+        }
+
+        return dependencies;
     }
 
 
-    private List<Dependency> findNodeDependencies(AggregateNode aggregateNode, String elementId, Map<String, XmlIdElementPosInfo> elementLutInfos) throws RepoException {
+    private List<XmlIdElementPosInfo> findBwdElementInfos(String elementId) throws RepoException {
+        var elementRefLut = this.xmlDataStructureService.getElementRefLut();
+        if (elementRefLut.containsKey(elementId)) {
+            var bwdRefs = elementRefLut.get(elementId);
+            List<XmlIdElementPosInfo> bwdElementInfos = new ArrayList<>();
+            for (var bwdRef : bwdRefs) {
+                var bwdElementInfo = this.xmlDataStructureService.getPosInfoByPos(bwdRef.getStartBytePos());
+                bwdElementInfos.add(bwdElementInfo);
+            }
+            return bwdElementInfos;
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+
+    private List<Dependency> findNodeDependencies(AggregateNode aggregateNode, Map<String, XmlIdElementPosInfo> elementLutInfos) throws RepoException {
         List<Dependency> fwdDependencies = new ArrayList<>();
 
         List<XmlIdElementPosInfo> fwdElements = aggregateNode.getFieldValues()
@@ -54,7 +81,7 @@ public class XmlDependencyService implements DependencyService {
         }
 
         for (AggregateNode childNode: aggregateNode.getChildNodes()) {
-            fwdDependencies.addAll(this.findNodeDependencies(childNode, elementId, elementLutInfos));
+            fwdDependencies.addAll(this.findNodeDependencies(childNode, elementLutInfos));
         }
 
         return fwdDependencies;

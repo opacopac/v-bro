@@ -3,16 +3,14 @@ package com.tschanz.v_bro.data_structure.persistence.xml.service;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdElementPosInfo;
 import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdRefParser;
+import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdRefPosInfo;
 import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlFieldInfo;
 import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlNodeInfo;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
 import lombok.RequiredArgsConstructor;
 
 import java.io.InputStream;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -25,18 +23,42 @@ public class XmlDataStructureService {
     public static final String VERSION_NODE_NAME = "version";
     public static final String VERSION_VON_ATTRIBUTE_NAME = "gueltigVon";
     public static final String VERSION_BIS_ATTRIBUTE_NAME = "gueltigBis";
-
     private final XmlRepoService xmlRepoService;
-
-    private Map<String, XmlIdElementPosInfo> elementStructureMap;
+    private List<XmlIdElementPosInfo> elementPositionList;
+    private Map<String, XmlIdElementPosInfo> elementPositionMap;
+    private Map<String, List<XmlIdRefPosInfo>> elementRefPositionMap;
 
 
     public Map<String, XmlIdElementPosInfo> getElementLut() throws RepoException {
-        if (this.elementStructureMap == null) {
+        if (this.elementPositionMap == null) {
             this.readElementLut();
         }
 
-        return this.elementStructureMap;
+        return this.elementPositionMap;
+    }
+
+
+    public Map<String, List<XmlIdRefPosInfo>> getElementRefLut() throws RepoException {
+        if (this.elementRefPositionMap == null) {
+            this.readElementLut();
+        }
+
+        return this.elementRefPositionMap;
+    }
+
+
+    public XmlIdElementPosInfo getPosInfoByPos(int position) throws RepoException {
+        if (this.elementPositionList == null) {
+            this.readElementLut();
+        }
+
+        for (var pos : this.elementPositionList) {
+            if (position >= pos.getStartBytePos() && position <= pos.getEndBytePos()) {
+                return pos;
+            }
+        }
+
+        throw new IllegalArgumentException(String.format("no pos info found with position %d ", position));
     }
 
 
@@ -97,10 +119,21 @@ public class XmlDataStructureService {
             List.of(ID_VALUE_PREFIX_1, ID_VALUE_PREFIX_2)
         );
         parser.parse();
-        var idElements = parser.getIdElementPositions();
-        var idRefs = parser.getIdRefPositions();
+        this.elementPositionList = parser.getIdElementPositions();
 
-        this.elementStructureMap = new HashMap<>();
-        idElements.forEach(element -> this.elementStructureMap.put(element.getElementId(), element));
+        this.elementPositionMap = new HashMap<>();
+        this.elementPositionList.forEach(element -> this.elementPositionMap.put(element.getElementId(), element));
+
+        var idRefs = parser.getIdRefPositions();
+        this.elementRefPositionMap = new HashMap<>();
+        for (var idRef : idRefs) {
+            if (this.elementRefPositionMap.containsKey(idRef.getIdRef())) {
+                this.elementRefPositionMap.get(idRef.getIdRef()).add(idRef);
+            } else {
+                List<XmlIdRefPosInfo> idRefList = new ArrayList<>();
+                idRefList.add(idRef);
+                this.elementRefPositionMap.put(idRef.getIdRef(), idRefList);
+            }
+        }
     }
 }

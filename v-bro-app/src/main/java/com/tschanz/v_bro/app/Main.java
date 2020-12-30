@@ -73,7 +73,7 @@ public class Main {
         var xmlVersionService = new XmlVersionService(xmlDataStructureService, xmlNodeParser);
         var xmlDenominationService = new XmlDenominationService(xmlDataStructureService, xmlNodeParser);
         var xmlVersionAggregateService = new XmlVersionAggregateService(xmlDataStructureService, xmlNodeParser);
-        var xmlDependencyService = new XmlDependencyService(xmlDataStructureService, xmlVersionService, xmlVersionAggregateService);
+        var xmlDependencyService = new XmlDependencyService(xmlDataStructureService, xmlElementService, xmlVersionService, xmlVersionAggregateService);
 
         // persistence mock
         var mockRepo = new MockRepoService2();
