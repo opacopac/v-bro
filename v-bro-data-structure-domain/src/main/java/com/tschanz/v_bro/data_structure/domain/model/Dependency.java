@@ -7,7 +7,7 @@ import java.util.List;
 
 
 @RequiredArgsConstructor
-public class FwdDependency {
+public class Dependency {
     @Getter protected final ElementClass elementClass;
     @Getter protected final ElementData element;
     @Getter protected final List<VersionData> versions;

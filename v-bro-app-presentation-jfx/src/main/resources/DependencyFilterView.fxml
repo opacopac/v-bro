@@ -6,7 +6,10 @@
 <AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tschanz.v_bro.app.presentation.jfx.view.JfxDependencyFilterView">
     <HBox alignment="CENTER_LEFT" spacing="5.0">
         <Label text="Dependencies" />
-        <RadioButton fx:id="fwdDependencyRadio" mnemonicParsing="false" selected="true" onAction="#onBwdDependencySelected" text="FWD" />
-        <RadioButton fx:id="bwdDependencyRadio" disable="true" mnemonicParsing="false" onAction="#onFwdDependencySelected" text="BWD" />
+        <fx:define>
+            <ToggleGroup fx:id="dependencyFwdBwd" />
+        </fx:define>
+        <RadioButton fx:id="bwdDependencyRadio" mnemonicParsing="false" onAction="#onBwdDependencySelected" text="BWD" toggleGroup="$dependencyFwdBwd" />
+        <RadioButton fx:id="fwdDependencyRadio" mnemonicParsing="false" selected="true" onAction="#onFwdDependencySelected" text="FWD" toggleGroup="$dependencyFwdBwd" />
     </HBox>
 </AnchorPane>

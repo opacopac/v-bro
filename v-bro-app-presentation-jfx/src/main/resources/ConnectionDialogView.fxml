@@ -25,12 +25,11 @@
                 <ComboBox fx:id="quickLinkComboBox" onAction="#onQuickLinkSelected" GridPane.columnIndex="1" />
                 <Label text="Repo Type" GridPane.rowIndex="1" />
                 <HBox GridPane.columnIndex="1" GridPane.rowIndex="1">
-                    <RadioButton fx:id="jdbcRadioButton" mnemonicParsing="false" onAction="#onJdbcRadioButtonSelected" selected="true" text="JDBC">
-                        <toggleGroup>
-                            <ToggleGroup fx:id="repoType" />
-                        </toggleGroup>
-                    </RadioButton>
-                    <RadioButton mnemonicParsing="false" onAction="#onXmlRadioButtonSelected" text="XML" toggleGroup="$repoType" fx:id="xmlRadioButton" />
+                    <fx:define>
+                        <ToggleGroup fx:id="repoType" />
+                    </fx:define>
+                    <RadioButton fx:id="jdbcRadioButton" mnemonicParsing="false" onAction="#onJdbcRadioButtonSelected" text="JDBC" toggleGroup="$repoType" selected="true"  />
+                    <RadioButton  fx:id="xmlRadioButton" mnemonicParsing="false" onAction="#onXmlRadioButtonSelected" text="XML" toggleGroup="$repoType" />
                     <RadioButton fx:id="mockRadioButton" mnemonicParsing="false" onAction="#onMockRadioButtonSelected" text="Mock" toggleGroup="$repoType" />
                 </HBox>
                 <Label fx:id="urlLabel" text="URL" GridPane.rowIndex="2" />

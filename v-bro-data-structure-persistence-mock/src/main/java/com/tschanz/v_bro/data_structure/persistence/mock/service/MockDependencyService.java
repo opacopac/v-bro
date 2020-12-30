@@ -12,7 +12,7 @@ import java.util.List;
 
 public class MockDependencyService implements DependencyService {
     @Override
-    public List<FwdDependency> readFwdDependencies(@NonNull VersionData version) throws RepoException {
+    public List<Dependency> readFwdDependencies(@NonNull VersionData version) throws RepoException {
         var elementClass1 = new ElementClass("P_PRODUKTDEFINITION_E");
         var element1 = new ElementData(elementClass1, "132242", Collections.emptyList());
         var elementClass2 = new ElementClass("P_PRODUKTDEFINITION_E");
@@ -21,7 +21,7 @@ public class MockDependencyService implements DependencyService {
         var element3 = new ElementData(elementClass1, "13312", Collections.emptyList());
 
         return List.of(
-            new FwdDependency(
+            new Dependency(
             elementClass1,
             element1,
                 List.of(
@@ -41,7 +41,7 @@ public class MockDependencyService implements DependencyService {
                     )
                 )
             ),
-            new FwdDependency(
+            new Dependency(
                 elementClass2,
                 element2,
                 List.of(
@@ -54,7 +54,7 @@ public class MockDependencyService implements DependencyService {
                     )
                 )
             ),
-            new FwdDependency(
+            new Dependency(
                 elementClass3,
                 element3,
                 List.of(
@@ -77,6 +77,36 @@ public class MockDependencyService implements DependencyService {
                         "999",
                         LocalDate.of(2021, 1, 1),
                         LocalDate.of(9999, 12, 31),
+                        Pflegestatus.TEST
+                    )
+                )
+            )
+        );
+    }
+
+
+    @Override
+    public List<Dependency> readBwdDependencies(@NonNull ElementData element) throws RepoException {
+        var elementClass1 = new ElementClass("P_PRODUKTDEFINITION_E");
+        var element1 = new ElementData(elementClass1, "132242", Collections.emptyList());
+
+        return List.of(
+            new Dependency(
+                elementClass1,
+                element1,
+                List.of(
+                    new VersionData(
+                        element1,
+                        "444",
+                        LocalDate.of(2020, 1, 1),
+                        LocalDate.of(2020, 9, 30),
+                        Pflegestatus.TEST
+                    ),
+                    new VersionData(
+                        element1,
+                        "555",
+                        LocalDate.of(2020, 10, 1),
+                        LocalDate.of(2022, 12, 31),
                         Pflegestatus.TEST
                     )
                 )

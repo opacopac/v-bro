@@ -1,12 +1,11 @@
 package com.tschanz.v_bro.data_structure.persistence.jdbc.service;
 
+import com.tschanz.v_bro.data_structure.domain.model.Dependency;
 import com.tschanz.v_bro.data_structure.domain.model.ElementClass;
 import com.tschanz.v_bro.data_structure.domain.model.ElementData;
-import com.tschanz.v_bro.data_structure.domain.model.FwdDependency;
 import com.tschanz.v_bro.data_structure.domain.model.VersionData;
 import com.tschanz.v_bro.data_structure.domain.service.DependencyService;
 import com.tschanz.v_bro.data_structure.domain.service.VersionAggregateService;
-import com.tschanz.v_bro.data_structure.domain.service.VersionService;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.JdbcVersionAggregate;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.VersionTable;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
@@ -21,15 +20,16 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class JdbcDependencyService implements DependencyService {
-    private final VersionService versionService;
+    private final JdbcElementService elementService;
+    private final JdbcVersionService versionService;
     private final VersionAggregateService versionAggregateService;
 
 
     @Override
-    public List<FwdDependency> readFwdDependencies(@NonNull VersionData version) throws RepoException {
+    public List<Dependency> readFwdDependencies(@NonNull VersionData version) throws RepoException {
         var aggregate = (JdbcVersionAggregate) this.versionAggregateService.readVersionAggregate(version); // TODO: ugly type casting
 
-        List<FwdDependency> dependencies = new ArrayList<>();
+        List<Dependency> dependencies = new ArrayList<>();
         for (var record: aggregate.getAllRecords()) {
             for (var relation: record.getRepoTable().getOutgoingRelations()) {
                 if (!this.isExternalRelation(relation, aggregate)) {
@@ -41,7 +41,7 @@ public class JdbcDependencyService implements DependencyService {
                     var elementClass = new ElementClass(fwdElementClassName);
                     var element = new ElementData(elementClass, fwdElementId, Collections.emptyList());
                     var versions = this.versionService.readVersions(element);
-                    var fwdDependency = new FwdDependency(elementClass, element, versions);
+                    var fwdDependency = new Dependency(elementClass, element, versions);
                     dependencies.add(fwdDependency);
                 }
             }
@@ -49,6 +49,18 @@ public class JdbcDependencyService implements DependencyService {
 
         return dependencies;
     }
+
+
+    @Override
+    public List<Dependency> readBwdDependencies(@NonNull ElementData element) throws RepoException {
+        var elementTable = this.elementService.readElementTable(element.getElementClass().getName());
+        return Collections.emptyList(); // TODO
+    }
+
+
+    /*private void getIncomingElements(ElementTable elementTable) throws RepoException {
+        elementTable.getIncomingRelations();
+    }*/
 
 
     private boolean isExternalRelation(RepoRelation relation, JdbcVersionAggregate aggregate) {

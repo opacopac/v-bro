@@ -9,6 +9,7 @@ import com.tschanz.v_bro.app.usecase.open_repo.OpenRepoUseCase;
 import com.tschanz.v_bro.app.usecase.open_version.OpenVersionUseCase;
 import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsUseCase;
 import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsUseCase;
+import com.tschanz.v_bro.app.usecase.select_dependency_filter.SelectDependencyFilterUseCase;
 import com.tschanz.v_bro.app.usecase.select_version_filter.SelectVersionFilterUseCase;
 import lombok.Getter;
 
@@ -38,6 +39,7 @@ public class MainControllerImpl implements MainController {
         OpenElementUseCase openElementUc,
         SelectVersionFilterUseCase selectVersionFilterUc,
         OpenVersionUseCase openVersionUc,
+        SelectDependencyFilterUseCase selectDependencyFilterUc,
         OpenDependencyVersionUseCase openDependencyVersionUc
     ) {
         this.connectionController = new ConnectionControllerImpl(
@@ -52,7 +54,7 @@ public class MainControllerImpl implements MainController {
         this.elementController = new ElementControllerImpl(queryElementsUc, openElementUc);
         this.versionFilterController = new VersionFilterControllerImpl(selectVersionFilterUc);
         this.versionController = new VersionControllerImpl(openVersionUc);
-        this.dependencyFilterController = new DependencyFilterControllerImpl();
+        this.dependencyFilterController = new DependencyFilterControllerImpl(selectDependencyFilterUc);
         this.dependencyListController = new DependencyListControllerImpl(openDependencyVersionUc);
     }
 }

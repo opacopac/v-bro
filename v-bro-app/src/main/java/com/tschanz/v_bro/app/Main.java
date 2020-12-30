@@ -18,6 +18,7 @@ import com.tschanz.v_bro.app.usecase.read_element_classes.ReadElementClassesUseC
 import com.tschanz.v_bro.app.usecase.read_version_aggregate.ReadVersionAggregateUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.read_versions.ReadVersionsUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsUseCaseImpl;
+import com.tschanz.v_bro.app.usecase.select_dependency_filter.SelectDependencyFilterUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_version_filter.SelectVersionFilterUseCaseImpl;
 import com.tschanz.v_bro.common.cache.LastNCache;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.service.*;
@@ -60,7 +61,7 @@ public class Main {
         var jdbcDenominationService = new JdbcDenominationService(jdbcElementService);
         var jdbcVersionAggregateService = new JdbcVersionAggregateService(jdbcRepo, jdbcRepoMetadata, jdbcRepoDataService, jdbcElementService, jdbcVersionService);
         var jdbcVersionAggregateServiceCache = new JdbcVersionAggregateServiceCache(jdbcVersionAggregateService, new LastNCache<>(10));
-        var jdbcDependencyService = new JdbcDependencyService(jdbcVersionService, jdbcVersionAggregateServiceCache);
+        var jdbcDependencyService = new JdbcDependencyService(jdbcElementService, jdbcVersionService, jdbcVersionAggregateServiceCache);
 
         // persistence xml
         var xmlRepoService = new XmlRepoService();
@@ -100,6 +101,7 @@ public class Main {
         var mainState = new MainState();
         var readVersionAggregateUc = new ReadVersionAggregateUseCaseImpl(mainState, versionAggregateServiceProvider, mainPresenter.getVersionAggregatePresenter(), mainPresenter.getStatusPresenter());
         var readDependenciesUc = new ReadDependenciesUseCaseImpl(mainState, dependencyServiceProvider, mainPresenter.getDependencyPresenter(), mainPresenter.getStatusPresenter());
+        var selectDependencyFilterUc = new SelectDependencyFilterUseCaseImpl(mainState, readDependenciesUc, mainPresenter.getStatusPresenter());
         var openVersionUc = new OpenVersionUseCaseImpl(mainState, readVersionAggregateUc, readDependenciesUc, mainPresenter.getVersionTimelinePresenter(), mainPresenter.getStatusPresenter());
         var readVersionsUc = new ReadVersionsUseCaseImpl(mainState, versionServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getVersionTimelinePresenter());
         var selectVersionFilterUc = new SelectVersionFilterUseCaseImpl(mainState, readVersionsUc, mainPresenter.getStatusPresenter());
@@ -125,6 +127,7 @@ public class Main {
             openElementUc,
             selectVersionFilterUc,
             openVersionUc,
+            selectDependencyFilterUc,
             openDependencyVersionUc
         );
 

@@ -19,7 +19,7 @@ public class XmlDependencyService implements DependencyService {
 
 
     @Override
-    public List<FwdDependency> readFwdDependencies(@NonNull VersionData version) throws RepoException {
+    public List<Dependency> readFwdDependencies(@NonNull VersionData version) throws RepoException {
         Map<String, XmlIdElementPosInfo> elementLutInfos = this.xmlDataStructureService.getElementLut();
         VersionAggregate versionAggregate = this.versionAggregateService.readVersionAggregate(version);
 
@@ -27,8 +27,14 @@ public class XmlDependencyService implements DependencyService {
     }
 
 
-    private List<FwdDependency> findNodeDependencies(AggregateNode aggregateNode, String elementId, Map<String, XmlIdElementPosInfo> elementLutInfos) throws RepoException {
-        List<FwdDependency> fwdDependencies = new ArrayList<>();
+    @Override
+    public List<Dependency> readBwdDependencies(@NonNull ElementData element) throws RepoException {
+        return Collections.emptyList(); // TODO
+    }
+
+
+    private List<Dependency> findNodeDependencies(AggregateNode aggregateNode, String elementId, Map<String, XmlIdElementPosInfo> elementLutInfos) throws RepoException {
+        List<Dependency> fwdDependencies = new ArrayList<>();
 
         List<XmlIdElementPosInfo> fwdElements = aggregateNode.getFieldValues()
             .stream()
@@ -43,7 +49,7 @@ public class XmlDependencyService implements DependencyService {
             var elementClass = new ElementClass(fwdElement.getName());
             var element = new ElementData(elementClass, fwdElement.getElementId(), Collections.emptyList());
             var versions = this.versionService.readVersions(element);
-            var fwdDependency = new FwdDependency(elementClass, element, versions);
+            var fwdDependency = new Dependency(elementClass, element, versions);
             fwdDependencies.add(fwdDependency);
         }
 

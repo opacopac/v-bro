@@ -3,15 +3,12 @@ package com.tschanz.v_bro.app.presentation.controller;
 import com.tschanz.v_bro.app.presentation.viewmodel.version.VersionFilterItem;
 import com.tschanz.v_bro.app.usecase.select_version_filter.SelectVersionFilterRequest;
 import com.tschanz.v_bro.app.usecase.select_version_filter.SelectVersionFilterUseCase;
+import lombok.RequiredArgsConstructor;
 
 
+@RequiredArgsConstructor
 public class VersionFilterControllerImpl implements VersionFilterController {
     private final SelectVersionFilterUseCase selectVersionFilterUc;
-
-
-    public VersionFilterControllerImpl(SelectVersionFilterUseCase selectVersionFilterUc) {
-        this.selectVersionFilterUc = selectVersionFilterUc;
-    }
 
 
     public void onVersionFilterSelected(VersionFilterItem versionFilterItem) {
