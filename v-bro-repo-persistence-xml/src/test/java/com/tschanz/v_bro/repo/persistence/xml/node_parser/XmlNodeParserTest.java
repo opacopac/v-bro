@@ -1,10 +1,10 @@
 package com.tschanz.v_bro.repo.persistence.xml.node_parser;
 
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
 import java.io.ByteArrayInputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,14 +21,16 @@ class XmlNodeParserTest {
     }
 
 
-    void initParser(String xmlText, String xmlElementName) throws XMLStreamException {
+    @SneakyThrows
+    void initParser(String xmlText, String xmlElementName) {
         var stream = new ByteArrayInputStream(xmlText.getBytes());
         this.xmlNodeParser.init(stream, xmlElementName);
     }
 
 
     @Test
-    void nextNode_parses_attributes_and_value_elements_as_fields() throws XMLStreamException {
+    @SneakyThrows
+    void nextNode_parses_attributes_and_value_elements_as_fields() {
         var xmlText = XML_HEADER + "<doc><n0><n01>xxx</n01></n0><n1 id=\"ids__111\"><n11>yyy</n11></n1><n2 id=\"ids__222\">zzz</n2></doc>";
         this.initParser(xmlText, "n1");
 
@@ -48,7 +50,8 @@ class XmlNodeParserTest {
 
 
     @Test
-    void nextNode_parses_one_tag_elements_correctly() throws XMLStreamException {
+    @SneakyThrows
+    void nextNode_parses_one_tag_elements_correctly() {
         var xmlText = XML_HEADER + "<doc><n1 id=\"ids__111\" /></doc>";
         this.initParser(xmlText, "n1");
 
@@ -64,7 +67,8 @@ class XmlNodeParserTest {
 
 
     @Test
-    void nextNode_called_repeatedly_returns_multiple_elements() throws XMLStreamException {
+    @SneakyThrows
+    void nextNode_called_repeatedly_returns_multiple_elements() {
         var xmlText = XML_HEADER + "<doc><n1 id=\"ids__111\"></n1><n1 id=\"ids__112\"></n1><n2 id=\"ids__222\">zzz</n2></doc>";
         this.initParser(xmlText, "n1");
 
@@ -91,7 +95,8 @@ class XmlNodeParserTest {
 
 
     @Test
-    void nextNode_parses_mixed_fields_and_child_nodes() throws XMLStreamException {
+    @SneakyThrows
+    void nextNode_parses_mixed_fields_and_child_nodes() {
         var xmlText = XML_HEADER + "\n" +
             "<ns2:datenrelease xmlns:ns2=\"ch.voev.nova.pflege.common.exporter.datenrelease\" xmlns:ns3=\"ch.voev.nova.pflege.common.exporter.datenrelease.tarifcommons\" xmlns:ns4=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ns5=\"ch.voev.nova.pflege.common.exporter.datenrelease.dvmodell\" xmlns:ns6=\"ch.voev.nova.pflege.common.exporter.datenrelease.netz\" id=\"D555.0\">\n" +
             " <subsystemFQF>\n" +

@@ -6,6 +6,5 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class VersionAggregate {
-    @Getter protected final VersionData versionData;
     @Getter protected final AggregateNode rootNode;
 }

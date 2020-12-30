@@ -23,4 +23,9 @@ public class Denomination {
             .map(Denomination::getName)
             .collect(Collectors.toList());
     }
+
+
+    public boolean isElementId() {
+        return this.path.equals(ELEMENT_PATH) && this.name.toLowerCase().contains("id"); // TODO
+    }
 }

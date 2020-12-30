@@ -52,7 +52,7 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
             ? this.readChildNodes(versionRecord)
             : Collections.emptyList();
 
-        return new JdbcVersionAggregate(version.getElement(), elementRecord, versionRecord, childNodes);
+        return new JdbcVersionAggregate(elementRecord, versionRecord, childNodes);
     }
 
 

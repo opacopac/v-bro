@@ -1,8 +1,6 @@
 package com.tschanz.v_bro.data_structure.persistence.jdbc.model;
 
-import com.tschanz.v_bro.data_structure.domain.model.ElementData;
 import com.tschanz.v_bro.data_structure.domain.model.VersionAggregate;
-import com.tschanz.v_bro.data_structure.domain.model.VersionData;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTableRecord;
 import lombok.Getter;
 
@@ -16,13 +14,11 @@ public class JdbcVersionAggregate extends VersionAggregate {
 
 
     public JdbcVersionAggregate(
-        ElementData element,
         ElementRecord elementRecord,
         VersionRecord versionRecord,
         List<JdbcAggregateNode> versionChildNodes
     ) {
         super(
-            versionRecord != null ? versionRecord.createVersion(element) : VersionData.createEternal(element),
             getRootNode(elementRecord, versionRecord, versionChildNodes)
         );
 

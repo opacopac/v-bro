@@ -22,11 +22,7 @@ import com.tschanz.v_bro.app.usecase.select_version_filter.SelectVersionFilterUs
 import com.tschanz.v_bro.common.cache.LastNCache;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.service.*;
 import com.tschanz.v_bro.data_structure.persistence.mock.service.*;
-import com.tschanz.v_bro.data_structure.persistence.xml.sax_parser.VersionAggregateParser;
 import com.tschanz.v_bro.data_structure.persistence.xml.service.*;
-import com.tschanz.v_bro.data_structure.persistence.xml.stax_parser.DenominationsParser;
-import com.tschanz.v_bro.data_structure.persistence.xml.stax_parser.ElementParser;
-import com.tschanz.v_bro.data_structure.persistence.xml.stax_parser.VersionParser;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
 import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.JdbcQueryBuilderImpl;
@@ -35,9 +31,9 @@ import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoDataService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataServiceImpl;
 import com.tschanz.v_bro.repo.persistence.mock.service.MockRepoService2;
+import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlNodeParser;
 import lombok.SneakyThrows;
 
-import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.XMLInputFactory;
 import java.io.FileNotFoundException;
 import java.util.Properties;
@@ -68,16 +64,12 @@ public class Main {
         // persistence xml
         var xmlRepo = new XmlRepoService();
         var xmlInputFactory = XMLInputFactory.newInstance();
-        var saxParserFactory = SAXParserFactory.newInstance();
-        var denominationsParser = new DenominationsParser(xmlInputFactory);
-        var elementParser = new ElementParser(xmlInputFactory);
-        var versionParser = new VersionParser(xmlInputFactory);
-        var versionAggregateParser = new VersionAggregateParser(saxParserFactory);
+        var xmlNodeParser = new XmlNodeParser(xmlInputFactory);
         var xmlElementClassService = new XmlElementClassService(xmlRepo);
-        var xmlElementService = new XmlElementService(xmlRepo, elementParser);
-        var xmlVersionService = new XmlVersionService(xmlRepo, versionParser);
-        var xmlDenominationService = new XmlDenominationService(xmlRepo, denominationsParser);
-        var xmlVersionAggregateService = new XmlVersionAggregateService(xmlRepo, versionAggregateParser);
+        var xmlElementService = new XmlElementService(xmlRepo, xmlNodeParser);
+        var xmlVersionService = new XmlVersionService(xmlRepo, xmlNodeParser);
+        var xmlDenominationService = new XmlDenominationService(xmlRepo, xmlNodeParser);
+        var xmlVersionAggregateService = new XmlVersionAggregateService(xmlRepo, xmlNodeParser);
         var xmlDependencyService = new XmlDependencyService(xmlRepo, xmlVersionService, xmlVersionAggregateService);
 
         // persistence mock

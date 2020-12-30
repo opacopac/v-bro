@@ -1,5 +1,6 @@
 package com.tschanz.v_bro.repo.persistence.xml.node_parser;
 
+import com.tschanz.v_bro.repo.domain.model.RepoException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -19,31 +20,34 @@ public class XmlNodeParser {
     private String xmlElementName;
 
 
-    public void init(@NonNull InputStream xmlStream, @NonNull String xmlElementName) throws XMLStreamException {
-        this.reader = this.xmlInputFactory.createXMLStreamReader(xmlStream);
-        this.xmlElementName = xmlElementName;
+    public void init(@NonNull InputStream xmlStream, @NonNull String xmlElementName) throws RepoException {
+        try {
+            this.reader = this.xmlInputFactory.createXMLStreamReader(xmlStream);
+            this.xmlElementName = xmlElementName;
+        } catch (XMLStreamException exception) {
+            throw new RepoException(exception);
+        }
     }
 
 
-    public void close() throws XMLStreamException {
-        this.reader.close();
-    }
-
-
-    public XmlNodeInfo nextNode() throws XMLStreamException {
+    public XmlNodeInfo nextNode() throws RepoException {
         if (this.reader == null) {
             throw new IllegalArgumentException("reader has not been initialized");
         }
 
-        while (reader.hasNext()) {
-            if (reader.next() == XMLStreamReader.START_ELEMENT) {
-                if (reader.getLocalName().equals(this.xmlElementName)) {
-                    return this.parseXmlElement();
+        try {
+            while (reader.hasNext()) {
+                if (reader.next() == XMLStreamReader.START_ELEMENT) {
+                    if (reader.getLocalName().equals(this.xmlElementName)) {
+                        return this.parseXmlElement();
+                    }
                 }
             }
-        }
 
-        this.close();
+            this.reader.close();
+        } catch (XMLStreamException exception) {
+            throw new RepoException(exception);
+        }
 
         return null;
     }

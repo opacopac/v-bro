@@ -15,6 +15,7 @@ import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsReq
 import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsRequestItem;
 import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsUseCase;
 import com.tschanz.v_bro.common.selected_list.SelectedList;
+import com.tschanz.v_bro.data_structure.domain.model.Denomination;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
@@ -66,9 +67,12 @@ public class OpenElementClassUseCaseImpl implements OpenElementClassUseCase {
         this.readDenominationUc.execute(readDenominationRequest);
 
         var denominations = this.mainState.getDenominationState().getDenominations().getItems();
-        List<SelectDenominationsRequestItem> selectDenomination = denominations.size() > 0
-            ? List.of(new SelectDenominationsRequestItem(denominations.get(0).getPath(), denominations.get(0).getName()))
-            : Collections.emptyList();
+        List<SelectDenominationsRequestItem> selectDenomination = denominations
+            .stream()
+            .filter(Denomination::isElementId)
+            .map(denomination -> List.of(new SelectDenominationsRequestItem(denomination.getPath(), denomination.getName())))
+            .findFirst()
+            .orElse(Collections.emptyList());
         var selectDenominationRequest = new SelectDenominationsRequest(selectDenomination);
         this.selectDenominationsUc.execute(selectDenominationRequest);
 
