@@ -18,25 +18,25 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class XmlElementService implements ElementService {
-    private final XmlRepoService repoService;
+    private final XmlDataStructureService xmlDataStructureService;
     private final XmlNodeParser xmlNodeParser;
 
 
     @Override
-    public List<ElementData> readElements(
+    public List<ElementData> queryElements(
         @NonNull ElementClass elementClass,
         @NonNull List<Denomination> denominationFields,
         @NonNull String query,
         int maxResults
     ) throws RepoException {
-        var xmlFileStream = this.repoService.getElementClassInputStream(elementClass.getName());
+        var xmlFileStream = this.xmlDataStructureService.getElementClassInputStream(elementClass.getName());
         this.xmlNodeParser.init(xmlFileStream, elementClass.getName());
 
         List<ElementData> elements = new ArrayList<>();
         while (elements.size() < maxResults) {
             var elementNode = this.xmlNodeParser.nextNode();
             if (elementNode != null) {
-                var versionNodes = this.repoService.getVersionNodes(elementNode);
+                var versionNodes = this.xmlDataStructureService.getVersionNodes(elementNode);
                 if (this.isQueryMatch(elementNode, versionNodes, denominationFields, query)) {
                     var element = this.createElement(elementClass, elementNode, versionNodes, denominationFields);
                     elements.add(element);
@@ -47,6 +47,24 @@ public class XmlElementService implements ElementService {
         }
 
         return elements;
+    }
+
+
+    @Override
+    public ElementData readElement(
+        @NonNull ElementClass elementClass,
+        @NonNull List<Denomination> denominationFields,
+        @NonNull String elementId
+    ) throws RepoException {
+        var xmlFileStream = this.xmlDataStructureService.getElementInputStream(elementId);
+        this.xmlNodeParser.init(xmlFileStream, elementClass.getName());
+        var elementNode = this.xmlNodeParser.nextNode();
+        if (elementNode != null && this.xmlDataStructureService.getId(elementNode).equals(elementId)) {
+            var versionNodes = this.xmlDataStructureService.getVersionNodes(elementNode);
+            return this.createElement(elementClass, elementNode, versionNodes, denominationFields);
+        } else {
+            throw new RepoException(String.format("element with ID '%s' not found", elementId));
+        }
     }
 
 
@@ -79,7 +97,7 @@ public class XmlElementService implements ElementService {
 
 
     private ElementData createElement(ElementClass elementClass, XmlNodeInfo elementNode, List<XmlNodeInfo> versionNodes, List<Denomination> denominationFields) {
-        var elementId = this.repoService.getId(elementNode);
+        var elementId = this.xmlDataStructureService.getId(elementNode);
         List<DenominationData> denominations = new ArrayList<>(this.createDenominations(elementNode, denominationFields, Denomination.ELEMENT_PATH));
         if (versionNodes.size() > 0) {
             var latestVersion = versionNodes.get(versionNodes.size() - 1);

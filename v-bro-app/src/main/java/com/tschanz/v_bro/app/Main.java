@@ -32,6 +32,7 @@ import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoDataService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataServiceImpl;
 import com.tschanz.v_bro.repo.persistence.mock.service.MockRepoService2;
 import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlNodeParser;
+import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
 import lombok.SneakyThrows;
 
 import javax.xml.stream.XMLInputFactory;
@@ -62,15 +63,16 @@ public class Main {
         var jdbcDependencyService = new JdbcDependencyService(jdbcVersionService, jdbcVersionAggregateServiceCache);
 
         // persistence xml
-        var xmlRepo = new XmlRepoService();
+        var xmlRepoService = new XmlRepoService();
+        var xmlDataStructureService = new XmlDataStructureService(xmlRepoService);
         var xmlInputFactory = XMLInputFactory.newInstance();
         var xmlNodeParser = new XmlNodeParser(xmlInputFactory);
-        var xmlElementClassService = new XmlElementClassService(xmlRepo);
-        var xmlElementService = new XmlElementService(xmlRepo, xmlNodeParser);
-        var xmlVersionService = new XmlVersionService(xmlRepo, xmlNodeParser);
-        var xmlDenominationService = new XmlDenominationService(xmlRepo, xmlNodeParser);
-        var xmlVersionAggregateService = new XmlVersionAggregateService(xmlRepo, xmlNodeParser);
-        var xmlDependencyService = new XmlDependencyService(xmlRepo, xmlVersionService, xmlVersionAggregateService);
+        var xmlElementClassService = new XmlElementClassService(xmlDataStructureService);
+        var xmlElementService = new XmlElementService(xmlDataStructureService, xmlNodeParser);
+        var xmlVersionService = new XmlVersionService(xmlDataStructureService, xmlNodeParser);
+        var xmlDenominationService = new XmlDenominationService(xmlDataStructureService, xmlNodeParser);
+        var xmlVersionAggregateService = new XmlVersionAggregateService(xmlDataStructureService, xmlNodeParser);
+        var xmlDependencyService = new XmlDependencyService(xmlDataStructureService, xmlVersionService, xmlVersionAggregateService);
 
         // persistence mock
         var mockRepo = new MockRepoService2();
@@ -82,7 +84,7 @@ public class Main {
         var mockDependencyService = new MockDependencyService();
 
         // persistence service providers
-        var repoServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcRepo, RepoType.XML, xmlRepo, RepoType.MOCK, mockRepo);
+        var repoServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcRepo, RepoType.XML, xmlRepoService, RepoType.MOCK, mockRepo);
         var elementClassServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcElementClassService, RepoType.XML, xmlElementClassService, RepoType.MOCK, mockElementClassService);
         var elementServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcElementService, RepoType.XML, xmlElementService, RepoType.MOCK, mockElementService);
         var versionServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcVersionService, RepoType.XML, xmlVersionService, RepoType.MOCK, mockVersionDataService);
@@ -102,7 +104,7 @@ public class Main {
         var readVersionsUc = new ReadVersionsUseCaseImpl(mainState, versionServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getVersionTimelinePresenter());
         var selectVersionFilterUc = new SelectVersionFilterUseCaseImpl(mainState, readVersionsUc, mainPresenter.getStatusPresenter());
         var queryElementsUc = new QueryElementsUseCaseImpl(mainState, elementServiceProvider);
-        var openElementUc = new OpenElementUseCaseImpl(mainState, mainPresenter.getElementPresenter(), queryElementsUc, readVersionsUc, openVersionUc, mainPresenter.getStatusPresenter());
+        var openElementUc = new OpenElementUseCaseImpl(mainState, elementServiceProvider, mainPresenter.getElementPresenter(), readVersionsUc, openVersionUc, mainPresenter.getStatusPresenter());
         var selectDenominationsUc = new SelectDenominationsUseCaseImpl(mainState, mainPresenter.getDenominationsPresenter());
         var readDenominationUc = new ReadDenominationUseCaseImpl(mainState, denominationServiceProvider, mainPresenter.getDenominationsPresenter(), mainPresenter.getStatusPresenter());
         var openElementClassUc = new OpenElementClassUseCaseImpl(mainState, mainPresenter.getElementClassListPresenter(), readDenominationUc, selectDenominationsUc, queryElementsUc, openElementUc, mainPresenter.getStatusPresenter());

@@ -17,13 +17,13 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class XmlVersionAggregateService implements VersionAggregateService {
-    private final XmlRepoService repoService;
+    private final XmlDataStructureService xmlDataStructureService;
     private final XmlNodeParser xmlNodeParser;
 
 
     @Override
     public VersionAggregate readVersionAggregate(@NonNull VersionData version) throws RepoException {
-        var xmlInputStream = this.repoService.getElementInputStream(version.getElement().getId());
+        var xmlInputStream = this.xmlDataStructureService.getElementInputStream(version.getElement().getId());
         this.xmlNodeParser.init(xmlInputStream, version.getElement().getElementClass().getName());
         var elementNode = this.xmlNodeParser.nextNode();
         var aggregateNode = this.getAggregateNode(version, elementNode);
@@ -48,8 +48,8 @@ public class XmlVersionAggregateService implements VersionAggregateService {
     private boolean passesVersionFilter(VersionData version, XmlNodeInfo node) {
         if (version == null || version.isEternal()) {
             return true;
-        } else if (node.getName().equals(XmlRepoService.VERSION_NODE_NAME)) {
-            var versionId = this.repoService.getId(node);
+        } else if (node.getName().equals(XmlDataStructureService.VERSION_NODE_NAME)) {
+            var versionId = this.xmlDataStructureService.getId(node);
             return versionId.equals(version.getId());
         } else {
             return true;

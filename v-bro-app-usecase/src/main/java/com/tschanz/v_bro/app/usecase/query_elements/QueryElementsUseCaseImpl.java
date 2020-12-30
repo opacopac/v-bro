@@ -31,7 +31,7 @@ public class QueryElementsUseCaseImpl implements QueryElementsUseCase {
                 log.info(String.format("UC: query elements of class '%s' for text '%s'...", elementClass, query));
 
                 var elementService = this.elementServiceProvider.getService(repoType);
-                var elements = elementService.readElements(elementClass, selectedDenominationFields, query, MAX_RESULTS);
+                var elements = elementService.queryElements(elementClass, selectedDenominationFields, query, MAX_RESULTS);
 
                 this.mainState.getElementState().setQueryResult(elements);
 

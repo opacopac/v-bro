@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class XmlDenominationService implements DenominationService {
-    private final XmlRepoService repoService;
+    private final XmlDataStructureService xmlDataStructureService;
     private final XmlNodeParser xmlNodeParser;
 
 
@@ -35,12 +35,12 @@ public class XmlDenominationService implements DenominationService {
 
     // TODO: better: merge all and create set
     private XmlNodeInfo getFirstElement(String elementClassName) throws RepoException {
-        var elementLutInfo = this.repoService.getElementLut().values()
+        var elementLutInfo = this.xmlDataStructureService.getElementLut().values()
             .stream()
             .filter(element -> elementClassName.equals(element.getName()))
             .findFirst()
             .orElseThrow(() -> new RepoException(String.format("no element with name '%s' found", elementClassName)));
-        var xmlFileStream = this.repoService.getElementInputStream(elementLutInfo.getElementId());
+        var xmlFileStream = this.xmlDataStructureService.getElementInputStream(elementLutInfo.getElementId());
         this.xmlNodeParser.init(xmlFileStream, elementClassName);
 
         return this.xmlNodeParser.nextNode();
@@ -57,7 +57,7 @@ public class XmlDenominationService implements DenominationService {
 
 
     private List<Denomination> getVersionDenominations(XmlNodeInfo elementNode) {
-        return this.repoService.getVersionNodes(elementNode)
+        return this.xmlDataStructureService.getVersionNodes(elementNode)
             .stream()
             .flatMap(node -> node.getFields().stream())
             .filter(this::isDenominationField)

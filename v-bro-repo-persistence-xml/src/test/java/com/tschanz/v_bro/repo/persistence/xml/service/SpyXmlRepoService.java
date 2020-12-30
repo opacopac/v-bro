@@ -1,4 +1,4 @@
-package com.tschanz.v_bro.data_structure.persistence.xml.service;
+package com.tschanz.v_bro.repo.persistence.xml.service;
 
 import com.tschanz.v_bro.common.testing.SpyHelper;
 import com.tschanz.v_bro.common.testing.SpyReturnValue;

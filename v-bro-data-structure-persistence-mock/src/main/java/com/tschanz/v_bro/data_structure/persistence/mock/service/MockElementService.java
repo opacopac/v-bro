@@ -13,7 +13,7 @@ import java.util.List;
 
 public class MockElementService implements ElementService {
     @Override
-    public List<ElementData> readElements(
+    public List<ElementData> queryElements(
         @NonNull ElementClass elementClass,
         @NonNull List<Denomination> denominationFields,
         @NonNull String query,
@@ -35,6 +35,23 @@ public class MockElementService implements ElementService {
                     new DenominationData("PRODUKTNUMMER", "7"),
                     new DenominationData("BEZEICHNUNG", "Kintertageskarte")
                 )
+            )
+        );
+    }
+
+
+    @Override
+    public ElementData readElement(
+        @NonNull ElementClass elementClass,
+        @NonNull List<Denomination> denominationFields,
+        @NonNull String elementId
+    ) {
+        return new ElementData(
+            elementClass,
+            "111",
+            List.of(
+                new DenominationData("PRODUKTNUMMER", "125"),
+                new DenominationData("BEZEICHNUNG", "Gewöhnliche Billette Schweiz")
             )
         );
     }

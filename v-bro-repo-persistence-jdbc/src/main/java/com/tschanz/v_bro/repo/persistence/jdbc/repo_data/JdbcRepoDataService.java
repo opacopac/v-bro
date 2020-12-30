@@ -32,8 +32,6 @@ public class JdbcRepoDataService {
         List<RowFilter> optFilters,
         int maxResults
     ) throws RepoException {
-        log.info("reading rows from table " + repoTable.getName());
-
         ArrayList<RepoTableRecord> records = new ArrayList<>();
         try {
             var query = this.queryBuilder.buildQuery(repoTable.getName(), joins, fields, mandatoryFilters, optFilters, maxResults);

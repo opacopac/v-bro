@@ -1,5 +1,6 @@
 package com.tschanz.v_bro.app.state;
 
+import com.tschanz.v_bro.data_structure.domain.model.ElementClass;
 import com.tschanz.v_bro.data_structure.domain.model.ElementData;
 import lombok.Getter;
 import lombok.NonNull;
@@ -22,5 +23,21 @@ public class ElementState {
         return this.currentElement != null
             ? this.currentElement.getId()
             : null;
+    }
+
+
+    public boolean trySelectElement(ElementClass elementClass, String elementId) {
+        var element = this.queryResult
+            .stream()
+            .filter(e -> e.getElementClass().equals(elementClass) && e.getId().equals(elementId))
+            .findFirst()
+            .orElse(null);
+
+        if (element != null) {
+            this.currentElement = element;
+            return true;
+        } else {
+            return false;
+        }
     }
 }

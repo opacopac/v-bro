@@ -13,18 +13,17 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class XmlDependencyService implements DependencyService {
-    private final XmlRepoService repoService;
+    private final XmlDataStructureService xmlDataStructureService;
     private final XmlVersionService versionService;
     private final XmlVersionAggregateService versionAggregateService;
 
 
     @Override
     public List<FwdDependency> readFwdDependencies(@NonNull VersionData version) throws RepoException {
-        Map<String, XmlIdElementPosInfo> elementLutInfos = this.repoService.getElementLut();
+        Map<String, XmlIdElementPosInfo> elementLutInfos = this.xmlDataStructureService.getElementLut();
         VersionAggregate versionAggregate = this.versionAggregateService.readVersionAggregate(version);
-        List<FwdDependency> fwdDependencies = this.findNodeDependencies(versionAggregate.getRootNode(), version.getElement().getId(), elementLutInfos);
 
-        return fwdDependencies;
+        return this.findNodeDependencies(versionAggregate.getRootNode(), version.getElement().getId(), elementLutInfos);
     }
 
 
@@ -33,8 +32,8 @@ public class XmlDependencyService implements DependencyService {
 
         List<XmlIdElementPosInfo> fwdElements = aggregateNode.getFieldValues()
             .stream()
-            .filter(keyValue -> !keyValue.key.equals(XmlRepoService.ID_ATTRIBUTE_NAME)) // filter own element/version id
-            .filter(keyValue -> XmlRepoService.isId(keyValue.value))
+            .filter(keyValue -> !keyValue.key.equals(XmlDataStructureService.ID_ATTRIBUTE_NAME)) // filter own element/version id
+            .filter(keyValue -> XmlDataStructureService.isId(keyValue.value))
             .flatMap(keyValue -> List.of(keyValue.value.split(" ")).stream())
             .map(elementLutInfos::get)
             .filter(Objects::nonNull)

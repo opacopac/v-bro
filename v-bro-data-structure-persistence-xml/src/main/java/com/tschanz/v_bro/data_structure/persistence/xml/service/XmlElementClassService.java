@@ -12,12 +12,12 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class XmlElementClassService implements ElementClassService {
-    private final XmlRepoService repoService;
+    private final XmlDataStructureService xmlDataStructureService;
 
 
     @Override
     public List<ElementClass> readAllElementClasses() throws RepoException {
-        return this.repoService.getElementLut().values()
+        return this.xmlDataStructureService.getElementLut().values()
             .stream()
             .map(XmlIdElementPosInfo::getName)
             .distinct()

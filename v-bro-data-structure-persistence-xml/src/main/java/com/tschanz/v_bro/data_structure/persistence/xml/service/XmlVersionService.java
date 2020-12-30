@@ -19,16 +19,16 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class XmlVersionService implements VersionService {
-    @NonNull private final XmlRepoService repoService;
+    @NonNull private final XmlDataStructureService xmlDataStructureService;
     @NonNull private final XmlNodeParser xmlNodeParser;
 
 
     @Override
     public List<VersionData> readVersions(@NonNull ElementData element) throws RepoException {
-        InputStream xmlFileStream = this.repoService.getElementInputStream(element.getId());
+        InputStream xmlFileStream = this.xmlDataStructureService.getElementInputStream(element.getId());
         this.xmlNodeParser.init(xmlFileStream, element.getElementClass().getName());
         var elementNode = this.xmlNodeParser.nextNode();
-        var versionNodes = this.repoService.getVersionNodes(elementNode);
+        var versionNodes = this.xmlDataStructureService.getVersionNodes(elementNode);
 
         if (versionNodes.size() > 0) {
             return versionNodes
@@ -45,7 +45,7 @@ public class XmlVersionService implements VersionService {
         var gueltigVon = versionNode.getFields()
             .stream()
             .filter(XmlFieldInfo::isAttribute)
-            .filter(field -> field.getName().equals(XmlRepoService.VERSION_VON_ATTRIBUTE_NAME))
+            .filter(field -> field.getName().equals(XmlDataStructureService.VERSION_VON_ATTRIBUTE_NAME))
             .map(field -> LocalDate.parse(field.getValue()))
             .findFirst()
             .orElseThrow(IllegalArgumentException::new);
@@ -53,14 +53,14 @@ public class XmlVersionService implements VersionService {
         var gueltigBis = versionNode.getFields()
             .stream()
             .filter(XmlFieldInfo::isAttribute)
-            .filter(field -> field.getName().equals(XmlRepoService.VERSION_BIS_ATTRIBUTE_NAME))
+            .filter(field -> field.getName().equals(XmlDataStructureService.VERSION_BIS_ATTRIBUTE_NAME))
             .map(field -> LocalDate.parse(field.getValue()))
             .findFirst()
             .orElseThrow(IllegalArgumentException::new);
 
         return new VersionData(
             element,
-            this.repoService.getId(versionNode),
+            this.xmlDataStructureService.getId(versionNode),
             gueltigVon,
             gueltigBis,
             Pflegestatus.PRODUKTIV

@@ -33,7 +33,7 @@ public class JdbcElementService implements ElementService {
 
 
     @Override
-    public List<ElementData> readElements(
+    public List<ElementData> queryElements(
         @NonNull ElementClass elementClass,
         @NonNull List<Denomination> denominationFields,
         @NonNull String query,
@@ -44,26 +44,10 @@ public class JdbcElementService implements ElementService {
         }
 
         var elementTable = this.readElementTable(elementClass.getName());
-        var elementDenominationFieldNames = this.getDenominationFieldNames(denominationFields, Denomination.ELEMENT_PATH);
-        var elementFields = elementTable.getFields(elementDenominationFieldNames);
-        // TODO: hack to ensure element id is always present
-        if (!elementFields.contains(elementTable.getIdField())) {
-            elementFields.add(elementTable.getIdField());
-        }
-
         var versionTable = this.readVersionTable(elementTable);
-        List<String> versionDenominationFieldNames = versionTable != null
-            ? this.getDenominationFieldNames(denominationFields, Denomination.VERSION_PATH)
-            : Collections.emptyList();
-        List<RepoField> versionFields = versionTable != null
-            ? versionTable.getFields(versionDenominationFieldNames)
-            : Collections.emptyList();
-
-        var allFields = Stream.concat(elementFields.stream(), versionFields.stream()).collect(Collectors.toList());
+        var allFields = this.getFields(elementTable, versionTable, denominationFields);
         var optFilter = this.getQueryFilter(allFields, query);
-        List<RepoTableJoin> joins = versionTable != null
-            ? List.of(new RepoTableJoin(elementTable.getRepoTable(), versionTable.getRepoTable(), elementTable.getIdField(), versionTable.getElementIdField()))
-            : Collections.emptyList();
+        var joins = this.getTableJoins(elementTable, versionTable);
         var rows = this.repoData.readRepoTableRecords(elementTable.getRepoTable(), joins, allFields, Collections.emptyList(), optFilter, maxResults);
 
         return rows
@@ -71,6 +55,30 @@ public class JdbcElementService implements ElementService {
             .map(row -> this.getElementFromRow(row, elementClass))
             .distinct()
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public ElementData readElement(
+        @NonNull ElementClass elementClass,
+        @NonNull List<Denomination> denominationFields,
+        @NonNull String elementId
+    ) throws RepoException {
+        if (!this.repo.isConnected()) {
+            throw new RepoException("Not connected to repo!");
+        }
+
+        var elementTable = this.readElementTable(elementClass.getName());
+        var versionTable = this.readVersionTable(elementTable);
+        var allFields = this.getFields(elementTable, versionTable, denominationFields);
+        var andFilter = this.getElementIdFilter(elementTable.getIdField(), elementId);
+        var joins = this.getTableJoins(elementTable, versionTable);
+        var rows = this.repoData.readRepoTableRecords(elementTable.getRepoTable(), joins, allFields, andFilter, Collections.emptyList(), -1);
+
+        if (rows.size() > 0) {
+            return this.getElementFromRow(rows.get(0), elementClass);
+        } else {
+            throw new RepoException(String.format("element with ID '%s' not found", elementId));
+        }
     }
 
 
@@ -110,6 +118,25 @@ public class JdbcElementService implements ElementService {
     }
 
 
+    private List<RepoField> getFields(ElementTable elementTable, VersionTable versionTable, List<Denomination> denominationFields) {
+        var elementDenominationFieldNames = this.getDenominationFieldNames(denominationFields, Denomination.ELEMENT_PATH);
+        var elementFields = elementTable.getFields(elementDenominationFieldNames);
+        // TODO: hack to ensure element id is always present
+        if (!elementFields.contains(elementTable.getIdField())) {
+            elementFields.add(elementTable.getIdField());
+        }
+
+        List<String> versionDenominationFieldNames = versionTable != null
+            ? this.getDenominationFieldNames(denominationFields, Denomination.VERSION_PATH)
+            : Collections.emptyList();
+        List<RepoField> versionFields = versionTable != null
+            ? versionTable.getFields(versionDenominationFieldNames)
+            : Collections.emptyList();
+
+        return Stream.concat(elementFields.stream(), versionFields.stream()).collect(Collectors.toList());
+    }
+
+
     private List<String> getDenominationFieldNames(List<Denomination> denominationFields, String pathName) {
         return denominationFields
             .stream()
@@ -129,6 +156,20 @@ public class JdbcElementService implements ElementService {
                 .map(f -> new RowFilter(f, RowFilterOperator.LIKE, JdbcRepoMetadataServiceImpl.WILDCARD + query + JdbcRepoMetadataServiceImpl.WILDCARD))
                 .collect(Collectors.toList());
         }
+    }
+
+
+    private List<RowFilter> getElementIdFilter(RepoField elementIdField, String elementId) {
+        var field = new RepoField(elementIdField.getTableName(), elementIdField.getName(), RepoFieldType.STRING, elementIdField.isId(), elementIdField.isNullable(), elementIdField.isUnique());
+        var rowFilter = new RowFilter(field, RowFilterOperator.EQUALS, elementId);
+        return List.of(rowFilter);
+    }
+
+
+    private List<RepoTableJoin> getTableJoins(ElementTable elementTable, VersionTable versionTable) {
+        return versionTable != null
+            ? List.of(new RepoTableJoin(elementTable.getRepoTable(), versionTable.getRepoTable(), elementTable.getIdField(), versionTable.getElementIdField()))
+            : Collections.emptyList();
     }
 
 

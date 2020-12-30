@@ -32,7 +32,7 @@ public class ReadDenominationUseCaseImpl implements ReadDenominationUseCase {
 
         if (repoType != null && elementClass != null) {
             try {
-                var msgStart =  String.format("UC: reading denominations for element class '%s'...", elementClass);
+                var msgStart =  String.format("UC: reading denominations for element class '%s'...", elementClass.getName());
                 log.info(msgStart);
                 var statusResponse1 = new StatusResponse(msgStart, false, true);
                 this.statusPresenter.present(statusResponse1);

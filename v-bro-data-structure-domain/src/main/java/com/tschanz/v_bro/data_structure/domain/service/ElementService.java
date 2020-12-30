@@ -10,10 +10,17 @@ import java.util.List;
 
 
 public interface ElementService {
-    List<ElementData> readElements(
+    List<ElementData> queryElements(
         @NonNull ElementClass elementClass,
         @NonNull List<Denomination> denominationFields,
         @NonNull String query,
         int maxResults
+    ) throws RepoException;
+
+
+    ElementData readElement(
+        @NonNull ElementClass elementClass,
+        @NonNull List<Denomination> denominationFields,
+        @NonNull String elementId
     ) throws RepoException;
 }
