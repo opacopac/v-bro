@@ -54,21 +54,22 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
 
     @Override
     public RepoTable readTableStructure(String tableName) throws RepoException {
+        var upperCaseTableName = tableName.toUpperCase();
         var repoFields = this.getRepoFieldLut()
             .stream()
-            .filter(field -> field.getTableName().equals(tableName.toUpperCase()))
+            .filter(field -> field.getTableName().equals(upperCaseTableName))
             .collect(Collectors.toList());
         var outgoingRelations = this.getRepoRelationLut()
             .stream()
-            .filter(relation -> relation.getBwdClassName().equals(tableName.toUpperCase()))
+            .filter(relation -> relation.getBwdClassName().equals(upperCaseTableName))
             .collect(Collectors.toList());
         var incomingRelations = this.getRepoRelationLut()
             .stream()
-            .filter(relation -> relation.getFwdClassName().equals(tableName.toUpperCase()))
+            .filter(relation -> relation.getFwdClassName().equals(upperCaseTableName))
             .collect(Collectors.toList());
 
         return new RepoTable(
-            tableName.toUpperCase(),
+            upperCaseTableName,
             repoFields,
             outgoingRelations,
             incomingRelations
@@ -89,7 +90,7 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
     }
 
 
-    private List<RepoField> getRepoFieldLut() throws RepoException {
+    public List<RepoField> getRepoFieldLut() throws RepoException {
         if (this.repoFieldLut == null) {
             this.repoFieldLut = this.readAllRepoFields();
         }
@@ -98,7 +99,7 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
     }
 
 
-    private List<RepoRelation> getRepoRelationLut() throws RepoException {
+    public List<RepoRelation> getRepoRelationLut() throws RepoException {
         if (this.repoRelationLut == null) {
             this.repoRelationLut = this.readAllRelations();
         }

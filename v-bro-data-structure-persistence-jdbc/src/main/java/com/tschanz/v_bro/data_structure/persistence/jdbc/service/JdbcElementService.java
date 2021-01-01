@@ -152,7 +152,7 @@ public class JdbcElementService implements ElementService {
         } else {
             return fields
                 .stream()
-                .map(f -> new RepoField(f.getTableName(), f.getName(), RepoFieldType.STRING, f.isId(), f.isNullable(), f.isUnique()))
+                .map(f -> f.copyWithNewType(RepoFieldType.STRING))
                 .map(f -> new RowFilter(f, RowFilterOperator.LIKE, JdbcRepoMetadataServiceImpl.WILDCARD + query + JdbcRepoMetadataServiceImpl.WILDCARD))
                 .collect(Collectors.toList());
         }
@@ -160,7 +160,7 @@ public class JdbcElementService implements ElementService {
 
 
     private List<RowFilter> getElementIdFilter(RepoField elementIdField, String elementId) {
-        var field = new RepoField(elementIdField.getTableName(), elementIdField.getName(), RepoFieldType.STRING, elementIdField.isId(), elementIdField.isNullable(), elementIdField.isUnique());
+        var field = elementIdField.copyWithNewType(RepoFieldType.STRING);
         var rowFilter = new RowFilter(field, RowFilterOperator.EQUALS, elementId);
         return List.of(rowFilter);
     }

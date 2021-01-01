@@ -19,6 +19,11 @@ public class ElementTable {
     @NonNull private final RepoTable repoTable;
 
 
+    public String getName() {
+        return this.repoTable.getName();
+    }
+
+
     public RepoField getIdField() {
         return this.repoTable.findfirstIdField();
     }

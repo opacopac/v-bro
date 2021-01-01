@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,13 +26,6 @@ public class RepoTable {
     }
 
 
-    public List<RepoField> findAllFields(String... fieldNames) {
-        return Arrays.stream(fieldNames)
-            .map(this::findField)
-            .collect(Collectors.toList());
-    }
-
-
     public RepoField findfirstIdField() {
         return this.findAllIdFields()
             .stream()
@@ -46,14 +38,6 @@ public class RepoTable {
         return this.fields
             .stream()
             .filter(RepoField::isId)
-            .collect(Collectors.toList());
-    }
-
-
-    public List<RepoField> findUniqueFields() {
-        return this.fields
-            .stream()
-            .filter(RepoField::isUnique)
             .collect(Collectors.toList());
     }
 }

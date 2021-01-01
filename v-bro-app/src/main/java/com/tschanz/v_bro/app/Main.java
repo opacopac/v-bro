@@ -55,13 +55,14 @@ public class Main {
         var jdbcRepoMetadata = new JdbcRepoMetadataServiceImpl(jdbcConnectionFactory);
         var jdbcQueryBuilder = new JdbcQueryBuilderImpl(jdbcConnectionFactory);
         var jdbcRepoDataService = new JdbcRepoDataService(jdbcConnectionFactory, jdbcQueryBuilder);
+        var jdbcDataStructureService = new JdbcDataStructureService(jdbcRepoMetadata);
         var jdbcElementClassService = new JdbcElementClassService(jdbcRepoMetadata);
         var jdbcElementService = new JdbcElementService(jdbcRepo, jdbcRepoMetadata, jdbcRepoDataService);
         var jdbcVersionService = new JdbcVersionService(jdbcRepo, jdbcRepoDataService, jdbcElementService);
         var jdbcDenominationService = new JdbcDenominationService(jdbcElementService);
         var jdbcVersionAggregateService = new JdbcVersionAggregateService(jdbcRepo, jdbcRepoMetadata, jdbcRepoDataService, jdbcElementService, jdbcVersionService);
         var jdbcVersionAggregateServiceCache = new JdbcVersionAggregateServiceCache(jdbcVersionAggregateService, new LastNCache<>(10));
-        var jdbcDependencyService = new JdbcDependencyService(jdbcElementService, jdbcVersionService, jdbcVersionAggregateServiceCache);
+        var jdbcDependencyService = new JdbcDependencyService(jdbcRepoMetadata, jdbcRepoDataService, jdbcDataStructureService, jdbcElementService, jdbcVersionService, jdbcVersionAggregateServiceCache);
 
         // persistence xml
         var xmlRepoService = new XmlRepoService();

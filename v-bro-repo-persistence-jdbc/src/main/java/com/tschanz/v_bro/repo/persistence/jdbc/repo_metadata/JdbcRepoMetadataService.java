@@ -12,6 +12,4 @@ public interface JdbcRepoMetadataService {
     RepoTable readTableStructure(String className) throws RepoException;
 
     String escapeUnderscore(String tableNamePattern) throws RepoException;
-
-
 }
