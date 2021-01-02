@@ -18,8 +18,13 @@ public class FieldValue {
     private final Object value;
 
 
+    public static String getLabel(String tableName, String fieldName) {
+        return "F_" + Math.abs(String.format("%s.%s", tableName, fieldName).hashCode());
+    }
+
+
     public static FieldValue fromResultSet(RepoField field, ResultSet resultSet) throws SQLException {
-        var fieldName = String.format("%s__%s", field.getTableName(), field.getName());
+        var fieldName = getLabel(field.getTableName(), field.getName());
         switch (field.getType()) {
             case BOOL:
                 var boolResult = resultSet.getBoolean(fieldName);
