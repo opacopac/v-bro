@@ -85,10 +85,11 @@ public class JdbcDataStructureService {
 
         for (var rel: parentTable.getIncomingRelations()) {
             var repoTable = this.repoMetadataService.readTableStructure(rel.getBwdClassName());
-            unprocessedTableNames.remove(repoTable.getName());
-            var node = new AggregateStructureNode(repoTable, rel, parentNode);
-            node.getChildNodes().addAll(this.getChildNodes(repoTable, node, unprocessedTableNames));
-            childNodes.add(node);
+            if (unprocessedTableNames.remove(repoTable.getName())) {
+                var node = new AggregateStructureNode(repoTable, rel, parentNode);
+                node.getChildNodes().addAll(this.getChildNodes(repoTable, node, unprocessedTableNames));
+                childNodes.add(node);
+            }
         }
 
         return childNodes;
