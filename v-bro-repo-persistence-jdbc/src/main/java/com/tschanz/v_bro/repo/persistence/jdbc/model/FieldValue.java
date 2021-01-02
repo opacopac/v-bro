@@ -19,7 +19,7 @@ public class FieldValue {
 
 
     public static FieldValue fromResultSet(RepoField field, ResultSet resultSet) throws SQLException {
-        var fieldName = String.format("%s.%s", field.getTableName(), field.getName());
+        var fieldName = String.format("%s__%s", field.getTableName(), field.getName());
         switch (field.getType()) {
             case BOOL:
                 var boolResult = resultSet.getBoolean(fieldName);

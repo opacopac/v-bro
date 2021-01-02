@@ -40,7 +40,7 @@ public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
     private String buildSelectClause(List<RepoField> fields) {
         return "select " + fields
             .stream()
-            .map(f -> String.format("%s.%s", f.getTableName(), f.getName()))
+            .map(f -> String.format("%s.%s as %s__%s", f.getTableName(), f.getName(), f.getTableName(), f.getName()))
             .collect(Collectors.joining(","));
     }
 
