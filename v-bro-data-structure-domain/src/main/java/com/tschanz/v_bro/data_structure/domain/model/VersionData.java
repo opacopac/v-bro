@@ -10,7 +10,7 @@ public class VersionData {
     public static final LocalDate HIGH_DATE = LocalDate.of(9999, 12, 31);
     public static final LocalDate LOW_DATE = LocalDate.of(2000, 1, 1);
     public static final LocalDate NOVA_NULL_DATE = LocalDate.of(2015, 1, 1);
-    public static final Pflegestatus DEFAULT_PFLEGESTATUS = Pflegestatus.IN_ARBEIT;
+    public static final Pflegestatus ETERNAL_PFLEGESTATUS = Pflegestatus.PRODUKTIV;
     public static final String ETERNAL_VERSION_ID = "0";
     @Getter private final ElementData element;
     @Getter private final String id;
@@ -25,7 +25,7 @@ public class VersionData {
 
 
     public VersionData(ElementData elementData, String id) {
-        this(elementData, id, LOW_DATE, HIGH_DATE, DEFAULT_PFLEGESTATUS);
+        this(elementData, id, LOW_DATE, HIGH_DATE, ETERNAL_PFLEGESTATUS);
     }
 
 

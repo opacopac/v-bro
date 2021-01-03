@@ -4,6 +4,7 @@ import com.tschanz.v_bro.app.presentation.viewmodel.common.IdItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.common.SelectableItemList;
 import com.tschanz.v_bro.app.presenter.version_timeline.VersionResponse;
 import com.tschanz.v_bro.app.presenter.version_timeline.VersionTimelineResponse;
+import com.tschanz.v_bro.data_structure.domain.model.Pflegestatus;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +21,7 @@ public class VersionItem implements IdItem {
     private final String id;
     private final LocalDate gueltigVon;
     private final LocalDate gueltigBis;
+    private final Pflegestatus pflegestatus;
 
 
     public static SelectableItemList<VersionItem> fromResponse(VersionTimelineResponse response) {
@@ -47,7 +49,8 @@ public class VersionItem implements IdItem {
         return new VersionItem(
             response.getId(),
             response.getGueltigVon(),
-            response.getGueltigBis()
+            response.getGueltigBis(),
+            response.getPflegestatus()
         );
     }
 
