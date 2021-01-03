@@ -28,7 +28,7 @@ public class SelectVersionFilterUseCaseImpl implements SelectVersionFilterUseCas
 
         this.mainState.getVersionFilterState().setVersionFilter(versionFilter);
 
-        var readVersionsRequest = new ReadVersionsRequest();
+        var readVersionsRequest = new ReadVersionsRequest(true);
         this.readVersionsUc.execute(readVersionsRequest);
     }
 }

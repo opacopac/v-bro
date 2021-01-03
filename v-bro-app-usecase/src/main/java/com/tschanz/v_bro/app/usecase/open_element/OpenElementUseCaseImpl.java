@@ -5,8 +5,6 @@ import com.tschanz.v_bro.app.presenter.element.ElementResponse;
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusResponse;
 import com.tschanz.v_bro.app.state.MainState;
-import com.tschanz.v_bro.app.usecase.open_version.OpenVersionRequest;
-import com.tschanz.v_bro.app.usecase.open_version.OpenVersionUseCase;
 import com.tschanz.v_bro.app.usecase.read_versions.ReadVersionsRequest;
 import com.tschanz.v_bro.app.usecase.read_versions.ReadVersionsUseCase;
 import com.tschanz.v_bro.data_structure.domain.service.ElementService;
@@ -26,7 +24,6 @@ public class OpenElementUseCaseImpl implements OpenElementUseCase {
     private final RepoServiceProvider<ElementService> elementServiceProvider;
     private final ElementPresenter elementPresenter;
     private final ReadVersionsUseCase readVersionsUc;
-    private final OpenVersionUseCase openVersionUc;
     private final StatusPresenter statusPresenter;
 
 
@@ -66,16 +63,7 @@ public class OpenElementUseCaseImpl implements OpenElementUseCase {
         var elementResponse = ElementResponse.fromDomain(currentElement);
         this.elementPresenter.present(elementResponse);
 
-        var readVersionRequest = new ReadVersionsRequest();
+        var readVersionRequest = new ReadVersionsRequest(request.isAutoOpenLastVersion());
         this.readVersionsUc.execute(readVersionRequest);
-
-        if (request.isAutoOpenLastVersion()) {
-            var versions = this.mainState.getVersionState().getVersions().getItems();
-            var versionId = versions.size() > 0
-                ? versions.get(versions.size() - 1).getId()
-                : null;
-            var openVersionRequest = new OpenVersionRequest(versionId);
-            this.openVersionUc.execute(openVersionRequest);
-        }
     }
 }

@@ -7,4 +7,5 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class ReadVersionsRequest {
+    private final boolean autoOpenLastVersion;
 }

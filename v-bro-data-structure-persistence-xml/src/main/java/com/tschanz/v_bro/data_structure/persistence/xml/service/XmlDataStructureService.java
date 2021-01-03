@@ -1,6 +1,8 @@
 package com.tschanz.v_bro.data_structure.persistence.xml.service;
 
+import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
+import com.tschanz.v_bro.repo.domain.service.RepoService;
 import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdElementPosInfo;
 import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdRefParser;
 import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdRefPosInfo;
@@ -15,7 +17,7 @@ import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
-public class XmlDataStructureService {
+public class XmlDataStructureService implements RepoService {
     // TODO => config file
     public static final String ID_ATTRIBUTE_NAME = "id";
     public static final String ID_VALUE_PREFIX_1 = "idd__";
@@ -29,20 +31,31 @@ public class XmlDataStructureService {
     private Map<String, List<XmlIdRefPosInfo>> elementRefPositionMap;
 
 
-    public Map<String, XmlIdElementPosInfo> getElementLut() throws RepoException {
-        if (this.elementPositionMap == null) {
-            this.readElementLut();
-        }
+    @Override
+    public boolean isConnected() {
+        return this.xmlRepoService.isConnected();
+    }
 
+
+    @Override
+    public void connect(ConnectionParameters parameters) throws RepoException {
+        this.xmlRepoService.connect(parameters);
+        this.readElementLut();
+    }
+
+
+    @Override
+    public void disconnect() throws RepoException {
+        this.xmlRepoService.disconnect();
+    }
+
+
+    public Map<String, XmlIdElementPosInfo> getElementLut() {
         return this.elementPositionMap;
     }
 
 
-    public Map<String, List<XmlIdRefPosInfo>> getElementRefLut() throws RepoException {
-        if (this.elementRefPositionMap == null) {
-            this.readElementLut();
-        }
-
+    public Map<String, List<XmlIdRefPosInfo>> getElementRefLut() {
         return this.elementRefPositionMap;
     }
 

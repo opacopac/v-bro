@@ -38,7 +38,10 @@ public class ReadVersionsUseCaseImpl implements ReadVersionsUseCase {
                 var versionService = this.versionServiceProvider.getService(repoType);
                 var versions = versionService.readVersions(element);
 
-                var versionList = new SelectedList<>(versions, null);
+                var selectedVersion = request.isAutoOpenLastVersion() && versions.size() > 0
+                    ? versions.get(versions.size() - 1)
+                    : null;
+                var versionList = new SelectedList<>(versions, selectedVersion);
                 this.mainState.getVersionState().setVersions(versionList);
 
                 var message = String.format("successfully read %d versions.", versions.size());
