@@ -3,8 +3,8 @@ package com.tschanz.v_bro.data_structure.persistence.jdbc.service;
 import com.tschanz.v_bro.data_structure.domain.model.VersionAggregate;
 import com.tschanz.v_bro.data_structure.domain.model.VersionData;
 import com.tschanz.v_bro.data_structure.domain.service.VersionAggregateService;
-import com.tschanz.v_bro.data_structure.persistence.jdbc.model.JdbcAggregateNode;
-import com.tschanz.v_bro.data_structure.persistence.jdbc.model.JdbcVersionAggregate;
+import com.tschanz.v_bro.data_structure.persistence.jdbc.model.AggregateDataNode;
+import com.tschanz.v_bro.data_structure.persistence.jdbc.model.AggregateData;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.VersionRecord;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.service.RepoService;
@@ -48,16 +48,16 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
             ? this.versionService.readVersionRecord(versionTable, Long.parseLong(version.getId()), versionTable.getFields())
             : null;
 
-        List<JdbcAggregateNode> childNodes = versionRecord != null
+        List<AggregateDataNode> childNodes = versionRecord != null
             ? this.readChildNodes(versionRecord)
             : Collections.emptyList();
 
-        return new JdbcVersionAggregate(elementRecord, versionRecord, childNodes);
+        return new AggregateData(elementRecord, versionRecord, childNodes);
     }
 
 
-    private List<JdbcAggregateNode> readChildNodes(VersionRecord versionRecord) throws RepoException {
-        List<JdbcAggregateNode> nodes = new ArrayList<>();
+    private List<AggregateDataNode> readChildNodes(VersionRecord versionRecord) throws RepoException {
+        List<AggregateDataNode> nodes = new ArrayList<>();
 
         var versionTable = versionRecord.getRecord().getRepoTable();
         for (var relation: versionTable.getIncomingRelations()) {
@@ -75,13 +75,13 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
     }
 
 
-    private List<JdbcAggregateNode> readNode(RepoTable table, RowFilter filter) throws RepoException {
+    private List<AggregateDataNode> readNode(RepoTable table, RowFilter filter) throws RepoException {
         List<RepoTableRecord> records = this.repoData.readRepoTableRecords(table, Collections.emptyList(), table.getFields(), List.of(filter), Collections.emptyList(), -1);
         if (records.size() == 0) {
             return Collections.emptyList();
         }
 
-        List<JdbcAggregateNode> childNodes = new ArrayList<>();
+        List<AggregateDataNode> childNodes = new ArrayList<>();
 
         for (RepoRelation relation: table.getIncomingRelations()) {
             var ownField = table.findField(relation.getFwdFieldName());
@@ -108,13 +108,13 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
                     })
                     .collect(Collectors.toList());
 
-                childNodes.add(new JdbcAggregateNode(record, recordChildNodes));
+                childNodes.add(new AggregateDataNode(record, recordChildNodes));
             }
         }
 
         if (table.getIncomingRelations().size() == 0) {
             for (RepoTableRecord record: records) {
-                childNodes.add(new JdbcAggregateNode(record, Collections.emptyList()));
+                childNodes.add(new AggregateDataNode(record, Collections.emptyList()));
             }
         }
 

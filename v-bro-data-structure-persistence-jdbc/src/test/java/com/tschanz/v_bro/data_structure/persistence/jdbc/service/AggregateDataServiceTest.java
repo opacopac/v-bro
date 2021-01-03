@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
-public class JdbcVersionAggregateServiceTest {
+public class AggregateDataServiceTest {
     private SpyHelper<RepoException> spyHelper = new SpyHelper<>();
     //private SpyRepoService spyRepoService = new SpyRepoService();
     private JdbcVersionAggregateService service;

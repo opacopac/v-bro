@@ -8,15 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class JdbcVersionAggregate extends VersionAggregate {
+public class AggregateData extends VersionAggregate {
     @Getter private final ElementRecord elementRecord;
     @Getter private final VersionRecord versionRecord;
 
 
-    public JdbcVersionAggregate(
+    public AggregateData(
         ElementRecord elementRecord,
         VersionRecord versionRecord,
-        List<JdbcAggregateNode> versionChildNodes
+        List<AggregateDataNode> versionChildNodes
     ) {
         super(
             getRootNode(elementRecord, versionRecord, versionChildNodes)
@@ -28,28 +28,28 @@ public class JdbcVersionAggregate extends VersionAggregate {
 
 
     public List<RepoTableRecord> getAllRecords() {
-        return this.getAllRecordsAtNode((JdbcAggregateNode) this.getRootNode());
+        return this.getAllRecordsAtNode((AggregateDataNode) this.getRootNode());
     }
 
 
-    private List<RepoTableRecord> getAllRecordsAtNode(JdbcAggregateNode jdbcAggregateNode) {
+    private List<RepoTableRecord> getAllRecordsAtNode(AggregateDataNode aggregateDataNode) {
         ArrayList<RepoTableRecord> nodes = new ArrayList<>();
 
-        nodes.add(jdbcAggregateNode.getRepoTableRecord());
-        jdbcAggregateNode.getJdbcChildNodes().forEach(childNode -> nodes.addAll(this.getAllRecordsAtNode(childNode)));
+        nodes.add(aggregateDataNode.getRepoTableRecord());
+        aggregateDataNode.getJdbcChildNodes().forEach(childNode -> nodes.addAll(this.getAllRecordsAtNode(childNode)));
 
         return nodes;
     }
 
 
-    private static JdbcAggregateNode getRootNode(
+    private static AggregateDataNode getRootNode(
         ElementRecord elementRecord,
         VersionRecord versionRecord,
-        List<JdbcAggregateNode> versionChildNodes
+        List<AggregateDataNode> versionChildNodes
     ) {
-        return new JdbcAggregateNode(
+        return new AggregateDataNode(
             elementRecord.getRecord(),
-            List.of(new JdbcAggregateNode(versionRecord != null ? versionRecord.getRecord() : elementRecord.getRecord(), versionChildNodes))
+            List.of(new AggregateDataNode(versionRecord != null ? versionRecord.getRecord() : elementRecord.getRecord(), versionChildNodes))
         );
     }
 }

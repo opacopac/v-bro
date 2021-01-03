@@ -46,7 +46,7 @@ public class JdbcVersionService implements VersionService {
         var versionRecords = this.repoData.readRepoTableRecords(
             versionTable.getRepoTable(),
             Collections.emptyList(),
-            versionTable.getFields(List.of(idField.getName(), VersionTable.GUELTIG_VON_COLNAME, VersionTable.GUELTIG_BIS_COLNAME)),
+            List.of(versionTable.getIdField(), versionTable.getGueltigVonField(), versionTable.getGueltigBisField()),
             this.getRowFilters(versionTable, element.getId()),
             Collections.emptyList(),
             -1

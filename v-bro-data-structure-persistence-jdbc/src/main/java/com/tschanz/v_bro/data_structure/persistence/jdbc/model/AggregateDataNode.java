@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class JdbcAggregateNode extends AggregateNode {
+public class AggregateDataNode extends AggregateNode {
     @Getter private final RepoTableRecord repoTableRecord;
-    @Getter private final List<JdbcAggregateNode> jdbcChildNodes;
+    @Getter private final List<AggregateDataNode> jdbcChildNodes;
 
 
-    public JdbcAggregateNode(RepoTableRecord repoTableRecord, List<JdbcAggregateNode> jdbcChildNodes) {
+    public AggregateDataNode(RepoTableRecord repoTableRecord, List<AggregateDataNode> jdbcChildNodes) {
         super(
             repoTableRecord.getRepoTable().getName(),
             repoTableRecord.getFieldValues()

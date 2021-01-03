@@ -8,7 +8,7 @@ import com.tschanz.v_bro.data_structure.domain.service.DependencyService;
 import com.tschanz.v_bro.data_structure.domain.service.VersionAggregateService;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.AggregateStructureNode;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.ElementTable;
-import com.tschanz.v_bro.data_structure.persistence.jdbc.model.JdbcVersionAggregate;
+import com.tschanz.v_bro.data_structure.persistence.jdbc.model.AggregateData;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.VersionTable;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoFieldType;
@@ -40,7 +40,7 @@ public class JdbcDependencyService implements DependencyService {
 
     @Override
     public List<Dependency> readFwdDependencies(@NonNull VersionData version) throws RepoException {
-        var aggregate = (JdbcVersionAggregate) this.versionAggregateService.readVersionAggregate(version); // TODO: ugly type casting
+        var aggregate = (AggregateData) this.versionAggregateService.readVersionAggregate(version); // TODO: ugly type casting
 
         List<Dependency> dependencies = new ArrayList<>();
         for (var record: aggregate.getAllRecords()) {
@@ -148,7 +148,7 @@ public class JdbcDependencyService implements DependencyService {
     }
 
 
-    private boolean isExternalRelation(RepoRelation relation, JdbcVersionAggregate aggregate) {
+    private boolean isExternalRelation(RepoRelation relation, AggregateData aggregate) {
         if (this.isExternalTable(relation.getFwdClassName(), aggregate)) {
             return true; // links to external tables are ok
         } else if (!this.isElementTable(relation.getFwdClassName(), aggregate)) {
@@ -161,19 +161,19 @@ public class JdbcDependencyService implements DependencyService {
     }
 
 
-    private boolean isExternalTable(String tableName, JdbcVersionAggregate aggregate) {
+    private boolean isExternalTable(String tableName, AggregateData aggregate) {
         return aggregate.getAllRecords()
             .stream()
             .noneMatch(record -> record.getRepoTable().getName().equals(tableName));
     }
 
 
-    private boolean isElementTable(String tableName, JdbcVersionAggregate aggregate) {
+    private boolean isElementTable(String tableName, AggregateData aggregate) {
         return aggregate.getElementRecord().getRecord().getRepoTable().getName().equals(tableName);
     }
 
 
-    private boolean isVersionTable(String tableName, JdbcVersionAggregate aggregate) {
+    private boolean isVersionTable(String tableName, AggregateData aggregate) {
         return aggregate.getVersionRecord().getRecord().getRepoTable().getName().equals(tableName);
     }
 }
