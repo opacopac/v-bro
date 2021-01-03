@@ -30,6 +30,9 @@ public class ReadDependenciesUseCaseImpl implements ReadDependenciesUseCase {
         var repoType = mainState.getRepoState().getCurrentRepoType();
         var element = mainState.getElementState().getCurrentElement();
         var version = mainState.getVersionState().getCurrentVersion();
+        var minGueltigVon = mainState.getVersionFilterState().getVersionFilter().getTimelineVon();
+        var maxGueltigBis = mainState.getVersionFilterState().getVersionFilter().getTimelineBis();
+        var minPflegestatus = mainState.getVersionFilterState().getVersionFilter().getMinPflegestatus();
         var isFwd = mainState.getDependencyState().isFwdDependencies();
         var fwdBwdText = isFwd ? "FWD" : "BWD";
 
@@ -43,9 +46,9 @@ public class ReadDependenciesUseCaseImpl implements ReadDependenciesUseCase {
                 var dependencyService = this.dependencyServiceProvider.getService(repoType);
                 List<Dependency> dependencies;
                 if (isFwd) {
-                    dependencies = dependencyService.readFwdDependencies(version);
+                    dependencies = dependencyService.readFwdDependencies(version, minGueltigVon, maxGueltigBis, minPflegestatus);
                 } else {
-                    dependencies = dependencyService.readBwdDependencies(element);
+                    dependencies = dependencyService.readBwdDependencies(element, minGueltigVon, maxGueltigBis, minPflegestatus);
                 }
 
                 var msgSuccess = String.format("successfully read %d %s dependencies", dependencies.size(), fwdBwdText);

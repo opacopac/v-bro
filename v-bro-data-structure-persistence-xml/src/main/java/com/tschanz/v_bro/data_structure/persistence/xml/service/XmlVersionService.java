@@ -24,7 +24,12 @@ public class XmlVersionService implements VersionService {
 
 
     @Override
-    public List<VersionData> readVersions(@NonNull ElementData element) throws RepoException {
+    public List<VersionData> readVersions(
+        @NonNull ElementData element,
+        @NonNull LocalDate timelineVon,
+        @NonNull LocalDate timelineBis,
+        @NonNull Pflegestatus minPflegestatus
+    ) throws RepoException {
         InputStream xmlFileStream = this.xmlDataStructureService.getElementInputStream(element.getId());
         this.xmlNodeParser.init(xmlFileStream, element.getElementClass().getName());
         var elementNode = this.xmlNodeParser.nextNode();
@@ -34,6 +39,8 @@ public class XmlVersionService implements VersionService {
             return versionNodes
                 .stream()
                 .map(versionNode -> this.createVersion(element, versionNode))
+                .filter(v -> v.getGueltigBis().isAfter(timelineVon) || v.getGueltigBis().isEqual(timelineVon))
+                .filter(v -> v.getGueltigVon().isBefore(timelineBis) || v.getGueltigVon().isEqual(timelineBis))
                 .collect(Collectors.toList());
         } else {
             return List.of(VersionData.createEternal(element));

@@ -30,7 +30,12 @@ public class JdbcVersionService implements VersionService {
 
 
     @Override
-    public List<VersionData> readVersions(@NonNull ElementData element) throws RepoException {
+    public List<VersionData> readVersions(
+        @NonNull ElementData element,
+        @NonNull LocalDate timelineVon,
+        @NonNull LocalDate timelineBis,
+        @NonNull Pflegestatus minPflegestatus
+    ) throws RepoException {
         if (!this.repo.isConnected()) {
             throw new RepoException("Not connected to repo!");
         }
@@ -42,11 +47,10 @@ public class JdbcVersionService implements VersionService {
             return List.of(VersionData.createEternal(element));
         }
 
-        var idField = versionTable.getIdField();
         var versionRecords = this.repoData.readRepoTableRecords(
             versionTable.getRepoTable(),
             Collections.emptyList(),
-            List.of(versionTable.getIdField(), versionTable.getGueltigVonField(), versionTable.getGueltigBisField()),
+            List.of(versionTable.getIdField(), versionTable.getGueltigVonField(), versionTable.getGueltigBisField(), versionTable.getPflegestatusField()),
             this.getRowFilters(versionTable, element.getId()),
             Collections.emptyList(),
             -1
@@ -65,7 +69,12 @@ public class JdbcVersionService implements VersionService {
             })
             .collect(Collectors.toList());
 
-        return versions;
+        return versions // TODO: filter when reading from db
+            .stream()
+            .filter(v -> v.getGueltigBis().isAfter(timelineVon) || v.getGueltigBis().isEqual(timelineVon))
+            .filter(v -> v.getGueltigVon().isBefore(timelineBis) || v.getGueltigVon().isEqual(timelineBis))
+            .filter(v -> v.getPflegestatus().isHigherOrEqual(minPflegestatus))
+            .collect(Collectors.toList());
     }
 
 

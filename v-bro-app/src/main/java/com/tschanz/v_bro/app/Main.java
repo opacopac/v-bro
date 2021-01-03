@@ -104,7 +104,7 @@ public class Main {
         var readDependenciesUc = new ReadDependenciesUseCaseImpl(mainState, dependencyServiceProvider, mainPresenter.getDependencyPresenter(), mainPresenter.getStatusPresenter());
         var selectDependencyFilterUc = new SelectDependencyFilterUseCaseImpl(mainState, readDependenciesUc, mainPresenter.getStatusPresenter());
         var openVersionUc = new OpenVersionUseCaseImpl(mainState, readVersionAggregateUc, readDependenciesUc, mainPresenter.getVersionTimelinePresenter(), mainPresenter.getStatusPresenter());
-        var readVersionsUc = new ReadVersionsUseCaseImpl(mainState, versionServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getVersionTimelinePresenter());
+        var readVersionsUc = new ReadVersionsUseCaseImpl(mainState, versionServiceProvider, openVersionUc, mainPresenter.getStatusPresenter(), mainPresenter.getVersionTimelinePresenter());
         var selectVersionFilterUc = new SelectVersionFilterUseCaseImpl(mainState, readVersionsUc, mainPresenter.getStatusPresenter());
         var queryElementsUc = new QueryElementsUseCaseImpl(mainState, elementServiceProvider);
         var openElementUc = new OpenElementUseCaseImpl(mainState, elementServiceProvider, mainPresenter.getElementPresenter(), readVersionsUc, mainPresenter.getStatusPresenter());

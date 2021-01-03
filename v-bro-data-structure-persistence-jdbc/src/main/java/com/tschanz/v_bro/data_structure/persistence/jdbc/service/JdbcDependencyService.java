@@ -1,9 +1,6 @@
 package com.tschanz.v_bro.data_structure.persistence.jdbc.service;
 
-import com.tschanz.v_bro.data_structure.domain.model.Dependency;
-import com.tschanz.v_bro.data_structure.domain.model.ElementClass;
-import com.tschanz.v_bro.data_structure.domain.model.ElementData;
-import com.tschanz.v_bro.data_structure.domain.model.VersionData;
+import com.tschanz.v_bro.data_structure.domain.model.*;
 import com.tschanz.v_bro.data_structure.domain.service.DependencyService;
 import com.tschanz.v_bro.data_structure.domain.service.VersionAggregateService;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.AggregateStructureNode;
@@ -21,6 +18,7 @@ import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataSer
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +37,12 @@ public class JdbcDependencyService implements DependencyService {
 
 
     @Override
-    public List<Dependency> readFwdDependencies(@NonNull VersionData version) throws RepoException {
+    public List<Dependency> readFwdDependencies(
+        @NonNull VersionData version,
+        @NonNull LocalDate minGueltigVon,
+        @NonNull LocalDate maxGueltigBis,
+        @NonNull Pflegestatus minPflegestatus
+    ) throws RepoException {
         var aggregate = (AggregateData) this.versionAggregateService.readVersionAggregate(version); // TODO: ugly type casting
 
         List<Dependency> dependencies = new ArrayList<>();
@@ -53,7 +56,7 @@ public class JdbcDependencyService implements DependencyService {
                 if (fwdElementId != null) {
                     var elementClass = new ElementClass(fwdElementClassName);
                     var element = new ElementData(elementClass, fwdElementId, Collections.emptyList());
-                    var versions = this.versionService.readVersions(element);
+                    var versions = this.versionService.readVersions(element, minGueltigVon, maxGueltigBis, minPflegestatus);
                     var fwdDependency = new Dependency(elementClass, element, versions);
                     dependencies.add(fwdDependency);
                 }
@@ -65,7 +68,12 @@ public class JdbcDependencyService implements DependencyService {
 
 
     @Override
-    public List<Dependency> readBwdDependencies(@NonNull ElementData element) throws RepoException {
+    public List<Dependency> readBwdDependencies(
+        @NonNull ElementData element,
+        @NonNull LocalDate minGueltigVon,
+        @NonNull LocalDate maxGueltigBis,
+        @NonNull Pflegestatus minPflegestatus
+    ) throws RepoException {
         var elementClassName = element.getElementClass().getName();
         var elementTable = this.elementService.readElementTable(elementClassName);
         var aggregates = this.dataStructureService.getAggregateStructures();
@@ -90,7 +98,7 @@ public class JdbcDependencyService implements DependencyService {
 
         List<Dependency> bwdDependencies = new ArrayList<>();
         for (var bwdElement: bwdElements.stream().distinct().collect(Collectors.toList())) {
-            var versions = this.versionService.readVersions(bwdElement);
+            var versions = this.versionService.readVersions(bwdElement, minGueltigVon, maxGueltigBis, minPflegestatus);
             bwdDependencies.add(new Dependency(bwdElement.getElementClass(), bwdElement, versions));
         }
 

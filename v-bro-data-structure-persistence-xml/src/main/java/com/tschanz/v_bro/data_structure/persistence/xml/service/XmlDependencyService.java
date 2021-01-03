@@ -7,6 +7,7 @@ import com.tschanz.v_bro.repo.domain.model.RepoException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,22 +21,32 @@ public class XmlDependencyService implements DependencyService {
 
 
     @Override
-    public List<Dependency> readFwdDependencies(@NonNull VersionData version) throws RepoException {
+    public List<Dependency> readFwdDependencies(
+        @NonNull VersionData version,
+        @NonNull LocalDate minGueltigVon,
+        @NonNull LocalDate maxGueltigBis,
+        @NonNull Pflegestatus minPflegestatus
+    ) throws RepoException {
         Map<String, XmlIdElementPosInfo> elementLutInfos = this.xmlDataStructureService.getElementLut();
         VersionAggregate versionAggregate = this.versionAggregateService.readVersionAggregate(version);
 
-        return this.findNodeDependencies(versionAggregate.getRootNode(), elementLutInfos);
+        return this.findNodeDependencies(versionAggregate.getRootNode(), elementLutInfos, minGueltigVon, maxGueltigBis, minPflegestatus);
     }
 
 
     @Override
-    public List<Dependency> readBwdDependencies(@NonNull ElementData element) throws RepoException {
+    public List<Dependency> readBwdDependencies(
+        @NonNull ElementData element,
+        @NonNull LocalDate minGueltigVon,
+        @NonNull LocalDate maxGueltigBis,
+        @NonNull Pflegestatus minPflegestatus
+    ) throws RepoException {
         var bwdElementInfos = this.findBwdElementInfos(element.getId());
         List<Dependency> dependencies = new ArrayList<>();
         for (var bwdElementInfo: bwdElementInfos) {
             var bwdElementClass = new ElementClass(bwdElementInfo.getName());
             var bwdElement = this.elementService.readElement(bwdElementClass, Collections.emptyList(), bwdElementInfo.getElementId());
-            var bwdVersions = this.versionService.readVersions(bwdElement);
+            var bwdVersions = this.versionService.readVersions(bwdElement, minGueltigVon, maxGueltigBis, minPflegestatus);
             var bwdDependency = new Dependency(bwdElementClass, bwdElement, bwdVersions);
             dependencies.add(bwdDependency);
         }
@@ -60,7 +71,13 @@ public class XmlDependencyService implements DependencyService {
     }
 
 
-    private List<Dependency> findNodeDependencies(AggregateNode aggregateNode, Map<String, XmlIdElementPosInfo> elementLutInfos) throws RepoException {
+    private List<Dependency> findNodeDependencies(
+        AggregateNode aggregateNode,
+        Map<String,XmlIdElementPosInfo> elementLutInfos,
+        LocalDate minGueltigVon,
+        LocalDate maxGueltigBis,
+        Pflegestatus minPflegestatus
+    ) throws RepoException {
         List<Dependency> fwdDependencies = new ArrayList<>();
 
         List<XmlIdElementPosInfo> fwdElements = aggregateNode.getFieldValues()
@@ -75,13 +92,13 @@ public class XmlDependencyService implements DependencyService {
         for (XmlIdElementPosInfo fwdElement: fwdElements) {
             var elementClass = new ElementClass(fwdElement.getName());
             var element = new ElementData(elementClass, fwdElement.getElementId(), Collections.emptyList());
-            var versions = this.versionService.readVersions(element);
+            var versions = this.versionService.readVersions(element, minGueltigVon, maxGueltigBis, minPflegestatus);
             var fwdDependency = new Dependency(elementClass, element, versions);
             fwdDependencies.add(fwdDependency);
         }
 
         for (AggregateNode childNode: aggregateNode.getChildNodes()) {
-            fwdDependencies.addAll(this.findNodeDependencies(childNode, elementLutInfos));
+            fwdDependencies.addAll(this.findNodeDependencies(childNode, elementLutInfos, minGueltigVon, maxGueltigBis, minPflegestatus));
         }
 
         return fwdDependencies;

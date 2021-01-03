@@ -5,6 +5,8 @@ import com.tschanz.v_bro.app.presenter.status.StatusResponse;
 import com.tschanz.v_bro.app.presenter.version_timeline.VersionTimelinePresenter;
 import com.tschanz.v_bro.app.presenter.version_timeline.VersionTimelineResponse;
 import com.tschanz.v_bro.app.state.MainState;
+import com.tschanz.v_bro.app.usecase.open_version.OpenVersionRequest;
+import com.tschanz.v_bro.app.usecase.open_version.OpenVersionUseCase;
 import com.tschanz.v_bro.common.selected_list.SelectedList;
 import com.tschanz.v_bro.data_structure.domain.model.VersionData;
 import com.tschanz.v_bro.data_structure.domain.service.VersionService;
@@ -19,6 +21,7 @@ import lombok.extern.java.Log;
 public class ReadVersionsUseCaseImpl implements ReadVersionsUseCase {
     private final MainState mainState;
     private final RepoServiceProvider<VersionService> versionServiceProvider;
+    private final OpenVersionUseCase openVersionUseCase;
     private final StatusPresenter statusPresenter;
     private final VersionTimelinePresenter versionTimelinePresenter;
 
@@ -27,6 +30,9 @@ public class ReadVersionsUseCaseImpl implements ReadVersionsUseCase {
     public void execute(ReadVersionsRequest request) {
         var repoType = mainState.getRepoState().getCurrentRepoType();
         var element = mainState.getElementState().getCurrentElement();
+        var timelineVon = mainState.getVersionFilterState().getVersionFilter().getTimelineVon();
+        var timelineBis = mainState.getVersionFilterState().getVersionFilter().getTimelineBis();
+        var minPflegestatus = mainState.getVersionFilterState().getVersionFilter().getMinPflegestatus();
 
         if (repoType != null && element != null) {
             try {
@@ -36,12 +42,9 @@ public class ReadVersionsUseCaseImpl implements ReadVersionsUseCase {
                 this.statusPresenter.present(statusResponse1);
 
                 var versionService = this.versionServiceProvider.getService(repoType);
-                var versions = versionService.readVersions(element);
+                var versions = versionService.readVersions(element, timelineVon, timelineBis, minPflegestatus);
 
-                var selectedVersion = request.isAutoOpenLastVersion() && versions.size() > 0
-                    ? versions.get(versions.size() - 1)
-                    : null;
-                var versionList = new SelectedList<>(versions, selectedVersion);
+                var versionList = new SelectedList<>(versions, null);
                 this.mainState.getVersionState().setVersions(versionList);
 
                 var message = String.format("successfully read %d versions.", versions.size());
@@ -65,6 +68,15 @@ public class ReadVersionsUseCaseImpl implements ReadVersionsUseCase {
 
             var response = VersionTimelineResponse.fromDomain(versionList);
             this.versionTimelinePresenter.present(response);
+        }
+
+        if (request.isAutoOpenLastVersion()) {
+            var versions = mainState.getVersionState().getVersions().getItems();
+            var selectedVersionId = versions.size() > 0
+                ? versions.get(versions.size() - 1).getId()
+                : null;
+            var openVersionRequest = new OpenVersionRequest(selectedVersionId);
+            this.openVersionUseCase.execute(openVersionRequest);
         }
     }
 }

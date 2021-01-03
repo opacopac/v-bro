@@ -5,5 +5,10 @@ public enum Pflegestatus {
     PRODUKTIV,
     ABNAHME,
     TEST,
-    IN_ARBEIT
+    IN_ARBEIT;
+
+
+    public boolean isHigherOrEqual(Pflegestatus pflegestatus) {
+        return this.compareTo(pflegestatus) <= 0;
+    }
 }

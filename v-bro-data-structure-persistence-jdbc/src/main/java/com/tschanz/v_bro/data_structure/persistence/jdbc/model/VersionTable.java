@@ -42,6 +42,11 @@ public class VersionTable {
     }
 
 
+    public RepoField getPflegestatusField() {
+        return this.repoTable.findField(PFLEGESTATUS_COLNAME);
+    }
+
+
     public RepoField getElementIdField() {
         return this.repoTable.findField(ELEMENT_ID_COLNAME);
     }

@@ -12,7 +12,12 @@ import java.util.List;
 
 public class MockDependencyService implements DependencyService {
     @Override
-    public List<Dependency> readFwdDependencies(@NonNull VersionData version) throws RepoException {
+    public List<Dependency> readFwdDependencies(
+        @NonNull VersionData version,
+        @NonNull LocalDate minGueltigVon,
+        @NonNull LocalDate maxGueltigBis,
+        @NonNull Pflegestatus minPflegestatus
+    ) throws RepoException {
         var elementClass1 = new ElementClass("P_PRODUKTDEFINITION_E");
         var element1 = new ElementData(elementClass1, "132242", Collections.emptyList());
         var elementClass2 = new ElementClass("P_PRODUKTDEFINITION_E");
@@ -86,7 +91,12 @@ public class MockDependencyService implements DependencyService {
 
 
     @Override
-    public List<Dependency> readBwdDependencies(@NonNull ElementData element) throws RepoException {
+    public List<Dependency> readBwdDependencies(
+        @NonNull ElementData element,
+        @NonNull LocalDate minGueltigVon,
+        @NonNull LocalDate maxGueltigBis,
+        @NonNull Pflegestatus minPflegestatus
+    ) throws RepoException {
         var elementClass1 = new ElementClass("P_PRODUKTDEFINITION_E");
         var element1 = new ElementData(elementClass1, "132242", Collections.emptyList());
 

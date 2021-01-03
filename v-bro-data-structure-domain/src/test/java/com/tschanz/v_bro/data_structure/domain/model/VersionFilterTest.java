@@ -37,8 +37,8 @@ class VersionFilterTest {
 
         VersionFilter croppedFilter = versionFilter.cropToVersions(versions);
 
-        assertEquals(versionFilter.getMinGueltigVon(), croppedFilter.getMinGueltigVon());
-        assertEquals(versionFilter.getMaxGueltigBis(), croppedFilter.getMaxGueltigBis());
+        assertEquals(versionFilter.getTimelineVon(), croppedFilter.getTimelineVon());
+        assertEquals(versionFilter.getTimelineBis(), croppedFilter.getTimelineBis());
     }
 
 
@@ -57,8 +57,8 @@ class VersionFilterTest {
 
         VersionFilter croppedFilter = versionFilter.cropToVersions(versions);
 
-        assertEquals(versionFilter.getMinGueltigVon(), croppedFilter.getMinGueltigVon());
-        assertEquals(versionFilter.getMaxGueltigBis(), croppedFilter.getMaxGueltigBis());
+        assertEquals(versionFilter.getTimelineVon(), croppedFilter.getTimelineVon());
+        assertEquals(versionFilter.getTimelineBis(), croppedFilter.getTimelineBis());
     }
 
 
@@ -75,8 +75,8 @@ class VersionFilterTest {
 
         VersionFilter croppedFilter = versionFilter.cropToVersions(versions);
 
-        assertEquals(versionFilter.getMinGueltigVon(), croppedFilter.getMinGueltigVon());
-        assertEquals(versionFilter.getMaxGueltigBis(), croppedFilter.getMaxGueltigBis());
+        assertEquals(versionFilter.getTimelineVon(), croppedFilter.getTimelineVon());
+        assertEquals(versionFilter.getTimelineBis(), croppedFilter.getTimelineBis());
     }
 
 
@@ -92,8 +92,8 @@ class VersionFilterTest {
         VersionFilter croppedFilter = versionFilter.cropToVersions(versions);
 
         assertNotNull(croppedFilter);
-        assertEquals(versionFilter.getMinGueltigVon(), croppedFilter.getMinGueltigVon());
-        assertEquals(versionFilter.getMaxGueltigBis(), croppedFilter.getMaxGueltigBis());
+        assertEquals(versionFilter.getTimelineVon(), croppedFilter.getTimelineVon());
+        assertEquals(versionFilter.getTimelineBis(), croppedFilter.getTimelineBis());
     }
 
 
@@ -112,8 +112,8 @@ class VersionFilterTest {
 
         VersionFilter croppedFilter = versionFilter.cropToVersions(versions);
 
-        assertEquals(versions.get(0).getGueltigVon(), croppedFilter.getMinGueltigVon());
-        assertEquals(versionFilter.getMaxGueltigBis(), croppedFilter.getMaxGueltigBis());
+        assertEquals(versions.get(0).getGueltigVon(), croppedFilter.getTimelineVon());
+        assertEquals(versionFilter.getTimelineBis(), croppedFilter.getTimelineBis());
     }
 
 
@@ -132,8 +132,8 @@ class VersionFilterTest {
 
         VersionFilter croppedFilter = versionFilter.cropToVersions(versions);
 
-        assertEquals(versionFilter.getMinGueltigVon(), croppedFilter.getMinGueltigVon());
-        assertEquals(versions.get(2).getGueltigBis(), croppedFilter.getMaxGueltigBis());
+        assertEquals(versionFilter.getTimelineVon(), croppedFilter.getTimelineVon());
+        assertEquals(versions.get(2).getGueltigBis(), croppedFilter.getTimelineBis());
     }
 
 
@@ -152,8 +152,8 @@ class VersionFilterTest {
 
         VersionFilter croppedFilter = versionFilter.cropToVersions(versions);
 
-        assertEquals(versions.get(0).getGueltigVon(), croppedFilter.getMinGueltigVon());
-        assertEquals(versions.get(2).getGueltigBis(), croppedFilter.getMaxGueltigBis());
+        assertEquals(versions.get(0).getGueltigVon(), croppedFilter.getTimelineVon());
+        assertEquals(versions.get(2).getGueltigBis(), croppedFilter.getTimelineBis());
     }
 
 
@@ -172,8 +172,8 @@ class VersionFilterTest {
 
         VersionFilter croppedFilter = versionFilter.cropToVersions(versions);
 
-        assertEquals(versionFilter.getMinGueltigVon(), croppedFilter.getMinGueltigVon());
-        assertEquals(versions.get(2).getGueltigVon().plusDays(VersionFilter.HD_LD_PADDING_DAYS), croppedFilter.getMaxGueltigBis());
+        assertEquals(versionFilter.getTimelineVon(), croppedFilter.getTimelineVon());
+        assertEquals(versions.get(2).getGueltigVon().plusDays(VersionFilter.HD_LD_PADDING_DAYS), croppedFilter.getTimelineBis());
     }
 
 
@@ -190,7 +190,7 @@ class VersionFilterTest {
 
         VersionFilter croppedFilter = versionFilter.cropToVersions(versions);
 
-        assertEquals(versionFilter.getMinGueltigVon(), croppedFilter.getMinGueltigVon());
-        assertEquals(versionFilter.getMinGueltigVon().plusDays(VersionFilter.DEFAULT_TIMESPAN_DAYS), croppedFilter.getMaxGueltigBis());
+        assertEquals(versionFilter.getTimelineVon(), croppedFilter.getTimelineVon());
+        assertEquals(versionFilter.getTimelineVon().plusDays(VersionFilter.DEFAULT_TIMESPAN_DAYS), croppedFilter.getTimelineBis());
     }
 }

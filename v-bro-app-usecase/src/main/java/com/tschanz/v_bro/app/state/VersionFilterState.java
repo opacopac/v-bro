@@ -9,6 +9,6 @@ import lombok.Synchronized;
 @Getter(onMethod = @__({@Synchronized}))
 @Setter(onMethod = @__({@Synchronized}))
 public class VersionFilterState {
-    private VersionFilter versionFilter;
-    private VersionFilter effectiveVersionFilter;
+    private VersionFilter versionFilter = VersionFilter.DEFAULT_VERSION_FILTER;
+    private VersionFilter effectiveVersionFilter = versionFilter;
 }

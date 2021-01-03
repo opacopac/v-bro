@@ -1,27 +1,33 @@
 package com.tschanz.v_bro.data_structure.domain.model;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
 
 
+@Getter
 @RequiredArgsConstructor
 public class VersionFilter {
-    public static final VersionFilter DEFAULT_VERSION_FILTER = new VersionFilter(LocalDate.of(2015, 1, 1), VersionData.HIGH_DATE, Pflegestatus.IN_ARBEIT);
+    public static final VersionFilter DEFAULT_VERSION_FILTER = new VersionFilter(
+        VersionData.NOVA_NULL_DATE,
+        VersionData.HIGH_DATE,
+        Pflegestatus.IN_ARBEIT
+    );
     public static final int HD_LD_PADDING_DAYS = 365;
     public static final int DEFAULT_TIMESPAN_DAYS = 5 * 365;
-    @Getter private final LocalDate minGueltigVon;
-    @Getter private final LocalDate maxGueltigBis;
-    @Getter private final Pflegestatus minPflegestatus;
+    @NonNull private final LocalDate timelineVon;
+    @NonNull private final LocalDate timelineBis;
+    @NonNull private final Pflegestatus minPflegestatus;
 
 
     public VersionFilter cropToVersions(List<VersionData> versions) {
         if (versions == null) {
             return null;
         } else if (versions.size() == 0) {
-            return new VersionFilter(this.minGueltigVon, this.maxGueltigBis, this.minPflegestatus);
+            return new VersionFilter(this.timelineVon, this.timelineBis, this.minPflegestatus);
         }
 
         VersionData firstVersion = versions.get(0);
@@ -30,21 +36,21 @@ public class VersionFilter {
         LocalDate effectiveBis;
 
         // von
-        if (this.minGueltigVon.isBefore(firstVersion.getGueltigVon())) {
+        if (this.timelineVon.isBefore(firstVersion.getGueltigVon())) {
             effectiveVon = firstVersion.getGueltigVon();
-        } else if (this.minGueltigVon.equals(VersionData.LOW_DATE) && firstVersion.getGueltigVon().equals(VersionData.LOW_DATE)) {
+        } else if (this.timelineVon.equals(VersionData.LOW_DATE) && firstVersion.getGueltigVon().equals(VersionData.LOW_DATE)) {
             effectiveVon = firstVersion.getGueltigBis().minusDays(HD_LD_PADDING_DAYS);
         } else {
-            effectiveVon = this.minGueltigVon;
+            effectiveVon = this.timelineVon;
         }
 
         // bis
-        if (this.maxGueltigBis.isAfter(lastVersion.getGueltigBis())) {
+        if (this.timelineBis.isAfter(lastVersion.getGueltigBis())) {
             effectiveBis = lastVersion.getGueltigBis();
-        } else if (this.maxGueltigBis.equals(VersionData.HIGH_DATE) && lastVersion.getGueltigBis().equals(VersionData.HIGH_DATE)) {
+        } else if (this.timelineBis.equals(VersionData.HIGH_DATE) && lastVersion.getGueltigBis().equals(VersionData.HIGH_DATE)) {
             effectiveBis = lastVersion.getGueltigVon().plusDays(HD_LD_PADDING_DAYS);
         } else {
-            effectiveBis = this.maxGueltigBis;
+            effectiveBis = this.timelineBis;
         }
 
 

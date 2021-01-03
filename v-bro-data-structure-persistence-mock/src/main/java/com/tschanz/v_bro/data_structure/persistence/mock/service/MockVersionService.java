@@ -13,7 +13,12 @@ import java.util.List;
 
 public class MockVersionService implements VersionService {
     @Override
-    public List<VersionData> readVersions(@NonNull ElementData element) throws RepoException {
+    public List<VersionData> readVersions(
+        @NonNull ElementData element,
+        @NonNull LocalDate timelineVon,
+        @NonNull LocalDate timelineBis,
+        @NonNull Pflegestatus minPflegestatus
+    ) throws RepoException {
         return List.of(
             new VersionData(
                 element,
