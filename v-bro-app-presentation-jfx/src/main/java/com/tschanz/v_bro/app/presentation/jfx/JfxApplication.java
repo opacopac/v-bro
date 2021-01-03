@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
 
@@ -14,6 +15,7 @@ import lombok.SneakyThrows;
 public class JfxApplication extends Application {
     private static final String MAIN_VIEW_FXML = "MainView.fxml";
     private static final String WINDOW_TITLE = "V-Bro - Version Browser";
+    private static final String ICON_FILE = "v-bro.png";
     private static MainViewModel mainViewModel;
     private static MainController mainController;
 
@@ -33,6 +35,8 @@ public class JfxApplication extends Application {
         Parent root = fxmlLoader.load();
         JfxMainView jfxMainView = fxmlLoader.getController();
         jfxMainView.bindViewModel(mainViewModel, mainController);
+        var icon = new Image(ICON_FILE);
+        stage.getIcons().add(icon);
         stage.setTitle(WINDOW_TITLE);
         stage.setScene(new Scene(root));
         stage.show();
