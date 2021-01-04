@@ -16,5 +16,9 @@ public interface MainController {
 
     DependencyFilterController getDependencyFilterController();
 
+    DependencyElementClassController getDependencyElementClassController();
+
+    DependencyDenominationController getDependencyDenominationController();
+
     DependencyListController getDependencyListController();
 }

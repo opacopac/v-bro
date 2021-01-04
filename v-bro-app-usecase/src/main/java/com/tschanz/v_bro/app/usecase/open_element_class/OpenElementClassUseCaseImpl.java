@@ -11,9 +11,13 @@ import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsRequest;
 import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsUseCase;
 import com.tschanz.v_bro.app.usecase.read_denominations.ReadDenominationRequest;
 import com.tschanz.v_bro.app.usecase.read_denominations.ReadDenominationUseCase;
+import com.tschanz.v_bro.app.usecase.read_dependency_element_classes.ReadDependencyElementClassesRequest;
+import com.tschanz.v_bro.app.usecase.read_dependency_element_classes.ReadDependencyElementClassesUseCase;
 import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsRequest;
 import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsRequestItem;
 import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsUseCase;
+import com.tschanz.v_bro.app.usecase.select_dependency_element_class.SelectDependencyElementClassRequest;
+import com.tschanz.v_bro.app.usecase.select_dependency_element_class.SelectDependencyElementClassUseCase;
 import com.tschanz.v_bro.common.selected_list.SelectedList;
 import com.tschanz.v_bro.data_structure.domain.model.Denomination;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +32,13 @@ import java.util.List;
 public class OpenElementClassUseCaseImpl implements OpenElementClassUseCase {
     private final MainState mainState;
     private final ElementClassPresenter elementClassPresenter;
+    private final StatusPresenter statusPresenter;
     private final ReadDenominationUseCase readDenominationUc;
     private final SelectDenominationsUseCase selectDenominationsUc;
     private final QueryElementsUseCase queryElementsUc;
     private final OpenElementUseCase openElementUseCase;
-    private final StatusPresenter statusPresenter;
+    private final ReadDependencyElementClassesUseCase readDependencyStructureUc;
+    private final SelectDependencyElementClassUseCase selectDependencyElementClassUc;
 
 
     @Override
@@ -88,5 +94,11 @@ public class OpenElementClassUseCaseImpl implements OpenElementClassUseCase {
             var openElementRequest = new OpenElementRequest(elementId, true);
             this.openElementUseCase.execute(openElementRequest);
         }
+
+        var readDependencyStructureRequest = new ReadDependencyElementClassesRequest();
+        this.readDependencyStructureUc.execute(readDependencyStructureRequest);
+
+        var selectDependencyElementClassRequest = new SelectDependencyElementClassRequest(null);
+        this.selectDependencyElementClassUc.execute(selectDependencyElementClassRequest);
     }
 }

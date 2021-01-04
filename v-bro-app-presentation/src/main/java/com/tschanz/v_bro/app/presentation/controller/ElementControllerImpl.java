@@ -5,23 +5,16 @@ import com.tschanz.v_bro.app.usecase.open_element.OpenElementRequest;
 import com.tschanz.v_bro.app.usecase.open_element.OpenElementUseCase;
 import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsRequest;
 import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsUseCase;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Collections;
 import java.util.List;
 
 
+@RequiredArgsConstructor
 public class ElementControllerImpl implements ElementController {
     private final QueryElementsUseCase queryElementsUc;
     private final OpenElementUseCase openElementUc;
-
-
-    public ElementControllerImpl(
-        QueryElementsUseCase queryElementsUc,
-        OpenElementUseCase openElementUc
-    ) {
-        this.queryElementsUc = queryElementsUc;
-        this.openElementUc = openElementUc;
-    }
 
 
     @Override

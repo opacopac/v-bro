@@ -4,6 +4,8 @@ import com.tschanz.v_bro.app.presentation.presenter.*;
 import com.tschanz.v_bro.app.presentation.viewmodel.MainViewModel;
 import com.tschanz.v_bro.app.presenter.denominations.DenominationsPresenter;
 import com.tschanz.v_bro.app.presenter.dependencies.DependencyPresenter;
+import com.tschanz.v_bro.app.presenter.dependency_denominations.DependencyDenominationsPresenter;
+import com.tschanz.v_bro.app.presenter.dependency_element_class.DependencyElementClassPresenter;
 import com.tschanz.v_bro.app.presenter.element.ElementPresenter;
 import com.tschanz.v_bro.app.presenter.element_class.ElementClassPresenter;
 import com.tschanz.v_bro.app.presenter.repo_connection.RepoConnectionPresenter;
@@ -21,6 +23,8 @@ public class JfxMainPresenter extends MainPresenter {
     private final DenominationsPresenter denominationsPresenter;
     private final ElementPresenter elementPresenter;
     private final VersionTimelinePresenter versionTimelinePresenter;
+    private final DependencyElementClassPresenter dependencyElementClassPresenter;
+    private final DependencyDenominationsPresenter dependencyDenominationsPresenter;
     private final DependencyPresenter dependencyPresenter;
     private final VersionAggregatePresenter versionAggregatePresenter;
 
@@ -34,6 +38,8 @@ public class JfxMainPresenter extends MainPresenter {
         this.denominationsPresenter = new JfxDenominationsPresenter(mainViewModel.elementDenominations);
         this.elementPresenter = new JfxElementPresenter(mainViewModel.currentElement);
         this.versionTimelinePresenter = new JfxVersionTimelinePresenter(mainViewModel.versions);
+        this.dependencyElementClassPresenter = new JfxDependencyElementClassPresenter(mainViewModel.dependencyElementClasses);
+        this.dependencyDenominationsPresenter = new JfxDependencyDenominationsPresenter(mainViewModel.dependencyDenominations);
         this.dependencyPresenter = new JfxDependenciesPresenter(mainViewModel.fwdDependencies);
         this.versionAggregatePresenter = new JfxVersionAggregatePresenter(mainViewModel.versionAggregate);
     }

@@ -25,7 +25,11 @@
                         <fx:include fx:id="elementView" source="ElementView.fxml" />
                         <fx:include fx:id="versionFilterView" source="VersionFilterView.fxml" />
                         <fx:include fx:id="versionView" source="VersionView.fxml" />
-                        <fx:include fx:id="dependencyFilterView" source="DependencyFilterView.fxml" />
+                        <HBox spacing="5.0">
+                            <fx:include fx:id="dependencyFilterView" source="DependencyFilterView.fxml" />
+                            <fx:include fx:id="dependencyElementClassView" source="DependencyElementClassView.fxml" />
+                            <fx:include fx:id="dependencyDenominationsView" source="DependencyDenominationView.fxml" />
+                        </HBox>
                         <AnchorPane VBox.vgrow="ALWAYS">
                             <ScrollPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fitToWidth="true" fitToHeight="true">
                                 <fx:include fx:id="dependenciesView" source="DependencyListView.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" prefWidth="800" />

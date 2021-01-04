@@ -9,6 +9,8 @@ import com.tschanz.v_bro.app.usecase.open_element_class.OpenElementClassRequest;
 import com.tschanz.v_bro.app.usecase.open_element_class.OpenElementClassUseCase;
 import com.tschanz.v_bro.app.usecase.read_element_classes.ReadElementClassesRequest;
 import com.tschanz.v_bro.app.usecase.read_element_classes.ReadElementClassesUseCase;
+import com.tschanz.v_bro.app.usecase.select_dependency_element_class.SelectDependencyElementClassRequest;
+import com.tschanz.v_bro.app.usecase.select_dependency_element_class.SelectDependencyElementClassUseCase;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.service.RepoConnectionService;
 import com.tschanz.v_bro.app.service.RepoServiceProvider;
@@ -27,6 +29,7 @@ public class CloseRepoUseCaseImpl implements CloseRepoUseCase {
     private final StatusPresenter statusPresenter;
     private final ReadElementClassesUseCase readElementClassesUc;
     private final OpenElementClassUseCase openElementClassUc;
+    private final SelectDependencyElementClassUseCase selectDependencyElementClassUc;
 
 
     @Override
@@ -64,5 +67,8 @@ public class CloseRepoUseCaseImpl implements CloseRepoUseCase {
 
         var openElementClassRequest = new OpenElementClassRequest(null, true);
         this.openElementClassUc.execute(openElementClassRequest);
+
+        var selectDependencyElementClassRequest = new SelectDependencyElementClassRequest(null);
+        this.selectDependencyElementClassUc.execute(selectDependencyElementClassRequest);
     }
 }

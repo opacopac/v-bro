@@ -9,6 +9,8 @@ import com.tschanz.v_bro.app.usecase.open_repo.OpenRepoUseCase;
 import com.tschanz.v_bro.app.usecase.open_version.OpenVersionUseCase;
 import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsUseCase;
 import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsUseCase;
+import com.tschanz.v_bro.app.usecase.select_dependency_denominations.SelectDependencyDenominationsUseCase;
+import com.tschanz.v_bro.app.usecase.select_dependency_element_class.SelectDependencyElementClassUseCase;
 import com.tschanz.v_bro.app.usecase.select_dependency_filter.SelectDependencyFilterUseCase;
 import com.tschanz.v_bro.app.usecase.select_version_filter.SelectVersionFilterUseCase;
 import lombok.Getter;
@@ -25,6 +27,8 @@ public class MainControllerImpl implements MainController {
     private final VersionFilterController versionFilterController;
     private final VersionController versionController;
     private final DependencyFilterController dependencyFilterController;
+    private final DependencyElementClassController dependencyElementClassController;
+    private final DependencyDenominationController dependencyDenominationController;
     private final DependencyListController dependencyListController;
 
 
@@ -40,6 +44,8 @@ public class MainControllerImpl implements MainController {
         SelectVersionFilterUseCase selectVersionFilterUc,
         OpenVersionUseCase openVersionUc,
         SelectDependencyFilterUseCase selectDependencyFilterUc,
+        SelectDependencyElementClassUseCase selectDependencyElementClassUc,
+        SelectDependencyDenominationsUseCase selectDependencyDenominationsUc,
         OpenDependencyVersionUseCase openDependencyVersionUc
     ) {
         this.connectionController = new ConnectionControllerImpl(
@@ -55,6 +61,8 @@ public class MainControllerImpl implements MainController {
         this.versionFilterController = new VersionFilterControllerImpl(selectVersionFilterUc);
         this.versionController = new VersionControllerImpl(openVersionUc);
         this.dependencyFilterController = new DependencyFilterControllerImpl(selectDependencyFilterUc);
+        this.dependencyElementClassController = new DependencyElementClassControllerImpl(selectDependencyElementClassUc);
+        this.dependencyDenominationController = new DependencyDenominationControllerImpl(selectDependencyDenominationsUc);
         this.dependencyListController = new DependencyListControllerImpl(openDependencyVersionUc);
     }
 }

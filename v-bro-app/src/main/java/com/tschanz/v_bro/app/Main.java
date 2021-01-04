@@ -4,6 +4,7 @@ import com.tschanz.v_bro.app.presentation.controller.MainControllerImpl;
 import com.tschanz.v_bro.app.presentation.jfx.JfxApplication;
 import com.tschanz.v_bro.app.presentation.jfx.presenter.JfxMainPresenter;
 import com.tschanz.v_bro.app.presentation.viewmodel.MainViewModel;
+import com.tschanz.v_bro.app.service.RepoServiceProvider;
 import com.tschanz.v_bro.app.state.MainState;
 import com.tschanz.v_bro.app.usecase.close_repo.CloseRepoUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.open_dependency_version.OpenDependencyVersionUseCaseImpl;
@@ -14,10 +15,14 @@ import com.tschanz.v_bro.app.usecase.open_version.OpenVersionUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.read_denominations.ReadDenominationUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.read_dependencies.ReadDependenciesUseCaseImpl;
+import com.tschanz.v_bro.app.usecase.read_dependency_denominations.ReadDependencyDenominationsUseCaseImpl;
+import com.tschanz.v_bro.app.usecase.read_dependency_element_classes.ReadDependencyElementClassesUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.read_element_classes.ReadElementClassesUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.read_version_aggregate.ReadVersionAggregateUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.read_versions.ReadVersionsUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsUseCaseImpl;
+import com.tschanz.v_bro.app.usecase.select_dependency_denominations.SelectDependencyDenominationsUseCaseImpl;
+import com.tschanz.v_bro.app.usecase.select_dependency_element_class.SelectDependencyElementClassUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_dependency_filter.SelectDependencyFilterUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_version_filter.SelectVersionFilterUseCaseImpl;
 import com.tschanz.v_bro.common.cache.LastNCache;
@@ -25,7 +30,6 @@ import com.tschanz.v_bro.data_structure.persistence.jdbc.service.*;
 import com.tschanz.v_bro.data_structure.persistence.mock.service.*;
 import com.tschanz.v_bro.data_structure.persistence.xml.service.*;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
-import com.tschanz.v_bro.app.service.RepoServiceProvider;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.JdbcQueryBuilderImpl;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactoryImpl;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoConnectionService;
@@ -108,18 +112,22 @@ public class Main {
         var mainState = new MainState();
         var readVersionAggregateUc = new ReadVersionAggregateUseCaseImpl(mainState, versionAggregateServiceProvider, mainPresenter.getVersionAggregatePresenter(), mainPresenter.getStatusPresenter());
         var readDependenciesUc = new ReadDependenciesUseCaseImpl(mainState, dependencyServiceProvider, mainPresenter.getDependencyPresenter(), mainPresenter.getStatusPresenter());
+        var readDependencyStructureUc = new ReadDependencyElementClassesUseCaseImpl(mainState, dependencyStructureServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getDependencyElementClassPresenter());
+        var selectDependencyDenominationsUc = new SelectDependencyDenominationsUseCaseImpl(mainState, readDependenciesUc);
+        var readDepdendencyDenominationsUc = new ReadDependencyDenominationsUseCaseImpl(mainState, denominationServiceProvider, mainPresenter.getDependencyDenominationsPresenter(), mainPresenter.getStatusPresenter());
+        var selectDependencyElementClassUc = new SelectDependencyElementClassUseCaseImpl(mainState, readDepdendencyDenominationsUc, readDependenciesUc);
         var selectDependencyFilterUc = new SelectDependencyFilterUseCaseImpl(mainState, readDependenciesUc, mainPresenter.getStatusPresenter());
         var openVersionUc = new OpenVersionUseCaseImpl(mainState, readVersionAggregateUc, readDependenciesUc, mainPresenter.getVersionTimelinePresenter(), mainPresenter.getStatusPresenter());
         var readVersionsUc = new ReadVersionsUseCaseImpl(mainState, versionServiceProvider, openVersionUc, mainPresenter.getStatusPresenter(), mainPresenter.getVersionTimelinePresenter());
         var selectVersionFilterUc = new SelectVersionFilterUseCaseImpl(mainState, readVersionsUc, mainPresenter.getStatusPresenter());
-        var queryElementsUc = new QueryElementsUseCaseImpl(mainState, elementServiceProvider);
         var openElementUc = new OpenElementUseCaseImpl(mainState, elementServiceProvider, mainPresenter.getElementPresenter(), readVersionsUc, mainPresenter.getStatusPresenter());
+        var queryElementsUc = new QueryElementsUseCaseImpl(mainState, elementServiceProvider);
         var selectDenominationsUc = new SelectDenominationsUseCaseImpl(mainState, mainPresenter.getDenominationsPresenter());
         var readDenominationUc = new ReadDenominationUseCaseImpl(mainState, denominationServiceProvider, mainPresenter.getDenominationsPresenter(), mainPresenter.getStatusPresenter());
-        var openElementClassUc = new OpenElementClassUseCaseImpl(mainState, mainPresenter.getElementClassPresenter(), readDenominationUc, selectDenominationsUc, queryElementsUc, openElementUc, mainPresenter.getStatusPresenter());
+        var openElementClassUc = new OpenElementClassUseCaseImpl(mainState, mainPresenter.getElementClassPresenter(), mainPresenter.getStatusPresenter(), readDenominationUc, selectDenominationsUc, queryElementsUc, openElementUc, readDependencyStructureUc, selectDependencyElementClassUc);
         var readElementClassesUc = new ReadElementClassesUseCaseImpl(mainState, elementClassServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getElementClassPresenter());
         var openRepoUc = new OpenRepoUseCaseImpl(mainState, repoConnectionServiceProvider, mainPresenter.getRepoConnectionPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc);
-        var closeRepoUc = new CloseRepoUseCaseImpl(mainState, repoConnectionServiceProvider, mainPresenter.getRepoConnectionPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc);
+        var closeRepoUc = new CloseRepoUseCaseImpl(mainState, repoConnectionServiceProvider, mainPresenter.getRepoConnectionPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc, selectDependencyElementClassUc);
         var openDependencyVersionUc = new OpenDependencyVersionUseCaseImpl(openElementClassUc, openElementUc, openVersionUc, mainPresenter.getStatusPresenter());
 
         // presentation controller
@@ -135,6 +143,8 @@ public class Main {
             selectVersionFilterUc,
             openVersionUc,
             selectDependencyFilterUc,
+            selectDependencyElementClassUc,
+            selectDependencyDenominationsUc,
             openDependencyVersionUc
         );
 
