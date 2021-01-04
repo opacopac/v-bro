@@ -2,31 +2,25 @@ package com.tschanz.v_bro.repo.persistence.xml.service;
 
 import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
-import com.tschanz.v_bro.repo.domain.service.RepoService;
-import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdElementPosInfo;
 import com.tschanz.v_bro.repo.persistence.xml.model.XmlConnectionParameters;
 
 import java.io.*;
-import java.util.Map;
 
 
-public class XmlRepoService implements RepoService {
+public class XmlRepoService {
     // TODO: temp => read from xml real file
     private static final String XML_PREAMBLE = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>";
     private static final String ROOT_NODE_START = "<ns2:datenrelease xmlns:ns2=\"ch.voev.nova.pflege.common.exporter.datenrelease\" xmlns:ns3=\"ch.voev.nova.pflege.common.exporter.datenrelease.tarifcommons\" xmlns:ns4=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ns5=\"ch.voev.nova.pflege.common.exporter.datenrelease.dvmodell\" xmlns:ns6=\"ch.voev.nova.pflege.common.exporter.datenrelease.netz\" id=\"D555.0\">";
     private static final String ROOT_NODE_END = "</ns2:datenrelease>";
 
     private XmlConnectionParameters connectionParameters;
-    private Map<String, XmlIdElementPosInfo> elementStructureMap;
 
 
-    @Override
     public boolean isConnected() {
         return this.connectionParameters != null;
     }
 
 
-    @Override
     public void connect(ConnectionParameters parameters) throws RepoException {
         if (parameters.getClass() != XmlConnectionParameters.class) {
             throw new RepoException("Only parameters of type XmlConnectionParameters allowed for XML repos!");
@@ -40,20 +34,15 @@ public class XmlRepoService implements RepoService {
     }
 
 
-    @Override
     public void disconnect() throws RepoException {
-        if (!this.isConnected()) {
-            throw new RepoException("Repo not connected!");
-        }
+        this.assertRepoIsConnected();
 
         this.connectionParameters = null;
     }
 
 
     public InputStream getNewXmlFileStream() throws RepoException {
-        if (!this.isConnected()) {
-            throw new RepoException("Repo not connected!");
-        }
+        this.assertRepoIsConnected();
 
         BufferedInputStream xmlFileStream;
         try {
@@ -67,13 +56,10 @@ public class XmlRepoService implements RepoService {
 
 
     public InputStream getNewXmlFileStream(int startBytePos, int endBytePos) throws RepoException {
-        if (!this.isConnected()) {
-            throw new RepoException("Repo not connected!");
-        }
-
         if (startBytePos > endBytePos) {
             throw new IllegalArgumentException("start position must be smaller than end position");
         }
+        this.assertRepoIsConnected();
 
         byte[] bytes;
         try {
@@ -89,6 +75,13 @@ public class XmlRepoService implements RepoService {
         return new ByteArrayInputStream(
             this.wrapInRootNodeAndAddPreamble(bytes)
         );
+    }
+
+
+    private void assertRepoIsConnected() throws RepoException {
+        if (!this.isConnected()) {
+            throw new RepoException("Repo not connected!");
+        }
     }
 
 

@@ -5,7 +5,6 @@ import com.tschanz.v_bro.data_structure.domain.model.DenominationData;
 import com.tschanz.v_bro.data_structure.domain.model.ElementClass;
 import com.tschanz.v_bro.data_structure.domain.model.ElementData;
 import com.tschanz.v_bro.data_structure.domain.service.ElementService;
-import com.tschanz.v_bro.repo.domain.model.RepoException;
 import lombok.NonNull;
 
 import java.util.List;
@@ -18,7 +17,7 @@ public class MockElementService implements ElementService {
         @NonNull List<Denomination> denominationFields,
         @NonNull String query,
         int maxResults
-    ) throws RepoException {
+    ) {
         return List.of(
             new ElementData(
                 elementClass,

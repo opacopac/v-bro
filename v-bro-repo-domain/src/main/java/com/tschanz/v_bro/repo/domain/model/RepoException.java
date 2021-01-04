@@ -10,7 +10,7 @@ public class RepoException extends Exception {
 
 
     public RepoException(String message) {
-        this(message, (Exception) null);
+        this(message, null);
     }
 
 

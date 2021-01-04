@@ -2,7 +2,6 @@ package com.tschanz.v_bro.repo.persistence.jdbc.repo_connection;
 
 import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
-import com.tschanz.v_bro.repo.domain.service.RepoService;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.JdbcConnectionParameters;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -12,17 +11,15 @@ import java.sql.SQLException;
 
 @Log
 @RequiredArgsConstructor
-public class JdbcRepoService implements RepoService {
+public class JdbcRepoService {
     private final JdbcConnectionFactory connectionFactory;
 
 
-    @Override
     public boolean isConnected() {
         return this.connectionFactory.getCurrentConnection() != null;
     }
 
 
-    @Override
     public void connect(ConnectionParameters parameters) throws RepoException {
         if (parameters.getClass() != JdbcConnectionParameters.class) {
             throw new RepoException("Only parameters of type JdbcConnectionParameters allowed for JDBC repos!");
@@ -44,7 +41,6 @@ public class JdbcRepoService implements RepoService {
     }
 
 
-    @Override
     public void disconnect() throws RepoException {
         log.info("disconnect from db");
 

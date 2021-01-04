@@ -18,7 +18,7 @@ public class JdbcVersionAggregateServiceCache implements VersionAggregateService
 
 
     @Override
-    public VersionAggregate readVersionAggregate(@NonNull VersionData version) throws RepoException {
+    public VersionAggregate readVersionAggregate(@NonNull VersionData version) {
         String key = version.getElement().getElementClass().getName() + "/"
             + version.getElement().getId() + "/"
             + version.getId();

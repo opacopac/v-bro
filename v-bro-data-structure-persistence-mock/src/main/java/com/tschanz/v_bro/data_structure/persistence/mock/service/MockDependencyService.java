@@ -2,7 +2,6 @@ package com.tschanz.v_bro.data_structure.persistence.mock.service;
 
 import com.tschanz.v_bro.data_structure.domain.model.*;
 import com.tschanz.v_bro.data_structure.domain.service.DependencyService;
-import com.tschanz.v_bro.repo.domain.model.RepoException;
 import lombok.NonNull;
 
 import java.time.LocalDate;
@@ -17,7 +16,7 @@ public class MockDependencyService implements DependencyService {
         @NonNull LocalDate minGueltigVon,
         @NonNull LocalDate maxGueltigBis,
         @NonNull Pflegestatus minPflegestatus
-    ) throws RepoException {
+    ) {
         var elementClass1 = new ElementClass("P_PRODUKTDEFINITION_E");
         var element1 = new ElementData(elementClass1, "132242", Collections.emptyList());
         var elementClass2 = new ElementClass("P_PRODUKTDEFINITION_E");
@@ -96,7 +95,7 @@ public class MockDependencyService implements DependencyService {
         @NonNull LocalDate minGueltigVon,
         @NonNull LocalDate maxGueltigBis,
         @NonNull Pflegestatus minPflegestatus
-    ) throws RepoException {
+    ) {
         var elementClass1 = new ElementClass("P_PRODUKTDEFINITION_E");
         var element1 = new ElementData(elementClass1, "132242", Collections.emptyList());
 

@@ -6,7 +6,6 @@ import com.tschanz.v_bro.data_structure.domain.model.VersionData;
 import com.tschanz.v_bro.data_structure.domain.service.VersionService;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.VersionRecord;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.VersionTable;
-import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoField;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTableRecord;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.RowFilter;
@@ -15,6 +14,7 @@ import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoDataService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -30,16 +30,13 @@ public class JdbcVersionService implements VersionService {
 
 
     @Override
+    @SneakyThrows
     public List<VersionData> readVersions(
         @NonNull ElementData element,
         @NonNull LocalDate timelineVon,
         @NonNull LocalDate timelineBis,
         @NonNull Pflegestatus minPflegestatus
-    ) throws RepoException {
-        if (!this.repo.isConnected()) {
-            throw new RepoException("Not connected to repo!");
-        }
-
+    ) {
         var elementTable = this.elementService.readElementTable(element.getElementClass().getName());
         var versionTable = this.elementService.readVersionTable(elementTable);
 
@@ -78,7 +75,8 @@ public class JdbcVersionService implements VersionService {
     }
 
 
-    public VersionRecord readVersionRecord(VersionTable versionTable, long versionId, List<RepoField> fields) throws RepoException {
+    @SneakyThrows
+    public VersionRecord readVersionRecord(VersionTable versionTable, long versionId, List<RepoField> fields) {
         var filter = new RowFilter(versionTable.getIdField(), RowFilterOperator.EQUALS, versionId);
 
         List<RepoTableRecord> records = this.repoData.readRepoTableRecords(versionTable.getRepoTable(), Collections.emptyList(), fields, List.of(filter), Collections.emptyList(), -1);

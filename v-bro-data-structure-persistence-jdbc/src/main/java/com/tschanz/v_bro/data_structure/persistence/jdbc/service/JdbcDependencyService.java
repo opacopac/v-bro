@@ -3,11 +3,10 @@ package com.tschanz.v_bro.data_structure.persistence.jdbc.service;
 import com.tschanz.v_bro.data_structure.domain.model.*;
 import com.tschanz.v_bro.data_structure.domain.service.DependencyService;
 import com.tschanz.v_bro.data_structure.domain.service.VersionAggregateService;
+import com.tschanz.v_bro.data_structure.persistence.jdbc.model.AggregateData;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.AggregateStructureNode;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.ElementTable;
-import com.tschanz.v_bro.data_structure.persistence.jdbc.model.AggregateData;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.VersionTable;
-import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoFieldType;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoRelation;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTableJoin;
@@ -17,6 +16,7 @@ import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoDataService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class JdbcDependencyService implements DependencyService {
         @NonNull LocalDate minGueltigVon,
         @NonNull LocalDate maxGueltigBis,
         @NonNull Pflegestatus minPflegestatus
-    ) throws RepoException {
+    ) {
         var aggregate = (AggregateData) this.versionAggregateService.readVersionAggregate(version); // TODO: ugly type casting
 
         List<Dependency> dependencies = new ArrayList<>();
@@ -55,7 +55,7 @@ public class JdbcDependencyService implements DependencyService {
                 var fwdElementId = record.findFieldValue(relation.getBwdFieldName()).getValueString();
                 if (fwdElementId != null) {
                     var elementClass = new ElementClass(fwdElementClassName);
-                    var element = new ElementData(elementClass, fwdElementId, Collections.emptyList());
+                    var element = this.elementService.readElement(elementClass, Collections.emptyList(), fwdElementId);
                     var versions = this.versionService.readVersions(element, minGueltigVon, maxGueltigBis, minPflegestatus);
                     var fwdDependency = new Dependency(elementClass, element, versions);
                     dependencies.add(fwdDependency);
@@ -73,7 +73,7 @@ public class JdbcDependencyService implements DependencyService {
         @NonNull LocalDate minGueltigVon,
         @NonNull LocalDate maxGueltigBis,
         @NonNull Pflegestatus minPflegestatus
-    ) throws RepoException {
+    ) {
         var elementClassName = element.getElementClass().getName();
         var elementTable = this.elementService.readElementTable(elementClassName);
         var aggregates = this.dataStructureService.getAggregateStructures();
@@ -106,7 +106,8 @@ public class JdbcDependencyService implements DependencyService {
     }
 
 
-    private List<ElementData> getBwdElements(ElementData element, ElementTable elementTable, AggregateStructureNode bwdAggregateNode) throws RepoException {
+    @SneakyThrows
+    private List<ElementData> getBwdElements(ElementData element, ElementTable elementTable, AggregateStructureNode bwdAggregateNode) {
         var relToElement = elementTable.getRepoTable().getIncomingRelations()
             .stream()
             .filter(rel -> rel.getBwdClassName().equals(bwdAggregateNode.getRepoTable().getName()))
@@ -147,7 +148,7 @@ public class JdbcDependencyService implements DependencyService {
 
             return rows
                 .stream()
-                .map(row -> new ElementData(bwdElementClass, row.findIdFieldValue().getValueString(), Collections.emptyList()))
+                .map(row -> this.elementService.readElement(bwdElementClass, Collections.emptyList(), row.findIdFieldValue().getValueString()))
                 .collect(Collectors.toList());
 
         } else {

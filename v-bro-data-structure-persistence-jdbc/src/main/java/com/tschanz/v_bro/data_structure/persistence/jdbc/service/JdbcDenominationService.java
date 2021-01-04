@@ -26,7 +26,7 @@ public class JdbcDenominationService implements DenominationService {
 
 
     @Override
-    public List<Denomination> readDenominations(@NonNull ElementClass elementClass) throws RepoException {
+    public List<Denomination> readDenominations(@NonNull ElementClass elementClass) {
         ElementTable elementTable = this.elementService.readElementTable(elementClass.getName());
         VersionTable versionTable = this.elementService.readVersionTable(elementTable);
         List<RepoField> elementTableFields = elementTable.getFields();

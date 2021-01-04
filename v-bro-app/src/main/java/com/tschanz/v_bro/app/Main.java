@@ -31,7 +31,7 @@ import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFac
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoDataService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataServiceImpl;
-import com.tschanz.v_bro.repo.persistence.mock.service.MockRepoService2;
+import com.tschanz.v_bro.repo.persistence.mock.service.MockRepoConnectionService;
 import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlNodeParser;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
 import lombok.SneakyThrows;
@@ -56,17 +56,19 @@ public class Main {
         var jdbcQueryBuilder = new JdbcQueryBuilderImpl(jdbcConnectionFactory);
         var jdbcRepoDataService = new JdbcRepoDataService(jdbcConnectionFactory, jdbcQueryBuilder);
         var jdbcDataStructureService = new JdbcDataStructureService(jdbcRepoMetadata);
+        var jdbcRepoConnectionService = new JdbcRepoConnectionService(jdbcRepo, jdbcDataStructureService);
         var jdbcElementClassService = new JdbcElementClassService(jdbcRepoMetadata);
-        var jdbcElementService = new JdbcElementService(jdbcRepo, jdbcRepoMetadata, jdbcRepoDataService);
+        var jdbcElementService = new JdbcElementService(jdbcRepoMetadata, jdbcRepoDataService);
         var jdbcVersionService = new JdbcVersionService(jdbcRepo, jdbcRepoDataService, jdbcElementService);
         var jdbcDenominationService = new JdbcDenominationService(jdbcElementService);
-        var jdbcVersionAggregateService = new JdbcVersionAggregateService(jdbcRepo, jdbcRepoMetadata, jdbcRepoDataService, jdbcElementService, jdbcVersionService);
+        var jdbcVersionAggregateService = new JdbcVersionAggregateService(jdbcRepoMetadata, jdbcRepoDataService, jdbcElementService, jdbcVersionService);
         var jdbcVersionAggregateServiceCache = new JdbcVersionAggregateServiceCache(jdbcVersionAggregateService, new LastNCache<>(10));
         var jdbcDependencyService = new JdbcDependencyService(jdbcRepoMetadata, jdbcRepoDataService, jdbcDataStructureService, jdbcElementService, jdbcVersionService, jdbcVersionAggregateServiceCache);
 
         // persistence xml
         var xmlRepoService = new XmlRepoService();
         var xmlDataStructureService = new XmlDataStructureService(xmlRepoService);
+        var xmlRepoConnectionService = new XmlRepoConnectionService(xmlRepoService, xmlDataStructureService);
         var xmlInputFactory = XMLInputFactory.newInstance();
         var xmlNodeParser = new XmlNodeParser(xmlInputFactory);
         var xmlElementClassService = new XmlElementClassService(xmlDataStructureService);
@@ -77,7 +79,7 @@ public class Main {
         var xmlDependencyService = new XmlDependencyService(xmlDataStructureService, xmlElementService, xmlVersionService, xmlVersionAggregateService);
 
         // persistence mock
-        var mockRepo = new MockRepoService2();
+        var mockRepo = new MockRepoConnectionService();
         var mockElementService = new MockElementService();
         var mockElementClassService = new MockElementClassService();
         var mockVersionDataService = new MockVersionService();
@@ -86,7 +88,7 @@ public class Main {
         var mockDependencyService = new MockDependencyService();
 
         // persistence service providers
-        var repoServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcRepo, RepoType.XML, xmlDataStructureService, RepoType.MOCK, mockRepo);
+        var repoConnectionServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcRepoConnectionService, RepoType.XML, xmlRepoConnectionService, RepoType.MOCK, mockRepo);
         var elementClassServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcElementClassService, RepoType.XML, xmlElementClassService, RepoType.MOCK, mockElementClassService);
         var elementServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcElementService, RepoType.XML, xmlElementService, RepoType.MOCK, mockElementService);
         var versionServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcVersionService, RepoType.XML, xmlVersionService, RepoType.MOCK, mockVersionDataService);
@@ -112,8 +114,8 @@ public class Main {
         var readDenominationUc = new ReadDenominationUseCaseImpl(mainState, denominationServiceProvider, mainPresenter.getDenominationsPresenter(), mainPresenter.getStatusPresenter());
         var openElementClassUc = new OpenElementClassUseCaseImpl(mainState, mainPresenter.getElementClassListPresenter(), readDenominationUc, selectDenominationsUc, queryElementsUc, openElementUc, mainPresenter.getStatusPresenter());
         var readElementClassesUc = new ReadElementClassesUseCaseImpl(mainState, elementClassServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getElementClassListPresenter());
-        var openRepoUc = new OpenRepoUseCaseImpl(mainState, repoServiceProvider, mainPresenter.getRepoPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc);
-        var closeRepoUc = new CloseRepoUseCaseImpl(mainState, repoServiceProvider, mainPresenter.getRepoPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc);
+        var openRepoUc = new OpenRepoUseCaseImpl(mainState, repoConnectionServiceProvider, mainPresenter.getRepoPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc);
+        var closeRepoUc = new CloseRepoUseCaseImpl(mainState, repoConnectionServiceProvider, mainPresenter.getRepoPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc);
         var openDependencyVersionUc = new OpenDependencyVersionUseCaseImpl(openElementClassUc, openElementUc, openVersionUc, mainPresenter.getStatusPresenter());
 
         // presentation controller

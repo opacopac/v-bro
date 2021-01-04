@@ -14,7 +14,7 @@ import java.util.List;
 
 public class MockVersionAggregateService implements VersionAggregateService {
     @Override
-    public VersionAggregate readVersionAggregate(@NonNull VersionData version) throws RepoException {
+    public VersionAggregate readVersionAggregate(@NonNull VersionData version) {
         return new VersionAggregate(
             new AggregateNode(
                 "A_SORTIMENT_E",

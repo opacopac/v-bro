@@ -4,12 +4,12 @@ import com.tschanz.v_bro.data_structure.domain.model.ElementData;
 import com.tschanz.v_bro.data_structure.domain.model.Pflegestatus;
 import com.tschanz.v_bro.data_structure.domain.model.VersionData;
 import com.tschanz.v_bro.data_structure.domain.service.VersionService;
-import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlFieldInfo;
 import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlNodeInfo;
 import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlNodeParser;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -24,12 +24,13 @@ public class XmlVersionService implements VersionService {
 
 
     @Override
+    @SneakyThrows
     public List<VersionData> readVersions(
         @NonNull ElementData element,
         @NonNull LocalDate timelineVon,
         @NonNull LocalDate timelineBis,
         @NonNull Pflegestatus minPflegestatus
-    ) throws RepoException {
+    ) {
         InputStream xmlFileStream = this.xmlDataStructureService.getElementInputStream(element.getId());
         this.xmlNodeParser.init(xmlFileStream, element.getElementClass().getName());
         var elementNode = this.xmlNodeParser.nextNode();

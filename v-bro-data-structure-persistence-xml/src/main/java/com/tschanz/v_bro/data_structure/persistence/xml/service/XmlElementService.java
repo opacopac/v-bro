@@ -10,11 +10,13 @@ import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlNodeInfo;
 import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlNodeParser;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @RequiredArgsConstructor
 public class XmlElementService implements ElementService {
@@ -23,12 +25,13 @@ public class XmlElementService implements ElementService {
 
 
     @Override
+    @SneakyThrows
     public List<ElementData> queryElements(
         @NonNull ElementClass elementClass,
         @NonNull List<Denomination> denominationFields,
         @NonNull String query,
         int maxResults
-    ) throws RepoException {
+    ) {
         var xmlFileStream = this.xmlDataStructureService.getElementClassInputStream(elementClass.getName());
         this.xmlNodeParser.init(xmlFileStream, elementClass.getName());
 
@@ -51,11 +54,12 @@ public class XmlElementService implements ElementService {
 
 
     @Override
+    @SneakyThrows
     public ElementData readElement(
         @NonNull ElementClass elementClass,
         @NonNull List<Denomination> denominationFields,
         @NonNull String elementId
-    ) throws RepoException {
+    ) {
         var xmlFileStream = this.xmlDataStructureService.getElementInputStream(elementId);
         this.xmlNodeParser.init(xmlFileStream, elementClass.getName());
         var elementNode = this.xmlNodeParser.nextNode();

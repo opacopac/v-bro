@@ -5,11 +5,11 @@ import com.tschanz.v_bro.data_structure.domain.model.AggregateNode;
 import com.tschanz.v_bro.data_structure.domain.model.VersionAggregate;
 import com.tschanz.v_bro.data_structure.domain.model.VersionData;
 import com.tschanz.v_bro.data_structure.domain.service.VersionAggregateService;
-import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlNodeInfo;
 import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlNodeParser;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,7 +22,8 @@ public class XmlVersionAggregateService implements VersionAggregateService {
 
 
     @Override
-    public VersionAggregate readVersionAggregate(@NonNull VersionData version) throws RepoException {
+    @SneakyThrows
+    public VersionAggregate readVersionAggregate(@NonNull VersionData version) {
         var xmlInputStream = this.xmlDataStructureService.getElementInputStream(version.getElement().getId());
         this.xmlNodeParser.init(xmlInputStream, version.getElement().getElementClass().getName());
         var elementNode = this.xmlNodeParser.nextNode();

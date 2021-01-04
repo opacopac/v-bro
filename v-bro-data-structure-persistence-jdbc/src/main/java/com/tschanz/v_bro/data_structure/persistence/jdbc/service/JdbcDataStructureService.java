@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JdbcDataStructureService {
     @NonNull private final JdbcRepoMetadataServiceImpl repoMetadataService;
-    @Getter(lazy = true) private final List<AggregateStructure> aggregateStructures = this.readAggregateStructures();
+    @Getter private final List<AggregateStructure> aggregateStructures = new ArrayList<>();
 
 
     @SneakyThrows
-    private List<AggregateStructure> readAggregateStructures() {
+    public void readAggregateStructures() {
         List<String> unprocessedTableNames = this.getAllTableNames();
-        List<AggregateStructure> aggregateStructures = new ArrayList<>();
+        this.aggregateStructures.clear();
 
         // versioned aggregates
         for (var rel: this.repoMetadataService.getRepoRelationLut()) {
@@ -37,7 +37,7 @@ public class JdbcDataStructureService {
                 var versionTable = new VersionTable(this.repoMetadataService.readTableStructure(rel.getBwdClassName()));
                 unprocessedTableNames.remove(versionTable.getName());
                 var rootNode = this.getRootNodeAndTree(elementTable.getRepoTable(), versionTable.getRepoTable(), unprocessedTableNames);
-                aggregateStructures.add(new AggregateStructure(elementTable, versionTable, rootNode));
+                this.aggregateStructures.add(new AggregateStructure(elementTable, versionTable, rootNode));
             }
         }
 
@@ -47,11 +47,9 @@ public class JdbcDataStructureService {
             if (repoTable.findAllIdFields().size() == 1) {
                 var elementTable = new ElementTable(repoTable);
                 var rootNode = new AggregateStructureNode(elementTable.getRepoTable(), null, null);
-                aggregateStructures.add(new AggregateStructure(elementTable, null, rootNode));
+                this.aggregateStructures.add(new AggregateStructure(elementTable, null, rootNode));
             }
         }
-
-        return aggregateStructures;
     }
 
 

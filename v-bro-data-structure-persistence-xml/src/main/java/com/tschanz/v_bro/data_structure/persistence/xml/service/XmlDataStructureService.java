@@ -1,8 +1,6 @@
 package com.tschanz.v_bro.data_structure.persistence.xml.service;
 
-import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
-import com.tschanz.v_bro.repo.domain.service.RepoService;
 import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdElementPosInfo;
 import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdRefParser;
 import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdRefPosInfo;
@@ -10,6 +8,7 @@ import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlFieldInfo;
 import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlNodeInfo;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 import java.io.InputStream;
 import java.util.*;
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
-public class XmlDataStructureService implements RepoService {
+public class XmlDataStructureService {
     // TODO => config file
     public static final String ID_ATTRIBUTE_NAME = "id";
     public static final String ID_VALUE_PREFIX_1 = "idd__";
@@ -31,25 +30,6 @@ public class XmlDataStructureService implements RepoService {
     private Map<String, List<XmlIdRefPosInfo>> elementRefPositionMap;
 
 
-    @Override
-    public boolean isConnected() {
-        return this.xmlRepoService.isConnected();
-    }
-
-
-    @Override
-    public void connect(ConnectionParameters parameters) throws RepoException {
-        this.xmlRepoService.connect(parameters);
-        this.readElementLut();
-    }
-
-
-    @Override
-    public void disconnect() throws RepoException {
-        this.xmlRepoService.disconnect();
-    }
-
-
     public Map<String, XmlIdElementPosInfo> getElementLut() {
         return this.elementPositionMap;
     }
@@ -60,7 +40,8 @@ public class XmlDataStructureService implements RepoService {
     }
 
 
-    public XmlIdElementPosInfo getPosInfoByPos(int position) throws RepoException {
+    @SneakyThrows
+    public XmlIdElementPosInfo getPosInfoByPos(int position) {
         if (this.elementPositionList == null) {
             this.readElementLut();
         }
@@ -75,7 +56,8 @@ public class XmlDataStructureService implements RepoService {
     }
 
 
-    public InputStream getElementClassInputStream(String elementClassName) throws RepoException {
+    @SneakyThrows
+    public InputStream getElementClassInputStream(String elementClassName) {
         var elementLuts = this.getElementLut().values()
             .stream()
             .filter(element -> elementClassName.equals(element.getName()))
@@ -124,7 +106,7 @@ public class XmlDataStructureService implements RepoService {
     }
 
 
-    private void readElementLut() throws RepoException {
+    public void readElementLut() throws RepoException {
         var xmlFileStream = this.xmlRepoService.getNewXmlFileStream();
         var parser = new XmlIdRefParser(
             xmlFileStream,

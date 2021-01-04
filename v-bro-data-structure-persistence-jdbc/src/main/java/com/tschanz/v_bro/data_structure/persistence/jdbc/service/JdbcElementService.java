@@ -12,12 +12,12 @@ import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.*;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.RowFilter;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.RowFilterOperator;
-import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoDataService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataServiceImpl;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,22 +27,18 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class JdbcElementService implements ElementService {
-    private final JdbcRepoService repo;
     private final JdbcRepoMetadataService repoMetaData;
     private final JdbcRepoDataService repoData;
 
 
     @Override
+    @SneakyThrows
     public List<ElementData> queryElements(
         @NonNull ElementClass elementClass,
         @NonNull List<Denomination> denominationFields,
         @NonNull String query,
         int maxResults
-    ) throws RepoException {
-        if (!this.repo.isConnected()) {
-            throw new RepoException("Not connected to repo!");
-        }
-
+    ) {
         var elementTable = this.readElementTable(elementClass.getName());
         var versionTable = this.readVersionTable(elementTable);
         var allFields = this.getFields(elementTable, versionTable, denominationFields);
@@ -58,15 +54,12 @@ public class JdbcElementService implements ElementService {
     }
 
     @Override
+    @SneakyThrows
     public ElementData readElement(
         @NonNull ElementClass elementClass,
         @NonNull List<Denomination> denominationFields,
         @NonNull String elementId
-    ) throws RepoException {
-        if (!this.repo.isConnected()) {
-            throw new RepoException("Not connected to repo!");
-        }
-
+    ) {
         var elementTable = this.readElementTable(elementClass.getName());
         var versionTable = this.readVersionTable(elementTable);
         var allFields = this.getFields(elementTable, versionTable, denominationFields);
@@ -82,13 +75,15 @@ public class JdbcElementService implements ElementService {
     }
 
 
-    public ElementTable readElementTable(String elementClassName) throws RepoException {
+    @SneakyThrows
+    public ElementTable readElementTable(String elementClassName) {
         var table = this.repoMetaData.readTableStructure(elementClassName);
         return new ElementTable(table);
     }
 
 
-    public VersionTable readVersionTable(ElementTable elementTable) throws RepoException {
+    @SneakyThrows
+    public VersionTable readVersionTable(ElementTable elementTable) {
         var versionTableName = elementTable.getIncomingRelations()
             .stream()
             .filter(rel -> rel.getBwdFieldName().toUpperCase().equals(VersionTable.ELEMENT_ID_COLNAME)) // TODO: make more generic
@@ -106,7 +101,8 @@ public class JdbcElementService implements ElementService {
     }
 
 
-    public ElementRecord readElementRecord(ElementTable elementTable, long elementId, List<RepoField> fields) throws RepoException {
+    @SneakyThrows
+    public ElementRecord readElementRecord(ElementTable elementTable, long elementId, List<RepoField> fields) {
         var filter = new RowFilter(elementTable.getIdField(), RowFilterOperator.EQUALS, elementId);
 
         var records = this.repoData.readRepoTableRecords(elementTable.getRepoTable(), Collections.emptyList(), fields, List.of(filter), Collections.emptyList(), -1);

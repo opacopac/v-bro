@@ -10,7 +10,7 @@ import com.tschanz.v_bro.app.usecase.open_element_class.OpenElementClassUseCase;
 import com.tschanz.v_bro.app.usecase.read_element_classes.ReadElementClassesRequest;
 import com.tschanz.v_bro.app.usecase.read_element_classes.ReadElementClassesUseCase;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
-import com.tschanz.v_bro.repo.domain.service.RepoService;
+import com.tschanz.v_bro.repo.domain.service.RepoConnectionService;
 import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -22,7 +22,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class CloseRepoUseCaseImpl implements CloseRepoUseCase {
     private final MainState mainState;
-    private final RepoServiceProvider<RepoService> repoServiceProvider;
+    private final RepoServiceProvider<RepoConnectionService> repoServiceProvider;
     private final RepoPresenter repoPresenter;
     private final StatusPresenter statusPresenter;
     private final ReadElementClassesUseCase readElementClassesUc;

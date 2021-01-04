@@ -3,11 +3,10 @@ package com.tschanz.v_bro.data_structure.persistence.jdbc.service;
 import com.tschanz.v_bro.data_structure.domain.model.VersionAggregate;
 import com.tschanz.v_bro.data_structure.domain.model.VersionData;
 import com.tschanz.v_bro.data_structure.domain.service.VersionAggregateService;
-import com.tschanz.v_bro.data_structure.persistence.jdbc.model.AggregateDataNode;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.AggregateData;
+import com.tschanz.v_bro.data_structure.persistence.jdbc.model.AggregateDataNode;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.VersionRecord;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
-import com.tschanz.v_bro.repo.domain.service.RepoService;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.FieldValue;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoRelation;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
@@ -18,6 +17,7 @@ import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoDataService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class JdbcVersionAggregateService implements VersionAggregateService {
-    private final RepoService repo;
     private final JdbcRepoMetadataService repoMetaData;
     private final JdbcRepoDataService repoData;
     private final JdbcElementService elementService;
@@ -35,11 +34,7 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
 
 
     @Override
-    public VersionAggregate readVersionAggregate(@NonNull VersionData version) throws RepoException {
-        if (!this.repo.isConnected()) {
-            throw new RepoException("Not connected to repo!");
-        }
-
+    public VersionAggregate readVersionAggregate(@NonNull VersionData version) {
         var elementTable = this.elementService.readElementTable(version.getElement().getElementClass().getName());
         var versionTable = this.elementService.readVersionTable(elementTable);
 
@@ -56,7 +51,8 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
     }
 
 
-    private List<AggregateDataNode> readChildNodes(VersionRecord versionRecord) throws RepoException {
+    @SneakyThrows
+    private List<AggregateDataNode> readChildNodes(VersionRecord versionRecord) {
         List<AggregateDataNode> nodes = new ArrayList<>();
 
         var versionTable = versionRecord.getRecord().getRepoTable();

@@ -26,7 +26,7 @@ public class XmlDependencyService implements DependencyService {
         @NonNull LocalDate minGueltigVon,
         @NonNull LocalDate maxGueltigBis,
         @NonNull Pflegestatus minPflegestatus
-    ) throws RepoException {
+    ) {
         Map<String, XmlIdElementPosInfo> elementLutInfos = this.xmlDataStructureService.getElementLut();
         VersionAggregate versionAggregate = this.versionAggregateService.readVersionAggregate(version);
 
@@ -40,7 +40,7 @@ public class XmlDependencyService implements DependencyService {
         @NonNull LocalDate minGueltigVon,
         @NonNull LocalDate maxGueltigBis,
         @NonNull Pflegestatus minPflegestatus
-    ) throws RepoException {
+    ) {
         var bwdElementInfos = this.findBwdElementInfos(element.getId());
         List<Dependency> dependencies = new ArrayList<>();
         for (var bwdElementInfo: bwdElementInfos) {
@@ -55,7 +55,7 @@ public class XmlDependencyService implements DependencyService {
     }
 
 
-    private List<XmlIdElementPosInfo> findBwdElementInfos(String elementId) throws RepoException {
+    private List<XmlIdElementPosInfo> findBwdElementInfos(String elementId) {
         var elementRefLut = this.xmlDataStructureService.getElementRefLut();
         if (elementRefLut.containsKey(elementId)) {
             var bwdRefs = elementRefLut.get(elementId);
@@ -77,7 +77,7 @@ public class XmlDependencyService implements DependencyService {
         LocalDate minGueltigVon,
         LocalDate maxGueltigBis,
         Pflegestatus minPflegestatus
-    ) throws RepoException {
+    ) {
         List<Dependency> fwdDependencies = new ArrayList<>();
 
         List<XmlIdElementPosInfo> fwdElements = aggregateNode.getFieldValues()

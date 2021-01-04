@@ -1,11 +1,11 @@
 package com.tschanz.v_bro.repo.persistence.mock.service;
 
 import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
-import com.tschanz.v_bro.repo.domain.service.RepoService;
+import com.tschanz.v_bro.repo.domain.service.RepoConnectionService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 
 
-public class MockRepoService2 implements RepoService {
+public class MockRepoConnectionService implements RepoConnectionService {
     private boolean isConnected = false;
 
 

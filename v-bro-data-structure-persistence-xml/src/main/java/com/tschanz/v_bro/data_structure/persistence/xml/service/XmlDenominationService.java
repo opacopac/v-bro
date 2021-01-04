@@ -9,6 +9,7 @@ import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlNodeInfo;
 import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlNodeParser;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,7 +23,7 @@ public class XmlDenominationService implements DenominationService {
 
 
     @Override
-    public List<Denomination> readDenominations(@NonNull ElementClass elementClass) throws RepoException {
+    public List<Denomination> readDenominations(@NonNull ElementClass elementClass) {
         var elementNode = this.getFirstElement(elementClass.getName());
         var elementDenominations = this.getElementDenominations(elementNode);
         var versionDenominations = this.getVersionDenominations(elementNode);
@@ -34,7 +35,8 @@ public class XmlDenominationService implements DenominationService {
 
 
     // TODO: better: merge all and create set
-    private XmlNodeInfo getFirstElement(String elementClassName) throws RepoException {
+    @SneakyThrows
+    private XmlNodeInfo getFirstElement(String elementClassName) {
         var elementLutInfo = this.xmlDataStructureService.getElementLut().values()
             .stream()
             .filter(element -> elementClassName.equals(element.getName()))
