@@ -1,4 +1,4 @@
-package com.tschanz.v_bro.repo.domain.service;
+package com.tschanz.v_bro.app.service;
 
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.domain.model.RepoType;

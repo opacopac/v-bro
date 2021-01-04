@@ -27,8 +27,8 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class JdbcElementService implements ElementService {
-    private final JdbcRepoMetadataService repoMetaData;
-    private final JdbcRepoDataService repoData;
+    private final JdbcRepoMetadataService repoMetadataService;
+    private final JdbcRepoDataService repoDataService;
 
 
     @Override
@@ -44,7 +44,7 @@ public class JdbcElementService implements ElementService {
         var allFields = this.getFields(elementTable, versionTable, denominationFields);
         var optFilter = this.getQueryFilter(allFields, query);
         var joins = this.getTableJoins(elementTable, versionTable);
-        var rows = this.repoData.readRepoTableRecords(elementTable.getRepoTable(), joins, allFields, Collections.emptyList(), optFilter, maxResults);
+        var rows = this.repoDataService.readRepoTableRecords(elementTable.getRepoTable(), joins, allFields, Collections.emptyList(), optFilter, maxResults);
 
         return rows
             .stream()
@@ -65,7 +65,7 @@ public class JdbcElementService implements ElementService {
         var allFields = this.getFields(elementTable, versionTable, denominationFields);
         var andFilter = this.getElementIdFilter(elementTable.getIdField(), elementId);
         var joins = this.getTableJoins(elementTable, versionTable);
-        var rows = this.repoData.readRepoTableRecords(elementTable.getRepoTable(), joins, allFields, andFilter, Collections.emptyList(), -1);
+        var rows = this.repoDataService.readRepoTableRecords(elementTable.getRepoTable(), joins, allFields, andFilter, Collections.emptyList(), -1);
 
         if (rows.size() > 0) {
             return this.getElementFromRow(rows.get(0), elementClass);
@@ -77,7 +77,7 @@ public class JdbcElementService implements ElementService {
 
     @SneakyThrows
     public ElementTable readElementTable(String elementClassName) {
-        var table = this.repoMetaData.readTableStructure(elementClassName);
+        var table = this.repoMetadataService.readTableStructure(elementClassName);
         return new ElementTable(table);
     }
 
@@ -95,7 +95,7 @@ public class JdbcElementService implements ElementService {
         if (versionTableName == null) {
             return null;
         } else {
-            var table = this.repoMetaData.readTableStructure(versionTableName);
+            var table = this.repoMetadataService.readTableStructure(versionTableName);
             return new VersionTable(table);
         }
     }
@@ -105,7 +105,7 @@ public class JdbcElementService implements ElementService {
     public ElementRecord readElementRecord(ElementTable elementTable, long elementId, List<RepoField> fields) {
         var filter = new RowFilter(elementTable.getIdField(), RowFilterOperator.EQUALS, elementId);
 
-        var records = this.repoData.readRepoTableRecords(elementTable.getRepoTable(), Collections.emptyList(), fields, List.of(filter), Collections.emptyList(), -1);
+        var records = this.repoDataService.readRepoTableRecords(elementTable.getRepoTable(), Collections.emptyList(), fields, List.of(filter), Collections.emptyList(), -1);
         if (records.size() != 1) {
             throw new IllegalArgumentException("multiple records for same id");
         }

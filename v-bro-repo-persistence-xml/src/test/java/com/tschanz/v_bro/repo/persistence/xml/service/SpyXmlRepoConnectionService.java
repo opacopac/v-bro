@@ -8,7 +8,7 @@ import com.tschanz.v_bro.repo.domain.model.RepoException;
 import java.io.InputStream;
 
 
-public class SpyXmlRepoService extends XmlRepoService {
+public class SpyXmlRepoConnectionService extends XmlRepoConnectionService {
     public SpyHelper<RepoException> spyHelper = new SpyHelper<>();
     public SpyReturnValue<Boolean> isConnectedResult = new SpyReturnValue<>("isConnected");
     public SpyReturnValue<InputStream> getNewXmlFileStreamResult = new SpyReturnValue<>("getNewXmlFileStream");

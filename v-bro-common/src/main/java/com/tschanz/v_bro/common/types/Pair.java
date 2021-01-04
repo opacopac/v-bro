@@ -1,4 +1,4 @@
-package com.tschanz.v_bro.common;
+package com.tschanz.v_bro.common.types;
 
 import lombok.RequiredArgsConstructor;
 

@@ -3,7 +3,7 @@ package com.tschanz.v_bro.app.usecase.query_elements;
 import com.tschanz.v_bro.app.state.MainState;
 import com.tschanz.v_bro.data_structure.domain.service.ElementService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
-import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
+import com.tschanz.v_bro.app.service.RepoServiceProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 

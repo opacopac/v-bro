@@ -25,15 +25,15 @@ import com.tschanz.v_bro.data_structure.persistence.jdbc.service.*;
 import com.tschanz.v_bro.data_structure.persistence.mock.service.*;
 import com.tschanz.v_bro.data_structure.persistence.xml.service.*;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
-import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
+import com.tschanz.v_bro.app.service.RepoServiceProvider;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.JdbcQueryBuilderImpl;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcConnectionFactoryImpl;
-import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
+import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoConnectionService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoDataService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataServiceImpl;
 import com.tschanz.v_bro.repo.persistence.mock.service.MockRepoConnectionService;
 import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlNodeParser;
-import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
+import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoConnectionService;
 import lombok.SneakyThrows;
 
 import javax.xml.stream.XMLInputFactory;
@@ -51,24 +51,24 @@ public class Main {
         // persistence jdbc
         Class.forName("oracle.jdbc.OracleDriver");
         var jdbcConnectionFactory = new JdbcConnectionFactoryImpl();
-        var jdbcRepo = new JdbcRepoService(jdbcConnectionFactory);
-        var jdbcRepoMetadata = new JdbcRepoMetadataServiceImpl(jdbcConnectionFactory);
+        var jdbcRepoConnectionService = new JdbcRepoConnectionService(jdbcConnectionFactory);
+        var jdbcRepoMetadataService = new JdbcRepoMetadataServiceImpl(jdbcConnectionFactory);
         var jdbcQueryBuilder = new JdbcQueryBuilderImpl(jdbcConnectionFactory);
         var jdbcRepoDataService = new JdbcRepoDataService(jdbcConnectionFactory, jdbcQueryBuilder);
-        var jdbcDataStructureService = new JdbcDataStructureService(jdbcRepoMetadata);
-        var jdbcRepoConnectionService = new JdbcRepoConnectionService(jdbcRepo, jdbcDataStructureService);
-        var jdbcElementClassService = new JdbcElementClassService(jdbcRepoMetadata);
-        var jdbcElementService = new JdbcElementService(jdbcRepoMetadata, jdbcRepoDataService);
-        var jdbcVersionService = new JdbcVersionService(jdbcRepo, jdbcRepoDataService, jdbcElementService);
+        var jdbcDataStructureService = new JdbcDataStructureService(jdbcRepoMetadataService);
+        var jdbcRepoConnectionServiceWrapper = new JdbcRepoConnectionServiceWrapper(jdbcRepoConnectionService, jdbcDataStructureService);
+        var jdbcElementClassService = new JdbcElementClassService(jdbcRepoMetadataService);
+        var jdbcElementService = new JdbcElementService(jdbcRepoMetadataService, jdbcRepoDataService);
+        var jdbcVersionService = new JdbcVersionService(jdbcRepoDataService, jdbcElementService);
         var jdbcDenominationService = new JdbcDenominationService(jdbcElementService);
-        var jdbcVersionAggregateService = new JdbcVersionAggregateService(jdbcRepoMetadata, jdbcRepoDataService, jdbcElementService, jdbcVersionService);
+        var jdbcVersionAggregateService = new JdbcVersionAggregateService(jdbcRepoMetadataService, jdbcRepoDataService, jdbcElementService, jdbcVersionService);
         var jdbcVersionAggregateServiceCache = new JdbcVersionAggregateServiceCache(jdbcVersionAggregateService, new LastNCache<>(10));
-        var jdbcDependencyService = new JdbcDependencyService(jdbcRepoMetadata, jdbcRepoDataService, jdbcDataStructureService, jdbcElementService, jdbcVersionService, jdbcVersionAggregateServiceCache);
+        var jdbcDependencyService = new JdbcDependencyService(jdbcRepoMetadataService, jdbcRepoDataService, jdbcDataStructureService, jdbcElementService, jdbcVersionService, jdbcVersionAggregateServiceCache);
 
         // persistence xml
-        var xmlRepoService = new XmlRepoService();
-        var xmlDataStructureService = new XmlDataStructureService(xmlRepoService);
-        var xmlRepoConnectionService = new XmlRepoConnectionService(xmlRepoService, xmlDataStructureService);
+        var xmlRepoConnectionService = new XmlRepoConnectionService();
+        var xmlDataStructureService = new XmlDataStructureService(xmlRepoConnectionService);
+        var xmlRepoConnectionServiceWrapper = new XmlRepoConnectionServiceWrapper(xmlRepoConnectionService, xmlDataStructureService);
         var xmlInputFactory = XMLInputFactory.newInstance();
         var xmlNodeParser = new XmlNodeParser(xmlInputFactory);
         var xmlElementClassService = new XmlElementClassService(xmlDataStructureService);
@@ -88,7 +88,7 @@ public class Main {
         var mockDependencyService = new MockDependencyService();
 
         // persistence service providers
-        var repoConnectionServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcRepoConnectionService, RepoType.XML, xmlRepoConnectionService, RepoType.MOCK, mockRepo);
+        var repoConnectionServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcRepoConnectionServiceWrapper, RepoType.XML, xmlRepoConnectionServiceWrapper, RepoType.MOCK, mockRepo);
         var elementClassServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcElementClassService, RepoType.XML, xmlElementClassService, RepoType.MOCK, mockElementClassService);
         var elementServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcElementService, RepoType.XML, xmlElementService, RepoType.MOCK, mockElementService);
         var versionServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcVersionService, RepoType.XML, xmlVersionService, RepoType.MOCK, mockVersionDataService);

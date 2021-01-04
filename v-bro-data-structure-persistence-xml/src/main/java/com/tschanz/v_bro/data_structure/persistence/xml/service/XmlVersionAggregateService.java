@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.data_structure.persistence.xml.service;
 
-import com.tschanz.v_bro.common.KeyValue;
+import com.tschanz.v_bro.common.types.KeyValue;
 import com.tschanz.v_bro.data_structure.domain.model.AggregateNode;
 import com.tschanz.v_bro.data_structure.domain.model.VersionAggregate;
 import com.tschanz.v_bro.data_structure.domain.model.VersionData;

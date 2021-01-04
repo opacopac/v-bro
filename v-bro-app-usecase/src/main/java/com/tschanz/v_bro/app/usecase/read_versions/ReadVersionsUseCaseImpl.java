@@ -11,7 +11,7 @@ import com.tschanz.v_bro.common.selected_list.SelectedList;
 import com.tschanz.v_bro.data_structure.domain.model.VersionData;
 import com.tschanz.v_bro.data_structure.domain.service.VersionService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
-import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
+import com.tschanz.v_bro.app.service.RepoServiceProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 

@@ -27,8 +27,8 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class JdbcVersionAggregateService implements VersionAggregateService {
-    private final JdbcRepoMetadataService repoMetaData;
-    private final JdbcRepoDataService repoData;
+    private final JdbcRepoMetadataService repoMetadataService;
+    private final JdbcRepoDataService repoDataService;
     private final JdbcElementService elementService;
     private final JdbcVersionService versionService;
 
@@ -59,7 +59,7 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
         for (var relation: versionTable.getIncomingRelations()) {
             var ownField = versionTable.findField(relation.getFwdFieldName());
             var ownFieldValue = versionRecord.getRecord().findFieldValue(ownField.getName()).getValue();
-            var childRepoTable = this.repoMetaData.readTableStructure(relation.getBwdClassName());
+            var childRepoTable = this.repoMetadataService.readTableStructure(relation.getBwdClassName());
             var childField = childRepoTable.findField(relation.getBwdFieldName());
             var childFilter = new RowFilter(childField, RowFilterOperator.EQUALS, ownFieldValue);
 
@@ -72,7 +72,7 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
 
 
     private List<AggregateDataNode> readNode(RepoTable table, RowFilter filter) throws RepoException {
-        List<RepoTableRecord> records = this.repoData.readRepoTableRecords(table, Collections.emptyList(), table.getFields(), List.of(filter), Collections.emptyList(), -1);
+        List<RepoTableRecord> records = this.repoDataService.readRepoTableRecords(table, Collections.emptyList(), table.getFields(), List.of(filter), Collections.emptyList(), -1);
         if (records.size() == 0) {
             return Collections.emptyList();
         }
@@ -86,7 +86,7 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
                 .map(record -> record.findFieldValue(ownField.getName()))
                 .map(FieldValue::getValue)
                 .collect(Collectors.toList());
-            var childRepoTable = this.repoMetaData.readTableStructure(relation.getBwdClassName());
+            var childRepoTable = this.repoMetadataService.readTableStructure(relation.getBwdClassName());
             var childField = childRepoTable.findField(relation.getBwdFieldName());
             var childFilter = new RowFilter(childField, ownFieldValues);
 

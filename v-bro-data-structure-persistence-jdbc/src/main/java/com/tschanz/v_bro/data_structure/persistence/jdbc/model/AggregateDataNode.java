@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.data_structure.persistence.jdbc.model;
 
-import com.tschanz.v_bro.common.KeyValue;
+import com.tschanz.v_bro.common.types.KeyValue;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTableRecord;
 import com.tschanz.v_bro.data_structure.domain.model.AggregateNode;
 import lombok.Getter;

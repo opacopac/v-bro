@@ -8,7 +8,7 @@ import com.tschanz.v_bro.app.state.MainState;
 import com.tschanz.v_bro.data_structure.domain.model.Dependency;
 import com.tschanz.v_bro.data_structure.domain.service.DependencyService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
-import com.tschanz.v_bro.repo.domain.service.RepoServiceProvider;
+import com.tschanz.v_bro.app.service.RepoServiceProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 

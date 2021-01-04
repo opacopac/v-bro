@@ -10,7 +10,6 @@ import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoField;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTableRecord;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.RowFilter;
 import com.tschanz.v_bro.repo.persistence.jdbc.querybuilder.RowFilterOperator;
-import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcRepoService;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_data.JdbcRepoDataService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +23,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class JdbcVersionService implements VersionService {
-    @NonNull private final JdbcRepoService repo;
-    @NonNull private final JdbcRepoDataService repoData;
+    @NonNull private final JdbcRepoDataService repoDataService;
     @NonNull private final JdbcElementService elementService;
 
 
@@ -44,7 +42,7 @@ public class JdbcVersionService implements VersionService {
             return List.of(VersionData.createEternal(element));
         }
 
-        var versionRecords = this.repoData.readRepoTableRecords(
+        var versionRecords = this.repoDataService.readRepoTableRecords(
             versionTable.getRepoTable(),
             Collections.emptyList(),
             List.of(versionTable.getIdField(), versionTable.getGueltigVonField(), versionTable.getGueltigBisField(), versionTable.getPflegestatusField()),
@@ -79,7 +77,7 @@ public class JdbcVersionService implements VersionService {
     public VersionRecord readVersionRecord(VersionTable versionTable, long versionId, List<RepoField> fields) {
         var filter = new RowFilter(versionTable.getIdField(), RowFilterOperator.EQUALS, versionId);
 
-        List<RepoTableRecord> records = this.repoData.readRepoTableRecords(versionTable.getRepoTable(), Collections.emptyList(), fields, List.of(filter), Collections.emptyList(), -1);
+        List<RepoTableRecord> records = this.repoDataService.readRepoTableRecords(versionTable.getRepoTable(), Collections.emptyList(), fields, List.of(filter), Collections.emptyList(), -1);
         if (records.size() != 1) {
             throw new IllegalArgumentException("multiple records for same id");
         }

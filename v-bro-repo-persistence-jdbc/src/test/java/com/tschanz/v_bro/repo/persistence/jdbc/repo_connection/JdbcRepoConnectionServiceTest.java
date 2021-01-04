@@ -11,15 +11,15 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-class JdbcRepoServiceTest {
+class JdbcRepoConnectionServiceTest {
     private SpyConnectionFactory spyConnectionFactory;
-    private JdbcRepoService jdbcRepo;
+    private JdbcRepoConnectionService jdbcRepo;
 
 
     @BeforeEach
     void setUp() {
         this.spyConnectionFactory = new SpyConnectionFactory(false);
-        this.jdbcRepo = new JdbcRepoService(spyConnectionFactory);
+        this.jdbcRepo = new JdbcRepoConnectionService(spyConnectionFactory);
     }
 
 

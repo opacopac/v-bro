@@ -6,7 +6,7 @@ import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdRefParser;
 import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdRefPosInfo;
 import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlFieldInfo;
 import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlNodeInfo;
-import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoService;
+import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoConnectionService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -24,7 +24,7 @@ public class XmlDataStructureService {
     public static final String VERSION_NODE_NAME = "version";
     public static final String VERSION_VON_ATTRIBUTE_NAME = "gueltigVon";
     public static final String VERSION_BIS_ATTRIBUTE_NAME = "gueltigBis";
-    private final XmlRepoService xmlRepoService;
+    private final XmlRepoConnectionService xmlRepoConnectionService;
     private List<XmlIdElementPosInfo> elementPositionList;
     private Map<String, XmlIdElementPosInfo> elementPositionMap;
     private Map<String, List<XmlIdRefPosInfo>> elementRefPositionMap;
@@ -64,7 +64,7 @@ public class XmlDataStructureService {
             .sorted(Comparator.comparingInt(XmlIdElementPosInfo::getStartBytePos))
             .collect(Collectors.toList());
 
-        return this.xmlRepoService.getNewXmlFileStream(elementLuts.get(0).getStartBytePos(), elementLuts.get(elementLuts.size() - 1).getEndBytePos());
+        return this.xmlRepoConnectionService.getNewXmlFileStream(elementLuts.get(0).getStartBytePos(), elementLuts.get(elementLuts.size() - 1).getEndBytePos());
     }
 
 
@@ -74,7 +74,7 @@ public class XmlDataStructureService {
             throw new IllegalArgumentException(String.format("element id '%s' not found in xml lookup table", elementId));
         }
 
-        return this.xmlRepoService.getNewXmlFileStream(elementLutInfo.getStartBytePos(), elementLutInfo.getEndBytePos());
+        return this.xmlRepoConnectionService.getNewXmlFileStream(elementLutInfo.getStartBytePos(), elementLutInfo.getEndBytePos());
     }
 
 
@@ -107,7 +107,7 @@ public class XmlDataStructureService {
 
 
     public void readElementLut() throws RepoException {
-        var xmlFileStream = this.xmlRepoService.getNewXmlFileStream();
+        var xmlFileStream = this.xmlRepoConnectionService.getNewXmlFileStream();
         var parser = new XmlIdRefParser(
             xmlFileStream,
             ID_ATTRIBUTE_NAME,

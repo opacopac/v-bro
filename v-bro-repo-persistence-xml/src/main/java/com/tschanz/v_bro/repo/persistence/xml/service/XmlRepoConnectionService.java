@@ -2,12 +2,13 @@ package com.tschanz.v_bro.repo.persistence.xml.service;
 
 import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
+import com.tschanz.v_bro.repo.domain.service.RepoConnectionService;
 import com.tschanz.v_bro.repo.persistence.xml.model.XmlConnectionParameters;
 
 import java.io.*;
 
 
-public class XmlRepoService {
+public class XmlRepoConnectionService implements RepoConnectionService {
     // TODO: temp => read from xml real file
     private static final String XML_PREAMBLE = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>";
     private static final String ROOT_NODE_START = "<ns2:datenrelease xmlns:ns2=\"ch.voev.nova.pflege.common.exporter.datenrelease\" xmlns:ns3=\"ch.voev.nova.pflege.common.exporter.datenrelease.tarifcommons\" xmlns:ns4=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ns5=\"ch.voev.nova.pflege.common.exporter.datenrelease.dvmodell\" xmlns:ns6=\"ch.voev.nova.pflege.common.exporter.datenrelease.netz\" id=\"D555.0\">";
@@ -16,11 +17,13 @@ public class XmlRepoService {
     private XmlConnectionParameters connectionParameters;
 
 
+    @Override
     public boolean isConnected() {
         return this.connectionParameters != null;
     }
 
 
+    @Override
     public void connect(ConnectionParameters parameters) throws RepoException {
         if (parameters.getClass() != XmlConnectionParameters.class) {
             throw new RepoException("Only parameters of type XmlConnectionParameters allowed for XML repos!");
@@ -34,6 +37,7 @@ public class XmlRepoService {
     }
 
 
+    @Override
     public void disconnect() throws RepoException {
         this.assertRepoIsConnected();
 

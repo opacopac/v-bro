@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.mock;
 
-import com.tschanz.v_bro.common.KeyValue;
+import com.tschanz.v_bro.common.types.KeyValue;
 
 import java.util.Arrays;
 import java.util.List;

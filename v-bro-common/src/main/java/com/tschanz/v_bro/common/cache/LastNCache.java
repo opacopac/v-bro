@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.common.cache;
 
-import com.tschanz.v_bro.common.Pair;
+import com.tschanz.v_bro.common.types.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
