@@ -23,7 +23,7 @@ public class SelectDependencyFilterUseCaseImpl implements SelectDependencyFilter
 
         var msgStart = String.format("UC: selecting %s dependency filter...", fwdBwdText);
         log.info(msgStart);
-        var statusResponse1 = new StatusResponse(msgStart, false, true);
+        var statusResponse1 = new StatusResponse(msgStart, false, false);
         this.statusPresenter.present(statusResponse1);
 
         this.mainState.getDependencyState().setFwdDependencies(request.isFwd());
