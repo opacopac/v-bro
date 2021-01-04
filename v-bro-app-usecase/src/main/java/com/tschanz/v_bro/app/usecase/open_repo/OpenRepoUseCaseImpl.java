@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.usecase.open_repo;
 
-import com.tschanz.v_bro.app.presenter.repo.RepoPresenter;
-import com.tschanz.v_bro.app.presenter.repo.RepoResponse;
+import com.tschanz.v_bro.app.presenter.repo_connection.RepoConnectionPresenter;
+import com.tschanz.v_bro.app.presenter.repo_connection.RepoResponse;
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusResponse;
 import com.tschanz.v_bro.app.state.MainState;
@@ -21,7 +21,7 @@ import lombok.extern.java.Log;
 public class OpenRepoUseCaseImpl implements OpenRepoUseCase {
     private final MainState mainState;
     private final RepoServiceProvider<RepoConnectionService> repoServiceProvider;
-    private final RepoPresenter repoPresenter;
+    private final RepoConnectionPresenter repoConnectionPresenter;
     private final StatusPresenter statusPresenter;
     private final ReadElementClassesUseCase readElementClassesUc;
     private final OpenElementClassUseCase openElementClassUc;
@@ -48,7 +48,7 @@ public class OpenRepoUseCaseImpl implements OpenRepoUseCase {
             this.statusPresenter.present(statusResponse2);
 
             var response = RepoResponse.fromDomain(connectionParameters);
-            this.repoPresenter.present(response);
+            this.repoConnectionPresenter.present(response);
         } catch (RepoException exception) {
             var message = "error connecting to repo: " + exception.getMessage();
             log.severe(message);

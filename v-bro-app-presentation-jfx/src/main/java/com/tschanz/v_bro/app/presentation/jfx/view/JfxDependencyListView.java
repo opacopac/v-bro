@@ -2,7 +2,7 @@ package com.tschanz.v_bro.app.presentation.jfx.view;
 
 import com.tschanz.v_bro.app.presentation.controller.DependencyListController;
 import com.tschanz.v_bro.app.presentation.view.DependencyListView;
-import com.tschanz.v_bro.app.presentation.viewmodel.dependency.FwdDependencyItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.dependency.DependencyItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.version.VersionFilterItem;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;
 import javafx.fxml.FXML;
@@ -23,7 +23,7 @@ public class JfxDependencyListView implements DependencyListView {
 
     @Override
     public void bindViewModel(
-        Flow.Publisher<List<FwdDependencyItem>> fwdDependencyList,
+        Flow.Publisher<List<DependencyItem>> fwdDependencyList,
         Flow.Publisher<VersionFilterItem> versionFilter,
         DependencyListController dependencyListController
     ) {
@@ -34,11 +34,11 @@ public class JfxDependencyListView implements DependencyListView {
 
 
     @SneakyThrows
-    private void onFwdDependenciesChanged(List<FwdDependencyItem> fwdDependencyList) {
+    private void onFwdDependenciesChanged(List<DependencyItem> fwdDependencyList) {
         this.depListVBox.getChildren().clear();
 
         if (fwdDependencyList != null) {
-            for (FwdDependencyItem dependency : fwdDependencyList) {
+            for (DependencyItem dependency : fwdDependencyList) {
                 var viewUrl = getClass().getClassLoader().getResource("DependencyListEntryView.fxml");
                 var fxmlLoader = new FXMLLoader(viewUrl);
                 Node node = fxmlLoader.load();

@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.usecase.close_repo;
 
-import com.tschanz.v_bro.app.presenter.repo.RepoPresenter;
-import com.tschanz.v_bro.app.presenter.repo.RepoResponse;
+import com.tschanz.v_bro.app.presenter.repo_connection.RepoConnectionPresenter;
+import com.tschanz.v_bro.app.presenter.repo_connection.RepoResponse;
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusResponse;
 import com.tschanz.v_bro.app.state.MainState;
@@ -23,7 +23,7 @@ import java.util.Objects;
 public class CloseRepoUseCaseImpl implements CloseRepoUseCase {
     private final MainState mainState;
     private final RepoServiceProvider<RepoConnectionService> repoServiceProvider;
-    private final RepoPresenter repoPresenter;
+    private final RepoConnectionPresenter repoConnectionPresenter;
     private final StatusPresenter statusPresenter;
     private final ReadElementClassesUseCase readElementClassesUc;
     private final OpenElementClassUseCase openElementClassUc;
@@ -51,7 +51,7 @@ public class CloseRepoUseCaseImpl implements CloseRepoUseCase {
             this.statusPresenter.present(statusResponse2);
 
             var repoResponse = RepoResponse.fromDomain(null);
-            this.repoPresenter.present(repoResponse);
+            this.repoConnectionPresenter.present(repoResponse);
         } catch (RepoException exception) {
             var message = String.format("error disconnecting from repo: %s", exception.getMessage());
             log.severe(message);

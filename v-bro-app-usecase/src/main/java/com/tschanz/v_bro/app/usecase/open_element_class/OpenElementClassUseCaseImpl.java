@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.usecase.open_element_class;
 
-import com.tschanz.v_bro.app.presenter.element_class_list.ElementClassListPresenter;
-import com.tschanz.v_bro.app.presenter.element_class_list.ElementClassListResponse;
+import com.tschanz.v_bro.app.presenter.element_class.ElementClassPresenter;
+import com.tschanz.v_bro.app.presenter.element_class.ElementClassResponse;
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusResponse;
 import com.tschanz.v_bro.app.state.MainState;
@@ -27,7 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OpenElementClassUseCaseImpl implements OpenElementClassUseCase {
     private final MainState mainState;
-    private final ElementClassListPresenter elementClassListPresenter;
+    private final ElementClassPresenter elementClassPresenter;
     private final ReadDenominationUseCase readDenominationUc;
     private final SelectDenominationsUseCase selectDenominationsUc;
     private final QueryElementsUseCase queryElementsUc;
@@ -54,8 +54,8 @@ public class OpenElementClassUseCaseImpl implements OpenElementClassUseCase {
             var newElementClassList = new SelectedList<>(oldElementClassList.getItems(), selectedElementClass);
             this.mainState.getElementClassState().setElementClasses(newElementClassList);
 
-            var response = ElementClassListResponse.fromDomain(newElementClassList);
-            this.elementClassListPresenter.present(response);
+            var response = ElementClassResponse.fromDomain(newElementClassList);
+            this.elementClassPresenter.present(response);
         } else {
             log.info("UC clearing element classes");
 

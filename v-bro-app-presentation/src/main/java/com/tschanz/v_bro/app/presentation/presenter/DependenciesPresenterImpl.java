@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.presentation.presenter;
 
-import com.tschanz.v_bro.app.presentation.viewmodel.dependency.FwdDependencyItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.dependency.DependencyItem;
 import com.tschanz.v_bro.app.presenter.dependencies.DependencyListResponse;
 import com.tschanz.v_bro.app.presenter.dependencies.DependencyPresenter;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
@@ -12,12 +12,12 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class DependenciesPresenterImpl implements DependencyPresenter {
-    public final BehaviorSubject<List<FwdDependencyItem>> fwdDependencies;
+    public final BehaviorSubject<List<DependencyItem>> fwdDependencies;
 
 
     @Override
     public void present(@NonNull DependencyListResponse response) {
-        var elements = FwdDependencyItem.fromResponse(response);
+        var elements = DependencyItem.fromResponse(response);
 
         this.fwdDependencies.next(elements);
     }

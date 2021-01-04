@@ -58,6 +58,7 @@ public class Main {
         var jdbcDataStructureService = new JdbcDataStructureService(jdbcRepoMetadataService);
         var jdbcRepoConnectionServiceWrapper = new JdbcRepoConnectionServiceWrapper(jdbcRepoConnectionService, jdbcDataStructureService);
         var jdbcElementClassService = new JdbcElementClassService(jdbcRepoMetadataService);
+        var jdbcDependencyStructureService = new JdbcDependencyStructureService();
         var jdbcElementService = new JdbcElementService(jdbcRepoMetadataService, jdbcRepoDataService);
         var jdbcVersionService = new JdbcVersionService(jdbcRepoDataService, jdbcElementService);
         var jdbcDenominationService = new JdbcDenominationService(jdbcElementService);
@@ -72,6 +73,7 @@ public class Main {
         var xmlInputFactory = XMLInputFactory.newInstance();
         var xmlNodeParser = new XmlNodeParser(xmlInputFactory);
         var xmlElementClassService = new XmlElementClassService(xmlDataStructureService);
+        var xmlDependencyStructureService = new XmlDependencyStructureService();
         var xmlElementService = new XmlElementService(xmlDataStructureService, xmlNodeParser);
         var xmlVersionService = new XmlVersionService(xmlDataStructureService, xmlNodeParser);
         var xmlDenominationService = new XmlDenominationService(xmlDataStructureService, xmlNodeParser);
@@ -82,6 +84,7 @@ public class Main {
         var mockRepo = new MockRepoConnectionService();
         var mockElementService = new MockElementService();
         var mockElementClassService = new MockElementClassService();
+        var mockDependencyStructureService = new MockDependencyStructureService();
         var mockVersionDataService = new MockVersionService();
         var mockDenominationService = new MockDenominationService();
         var mockVersionAggregateService = new MockVersionAggregateService();
@@ -90,6 +93,7 @@ public class Main {
         // persistence service providers
         var repoConnectionServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcRepoConnectionServiceWrapper, RepoType.XML, xmlRepoConnectionServiceWrapper, RepoType.MOCK, mockRepo);
         var elementClassServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcElementClassService, RepoType.XML, xmlElementClassService, RepoType.MOCK, mockElementClassService);
+        var dependencyStructureServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcDependencyStructureService, RepoType.XML, xmlDependencyStructureService, RepoType.MOCK, mockDependencyStructureService);
         var elementServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcElementService, RepoType.XML, xmlElementService, RepoType.MOCK, mockElementService);
         var versionServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcVersionService, RepoType.XML, xmlVersionService, RepoType.MOCK, mockVersionDataService);
         var denominationServiceProvider = new RepoServiceProvider<>(RepoType.JDBC, jdbcDenominationService, RepoType.XML, xmlDenominationService, RepoType.MOCK, mockDenominationService);
@@ -112,10 +116,10 @@ public class Main {
         var openElementUc = new OpenElementUseCaseImpl(mainState, elementServiceProvider, mainPresenter.getElementPresenter(), readVersionsUc, mainPresenter.getStatusPresenter());
         var selectDenominationsUc = new SelectDenominationsUseCaseImpl(mainState, mainPresenter.getDenominationsPresenter());
         var readDenominationUc = new ReadDenominationUseCaseImpl(mainState, denominationServiceProvider, mainPresenter.getDenominationsPresenter(), mainPresenter.getStatusPresenter());
-        var openElementClassUc = new OpenElementClassUseCaseImpl(mainState, mainPresenter.getElementClassListPresenter(), readDenominationUc, selectDenominationsUc, queryElementsUc, openElementUc, mainPresenter.getStatusPresenter());
-        var readElementClassesUc = new ReadElementClassesUseCaseImpl(mainState, elementClassServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getElementClassListPresenter());
-        var openRepoUc = new OpenRepoUseCaseImpl(mainState, repoConnectionServiceProvider, mainPresenter.getRepoPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc);
-        var closeRepoUc = new CloseRepoUseCaseImpl(mainState, repoConnectionServiceProvider, mainPresenter.getRepoPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc);
+        var openElementClassUc = new OpenElementClassUseCaseImpl(mainState, mainPresenter.getElementClassPresenter(), readDenominationUc, selectDenominationsUc, queryElementsUc, openElementUc, mainPresenter.getStatusPresenter());
+        var readElementClassesUc = new ReadElementClassesUseCaseImpl(mainState, elementClassServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getElementClassPresenter());
+        var openRepoUc = new OpenRepoUseCaseImpl(mainState, repoConnectionServiceProvider, mainPresenter.getRepoConnectionPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc);
+        var closeRepoUc = new CloseRepoUseCaseImpl(mainState, repoConnectionServiceProvider, mainPresenter.getRepoConnectionPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc);
         var openDependencyVersionUc = new OpenDependencyVersionUseCaseImpl(openElementClassUc, openElementUc, openVersionUc, mainPresenter.getStatusPresenter());
 
         // presentation controller

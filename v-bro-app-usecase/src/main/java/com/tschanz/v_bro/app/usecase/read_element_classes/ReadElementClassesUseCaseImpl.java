@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.usecase.read_element_classes;
 
-import com.tschanz.v_bro.app.presenter.element_class_list.ElementClassListPresenter;
-import com.tschanz.v_bro.app.presenter.element_class_list.ElementClassListResponse;
+import com.tschanz.v_bro.app.presenter.element_class.ElementClassPresenter;
+import com.tschanz.v_bro.app.presenter.element_class.ElementClassResponse;
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusResponse;
 import com.tschanz.v_bro.app.state.MainState;
@@ -19,7 +19,7 @@ public class ReadElementClassesUseCaseImpl implements ReadElementClassesUseCase 
     private final MainState mainState;
     private final RepoServiceProvider<ElementClassService> elementClassServiceProvider;
     private final StatusPresenter statusPresenter;
-    private final ElementClassListPresenter elementClassListPresenter;
+    private final ElementClassPresenter elementClassPresenter;
 
 
     @Override
@@ -56,7 +56,7 @@ public class ReadElementClassesUseCaseImpl implements ReadElementClassesUseCase 
         }
 
         var elementClasses = this.mainState.getElementClassState().getElementClasses();
-        var elementClassListResponse = ElementClassListResponse.fromDomain(elementClasses);
-        this.elementClassListPresenter.present(elementClassListResponse);
+        var elementClassListResponse = ElementClassResponse.fromDomain(elementClasses);
+        this.elementClassPresenter.present(elementClassListResponse);
     }
 }

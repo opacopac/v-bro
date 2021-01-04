@@ -4,7 +4,7 @@ import com.tschanz.v_bro.app.presentation.viewmodel.common.MultiSelectableItemLi
 import com.tschanz.v_bro.app.presentation.viewmodel.common.SelectableItemList;
 import com.tschanz.v_bro.app.presentation.viewmodel.denominations.DenominationItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.dependency.DependencyFilterItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.dependency.FwdDependencyItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.dependency.DependencyItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.element.ElementItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.element_class.ElementClassItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.repo.QuickConnectionItem;
@@ -33,6 +33,6 @@ public class MainViewModel {
     public final BehaviorSubject<VersionFilterItem> versionFilter = new BehaviorSubject<>(new VersionFilterItem(LocalDate.of(2015, 1, 1), VersionData.HIGH_DATE, Pflegestatus.IN_ARBEIT));
     public final BehaviorSubject<VersionFilterItem> effectiveVersionFilter = new BehaviorSubject<>(new VersionFilterItem(LocalDate.of(2015, 1, 1), LocalDate.of(2025, 1, 1), Pflegestatus.IN_ARBEIT));
     public final BehaviorSubject<DependencyFilterItem> dependencyFilter = new BehaviorSubject<>(new DependencyFilterItem(true));
-    public final BehaviorSubject<List<FwdDependencyItem>> fwdDependencies = new BehaviorSubject<>(Collections.emptyList());
+    public final BehaviorSubject<List<DependencyItem>> fwdDependencies = new BehaviorSubject<>(Collections.emptyList());
     public final BehaviorSubject<VersionAggregateItem> versionAggregate = new BehaviorSubject<>(null);
 }

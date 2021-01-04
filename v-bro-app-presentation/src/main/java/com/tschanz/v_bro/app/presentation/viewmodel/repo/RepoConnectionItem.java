@@ -1,8 +1,8 @@
 package com.tschanz.v_bro.app.presentation.viewmodel.repo;
 
-import com.tschanz.v_bro.app.presenter.repo.JdbcConnectionResponse;
-import com.tschanz.v_bro.app.presenter.repo.RepoResponse;
-import com.tschanz.v_bro.app.presenter.repo.XmlConnectionResponse;
+import com.tschanz.v_bro.app.presenter.repo_connection.JdbcConnectionResponse;
+import com.tschanz.v_bro.app.presenter.repo_connection.RepoResponse;
+import com.tschanz.v_bro.app.presenter.repo_connection.XmlConnectionResponse;
 import com.tschanz.v_bro.app.usecase.open_repo.*;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
 import lombok.Getter;

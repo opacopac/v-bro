@@ -13,22 +13,22 @@ import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
-public class FwdDependencyItem {
+public class DependencyItem {
     private final String elementClass;
     private final String elementId;
     private final List<VersionItem> versions;
 
 
-    public static List<FwdDependencyItem> fromResponse(DependencyListResponse response) {
+    public static List<DependencyItem> fromResponse(DependencyListResponse response) {
         return response.getDependencyItems()
             .stream()
-            .map(FwdDependencyItem::fromResponse)
+            .map(DependencyItem::fromResponse)
             .collect(Collectors.toList());
     }
 
 
-    public static FwdDependencyItem fromResponse(DependencyResponse dependency) {
-        return new FwdDependencyItem(
+    public static DependencyItem fromResponse(DependencyResponse dependency) {
+        return new DependencyItem(
             dependency.getElementClass(),
             dependency.getElementId(),
             fromResponse(dependency.getVersions())

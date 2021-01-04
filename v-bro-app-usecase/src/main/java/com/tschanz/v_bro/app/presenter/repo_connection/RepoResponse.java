@@ -1,4 +1,4 @@
-package com.tschanz.v_bro.app.presenter.repo;
+package com.tschanz.v_bro.app.presenter.repo_connection;
 
 import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
 import lombok.Getter;

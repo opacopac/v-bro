@@ -5,8 +5,8 @@ import com.tschanz.v_bro.app.presentation.viewmodel.MainViewModel;
 import com.tschanz.v_bro.app.presenter.denominations.DenominationsPresenter;
 import com.tschanz.v_bro.app.presenter.dependencies.DependencyPresenter;
 import com.tschanz.v_bro.app.presenter.element.ElementPresenter;
-import com.tschanz.v_bro.app.presenter.element_class_list.ElementClassListPresenter;
-import com.tschanz.v_bro.app.presenter.repo.RepoPresenter;
+import com.tschanz.v_bro.app.presenter.element_class.ElementClassPresenter;
+import com.tschanz.v_bro.app.presenter.repo_connection.RepoConnectionPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.version_aggregate.VersionAggregatePresenter;
 import com.tschanz.v_bro.app.presenter.version_timeline.VersionTimelinePresenter;
@@ -16,8 +16,8 @@ import lombok.Getter;
 @Getter
 public class JfxMainPresenter extends MainPresenter {
     private final StatusPresenter statusPresenter;
-    private final RepoPresenter repoPresenter;
-    private final ElementClassListPresenter elementClassListPresenter;
+    private final RepoConnectionPresenter repoConnectionPresenter;
+    private final ElementClassPresenter elementClassPresenter;
     private final DenominationsPresenter denominationsPresenter;
     private final ElementPresenter elementPresenter;
     private final VersionTimelinePresenter versionTimelinePresenter;
@@ -29,8 +29,8 @@ public class JfxMainPresenter extends MainPresenter {
         super(mainViewModel);
 
         this.statusPresenter = new JfxStatusPresenter(mainViewModel.appStatus);
-        this.repoPresenter = new JfxRepoPresenter(mainViewModel.currentRepoConnection);
-        this.elementClassListPresenter = new JfxElementClassListPresenter(mainViewModel.elementClasses);
+        this.repoConnectionPresenter = new JfxRepoConnectionPresenter(mainViewModel.currentRepoConnection);
+        this.elementClassPresenter = new JfxElementClassPresenter(mainViewModel.elementClasses);
         this.denominationsPresenter = new JfxDenominationsPresenter(mainViewModel.elementDenominations);
         this.elementPresenter = new JfxElementPresenter(mainViewModel.currentElement);
         this.versionTimelinePresenter = new JfxVersionTimelinePresenter(mainViewModel.versions);

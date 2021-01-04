@@ -2,8 +2,8 @@ package com.tschanz.v_bro.app.presentation.viewmodel.element_class;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.common.IdItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.common.SelectableItemList;
-import com.tschanz.v_bro.app.presenter.element_class_list.ElementClassListResponse;
-import com.tschanz.v_bro.app.presenter.element_class_list.ElementClassResponse;
+import com.tschanz.v_bro.app.presenter.element_class.ElementClassResponse;
+import com.tschanz.v_bro.app.presenter.element_class.ElementClassResponseItem;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +16,7 @@ public class ElementClassItem implements IdItem {
     private final String name;
 
 
-    public static SelectableItemList<ElementClassItem> fromResponse(ElementClassListResponse response) {
+    public static SelectableItemList<ElementClassItem> fromResponse(ElementClassResponse response) {
         var elements = response.getSelectedElementList().getItems()
             .stream()
             .map(ElementClassItem::fromResponse)
@@ -29,8 +29,8 @@ public class ElementClassItem implements IdItem {
     }
 
 
-    public static ElementClassItem fromResponse(ElementClassResponse elementClassResponse) {
-        return new ElementClassItem(elementClassResponse.getName());
+    public static ElementClassItem fromResponse(ElementClassResponseItem elementClassResponseItem) {
+        return new ElementClassItem(elementClassResponseItem.getName());
     }
 
 
