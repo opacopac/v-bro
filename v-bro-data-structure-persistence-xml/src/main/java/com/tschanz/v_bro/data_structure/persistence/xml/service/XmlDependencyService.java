@@ -98,7 +98,7 @@ public class XmlDependencyService implements DependencyService {
                 continue;
             }
             var elementClass = new ElementClass(fwdElement.getElementClass());
-            var element = new ElementData(elementClass, fwdElement.getElementId(), Collections.emptyList());
+            var element = this.elementService.readElement(elementClass, denominations, fwdElement.getElementId());
             var versions = this.versionService.readVersions(element, minGueltigVon, maxGueltigBis, minPflegestatus);
             var fwdDependency = new Dependency(elementClass, element, versions);
             fwdDependencies.add(fwdDependency);

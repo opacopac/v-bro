@@ -63,7 +63,7 @@ public class OpenRepoUseCaseImpl implements OpenRepoUseCase {
         var selectClass = classes.size() > 0
             ? classes.get(0).getName()
             : null;
-        var openElementClassRequest = new OpenElementClassRequest(selectClass, true);
+        var openElementClassRequest = new OpenElementClassRequest(selectClass, true, true);
         this.openElementClassUc.execute(openElementClassRequest);
     }
 }

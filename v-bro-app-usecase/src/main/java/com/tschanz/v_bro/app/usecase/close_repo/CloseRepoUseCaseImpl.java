@@ -65,7 +65,7 @@ public class CloseRepoUseCaseImpl implements CloseRepoUseCase {
         var readElementClassesRequest = new ReadElementClassesRequest();
         this.readElementClassesUc.execute(readElementClassesRequest);
 
-        var openElementClassRequest = new OpenElementClassRequest(null, true);
+        var openElementClassRequest = new OpenElementClassRequest(null, true, true);
         this.openElementClassUc.execute(openElementClassRequest);
 
         var selectDependencyElementClassRequest = new SelectDependencyElementClassRequest(null);

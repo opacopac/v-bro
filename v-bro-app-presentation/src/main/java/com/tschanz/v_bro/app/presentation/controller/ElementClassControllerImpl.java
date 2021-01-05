@@ -16,7 +16,7 @@ public class ElementClassControllerImpl implements ElementClassController {
             return;
         }
 
-        var request = new OpenElementClassRequest(selectedElementClass, true);
+        var request = new OpenElementClassRequest(selectedElementClass, true, false);
         this.openElementClassUc.execute(request);
     }
 }

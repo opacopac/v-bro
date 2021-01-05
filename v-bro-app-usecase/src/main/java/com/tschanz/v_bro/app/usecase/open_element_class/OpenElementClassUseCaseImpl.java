@@ -60,8 +60,10 @@ public class OpenElementClassUseCaseImpl implements OpenElementClassUseCase {
             var newElementClassList = new SelectedList<>(oldElementClassList.getItems(), selectedElementClass);
             this.mainState.getElementClassState().setElementClasses(newElementClassList);
 
-            var response = ElementClassResponse.fromDomain(newElementClassList);
-            this.elementClassPresenter.present(response);
+            if (request.isPresentElementClass()) {
+                var response = ElementClassResponse.fromDomain(newElementClassList);
+                this.elementClassPresenter.present(response);
+            }
         } else {
             log.info("UC clearing element classes");
 

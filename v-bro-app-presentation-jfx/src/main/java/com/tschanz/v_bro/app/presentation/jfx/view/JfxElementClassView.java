@@ -1,6 +1,7 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
 import com.tschanz.v_bro.app.presentation.controller.ElementClassController;
+import com.tschanz.v_bro.app.presentation.jfx.controls.AutoCompleteComboBoxFixer;
 import com.tschanz.v_bro.app.presentation.view.ElementClassView;
 import com.tschanz.v_bro.app.presentation.viewmodel.common.SelectableItemList;
 import com.tschanz.v_bro.app.presentation.viewmodel.element_class.ElementClassItem;
@@ -34,6 +35,7 @@ public class JfxElementClassView implements ElementClassView, Initializable {
         this.suggestionProvider = SuggestionProvider.create(new ArrayList<>());
         this.suggestionProvider.setShowAllIfEmpty(true);
         new AutoCompletionTextFieldBinding<>(this.elementClassComboBox.getEditor(), this.suggestionProvider);
+        AutoCompleteComboBoxFixer.fix(this.elementClassComboBox, this.suggestionProvider);
     }
 
 
