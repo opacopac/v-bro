@@ -42,4 +42,24 @@ public class AggregateStructureNode {
             return null;
         }
     }
+
+
+    public List<RepoTable> getRepoTables() {
+        List<RepoTable> repoTables = new ArrayList<>();
+
+        repoTables.add(this.repoTable);
+        this.childNodes.forEach(node -> repoTables.addAll(node.getRepoTables()));
+
+        return repoTables;
+    }
+
+
+    public List<RepoRelation> getOutgoingRelations() {
+        List<RepoRelation> repoRelations = new ArrayList<>();
+        repoRelations.addAll(this.repoTable.getOutgoingRelations());
+
+        this.childNodes.forEach(node -> repoRelations.addAll(node.getOutgoingRelations()));
+
+        return repoRelations;
+    }
 }

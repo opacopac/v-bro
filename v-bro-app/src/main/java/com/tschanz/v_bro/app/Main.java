@@ -62,7 +62,7 @@ public class Main {
         var jdbcDataStructureService = new JdbcDataStructureService(jdbcRepoMetadataService);
         var jdbcRepoConnectionServiceWrapper = new JdbcRepoConnectionServiceWrapper(jdbcRepoConnectionService, jdbcDataStructureService);
         var jdbcElementClassService = new JdbcElementClassService(jdbcRepoMetadataService);
-        var jdbcDependencyStructureService = new JdbcDependencyStructureService();
+        var jdbcDependencyStructureService = new JdbcDependencyStructureService(jdbcDataStructureService);
         var jdbcElementService = new JdbcElementService(jdbcRepoMetadataService, jdbcRepoDataService);
         var jdbcVersionService = new JdbcVersionService(jdbcRepoDataService, jdbcElementService);
         var jdbcDenominationService = new JdbcDenominationService(jdbcElementService);
@@ -77,7 +77,7 @@ public class Main {
         var xmlInputFactory = XMLInputFactory.newInstance();
         var xmlNodeParser = new XmlNodeParser(xmlInputFactory);
         var xmlElementClassService = new XmlElementClassService(xmlDataStructureService);
-        var xmlDependencyStructureService = new XmlDependencyStructureService();
+        var xmlDependencyStructureService = new XmlDependencyStructureService(xmlDataStructureService);
         var xmlElementService = new XmlElementService(xmlDataStructureService, xmlNodeParser);
         var xmlVersionService = new XmlVersionService(xmlDataStructureService, xmlNodeParser);
         var xmlDenominationService = new XmlDenominationService(xmlDataStructureService, xmlNodeParser);
@@ -112,11 +112,11 @@ public class Main {
         var mainState = new MainState();
         var readVersionAggregateUc = new ReadVersionAggregateUseCaseImpl(mainState, versionAggregateServiceProvider, mainPresenter.getVersionAggregatePresenter(), mainPresenter.getStatusPresenter());
         var readDependenciesUc = new ReadDependenciesUseCaseImpl(mainState, dependencyServiceProvider, mainPresenter.getDependencyPresenter(), mainPresenter.getStatusPresenter());
-        var readDependencyStructureUc = new ReadDependencyElementClassesUseCaseImpl(mainState, dependencyStructureServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getDependencyElementClassPresenter());
+        var readDependencyElementClassesUc = new ReadDependencyElementClassesUseCaseImpl(mainState, dependencyStructureServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getDependencyElementClassPresenter());
         var selectDependencyDenominationsUc = new SelectDependencyDenominationsUseCaseImpl(mainState, readDependenciesUc);
         var readDepdendencyDenominationsUc = new ReadDependencyDenominationsUseCaseImpl(mainState, denominationServiceProvider, mainPresenter.getDependencyDenominationsPresenter(), mainPresenter.getStatusPresenter());
         var selectDependencyElementClassUc = new SelectDependencyElementClassUseCaseImpl(mainState, readDepdendencyDenominationsUc, readDependenciesUc);
-        var selectDependencyFilterUc = new SelectDependencyFilterUseCaseImpl(mainState, readDependenciesUc, mainPresenter.getStatusPresenter());
+        var selectDependencyFilterUc = new SelectDependencyFilterUseCaseImpl(mainState, readDependenciesUc, mainPresenter.getStatusPresenter(), readDependencyElementClassesUc, selectDependencyElementClassUc);
         var openVersionUc = new OpenVersionUseCaseImpl(mainState, readVersionAggregateUc, readDependenciesUc, mainPresenter.getVersionTimelinePresenter(), mainPresenter.getStatusPresenter());
         var readVersionsUc = new ReadVersionsUseCaseImpl(mainState, versionServiceProvider, openVersionUc, mainPresenter.getStatusPresenter(), mainPresenter.getVersionTimelinePresenter());
         var selectVersionFilterUc = new SelectVersionFilterUseCaseImpl(mainState, readVersionsUc, mainPresenter.getStatusPresenter());
@@ -124,7 +124,7 @@ public class Main {
         var queryElementsUc = new QueryElementsUseCaseImpl(mainState, elementServiceProvider);
         var selectDenominationsUc = new SelectDenominationsUseCaseImpl(mainState, mainPresenter.getDenominationsPresenter());
         var readDenominationUc = new ReadDenominationUseCaseImpl(mainState, denominationServiceProvider, mainPresenter.getDenominationsPresenter(), mainPresenter.getStatusPresenter());
-        var openElementClassUc = new OpenElementClassUseCaseImpl(mainState, mainPresenter.getElementClassPresenter(), mainPresenter.getStatusPresenter(), readDenominationUc, selectDenominationsUc, queryElementsUc, openElementUc, readDependencyStructureUc, selectDependencyElementClassUc);
+        var openElementClassUc = new OpenElementClassUseCaseImpl(mainState, mainPresenter.getElementClassPresenter(), mainPresenter.getStatusPresenter(), readDenominationUc, selectDenominationsUc, queryElementsUc, openElementUc, readDependencyElementClassesUc, selectDependencyElementClassUc);
         var readElementClassesUc = new ReadElementClassesUseCaseImpl(mainState, elementClassServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getElementClassPresenter());
         var openRepoUc = new OpenRepoUseCaseImpl(mainState, repoConnectionServiceProvider, mainPresenter.getRepoConnectionPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc);
         var closeRepoUc = new CloseRepoUseCaseImpl(mainState, repoConnectionServiceProvider, mainPresenter.getRepoConnectionPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc, selectDependencyElementClassUc);

@@ -1,5 +1,6 @@
 package com.tschanz.v_bro.data_structure.persistence.jdbc.service;
 
+import com.tschanz.v_bro.data_structure.domain.model.ElementClass;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.AggregateStructure;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.AggregateStructureNode;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.ElementTable;
@@ -22,6 +23,15 @@ import java.util.stream.Collectors;
 public class JdbcDataStructureService {
     @NonNull private final JdbcRepoMetadataServiceImpl repoMetadataService;
     @Getter private final List<AggregateStructure> aggregateStructures = new ArrayList<>();
+
+
+    public AggregateStructure getAggregateStructure(ElementClass elementClass) {
+        return this.getAggregateStructures()
+            .stream()
+            .filter(agg -> agg.getElementTable().getName().equals(elementClass.getName()))
+            .findFirst()
+            .orElse(null);
+    }
 
 
     @SneakyThrows

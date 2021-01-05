@@ -37,9 +37,9 @@ public class XmlDenominationService implements DenominationService {
     // TODO: better: merge all and create set
     @SneakyThrows
     private XmlNodeInfo getFirstElement(String elementClassName) {
-        var elementLutInfo = this.xmlDataStructureService.getElementLut().values()
+        var elementLutInfo = this.xmlDataStructureService.getXmlStructureMap().values()
             .stream()
-            .filter(element -> elementClassName.equals(element.getName()))
+            .filter(element -> elementClassName.equals(element.getElementClass()))
             .findFirst()
             .orElseThrow(() -> new RepoException(String.format("no element with name '%s' found", elementClassName)));
         var xmlFileStream = this.xmlDataStructureService.getElementInputStream(elementLutInfo.getElementId());

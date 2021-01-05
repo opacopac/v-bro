@@ -1,12 +1,13 @@
 package com.tschanz.v_bro.data_structure.persistence.xml.service;
 
+import com.tschanz.v_bro.data_structure.persistence.xml.model.XmlStructureData;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdElementPosInfo;
 import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdRefParser;
-import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdRefPosInfo;
 import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlFieldInfo;
 import com.tschanz.v_bro.repo.persistence.xml.node_parser.XmlNodeInfo;
 import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoConnectionService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -25,51 +26,30 @@ public class XmlDataStructureService {
     public static final String VERSION_VON_ATTRIBUTE_NAME = "gueltigVon";
     public static final String VERSION_BIS_ATTRIBUTE_NAME = "gueltigBis";
     private final XmlRepoConnectionService xmlRepoConnectionService;
-    private List<XmlIdElementPosInfo> elementPositionList;
     private Map<String, XmlIdElementPosInfo> elementPositionMap;
-    private Map<String, List<XmlIdRefPosInfo>> elementRefPositionMap;
+    @Getter private Map<String, XmlStructureData> xmlStructureMap;
 
 
-    public Map<String, XmlIdElementPosInfo> getElementLut() {
-        return this.elementPositionMap;
-    }
-
-
-    public Map<String, List<XmlIdRefPosInfo>> getElementRefLut() {
-        return this.elementRefPositionMap;
-    }
-
-
-    @SneakyThrows
-    public XmlIdElementPosInfo getPosInfoByPos(int position) {
-        if (this.elementPositionList == null) {
-            this.readElementLut();
+    public static boolean isId(String value) {
+        if (value == null) {
+            return false;
         }
 
-        for (var pos : this.elementPositionList) {
-            if (position >= pos.getStartBytePos() && position <= pos.getEndBytePos()) {
-                return pos;
-            }
-        }
-
-        throw new IllegalArgumentException(String.format("no pos info found with position %d ", position));
+        return (value.startsWith(XmlDataStructureService.ID_VALUE_PREFIX_1) || value.startsWith(XmlDataStructureService.ID_VALUE_PREFIX_2));
     }
 
 
     @SneakyThrows
     public InputStream getElementClassInputStream(String elementClassName) {
-        var elementLuts = this.getElementLut().values()
-            .stream()
-            .filter(element -> elementClassName.equals(element.getName()))
-            .sorted(Comparator.comparingInt(XmlIdElementPosInfo::getStartBytePos))
-            .collect(Collectors.toList());
+        var elementLuts = this.getPosInfosByElementClass(elementClassName);
 
         return this.xmlRepoConnectionService.getNewXmlFileStream(elementLuts.get(0).getStartBytePos(), elementLuts.get(elementLuts.size() - 1).getEndBytePos());
     }
 
 
-    public InputStream getElementInputStream(String elementId) throws RepoException {
-        var elementLutInfo = this.getElementLut().get(elementId);
+    @SneakyThrows
+    public InputStream getElementInputStream(String elementId) {
+        var elementLutInfo = this.elementPositionMap.get(elementId);
         if (elementLutInfo == null) {
             throw new IllegalArgumentException(String.format("element id '%s' not found in xml lookup table", elementId));
         }
@@ -97,15 +77,6 @@ public class XmlDataStructureService {
     }
 
 
-    public static boolean isId(String value) {
-        if (value == null) {
-            return false;
-        }
-
-        return (value.startsWith(XmlDataStructureService.ID_VALUE_PREFIX_1) || value.startsWith(XmlDataStructureService.ID_VALUE_PREFIX_2));
-    }
-
-
     public void readElementLut() throws RepoException {
         var xmlFileStream = this.xmlRepoConnectionService.getNewXmlFileStream();
         var parser = new XmlIdRefParser(
@@ -114,21 +85,39 @@ public class XmlDataStructureService {
             List.of(ID_VALUE_PREFIX_1, ID_VALUE_PREFIX_2)
         );
         parser.parse();
-        this.elementPositionList = parser.getIdElementPositions();
+        List<XmlIdElementPosInfo> elementPositionList = parser.getIdElementPositions();
 
         this.elementPositionMap = new HashMap<>();
-        this.elementPositionList.forEach(element -> this.elementPositionMap.put(element.getElementId(), element));
+        elementPositionList.forEach(element -> this.elementPositionMap.put(element.getElementId(), element));
 
-        var idRefs = parser.getIdRefPositions();
-        this.elementRefPositionMap = new HashMap<>();
-        for (var idRef : idRefs) {
-            if (this.elementRefPositionMap.containsKey(idRef.getIdRef())) {
-                this.elementRefPositionMap.get(idRef.getIdRef()).add(idRef);
-            } else {
-                List<XmlIdRefPosInfo> idRefList = new ArrayList<>();
-                idRefList.add(idRef);
-                this.elementRefPositionMap.put(idRef.getIdRef(), idRefList);
+        this.xmlStructureMap = new HashMap<>();
+        // add fwd refs
+        for (var elementPosInfo: this.elementPositionMap.values()) {
+            var dependencyData = new XmlStructureData(elementPosInfo.getName(), elementPosInfo.getElementId());
+            for (var refId: elementPosInfo.getIdRefs()) {
+                var refElement = this.elementPositionMap.get(refId);
+                if (refElement != null) {
+                    dependencyData.getFwdElementIds().add(refId);
+                }
+            }
+            this.xmlStructureMap.put(elementPosInfo.getElementId(), dependencyData);
+        }
+
+        // add bwd refs
+        for (var element: this.xmlStructureMap.values()) {
+            for (var fwdElementId: element.getFwdElementIds()) {
+                var fwdElement = this.xmlStructureMap.get(fwdElementId);
+                fwdElement.getBwdElementIds().add(element.getElementId()); // remark: allowing duplicate entries due to performance reasons
             }
         }
+    }
+
+
+    private List<XmlIdElementPosInfo> getPosInfosByElementClass(String elementClassName) {
+        return this.elementPositionMap.values()
+            .stream()
+            .filter(element -> elementClassName.equals(element.getName()))
+            .sorted(Comparator.comparingInt(XmlIdElementPosInfo::getStartBytePos))
+            .collect(Collectors.toList());
     }
 }

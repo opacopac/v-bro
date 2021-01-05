@@ -5,6 +5,10 @@ import com.tschanz.v_bro.app.presenter.status.StatusResponse;
 import com.tschanz.v_bro.app.state.MainState;
 import com.tschanz.v_bro.app.usecase.read_dependencies.ReadDependenciesRequest;
 import com.tschanz.v_bro.app.usecase.read_dependencies.ReadDependenciesUseCase;
+import com.tschanz.v_bro.app.usecase.read_dependency_element_classes.ReadDependencyElementClassesRequest;
+import com.tschanz.v_bro.app.usecase.read_dependency_element_classes.ReadDependencyElementClassesUseCase;
+import com.tschanz.v_bro.app.usecase.select_dependency_element_class.SelectDependencyElementClassRequest;
+import com.tschanz.v_bro.app.usecase.select_dependency_element_class.SelectDependencyElementClassUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
@@ -15,6 +19,8 @@ public class SelectDependencyFilterUseCaseImpl implements SelectDependencyFilter
     private final MainState mainState;
     private final ReadDependenciesUseCase readDependenciesUc;
     private final StatusPresenter statusPresenter;
+    private final ReadDependencyElementClassesUseCase readDependencyElementClassesUc;
+    private final SelectDependencyElementClassUseCase selectDependencyElementClassUc;
 
 
     @Override
@@ -27,6 +33,12 @@ public class SelectDependencyFilterUseCaseImpl implements SelectDependencyFilter
         this.statusPresenter.present(statusResponse1);
 
         this.mainState.getDependencyState().setFwdDependencies(request.isFwd());
+
+        var readDependencyStructureRequest = new ReadDependencyElementClassesRequest();
+        this.readDependencyElementClassesUc.execute(readDependencyStructureRequest);
+
+        var selectDependencyElementClassRequest = new SelectDependencyElementClassRequest(null);
+        this.selectDependencyElementClassUc.execute(selectDependencyElementClassRequest);
 
         var readDependenciesRequest = new ReadDependenciesRequest();
         this.readDependenciesUc.execute(readDependenciesRequest);

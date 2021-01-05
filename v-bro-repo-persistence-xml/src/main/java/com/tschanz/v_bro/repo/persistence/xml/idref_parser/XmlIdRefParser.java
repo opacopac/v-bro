@@ -37,11 +37,10 @@ public class XmlIdRefParser {
     private int nodeLevel = -1;
     private int elementNodeLevel = -1;
 
-    @Getter private final List<XmlIdRefPosInfo> idRefPositions = new ArrayList<>();
+    private final List<String> idRefs = new ArrayList<>();
     private final char[] idRefValue = new char[MAX_ID_REF_LENTGH];
     private final char[][] idRefPrefixes;
     private int idRefValueLenght = - 1;
-    private int idRefValueBytePos = -1;
 
 
     public XmlIdRefParser(
@@ -95,17 +94,11 @@ public class XmlIdRefParser {
             this.tagCloseBytePos = this.byteCount - 1;
             this.onNextTag();
             this.tagLength = -1;
-            this.resetParseIdRef(); // enable id ref parsing
+            this.idRefValueLenght = 0; // enable id ref parsing
         } else if (tagLength >= 0) {
             this.tag[tagLength] = c;
             this.tagLength++;
         }
-    }
-
-
-    private void resetParseIdRef() {
-        this.idRefValueLenght = 0;
-        this.idRefValueBytePos = this.byteCount;
     }
 
 
@@ -116,8 +109,8 @@ public class XmlIdRefParser {
         } else {
             if (this.idRefValueLenght > 0 && this.startsWithIdRefPrefix()) {
                 var text = new String(this.idRefValue, 0, this.idRefValueLenght);
-                this.idRefPositions.add(new XmlIdRefPosInfo(text, this.idRefValueBytePos));
-                this.resetParseIdRef();
+                this.idRefs.add(text);
+                this.idRefValueLenght = 0; // enable id ref parsing
             } else {
                 this.idRefValueLenght = -1; // disable id ref parsing
             }
@@ -168,12 +161,13 @@ public class XmlIdRefParser {
                 this.elementName = new String(this.tag, 0, this.elementNameEndIdx);
                 this.elementId = new String(this.tag, this.idAttributeStartIdx, this.idAttributeEndIdx - this.idAttributeStartIdx);
                 this.elementTagOpenBytePos = this.tagOpenBytePos;
+                this.idRefs.clear();
             }
         }
 
         if (this.isClosingTag()) { // can be the same like the opening tag
             if (this.elementNodeLevel == this.nodeLevel) {
-                this.idElementPositions.add(new XmlIdElementPosInfo(this.elementName, this.elementId, this.elementTagOpenBytePos, this.tagCloseBytePos));
+                this.idElementPositions.add(new XmlIdElementPosInfo(this.elementName, this.elementId, this.elementTagOpenBytePos, this.tagCloseBytePos, new ArrayList<>(this.idRefs)));
                 this.elementNodeLevel = -1;
             }
 

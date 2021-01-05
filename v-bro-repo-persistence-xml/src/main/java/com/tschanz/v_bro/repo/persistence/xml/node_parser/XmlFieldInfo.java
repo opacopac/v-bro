@@ -1,9 +1,11 @@
 package com.tschanz.v_bro.repo.persistence.xml.node_parser;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public class XmlFieldInfo {
     @Getter private final boolean isAttribute;

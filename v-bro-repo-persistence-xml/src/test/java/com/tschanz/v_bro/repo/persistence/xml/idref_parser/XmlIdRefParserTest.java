@@ -50,12 +50,11 @@ class XmlIdRefParserTest {
 
         parser.parse();
         var idElements = parser.getIdElementPositions();
-        var idRefs = parser.getIdRefPositions();
 
         assertEquals(1, idElements.size());
         assertEquals("partner", idElements.get(0).getName());
         assertEquals("ids__12004", idElements.get(0).getElementId());
-        assertEquals(0, idRefs.size());
+        assertEquals(0, idElements.get(0).getIdRefs().size());
     }
 
 
@@ -78,12 +77,11 @@ class XmlIdRefParserTest {
 
         parser.parse();
         var idElements = parser.getIdElementPositions();
-        var idRefs = parser.getIdRefPositions();
 
         assertEquals(1, idElements.size());
         assertEquals("betreiber", idElements.get(0).getName());
         assertEquals("ids__23361", idElements.get(0).getElementId());
-        assertEquals(0, idRefs.size());
+        assertEquals(0, idElements.get(0).getIdRefs().size());
     }
 
 
@@ -116,14 +114,14 @@ class XmlIdRefParserTest {
 
         parser.parse();
         var idElements = parser.getIdElementPositions();
-        var idRefs = parser.getIdRefPositions();
 
         assertEquals(2, idElements.size());
         assertEquals("partner", idElements.get(0).getName());
         assertEquals("ids__12004", idElements.get(0).getElementId());
+        assertEquals(0, idElements.get(0).getIdRefs().size());
         assertEquals("betreiber", idElements.get(1).getName());
         assertEquals("ids__23361", idElements.get(1).getElementId());
-        assertEquals(0, idRefs.size());
+        assertEquals(0, idElements.get(1).getIdRefs().size());
     }
 
 
@@ -155,14 +153,14 @@ class XmlIdRefParserTest {
 
         parser.parse();
         var idElements = parser.getIdElementPositions();
-        var idRefs = parser.getIdRefPositions();
 
         assertEquals(2, idElements.size());
         assertEquals("partner", idElements.get(0).getName());
         assertEquals("ids__12004", idElements.get(0).getElementId());
+        assertEquals(0, idElements.get(0).getIdRefs().size());
         assertEquals("partner", idElements.get(1).getName());
         assertEquals("ids__2598064", idElements.get(1).getElementId());
-        assertEquals(0, idRefs.size());
+        assertEquals(0, idElements.get(1).getIdRefs().size());
     }
 
 
@@ -190,14 +188,14 @@ class XmlIdRefParserTest {
 
         parser.parse();
         var idElements = parser.getIdElementPositions();
-        var idRefs = parser.getIdRefPositions();
 
         assertEquals(2, idElements.size());
         assertEquals("betreiber", idElements.get(0).getName());
         assertEquals("ids__23361", idElements.get(0).getElementId());
+        assertEquals(0, idElements.get(0).getIdRefs().size());
         assertEquals("betreiber", idElements.get(1).getName());
         assertEquals("ids__23395", idElements.get(1).getElementId());
-        assertEquals(0, idRefs.size());
+        assertEquals(0, idElements.get(1).getIdRefs().size());
     }
 
 
@@ -232,19 +230,18 @@ class XmlIdRefParserTest {
 
         parser.parse();
         var idElements = parser.getIdElementPositions();
-        var idRefs = parser.getIdRefPositions();
 
         assertEquals(2, idElements.size());
         assertEquals("tarifnetzKanten", idElements.get(0).getName());
         assertEquals("idd__9029", idElements.get(0).getElementId());
+        assertEquals(3, idElements.get(0).getIdRefs().size());
+        assertEquals("ids__36628", idElements.get(0).getIdRefs().get(0));
+        assertEquals("ids__47352", idElements.get(0).getIdRefs().get(1));
+        assertEquals("ids__4057128422", idElements.get(0).getIdRefs().get(2));
         assertEquals("verwaltung", idElements.get(1).getName());
         assertEquals("ids__4057249110", idElements.get(1).getElementId());
-
-        assertEquals(4, idRefs.size());
-        assertEquals("ids__36628", idRefs.get(0).getIdRef());
-        assertEquals("ids__47352", idRefs.get(1).getIdRef());
-        assertEquals("ids__4057128422", idRefs.get(2).getIdRef());
-        assertEquals("idd__23025", idRefs.get(3).getIdRef());
+        assertEquals(1, idElements.get(1).getIdRefs().size());
+        assertEquals("idd__23025", idElements.get(1).getIdRefs().get(0));
     }
 
 
@@ -511,22 +508,23 @@ class XmlIdRefParserTest {
     void parse_finds_multiple_idrefs_in_same_inner_text() throws RepoException {
         //                     5    5    6         7         8         9        10        11        12
         //                     4    5678901234567890123456789012345678901234567890123456789012345678901
-        var xmlText = XML_HEADER + "<n1>ids__111 ids__222 ids__333</n1><n2>ids__444 ids__555</n2>";
+        var xmlText = XML_HEADER + "<n1 id=\"ids__444\">ids__111 ids__222 ids__333</n1><n2 id=\"ids__111\">ids__444 ids__555</n2>";
         var parser = this.createParser(xmlText);
 
         parser.parse();
-        var idRefs = parser.getIdRefPositions();
+        var idElements = parser.getIdElementPositions();
 
-        assertEquals(5, idRefs.size());
-        assertEquals("ids__111", idRefs.get(0).getIdRef());
-        assertEquals(59, idRefs.get(0).getStartBytePos());
-        assertEquals("ids__222", idRefs.get(1).getIdRef());
-        assertEquals(68, idRefs.get(1).getStartBytePos());
-        assertEquals("ids__333", idRefs.get(2).getIdRef());
-        assertEquals(77, idRefs.get(2).getStartBytePos());
-        assertEquals("ids__444", idRefs.get(3).getIdRef());
-        assertEquals(94, idRefs.get(3).getStartBytePos());
-        assertEquals("ids__555", idRefs.get(4).getIdRef());
-        assertEquals(103, idRefs.get(4).getStartBytePos());
+        assertEquals(2, idElements.size());
+        assertEquals("n1", idElements.get(0).getName());
+        assertEquals("ids__444", idElements.get(0).getElementId());
+        assertEquals(3, idElements.get(0).getIdRefs().size());
+        assertEquals("ids__111", idElements.get(0).getIdRefs().get(0));
+        assertEquals("ids__222", idElements.get(0).getIdRefs().get(1));
+        assertEquals("ids__333", idElements.get(0).getIdRefs().get(2));
+        assertEquals("n2", idElements.get(1).getName());
+        assertEquals("ids__111", idElements.get(1).getElementId());
+        assertEquals(2, idElements.get(1).getIdRefs().size());
+        assertEquals("ids__444", idElements.get(1).getIdRefs().get(0));
+        assertEquals("ids__555", idElements.get(1).getIdRefs().get(1));
     }
 }

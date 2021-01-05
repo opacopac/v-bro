@@ -37,7 +37,7 @@ public class OpenElementClassUseCaseImpl implements OpenElementClassUseCase {
     private final SelectDenominationsUseCase selectDenominationsUc;
     private final QueryElementsUseCase queryElementsUc;
     private final OpenElementUseCase openElementUseCase;
-    private final ReadDependencyElementClassesUseCase readDependencyStructureUc;
+    private final ReadDependencyElementClassesUseCase readDependencyElementClassesUc;
     private final SelectDependencyElementClassUseCase selectDependencyElementClassUc;
 
 
@@ -96,7 +96,7 @@ public class OpenElementClassUseCaseImpl implements OpenElementClassUseCase {
         }
 
         var readDependencyStructureRequest = new ReadDependencyElementClassesRequest();
-        this.readDependencyStructureUc.execute(readDependencyStructureRequest);
+        this.readDependencyElementClassesUc.execute(readDependencyStructureRequest);
 
         var selectDependencyElementClassRequest = new SelectDependencyElementClassRequest(null);
         this.selectDependencyElementClassUc.execute(selectDependencyElementClassRequest);

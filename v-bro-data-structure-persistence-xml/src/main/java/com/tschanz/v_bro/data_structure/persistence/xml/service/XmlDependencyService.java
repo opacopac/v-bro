@@ -2,8 +2,7 @@ package com.tschanz.v_bro.data_structure.persistence.xml.service;
 
 import com.tschanz.v_bro.data_structure.domain.model.*;
 import com.tschanz.v_bro.data_structure.domain.service.DependencyService;
-import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdElementPosInfo;
-import com.tschanz.v_bro.repo.domain.model.RepoException;
+import com.tschanz.v_bro.data_structure.persistence.xml.model.XmlStructureData;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -27,10 +26,10 @@ public class XmlDependencyService implements DependencyService {
         @NonNull LocalDate maxGueltigBis,
         @NonNull Pflegestatus minPflegestatus
     ) {
-        Map<String, XmlIdElementPosInfo> elementLutInfos = this.xmlDataStructureService.getElementLut();
-        VersionAggregate versionAggregate = this.versionAggregateService.readVersionAggregate(version);
+        var xmlStructureMap = this.xmlDataStructureService.getXmlStructureMap();
+        var versionAggregate = this.versionAggregateService.readVersionAggregate(version);
 
-        return this.findNodeDependencies(versionAggregate.getRootNode(), elementLutInfos, minGueltigVon, maxGueltigBis, minPflegestatus);
+        return this.findNodeDependencies(versionAggregate.getRootNode(), xmlStructureMap, minGueltigVon, maxGueltigBis, minPflegestatus);
     }
 
 
@@ -41,10 +40,12 @@ public class XmlDependencyService implements DependencyService {
         @NonNull LocalDate maxGueltigBis,
         @NonNull Pflegestatus minPflegestatus
     ) {
-        var bwdElementInfos = this.findBwdElementInfos(element.getId());
+        var elementInfo = this.xmlDataStructureService.getXmlStructureMap().get(element.getId());
+        var bwdElementIds = elementInfo.getBwdElementIds().stream().distinct().collect(Collectors.toList());
         List<Dependency> dependencies = new ArrayList<>();
-        for (var bwdElementInfo: bwdElementInfos) {
-            var bwdElementClass = new ElementClass(bwdElementInfo.getName());
+        for (var bwdElementId: bwdElementIds) {
+            var bwdElementInfo = this.xmlDataStructureService.getXmlStructureMap().get(bwdElementId);
+            var bwdElementClass = new ElementClass(bwdElementInfo.getElementClass());
             var bwdElement = this.elementService.readElement(bwdElementClass, Collections.emptyList(), bwdElementInfo.getElementId());
             var bwdVersions = this.versionService.readVersions(bwdElement, minGueltigVon, maxGueltigBis, minPflegestatus);
             var bwdDependency = new Dependency(bwdElementClass, bwdElement, bwdVersions);
@@ -55,42 +56,26 @@ public class XmlDependencyService implements DependencyService {
     }
 
 
-    private List<XmlIdElementPosInfo> findBwdElementInfos(String elementId) {
-        var elementRefLut = this.xmlDataStructureService.getElementRefLut();
-        if (elementRefLut.containsKey(elementId)) {
-            var bwdRefs = elementRefLut.get(elementId);
-            List<XmlIdElementPosInfo> bwdElementInfos = new ArrayList<>();
-            for (var bwdRef : bwdRefs) {
-                var bwdElementInfo = this.xmlDataStructureService.getPosInfoByPos(bwdRef.getStartBytePos());
-                bwdElementInfos.add(bwdElementInfo);
-            }
-            return bwdElementInfos;
-        } else {
-            return Collections.emptyList();
-        }
-    }
-
-
     private List<Dependency> findNodeDependencies(
         AggregateNode aggregateNode,
-        Map<String,XmlIdElementPosInfo> elementLutInfos,
+        Map<String, XmlStructureData> xmlStructureData,
         LocalDate minGueltigVon,
         LocalDate maxGueltigBis,
         Pflegestatus minPflegestatus
     ) {
         List<Dependency> fwdDependencies = new ArrayList<>();
 
-        List<XmlIdElementPosInfo> fwdElements = aggregateNode.getFieldValues()
+        var fwdElements = aggregateNode.getFieldValues()
             .stream()
             .filter(keyValue -> !keyValue.key.equals(XmlDataStructureService.ID_ATTRIBUTE_NAME)) // filter own element/version id
             .filter(keyValue -> XmlDataStructureService.isId(keyValue.value))
             .flatMap(keyValue -> List.of(keyValue.value.split(" ")).stream())
-            .map(elementLutInfos::get)
+            .map(xmlStructureData::get)
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
 
-        for (XmlIdElementPosInfo fwdElement: fwdElements) {
-            var elementClass = new ElementClass(fwdElement.getName());
+        for (var fwdElement: fwdElements) {
+            var elementClass = new ElementClass(fwdElement.getElementClass());
             var element = new ElementData(elementClass, fwdElement.getElementId(), Collections.emptyList());
             var versions = this.versionService.readVersions(element, minGueltigVon, maxGueltigBis, minPflegestatus);
             var fwdDependency = new Dependency(elementClass, element, versions);
@@ -98,7 +83,7 @@ public class XmlDependencyService implements DependencyService {
         }
 
         for (AggregateNode childNode: aggregateNode.getChildNodes()) {
-            fwdDependencies.addAll(this.findNodeDependencies(childNode, elementLutInfos, minGueltigVon, maxGueltigBis, minPflegestatus));
+            fwdDependencies.addAll(this.findNodeDependencies(childNode, xmlStructureData, minGueltigVon, maxGueltigBis, minPflegestatus));
         }
 
         return fwdDependencies;

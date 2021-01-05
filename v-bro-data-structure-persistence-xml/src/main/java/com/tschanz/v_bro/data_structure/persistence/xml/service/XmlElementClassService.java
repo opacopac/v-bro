@@ -2,7 +2,7 @@ package com.tschanz.v_bro.data_structure.persistence.xml.service;
 
 import com.tschanz.v_bro.data_structure.domain.model.ElementClass;
 import com.tschanz.v_bro.data_structure.domain.service.ElementClassService;
-import com.tschanz.v_bro.repo.persistence.xml.idref_parser.XmlIdElementPosInfo;
+import com.tschanz.v_bro.data_structure.persistence.xml.model.XmlStructureData;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -16,9 +16,9 @@ public class XmlElementClassService implements ElementClassService {
 
     @Override
     public List<ElementClass> readAllElementClasses() {
-        return this.xmlDataStructureService.getElementLut().values()
+        return this.xmlDataStructureService.getXmlStructureMap().values()
             .stream()
-            .map(XmlIdElementPosInfo::getName)
+            .map(XmlStructureData::getElementClass)
             .distinct()
             .sorted()
             .map(ElementClass::new)
