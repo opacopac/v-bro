@@ -37,7 +37,11 @@ public class JfxDependencyListEntryView {
 
 
     private String createDependencyName(DependencyItem dependency) {
-        return dependency.getElementClass() + " - " + dependency.getElementId();
+        if (dependency.getDenominations().size() > 0) {
+            return dependency.getElementClass() + " - " + String.join(" - ", dependency.getDenominations());
+        } else {
+            return dependency.getElementClass() + " - " + dependency.getElementId();
+        }
     }
 
 

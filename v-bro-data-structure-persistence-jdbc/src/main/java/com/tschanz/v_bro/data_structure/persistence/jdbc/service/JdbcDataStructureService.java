@@ -1,6 +1,5 @@
 package com.tschanz.v_bro.data_structure.persistence.jdbc.service;
 
-import com.tschanz.v_bro.data_structure.domain.model.ElementClass;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.AggregateStructure;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.AggregateStructureNode;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.ElementTable;
@@ -9,26 +8,37 @@ import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoField;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataServiceImpl;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
 public class JdbcDataStructureService {
     @NonNull private final JdbcRepoMetadataServiceImpl repoMetadataService;
-    @Getter private final List<AggregateStructure> aggregateStructures = new ArrayList<>();
+    private final Map<String, AggregateStructure> aggregateStructureMap = new HashMap<>();
 
 
-    public AggregateStructure getAggregateStructure(ElementClass elementClass) {
+    public List<AggregateStructure> getAggregateStructures() {
+        return new ArrayList<>(this.aggregateStructureMap.values());
+    }
+
+
+    public AggregateStructure getAggregateStructureByElementClass(String elementClassName) {
+        return this.aggregateStructureMap.get(elementClassName);
+    }
+
+
+    public AggregateStructure getAggregateStructureContainingTable(String tableName) {
         return this.getAggregateStructures()
             .stream()
-            .filter(agg -> agg.getElementTable().getName().equals(elementClass.getName()))
+            .filter(agg -> agg.getNodeByTableName(tableName) != null)
             .findFirst()
             .orElse(null);
     }
@@ -37,7 +47,7 @@ public class JdbcDataStructureService {
     @SneakyThrows
     public void readAggregateStructures() {
         List<String> unprocessedTableNames = this.getAllTableNames();
-        this.aggregateStructures.clear();
+        this.aggregateStructureMap.clear();
 
         // versioned aggregates
         for (var rel: this.repoMetadataService.getRepoRelationLut()) {
@@ -47,7 +57,7 @@ public class JdbcDataStructureService {
                 var versionTable = new VersionTable(this.repoMetadataService.readTableStructure(rel.getBwdClassName()));
                 unprocessedTableNames.remove(versionTable.getName());
                 var rootNode = this.getRootNodeAndTree(elementTable.getRepoTable(), versionTable.getRepoTable(), unprocessedTableNames);
-                this.aggregateStructures.add(new AggregateStructure(elementTable, versionTable, rootNode));
+                this.aggregateStructureMap.put(elementTable.getName(), new AggregateStructure(elementTable, versionTable, rootNode));
             }
         }
 
@@ -57,7 +67,7 @@ public class JdbcDataStructureService {
             if (repoTable.findAllIdFields().size() == 1) {
                 var elementTable = new ElementTable(repoTable);
                 var rootNode = new AggregateStructureNode(elementTable.getRepoTable(), null, null);
-                this.aggregateStructures.add(new AggregateStructure(elementTable, null, rootNode));
+                this.aggregateStructureMap.put(elementTable.getName(), new AggregateStructure(elementTable, null, rootNode));
             }
         }
     }

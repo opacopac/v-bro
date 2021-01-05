@@ -17,7 +17,7 @@ public class JdbcDependencyStructureService implements DependencyStructureServic
 
     @Override
     public List<ElementClass> readFwdDependencies(@NonNull ElementClass elementClass) {
-        var aggregateStruct = this.jdbcDataStructureService.getAggregateStructure(elementClass);
+        var aggregateStruct = this.jdbcDataStructureService.getAggregateStructureByElementClass(elementClass.getName());
         if (aggregateStruct != null) {
             return aggregateStruct.getFwdDepdendencyRelations()
                 .stream()
@@ -32,11 +32,12 @@ public class JdbcDependencyStructureService implements DependencyStructureServic
 
     @Override
     public List<ElementClass> readBwdDependencies(@NonNull ElementClass elementClass) {
-        var aggregateStruct = this.jdbcDataStructureService.getAggregateStructure(elementClass);
+        var aggregateStruct = this.jdbcDataStructureService.getAggregateStructureByElementClass(elementClass.getName());
         if (aggregateStruct != null) {
             return aggregateStruct.getBwdDependencyRelations()
                 .stream()
-                .map(rel -> new ElementClass(rel.getBwdClassName()))
+                .map(rel -> this.jdbcDataStructureService.getAggregateStructureContainingTable(rel.getBwdClassName()))
+                .map(agg -> new ElementClass(agg.getElementTable().getName()))
                 .distinct()
                 .collect(Collectors.toList());
         } else {

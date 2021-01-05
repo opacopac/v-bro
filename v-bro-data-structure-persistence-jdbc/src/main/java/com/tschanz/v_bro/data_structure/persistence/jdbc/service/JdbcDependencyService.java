@@ -41,21 +41,30 @@ public class JdbcDependencyService implements DependencyService {
         @NonNull VersionData version,
         @NonNull LocalDate minGueltigVon,
         @NonNull LocalDate maxGueltigBis,
-        @NonNull Pflegestatus minPflegestatus
+        @NonNull Pflegestatus minPflegestatus,
+        ElementClass elementClassFilter,
+        @NonNull List<Denomination> denominations,
+        int maxResults
     ) {
         var aggregate = (AggregateData) this.versionAggregateService.readVersionAggregate(version); // TODO: ugly type casting
 
         List<Dependency> dependencies = new ArrayList<>();
         for (var record: aggregate.getAllRecords()) {
             for (var relation: record.getRepoTable().getOutgoingRelations()) {
+                if (dependencies.size() >= maxResults) {
+                    break;
+                }
+                var fwdElementClassName = relation.getFwdClassName();
+                if (elementClassFilter != null && !elementClassFilter.getName().equals(fwdElementClassName)) {
+                    continue;
+                }
                 if (!this.isExternalRelation(relation, aggregate)) {
                     continue;
                 }
-                var fwdElementClassName = relation.getFwdClassName();
                 var fwdElementId = record.findFieldValue(relation.getBwdFieldName()).getValueString();
                 if (fwdElementId != null) {
                     var elementClass = new ElementClass(fwdElementClassName);
-                    var element = this.elementService.readElement(elementClass, Collections.emptyList(), fwdElementId);
+                    var element = this.elementService.readElement(elementClass, denominations, fwdElementId);
                     var versions = this.versionService.readVersions(element, minGueltigVon, maxGueltigBis, minPflegestatus);
                     var fwdDependency = new Dependency(elementClass, element, versions);
                     dependencies.add(fwdDependency);
@@ -72,7 +81,10 @@ public class JdbcDependencyService implements DependencyService {
         @NonNull ElementData element,
         @NonNull LocalDate minGueltigVon,
         @NonNull LocalDate maxGueltigBis,
-        @NonNull Pflegestatus minPflegestatus
+        @NonNull Pflegestatus minPflegestatus,
+        ElementClass elementClassFilter,
+        @NonNull List<Denomination> denominations,
+        int maxResults
     ) {
         var elementClassName = element.getElementClass().getName();
         var elementTable = this.elementService.readElementTable(elementClassName);
@@ -87,13 +99,14 @@ public class JdbcDependencyService implements DependencyService {
                 .stream()
                 .map(agg -> agg.getNodeByTableName(bwdRelation.getBwdClassName()))
                 .filter(Objects::nonNull)
+                .filter(agg -> elementClassFilter == null || elementClassFilter.getName().equals(agg.getRootNode().getRepoTable().getName()))
                 .collect(Collectors.toList())
             );
         }
 
         List<ElementData> bwdElements = new ArrayList<>();
         for (var bwdAggregateNode: bwdAggregateNodes) {
-            bwdElements.addAll(this.getBwdElements(element, elementTable, bwdAggregateNode));
+            this.addBwdElements(bwdElements, element, elementTable, bwdAggregateNode, denominations, maxResults);
         }
 
         List<Dependency> bwdDependencies = new ArrayList<>();
@@ -107,7 +120,7 @@ public class JdbcDependencyService implements DependencyService {
 
 
     @SneakyThrows
-    private List<ElementData> getBwdElements(ElementData element, ElementTable elementTable, AggregateStructureNode bwdAggregateNode) {
+    private void addBwdElements(List<ElementData> bwdElements, ElementData element, ElementTable elementTable, AggregateStructureNode bwdAggregateNode, List<Denomination> denominations, int maxResults) {
         var relToElement = elementTable.getRepoTable().getIncomingRelations()
             .stream()
             .filter(rel -> rel.getBwdClassName().equals(bwdAggregateNode.getRepoTable().getName()))
@@ -146,13 +159,12 @@ public class JdbcDependencyService implements DependencyService {
                 -1
             );
 
-            return rows
+            bwdElements.addAll(rows
                 .stream()
-                .map(row -> this.elementService.readElement(bwdElementClass, Collections.emptyList(), row.findIdFieldValue().getValueString()))
-                .collect(Collectors.toList());
-
-        } else {
-            return Collections.emptyList();
+                .limit(maxResults)
+                .map(row -> this.elementService.readElement(bwdElementClass, denominations, row.findIdFieldValue().getValueString()))
+                .collect(Collectors.toList())
+            );
         }
     }
 

@@ -15,7 +15,10 @@ public class MockDependencyService implements DependencyService {
         @NonNull VersionData version,
         @NonNull LocalDate minGueltigVon,
         @NonNull LocalDate maxGueltigBis,
-        @NonNull Pflegestatus minPflegestatus
+        @NonNull Pflegestatus minPflegestatus,
+        ElementClass elementClassFilter,
+        @NonNull List<Denomination> denominations,
+        int maxResults
     ) {
         var elementClass1 = new ElementClass("P_PRODUKTDEFINITION_E");
         var element1 = new ElementData(elementClass1, "132242", Collections.emptyList());
@@ -94,7 +97,10 @@ public class MockDependencyService implements DependencyService {
         @NonNull ElementData element,
         @NonNull LocalDate minGueltigVon,
         @NonNull LocalDate maxGueltigBis,
-        @NonNull Pflegestatus minPflegestatus
+        @NonNull Pflegestatus minPflegestatus,
+        ElementClass elementClassFilter,
+        @NonNull List<Denomination> denominations,
+        int maxResults
     ) {
         var elementClass1 = new ElementClass("P_PRODUKTDEFINITION_E");
         var element1 = new ElementData(elementClass1, "132242", Collections.emptyList());

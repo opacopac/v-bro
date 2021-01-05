@@ -1,6 +1,7 @@
 package com.tschanz.v_bro.app.presenter.dependencies;
 
 import com.tschanz.v_bro.app.presenter.version_timeline.VersionResponse;
+import com.tschanz.v_bro.data_structure.domain.model.DenominationData;
 import com.tschanz.v_bro.data_structure.domain.model.Dependency;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ public class DependencyResponse {
     private final String elementClass;
     private final String elementId;
     private final List<VersionResponse> versions;
+    private final List<String> denominations;
 
 
     public static DependencyResponse fromDependency(Dependency dependency) {
@@ -24,6 +26,10 @@ public class DependencyResponse {
             dependency.getVersions()
                 .stream()
                 .map(VersionResponse::fromVersionData)
+                .collect(Collectors.toList()),
+            dependency.getElement().getDenominations()
+                .stream()
+                .map(DenominationData::getValue)
                 .collect(Collectors.toList())
         );
     }

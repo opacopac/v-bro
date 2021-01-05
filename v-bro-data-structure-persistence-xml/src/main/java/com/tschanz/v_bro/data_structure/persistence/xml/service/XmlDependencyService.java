@@ -24,12 +24,17 @@ public class XmlDependencyService implements DependencyService {
         @NonNull VersionData version,
         @NonNull LocalDate minGueltigVon,
         @NonNull LocalDate maxGueltigBis,
-        @NonNull Pflegestatus minPflegestatus
+        @NonNull Pflegestatus minPflegestatus,
+        ElementClass elementClassFilter,
+        @NonNull List<Denomination> denominations,
+        int maxResults
     ) {
         var xmlStructureMap = this.xmlDataStructureService.getXmlStructureMap();
         var versionAggregate = this.versionAggregateService.readVersionAggregate(version);
+        List<Dependency> fwdDependencies = new ArrayList<>();
+        this.addNodeDependencies(fwdDependencies, versionAggregate.getRootNode(), xmlStructureMap, minGueltigVon, maxGueltigBis, minPflegestatus, elementClassFilter, denominations, maxResults);
 
-        return this.findNodeDependencies(versionAggregate.getRootNode(), xmlStructureMap, minGueltigVon, maxGueltigBis, minPflegestatus);
+        return fwdDependencies;
     }
 
 
@@ -38,15 +43,24 @@ public class XmlDependencyService implements DependencyService {
         @NonNull ElementData element,
         @NonNull LocalDate minGueltigVon,
         @NonNull LocalDate maxGueltigBis,
-        @NonNull Pflegestatus minPflegestatus
+        @NonNull Pflegestatus minPflegestatus,
+        ElementClass elementClassFilter,
+        @NonNull List<Denomination> denominations,
+        int maxResults
     ) {
         var elementInfo = this.xmlDataStructureService.getXmlStructureMap().get(element.getId());
         var bwdElementIds = elementInfo.getBwdElementIds().stream().distinct().collect(Collectors.toList());
         List<Dependency> dependencies = new ArrayList<>();
         for (var bwdElementId: bwdElementIds) {
+            if (dependencies.size() >= maxResults) {
+                break;
+            }
             var bwdElementInfo = this.xmlDataStructureService.getXmlStructureMap().get(bwdElementId);
+            if (elementClassFilter != null && !bwdElementInfo.getElementClass().equals(elementClassFilter.getName())) {
+                continue;
+            }
             var bwdElementClass = new ElementClass(bwdElementInfo.getElementClass());
-            var bwdElement = this.elementService.readElement(bwdElementClass, Collections.emptyList(), bwdElementInfo.getElementId());
+            var bwdElement = this.elementService.readElement(bwdElementClass, denominations, bwdElementInfo.getElementId());
             var bwdVersions = this.versionService.readVersions(bwdElement, minGueltigVon, maxGueltigBis, minPflegestatus);
             var bwdDependency = new Dependency(bwdElementClass, bwdElement, bwdVersions);
             dependencies.add(bwdDependency);
@@ -56,15 +70,17 @@ public class XmlDependencyService implements DependencyService {
     }
 
 
-    private List<Dependency> findNodeDependencies(
+    private void addNodeDependencies(
+        List<Dependency> fwdDependencies,
         AggregateNode aggregateNode,
         Map<String, XmlStructureData> xmlStructureData,
         LocalDate minGueltigVon,
         LocalDate maxGueltigBis,
-        Pflegestatus minPflegestatus
+        Pflegestatus minPflegestatus,
+        ElementClass elementClassFilter,
+        List<Denomination> denominations,
+        int maxResults
     ) {
-        List<Dependency> fwdDependencies = new ArrayList<>();
-
         var fwdElements = aggregateNode.getFieldValues()
             .stream()
             .filter(keyValue -> !keyValue.key.equals(XmlDataStructureService.ID_ATTRIBUTE_NAME)) // filter own element/version id
@@ -75,6 +91,12 @@ public class XmlDependencyService implements DependencyService {
             .collect(Collectors.toList());
 
         for (var fwdElement: fwdElements) {
+            if (fwdDependencies.size() >= maxResults) {
+                return;
+            }
+            if (elementClassFilter != null && !fwdElement.getElementClass().equals(elementClassFilter.getName())) {
+                continue;
+            }
             var elementClass = new ElementClass(fwdElement.getElementClass());
             var element = new ElementData(elementClass, fwdElement.getElementId(), Collections.emptyList());
             var versions = this.versionService.readVersions(element, minGueltigVon, maxGueltigBis, minPflegestatus);
@@ -83,9 +105,7 @@ public class XmlDependencyService implements DependencyService {
         }
 
         for (AggregateNode childNode: aggregateNode.getChildNodes()) {
-            fwdDependencies.addAll(this.findNodeDependencies(childNode, xmlStructureData, minGueltigVon, maxGueltigBis, minPflegestatus));
+            this.addNodeDependencies(fwdDependencies, childNode, xmlStructureData, minGueltigVon, maxGueltigBis, minPflegestatus, elementClassFilter, denominations, maxResults);
         }
-
-        return fwdDependencies;
     }
 }

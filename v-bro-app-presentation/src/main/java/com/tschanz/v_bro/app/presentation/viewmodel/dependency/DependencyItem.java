@@ -17,6 +17,7 @@ public class DependencyItem {
     private final String elementClass;
     private final String elementId;
     private final List<VersionItem> versions;
+    private final List<String> denominations;
 
 
     public static List<DependencyItem> fromResponse(DependencyListResponse response) {
@@ -31,7 +32,8 @@ public class DependencyItem {
         return new DependencyItem(
             dependency.getElementClass(),
             dependency.getElementId(),
-            fromResponse(dependency.getVersions())
+            fromResponse(dependency.getVersions()),
+            dependency.getDenominations()
         );
     }
 

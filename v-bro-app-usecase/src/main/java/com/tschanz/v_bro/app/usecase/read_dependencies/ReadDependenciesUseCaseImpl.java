@@ -19,6 +19,7 @@ import java.util.List;
 @Log
 @RequiredArgsConstructor
 public class ReadDependenciesUseCaseImpl implements ReadDependenciesUseCase {
+    private final static int MAX_DEPENDENCIES = 100;
     private final MainState mainState;
     private final RepoServiceProvider<DependencyService> dependencyServiceProvider;
     private final DependencyPresenter dependencyPresenter;
@@ -35,10 +36,17 @@ public class ReadDependenciesUseCaseImpl implements ReadDependenciesUseCase {
         var minPflegestatus = mainState.getVersionFilterState().getVersionFilter().getMinPflegestatus();
         var isFwd = mainState.getDependencyState().isFwdDependencies();
         var fwdBwdText = isFwd ? "FWD" : "BWD";
+        var elementClassFilter = mainState.getDependencyState().getDependencyElementClasses().getSelectedItem();
+        var dependecyDenominations = mainState.getDependencyState().getDependencyDenominations().getSelectedItems();
 
         if (repoType != null && ((isFwd && version != null) || (!isFwd && element != null))) {
             try {
-                var msgStart =  String.format("UC: reading %s dependencies of version '%s'...", fwdBwdText, version.getId());
+                String msgStart;
+                if (isFwd) {
+                    msgStart = String.format("UC: reading FWD dependencies of version '%s'...", version.getId());
+                } else {
+                    msgStart = String.format("UC: reading BWD dependencies of element '%s'...", element.getId());
+                }
                 log.info(msgStart);
                 var statusResponse1 = new StatusResponse(msgStart, false, true);
                 this.statusPresenter.present(statusResponse1);
@@ -46,9 +54,9 @@ public class ReadDependenciesUseCaseImpl implements ReadDependenciesUseCase {
                 var dependencyService = this.dependencyServiceProvider.getService(repoType);
                 List<Dependency> dependencies;
                 if (isFwd) {
-                    dependencies = dependencyService.readFwdDependencies(version, minGueltigVon, maxGueltigBis, minPflegestatus);
+                    dependencies = dependencyService.readFwdDependencies(version, minGueltigVon, maxGueltigBis, minPflegestatus, elementClassFilter, dependecyDenominations, MAX_DEPENDENCIES);
                 } else {
-                    dependencies = dependencyService.readBwdDependencies(element, minGueltigVon, maxGueltigBis, minPflegestatus);
+                    dependencies = dependencyService.readBwdDependencies(element, minGueltigVon, maxGueltigBis, minPflegestatus, elementClassFilter, dependecyDenominations, MAX_DEPENDENCIES);
                 }
 
                 var msgSuccess = String.format("successfully read %d %s dependencies", dependencies.size(), fwdBwdText);
