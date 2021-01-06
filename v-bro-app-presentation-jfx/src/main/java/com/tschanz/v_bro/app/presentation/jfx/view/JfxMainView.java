@@ -43,11 +43,11 @@ public class JfxMainView implements MainView {
         this.elementDenominationViewController.bindViewModel(mainViewModel.elementDenominations, mainController.getElementDenominationController());
         this.elementViewController.bindViewModel(mainViewModel.currentElement, mainController.getElementController());
         this.versionFilterViewController.bindViewModel(mainViewModel.versionFilter, mainController.getVersionFilterController());
-        this.versionViewController.bindViewModel(mainViewModel.versions, mainViewModel.effectiveVersionFilter, mainController.getVersionController());
+        this.versionViewController.bindViewModel(mainViewModel.versions, mainViewModel.versionFilter, mainController.getVersionController());
         this.dependencyFilterViewController.bindViewModel(mainViewModel.dependencyFilter, mainController.getDependencyFilterController());
         this.dependencyElementClassViewController.bindViewModel(mainViewModel.dependencyElementClasses, mainController.getDependencyElementClassController());
         this.dependencyDenominationsViewController.bindViewModel(mainViewModel.dependencyDenominations, mainController.getDependencyDenominationController());
-        this.dependenciesViewController.bindViewModel(mainViewModel.fwdDependencies, mainViewModel.effectiveVersionFilter, mainController.getDependencyListController());
+        this.dependenciesViewController.bindViewModel(mainViewModel.fwdDependencies, mainViewModel.versionFilter, mainController.getDependencyListController());
         this.versionAggregateViewController.bindViewModel(mainViewModel.versionAggregate);
     }
 }

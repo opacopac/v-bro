@@ -30,8 +30,7 @@ public class MainViewModel {
     public final BehaviorSubject<MultiSelectableItemList<DenominationItem>> elementDenominations = new BehaviorSubject<>(new MultiSelectableItemList<>(Collections.emptyList(), Collections.emptyList()));
     public final BehaviorSubject<ElementItem> currentElement = new BehaviorSubject<>(null);
     public final BehaviorSubject<SelectableItemList<VersionItem>> versions = new BehaviorSubject<>(new SelectableItemList<>(Collections.emptyList(), null));
-    public final BehaviorSubject<VersionFilterItem> versionFilter = new BehaviorSubject<>(new VersionFilterItem(LocalDate.of(2015, 1, 1), VersionData.HIGH_DATE, Pflegestatus.IN_ARBEIT));
-    public final BehaviorSubject<VersionFilterItem> effectiveVersionFilter = new BehaviorSubject<>(new VersionFilterItem(LocalDate.of(2015, 1, 1), LocalDate.of(2025, 1, 1), Pflegestatus.IN_ARBEIT));
+    public final BehaviorSubject<VersionFilterItem> versionFilter = new BehaviorSubject<>(new VersionFilterItem(VersionData.NOVA_NULL_DATE, LocalDate.now().plusYears(1), Pflegestatus.IN_ARBEIT));
     public final BehaviorSubject<DependencyFilterItem> dependencyFilter = new BehaviorSubject<>(new DependencyFilterItem(true));
     public final BehaviorSubject<SelectableItemList<ElementClassItem>> dependencyElementClasses = new BehaviorSubject<>(new SelectableItemList<>(Collections.emptyList(), null));
     public final BehaviorSubject<MultiSelectableItemList<DenominationItem>> dependencyDenominations = new BehaviorSubject<>(new MultiSelectableItemList<>(Collections.emptyList(), Collections.emptyList()));

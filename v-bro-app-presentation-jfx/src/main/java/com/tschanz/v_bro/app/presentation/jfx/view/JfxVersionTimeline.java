@@ -69,7 +69,8 @@ public class JfxVersionTimeline {
 
     public void onMouseMoved(MouseEvent mouseEvent) {
         VersionItem hoverVersion = this.getMousPosVersion(mouseEvent.getX(), mouseEvent.getY());
-        if (hoverVersion != null) {
+        // TODO: progress bar
+        if (hoverVersion != null && this.canvas.getScene().getCursor() != Cursor.WAIT) {
             this.canvas.getScene().setCursor(Cursor.HAND);
         } else {
             this.canvas.getScene().setCursor(Cursor.DEFAULT);

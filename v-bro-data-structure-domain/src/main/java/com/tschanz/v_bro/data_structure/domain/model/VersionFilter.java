@@ -13,7 +13,7 @@ import java.util.List;
 public class VersionFilter {
     public static final VersionFilter DEFAULT_VERSION_FILTER = new VersionFilter(
         VersionData.NOVA_NULL_DATE,
-        VersionData.HIGH_DATE,
+        LocalDate.now().plusYears(1),
         Pflegestatus.IN_ARBEIT
     );
     public static final int HD_LD_PADDING_DAYS = 365;

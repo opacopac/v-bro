@@ -21,6 +21,7 @@ public class JfxStatusBarView implements StatusBarView {
     }
 
 
+    // TODO: progress bar
     private void onStatusChanged(StatusItem status) {
         var text = status != null ? status.getMessage() : "";
         var isErr = status != null && status.isError();

@@ -2,6 +2,8 @@ package com.tschanz.v_bro.app.usecase.select_version_filter;
 
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusResponse;
+import com.tschanz.v_bro.app.presenter.version_filter.VersionFilterPresenter;
+import com.tschanz.v_bro.app.presenter.version_filter.VersionFilterResponse;
 import com.tschanz.v_bro.app.state.MainState;
 import com.tschanz.v_bro.app.usecase.read_versions.ReadVersionsRequest;
 import com.tschanz.v_bro.app.usecase.read_versions.ReadVersionsUseCase;
@@ -15,6 +17,7 @@ public class SelectVersionFilterUseCaseImpl implements SelectVersionFilterUseCas
     private final MainState mainState;
     private final ReadVersionsUseCase readVersionsUc;
     private final StatusPresenter statusPresenter;
+    private final VersionFilterPresenter versionFilterPresenter;
 
 
     @Override
@@ -27,6 +30,9 @@ public class SelectVersionFilterUseCaseImpl implements SelectVersionFilterUseCas
         this.statusPresenter.present(statusResponse1);
 
         this.mainState.getVersionFilterState().setVersionFilter(versionFilter);
+
+        var versionFilterResponse = VersionFilterResponse.fromDomain(versionFilter);
+        this.versionFilterPresenter.present(versionFilterResponse);
 
         var readVersionsRequest = new ReadVersionsRequest(true);
         this.readVersionsUc.execute(readVersionsRequest);
