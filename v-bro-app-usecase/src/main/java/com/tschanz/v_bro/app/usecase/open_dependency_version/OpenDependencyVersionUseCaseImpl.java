@@ -37,7 +37,7 @@ public class OpenDependencyVersionUseCaseImpl implements OpenDependencyVersionUs
         var openElementClassRequest = new OpenElementClassRequest(elementClassName, false, true);
         this.openElementClassUc.execute(openElementClassRequest);
 
-        var openElementRequest = new OpenElementRequest(elementId, false);
+        var openElementRequest = new OpenElementRequest(elementId, true,false);
         this.openElementUc.execute(openElementRequest);
 
         var openVersionRequest = new OpenVersionRequest(versionId);

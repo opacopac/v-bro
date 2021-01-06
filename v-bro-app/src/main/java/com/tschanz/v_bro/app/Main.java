@@ -61,7 +61,7 @@ public class Main {
         var jdbcRepoDataService = new JdbcRepoDataService(jdbcConnectionFactory, jdbcQueryBuilder);
         var jdbcDataStructureService = new JdbcDataStructureService(jdbcRepoMetadataService);
         var jdbcRepoConnectionServiceWrapper = new JdbcRepoConnectionServiceWrapper(jdbcRepoConnectionService, jdbcDataStructureService);
-        var jdbcElementClassService = new JdbcElementClassService(jdbcRepoMetadataService);
+        var jdbcElementClassService = new JdbcElementClassService(jdbcDataStructureService);
         var jdbcDependencyStructureService = new JdbcDependencyStructureService(jdbcDataStructureService);
         var jdbcElementService = new JdbcElementService(jdbcRepoMetadataService, jdbcRepoDataService);
         var jdbcVersionService = new JdbcVersionService(jdbcRepoDataService, jdbcElementService);

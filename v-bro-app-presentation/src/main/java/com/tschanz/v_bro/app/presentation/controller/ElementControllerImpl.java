@@ -36,7 +36,7 @@ public class ElementControllerImpl implements ElementController {
             return;
         }
 
-        var request = new OpenElementRequest(selectedElementId, true);
+        var request = new OpenElementRequest(selectedElementId, true,true);
         this.openElementUc.execute(request);
     }
 }

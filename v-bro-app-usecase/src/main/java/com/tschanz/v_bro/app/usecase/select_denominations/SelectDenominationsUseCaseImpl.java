@@ -50,7 +50,7 @@ public class SelectDenominationsUseCaseImpl implements SelectDenominationsUseCas
         var currentElementId = this.mainState.getElementState().getCurrentElementId();
         if (currentElementId != null) {
             this.mainState.getElementState().setQueryResult(Collections.emptyList());
-            var openElementRequest = new OpenElementRequest(currentElementId, false);
+            var openElementRequest = new OpenElementRequest(currentElementId, false,false);
             this.openElementUc.execute(openElementRequest);
         }
     }

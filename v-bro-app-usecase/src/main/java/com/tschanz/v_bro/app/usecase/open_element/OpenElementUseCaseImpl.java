@@ -34,7 +34,7 @@ public class OpenElementUseCaseImpl implements OpenElementUseCase {
         var elementClass = mainState.getElementClassState().getCurrentElementClass();
         var selectedDenominationFields = this.mainState.getDenominationState().getCurrentDenominations();
 
-        if (repoType != null && elementId != null) {
+        if (repoType != null && elementClass != null && elementId != null) {
             var msgStart = String.format("UC: opening element id '%s'...", elementId);
             log.info(msgStart);
             var statusResponse1 = new StatusResponse(msgStart, false, true);
@@ -53,6 +53,9 @@ public class OpenElementUseCaseImpl implements OpenElementUseCase {
                     this.mainState.getElementState().setQueryResult(Collections.emptyList());
                 }
             }
+
+            var statusResponse2 = new StatusResponse(msgStart, false, false);
+            this.statusPresenter.present(statusResponse2);
         } else {
             log.info("UC: clearing selected element");
 
@@ -63,7 +66,9 @@ public class OpenElementUseCaseImpl implements OpenElementUseCase {
         var elementResponse = ElementResponse.fromDomain(currentElement);
         this.elementPresenter.present(elementResponse);
 
-        var readVersionRequest = new ReadVersionsRequest(request.isAutoOpenLastVersion());
-        this.readVersionsUc.execute(readVersionRequest);
+        if (request.isReadVersions()) {
+            var readVersionRequest = new ReadVersionsRequest(request.isAutoOpenLastVersion());
+            this.readVersionsUc.execute(readVersionRequest);
+        }
     }
 }

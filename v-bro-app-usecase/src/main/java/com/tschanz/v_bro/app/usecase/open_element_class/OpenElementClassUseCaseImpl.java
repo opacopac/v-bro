@@ -93,7 +93,7 @@ public class OpenElementClassUseCaseImpl implements OpenElementClassUseCase {
                 ? elements.get(0).getId()
                 : null;
 
-            var openElementRequest = new OpenElementRequest(elementId, true);
+            var openElementRequest = new OpenElementRequest(elementId, true, true);
             this.openElementUseCase.execute(openElementRequest);
         }
 

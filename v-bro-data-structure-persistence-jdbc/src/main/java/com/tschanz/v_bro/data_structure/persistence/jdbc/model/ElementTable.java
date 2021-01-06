@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 @Getter
 @RequiredArgsConstructor
 public class ElementTable {
-    public final static String TABLE_SUFFIX = "_E";
     @NonNull private final RepoTable repoTable;
 
 
