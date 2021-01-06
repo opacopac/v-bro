@@ -22,9 +22,9 @@ import java.util.List;
 public class OpenElementUseCaseImpl implements OpenElementUseCase {
     private final MainState mainState;
     private final RepoServiceProvider<ElementService> elementServiceProvider;
+    private final StatusPresenter statusPresenter;
     private final ElementPresenter elementPresenter;
     private final ReadVersionsUseCase readVersionsUc;
-    private final StatusPresenter statusPresenter;
 
 
     @Override

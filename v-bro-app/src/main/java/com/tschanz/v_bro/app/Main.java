@@ -120,9 +120,9 @@ public class Main {
         var openVersionUc = new OpenVersionUseCaseImpl(mainState, readVersionAggregateUc, readDependenciesUc, mainPresenter.getVersionTimelinePresenter(), mainPresenter.getStatusPresenter());
         var readVersionsUc = new ReadVersionsUseCaseImpl(mainState, versionServiceProvider, openVersionUc, mainPresenter.getStatusPresenter(), mainPresenter.getVersionTimelinePresenter());
         var selectVersionFilterUc = new SelectVersionFilterUseCaseImpl(mainState, readVersionsUc, mainPresenter.getStatusPresenter(), mainPresenter.getVersionFilterPresenter());
-        var openElementUc = new OpenElementUseCaseImpl(mainState, elementServiceProvider, mainPresenter.getElementPresenter(), readVersionsUc, mainPresenter.getStatusPresenter());
+        var openElementUc = new OpenElementUseCaseImpl(mainState, elementServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getElementPresenter(), readVersionsUc);
         var queryElementsUc = new QueryElementsUseCaseImpl(mainState, elementServiceProvider);
-        var selectDenominationsUc = new SelectDenominationsUseCaseImpl(mainState, mainPresenter.getDenominationsPresenter());
+        var selectDenominationsUc = new SelectDenominationsUseCaseImpl(mainState, mainPresenter.getDenominationsPresenter(), openElementUc);
         var readDenominationUc = new ReadDenominationUseCaseImpl(mainState, denominationServiceProvider, mainPresenter.getDenominationsPresenter(), mainPresenter.getStatusPresenter());
         var openElementClassUc = new OpenElementClassUseCaseImpl(mainState, mainPresenter.getElementClassPresenter(), mainPresenter.getStatusPresenter(), readDenominationUc, selectDenominationsUc, queryElementsUc, openElementUc, readDependencyElementClassesUc, selectDependencyElementClassUc);
         var readElementClassesUc = new ReadElementClassesUseCaseImpl(mainState, elementClassServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getElementClassPresenter());

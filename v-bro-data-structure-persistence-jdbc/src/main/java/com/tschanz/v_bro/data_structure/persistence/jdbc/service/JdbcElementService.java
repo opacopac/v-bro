@@ -48,7 +48,7 @@ public class JdbcElementService implements ElementService {
 
         return rows
             .stream()
-            .map(row -> this.getElementFromRow(row, elementClass))
+            .map(row -> this.getElementFromRow(row, elementClass, denominationFields))
             .distinct()
             .collect(Collectors.toList());
     }
@@ -68,7 +68,7 @@ public class JdbcElementService implements ElementService {
         var rows = this.repoDataService.readRepoTableRecords(elementTable.getRepoTable(), joins, allFields, andFilter, Collections.emptyList(), -1);
 
         if (rows.size() > 0) {
-            return this.getElementFromRow(rows.get(0), elementClass);
+            return this.getElementFromRow(rows.get(0), elementClass, denominationFields);
         } else {
             throw new RepoException(String.format("element with ID '%s' not found", elementId));
         }
@@ -117,9 +117,8 @@ public class JdbcElementService implements ElementService {
     private List<RepoField> getFields(ElementTable elementTable, VersionTable versionTable, List<Denomination> denominationFields) {
         var elementDenominationFieldNames = this.getDenominationFieldNames(denominationFields, Denomination.ELEMENT_PATH);
         var elementFields = elementTable.getFields(elementDenominationFieldNames);
-        // TODO: hack to ensure element id is always present
         if (!elementFields.contains(elementTable.getIdField())) {
-            elementFields.add(elementTable.getIdField());
+            elementFields.add(elementTable.getIdField()); // ensure element id field is always present
         }
 
         List<String> versionDenominationFieldNames = versionTable != null
@@ -169,10 +168,15 @@ public class JdbcElementService implements ElementService {
     }
 
 
-    private ElementData getElementFromRow(RepoTableRecord row, ElementClass elementClass) {
+    private ElementData getElementFromRow(RepoTableRecord row, ElementClass elementClass, List<Denomination> denominationFields) {
+        var denominationFieldNames = denominationFields
+            .stream()
+            .map(Denomination::getName)
+            .collect(Collectors.toList());
         var elementId = row.findIdFieldValue().getValueString();
         var denominations = row.getFieldValues()
             .stream()
+            .filter(field -> denominationFieldNames.contains(field.getName()))
             .map(field -> new DenominationData(field.getName(), field.getValueString()))
             .collect(Collectors.toList());
 
