@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,10 +43,14 @@ public class JdbcVersionService implements VersionService {
             return List.of(VersionData.createEternal(element));
         }
 
+        var versionFields = new ArrayList<>(List.of(versionTable.getIdField(), versionTable.getGueltigVonField(), versionTable.getGueltigBisField()));
+        if (versionTable.getPflegestatusField() != null) {
+            versionFields.add(versionTable.getPflegestatusField());
+        }
         var versionRecords = this.repoDataService.readRepoTableRecords(
             versionTable.getRepoTable(),
             Collections.emptyList(),
-            List.of(versionTable.getIdField(), versionTable.getGueltigVonField(), versionTable.getGueltigBisField(), versionTable.getPflegestatusField()),
+            versionFields,
             this.getRowFilters(versionTable, element.getId()),
             Collections.emptyList(),
             -1
