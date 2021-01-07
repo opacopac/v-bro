@@ -7,9 +7,6 @@
 <AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tschanz.v_bro.app.presentation.jfx.view.JfxMainView"
             prefHeight="900.0" prefWidth="1400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
     <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <top>
-            <Label text="V-Bro" BorderPane.alignment="CENTER" />
-        </top>
         <center>
             <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                 <AnchorPane>
@@ -29,6 +26,7 @@
                             <fx:include fx:id="dependencyFilterView" source="DependencyFilterView.fxml" />
                             <fx:include fx:id="dependencyElementClassView" source="DependencyElementClassView.fxml" />
                             <fx:include fx:id="dependencyDenominationsView" source="DependencyDenominationView.fxml" />
+                            <fx:include fx:id="dependencyElementFilterView" source="DependencyElementFilter.fxml" />
                         </HBox>
                         <AnchorPane VBox.vgrow="ALWAYS">
                             <ScrollPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fitToWidth="true" fitToHeight="true">

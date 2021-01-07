@@ -37,6 +37,7 @@ public class ReadDependenciesUseCaseImpl implements ReadDependenciesUseCase {
         var isFwd = mainState.getDependencyState().isFwdDependencies();
         var fwdBwdText = isFwd ? "FWD" : "BWD";
         var elementClassFilter = mainState.getDependencyState().getDependencyElementClasses().getSelectedItem();
+        var query = mainState.getDependencyState().getDependencyElementQuery();
         var dependecyDenominations = mainState.getDependencyState().getDependencyDenominations().getSelectedItems();
 
         if (repoType != null && ((isFwd && version != null) || (!isFwd && element != null))) {
@@ -54,9 +55,9 @@ public class ReadDependenciesUseCaseImpl implements ReadDependenciesUseCase {
                 var dependencyService = this.dependencyServiceProvider.getService(repoType);
                 List<Dependency> dependencies;
                 if (isFwd) {
-                    dependencies = dependencyService.readFwdDependencies(version, minGueltigVon, maxGueltigBis, minPflegestatus, elementClassFilter, dependecyDenominations, MAX_DEPENDENCIES);
+                    dependencies = dependencyService.readFwdDependencies(version, minGueltigVon, maxGueltigBis, minPflegestatus, elementClassFilter, dependecyDenominations, query, MAX_DEPENDENCIES);
                 } else {
-                    dependencies = dependencyService.readBwdDependencies(element, minGueltigVon, maxGueltigBis, minPflegestatus, elementClassFilter, dependecyDenominations, MAX_DEPENDENCIES);
+                    dependencies = dependencyService.readBwdDependencies(element, minGueltigVon, maxGueltigBis, minPflegestatus, elementClassFilter, dependecyDenominations, query, MAX_DEPENDENCIES);
                 }
 
                 var msgSuccess = String.format("successfully read %d %s dependencies", dependencies.size(), fwdBwdText);

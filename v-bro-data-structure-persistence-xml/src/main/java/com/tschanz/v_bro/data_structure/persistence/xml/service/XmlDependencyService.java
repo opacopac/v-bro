@@ -27,12 +27,13 @@ public class XmlDependencyService implements DependencyService {
         @NonNull Pflegestatus minPflegestatus,
         ElementClass elementClassFilter,
         @NonNull List<Denomination> denominations,
+        String query,
         int maxResults
     ) {
         var xmlStructureMap = this.xmlDataStructureService.getXmlStructureMap();
         var versionAggregate = this.versionAggregateService.readVersionAggregate(version);
         List<Dependency> fwdDependencies = new ArrayList<>();
-        this.addNodeDependencies(fwdDependencies, versionAggregate.getRootNode(), xmlStructureMap, minGueltigVon, maxGueltigBis, minPflegestatus, elementClassFilter, denominations, maxResults);
+        this.addNodeDependencies(fwdDependencies, versionAggregate.getRootNode(), xmlStructureMap, minGueltigVon, maxGueltigBis, minPflegestatus, elementClassFilter, denominations, query, maxResults);
 
         return fwdDependencies;
     }
@@ -46,6 +47,7 @@ public class XmlDependencyService implements DependencyService {
         @NonNull Pflegestatus minPflegestatus,
         ElementClass elementClassFilter,
         @NonNull List<Denomination> denominations,
+        String query,
         int maxResults
     ) {
         var elementInfo = this.xmlDataStructureService.getXmlStructureMap().get(element.getId());
@@ -61,6 +63,9 @@ public class XmlDependencyService implements DependencyService {
             }
             var bwdElementClass = new ElementClass(bwdElementInfo.getElementClass());
             var bwdElement = this.elementService.readElement(bwdElementClass, denominations, bwdElementInfo.getElementId());
+            if (!this.isQueryMatch(bwdElement, query)) {
+                continue;
+            }
             var bwdVersions = this.versionService.readVersions(bwdElement, minGueltigVon, maxGueltigBis, minPflegestatus);
             var bwdDependency = new Dependency(bwdElementClass, bwdElement, bwdVersions);
             dependencies.add(bwdDependency);
@@ -79,6 +84,7 @@ public class XmlDependencyService implements DependencyService {
         Pflegestatus minPflegestatus,
         ElementClass elementClassFilter,
         List<Denomination> denominations,
+        String query,
         int maxResults
     ) {
         var fwdElements = aggregateNode.getFieldValues()
@@ -99,13 +105,30 @@ public class XmlDependencyService implements DependencyService {
             }
             var elementClass = new ElementClass(fwdElement.getElementClass());
             var element = this.elementService.readElement(elementClass, denominations, fwdElement.getElementId());
+            if (!this.isQueryMatch(element, query)) {
+                continue;
+            }
             var versions = this.versionService.readVersions(element, minGueltigVon, maxGueltigBis, minPflegestatus);
             var fwdDependency = new Dependency(elementClass, element, versions);
             fwdDependencies.add(fwdDependency);
         }
 
         for (AggregateNode childNode: aggregateNode.getChildNodes()) {
-            this.addNodeDependencies(fwdDependencies, childNode, xmlStructureData, minGueltigVon, maxGueltigBis, minPflegestatus, elementClassFilter, denominations, maxResults);
+            this.addNodeDependencies(fwdDependencies, childNode, xmlStructureData, minGueltigVon, maxGueltigBis, minPflegestatus, elementClassFilter, denominations, query, maxResults);
         }
+    }
+
+
+    private boolean isQueryMatch(ElementData element, String query) {
+        if (query != null && !query.isBlank()) {
+            var matchCount = element.getDenominations()
+                .stream()
+                .filter(e -> e.getValue().toLowerCase().contains(query.toLowerCase()))
+                .count();
+
+            return matchCount > 0;
+        }
+
+        return true;
     }
 }

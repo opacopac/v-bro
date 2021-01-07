@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DependencyFilterItem {
     private final boolean fwd;
-    /*private final SelectableItemList<ElementClassItem> dependencyElementClasses;
-    private final MultiSelectableItemList<DenominationItem> dependencyDenominations;*/
 
 
     @Override

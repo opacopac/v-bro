@@ -18,6 +18,7 @@ public class MockDependencyService implements DependencyService {
         @NonNull Pflegestatus minPflegestatus,
         ElementClass elementClassFilter,
         @NonNull List<Denomination> denominations,
+        String query,
         int maxResults
     ) {
         var elementClass1 = new ElementClass("P_PRODUKTDEFINITION_E");
@@ -100,6 +101,7 @@ public class MockDependencyService implements DependencyService {
         @NonNull Pflegestatus minPflegestatus,
         ElementClass elementClassFilter,
         @NonNull List<Denomination> denominations,
+        String query,
         int maxResults
     ) {
         var elementClass1 = new ElementClass("P_PRODUKTDEFINITION_E");

@@ -1,4 +1,4 @@
-package com.tschanz.v_bro.app.usecase.select_dependency_filter;
+package com.tschanz.v_bro.app.usecase.select_dependency_direction;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -6,6 +6,6 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class SelectDependencyFilterRequest {
+public class SelectDependencyDirectionRequest {
     private final boolean isFwd;
 }

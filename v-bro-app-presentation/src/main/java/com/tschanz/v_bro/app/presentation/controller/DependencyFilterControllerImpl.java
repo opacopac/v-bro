@@ -1,14 +1,14 @@
 package com.tschanz.v_bro.app.presentation.controller;
 
 import com.tschanz.v_bro.app.presentation.viewmodel.dependency.DependencyFilterItem;
-import com.tschanz.v_bro.app.usecase.select_dependency_filter.SelectDependencyFilterRequest;
-import com.tschanz.v_bro.app.usecase.select_dependency_filter.SelectDependencyFilterUseCase;
+import com.tschanz.v_bro.app.usecase.select_dependency_direction.SelectDependencyDirectionRequest;
+import com.tschanz.v_bro.app.usecase.select_dependency_direction.SelectDependencyDirectionUseCase;
 import lombok.RequiredArgsConstructor;
 
 
 @RequiredArgsConstructor
 public class DependencyFilterControllerImpl implements DependencyFilterController {
-    private final SelectDependencyFilterUseCase selectDependencyFilterUc;
+    private final SelectDependencyDirectionUseCase selectDependencyDirectionUc;
 
 
     public void onDependencyFilterSelected(DependencyFilterItem dependencyFilterItem) {
@@ -16,7 +16,7 @@ public class DependencyFilterControllerImpl implements DependencyFilterControlle
             return;
         }
 
-        var selectDependencyFilterRequest = new SelectDependencyFilterRequest(dependencyFilterItem.isFwd());
-        this.selectDependencyFilterUc.execute(selectDependencyFilterRequest);
+        var selectDependencyFilterRequest = new SelectDependencyDirectionRequest(dependencyFilterItem.isFwd());
+        this.selectDependencyDirectionUc.execute(selectDependencyFilterRequest);
     }
 }

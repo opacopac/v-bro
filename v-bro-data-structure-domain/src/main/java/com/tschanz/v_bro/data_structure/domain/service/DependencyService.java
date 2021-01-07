@@ -15,6 +15,7 @@ public interface DependencyService {
         @NonNull Pflegestatus minPflegestatus,
         ElementClass elementClassFilter,
         @NonNull List<Denomination> denominations,
+        String query,
         int maxResults
         );
 
@@ -25,6 +26,7 @@ public interface DependencyService {
         @NonNull Pflegestatus minPflegestatus,
         ElementClass elementClassFilter,
         @NonNull List<Denomination> denominations,
+        String query,
         int maxResults
     );
 }

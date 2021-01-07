@@ -7,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
 
 
-
 public class JfxMainView implements MainView {
     @FXML private AnchorPane connectionView;
     @FXML private AnchorPane elementClassView;
@@ -18,6 +17,7 @@ public class JfxMainView implements MainView {
     @FXML private AnchorPane dependencyFilterView;
     @FXML private AnchorPane dependencyElementClassView;
     @FXML private AnchorPane dependencyDenominationsView;
+    @FXML private AnchorPane dependencyElementFilterView;
     @FXML private AnchorPane dependenciesView;
     @FXML private AnchorPane versionAggregateView;
     @FXML private AnchorPane statusBarView;
@@ -30,6 +30,7 @@ public class JfxMainView implements MainView {
     @FXML private JfxDependencyFilterView dependencyFilterViewController;
     @FXML private JfxDependencyElementClassView dependencyElementClassViewController;
     @FXML private JfxDependencyDenominationView dependencyDenominationsViewController;
+    @FXML private JfxDependencyElementFilterView dependencyElementFilterViewController;
     @FXML private JfxDependencyListView dependenciesViewController;
     @FXML private JfxVersionAggregateView versionAggregateViewController;
     @FXML private JfxStatusBarView statusBarViewController;
@@ -47,6 +48,7 @@ public class JfxMainView implements MainView {
         this.dependencyFilterViewController.bindViewModel(mainViewModel.dependencyFilter, mainController.getDependencyFilterController());
         this.dependencyElementClassViewController.bindViewModel(mainViewModel.dependencyElementClasses, mainController.getDependencyElementClassController());
         this.dependencyDenominationsViewController.bindViewModel(mainViewModel.dependencyDenominations, mainController.getDependencyDenominationController());
+        this.dependencyElementFilterViewController.bindViewModel(mainController.getDependencyElementFilterController());
         this.dependenciesViewController.bindViewModel(mainViewModel.fwdDependencies, mainViewModel.versionFilter, mainController.getDependencyListController());
         this.versionAggregateViewController.bindViewModel(mainViewModel.versionAggregate);
     }

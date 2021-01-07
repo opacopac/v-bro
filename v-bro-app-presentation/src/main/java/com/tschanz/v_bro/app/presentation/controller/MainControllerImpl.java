@@ -11,7 +11,8 @@ import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsUseCase;
 import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsUseCase;
 import com.tschanz.v_bro.app.usecase.select_dependency_denominations.SelectDependencyDenominationsUseCase;
 import com.tschanz.v_bro.app.usecase.select_dependency_element_class.SelectDependencyElementClassUseCase;
-import com.tschanz.v_bro.app.usecase.select_dependency_filter.SelectDependencyFilterUseCase;
+import com.tschanz.v_bro.app.usecase.select_dependency_element_filter.SelectDependencyElementFilterUseCase;
+import com.tschanz.v_bro.app.usecase.select_dependency_direction.SelectDependencyDirectionUseCase;
 import com.tschanz.v_bro.app.usecase.select_version_filter.SelectVersionFilterUseCase;
 import lombok.Getter;
 
@@ -29,6 +30,7 @@ public class MainControllerImpl implements MainController {
     private final DependencyFilterController dependencyFilterController;
     private final DependencyElementClassController dependencyElementClassController;
     private final DependencyDenominationController dependencyDenominationController;
+    private final DependencyElementFilterController dependencyElementFilterController;
     private final DependencyListController dependencyListController;
 
 
@@ -43,9 +45,10 @@ public class MainControllerImpl implements MainController {
         OpenElementUseCase openElementUc,
         SelectVersionFilterUseCase selectVersionFilterUc,
         OpenVersionUseCase openVersionUc,
-        SelectDependencyFilterUseCase selectDependencyFilterUc,
+        SelectDependencyDirectionUseCase selectDependencyDirectionUc,
         SelectDependencyElementClassUseCase selectDependencyElementClassUc,
         SelectDependencyDenominationsUseCase selectDependencyDenominationsUc,
+        SelectDependencyElementFilterUseCase selectDependencyElementFilterUc,
         OpenDependencyVersionUseCase openDependencyVersionUc
     ) {
         this.connectionController = new ConnectionControllerImpl(
@@ -60,9 +63,10 @@ public class MainControllerImpl implements MainController {
         this.elementController = new ElementControllerImpl(queryElementsUc, openElementUc);
         this.versionFilterController = new VersionFilterControllerImpl(selectVersionFilterUc);
         this.versionController = new VersionControllerImpl(openVersionUc);
-        this.dependencyFilterController = new DependencyFilterControllerImpl(selectDependencyFilterUc);
+        this.dependencyFilterController = new DependencyFilterControllerImpl(selectDependencyDirectionUc);
         this.dependencyElementClassController = new DependencyElementClassControllerImpl(selectDependencyElementClassUc);
         this.dependencyDenominationController = new DependencyDenominationControllerImpl(selectDependencyDenominationsUc);
+        this.dependencyElementFilterController = new DependencyElementFilterControllerImpl(selectDependencyElementFilterUc);
         this.dependencyListController = new DependencyListControllerImpl(openDependencyVersionUc);
     }
 }

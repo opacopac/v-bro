@@ -23,7 +23,6 @@ public class SelectDependencyDenominationsUseCaseImpl implements SelectDependenc
 
     @Override
     public void execute(SelectDenominationsRequest request) {
-        var elementClass = this.mainState.getElementClassState().getCurrentElementClass();
         var selectedDenominationsReq = Objects.requireNonNull(request.toDomain());
         var selectedDenominationNames = selectedDenominationsReq.stream().map(Denomination::getName).collect(Collectors.toList());
 

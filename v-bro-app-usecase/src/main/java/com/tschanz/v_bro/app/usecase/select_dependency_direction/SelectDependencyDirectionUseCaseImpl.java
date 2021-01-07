@@ -1,4 +1,4 @@
-package com.tschanz.v_bro.app.usecase.select_dependency_filter;
+package com.tschanz.v_bro.app.usecase.select_dependency_direction;
 
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusResponse;
@@ -15,7 +15,7 @@ import lombok.extern.java.Log;
 
 @Log
 @RequiredArgsConstructor
-public class SelectDependencyFilterUseCaseImpl implements SelectDependencyFilterUseCase {
+public class SelectDependencyDirectionUseCaseImpl implements SelectDependencyDirectionUseCase {
     private final MainState mainState;
     private final ReadDependenciesUseCase readDependenciesUc;
     private final StatusPresenter statusPresenter;
@@ -24,10 +24,10 @@ public class SelectDependencyFilterUseCaseImpl implements SelectDependencyFilter
 
 
     @Override
-    public void execute(SelectDependencyFilterRequest request) {
+    public void execute(SelectDependencyDirectionRequest request) {
         var fwdBwdText = request.isFwd() ? "FWD" : "BWD";
 
-        var msgStart = String.format("UC: selecting %s dependency filter...", fwdBwdText);
+        var msgStart = String.format("UC: selecting %s dependency direction...", fwdBwdText);
         log.info(msgStart);
         var statusResponse1 = new StatusResponse(msgStart, false, false);
         this.statusPresenter.present(statusResponse1);

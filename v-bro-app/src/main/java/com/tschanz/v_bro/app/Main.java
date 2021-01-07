@@ -23,7 +23,8 @@ import com.tschanz.v_bro.app.usecase.read_versions.ReadVersionsUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_dependency_denominations.SelectDependencyDenominationsUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_dependency_element_class.SelectDependencyElementClassUseCaseImpl;
-import com.tschanz.v_bro.app.usecase.select_dependency_filter.SelectDependencyFilterUseCaseImpl;
+import com.tschanz.v_bro.app.usecase.select_dependency_element_filter.SelectDependencyElementFilterUseCaseImpl;
+import com.tschanz.v_bro.app.usecase.select_dependency_direction.SelectDependencyDirectionUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_version_filter.SelectVersionFilterUseCaseImpl;
 import com.tschanz.v_bro.common.cache.LastNCache;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.service.*;
@@ -113,10 +114,11 @@ public class Main {
         var readVersionAggregateUc = new ReadVersionAggregateUseCaseImpl(mainState, versionAggregateServiceProvider, mainPresenter.getVersionAggregatePresenter(), mainPresenter.getStatusPresenter());
         var readDependenciesUc = new ReadDependenciesUseCaseImpl(mainState, dependencyServiceProvider, mainPresenter.getDependencyPresenter(), mainPresenter.getStatusPresenter());
         var readDependencyElementClassesUc = new ReadDependencyElementClassesUseCaseImpl(mainState, dependencyStructureServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getDependencyElementClassPresenter());
+        var selectDependencyElementFilterUc = new SelectDependencyElementFilterUseCaseImpl(mainState, readDependenciesUc);
         var selectDependencyDenominationsUc = new SelectDependencyDenominationsUseCaseImpl(mainState, readDependenciesUc);
         var readDepdendencyDenominationsUc = new ReadDependencyDenominationsUseCaseImpl(mainState, denominationServiceProvider, mainPresenter.getDependencyDenominationsPresenter(), mainPresenter.getStatusPresenter());
         var selectDependencyElementClassUc = new SelectDependencyElementClassUseCaseImpl(mainState, readDepdendencyDenominationsUc, readDependenciesUc);
-        var selectDependencyFilterUc = new SelectDependencyFilterUseCaseImpl(mainState, readDependenciesUc, mainPresenter.getStatusPresenter(), readDependencyElementClassesUc, selectDependencyElementClassUc);
+        var selectDependencyDirectionUc = new SelectDependencyDirectionUseCaseImpl(mainState, readDependenciesUc, mainPresenter.getStatusPresenter(), readDependencyElementClassesUc, selectDependencyElementClassUc);
         var openVersionUc = new OpenVersionUseCaseImpl(mainState, readVersionAggregateUc, readDependenciesUc, mainPresenter.getVersionTimelinePresenter(), mainPresenter.getStatusPresenter());
         var readVersionsUc = new ReadVersionsUseCaseImpl(mainState, versionServiceProvider, openVersionUc, mainPresenter.getStatusPresenter(), mainPresenter.getVersionTimelinePresenter());
         var selectVersionFilterUc = new SelectVersionFilterUseCaseImpl(mainState, readVersionsUc, mainPresenter.getStatusPresenter(), mainPresenter.getVersionFilterPresenter());
@@ -142,9 +144,10 @@ public class Main {
             openElementUc,
             selectVersionFilterUc,
             openVersionUc,
-            selectDependencyFilterUc,
+            selectDependencyDirectionUc,
             selectDependencyElementClassUc,
             selectDependencyDenominationsUc,
+            selectDependencyElementFilterUc,
             openDependencyVersionUc
         );
 

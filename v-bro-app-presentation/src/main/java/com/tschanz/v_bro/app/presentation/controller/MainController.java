@@ -20,5 +20,7 @@ public interface MainController {
 
     DependencyDenominationController getDependencyDenominationController();
 
+    DependencyElementFilterController getDependencyElementFilterController();
+
     DependencyListController getDependencyListController();
 }

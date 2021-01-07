@@ -21,4 +21,5 @@ public class DependencyState {
     private boolean isFwdDependencies = true;
     @NonNull private SelectedList<ElementClass> dependencyElementClasses = SelectedList.createEmpty();
     @NonNull private MultiSelectedList<Denomination> dependencyDenominations = MultiSelectedList.createEmpty();
+    @NonNull private String dependencyElementQuery = "";
 }

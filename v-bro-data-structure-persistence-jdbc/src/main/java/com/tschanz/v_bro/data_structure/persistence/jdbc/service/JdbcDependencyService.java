@@ -44,6 +44,7 @@ public class JdbcDependencyService implements DependencyService {
         @NonNull Pflegestatus minPflegestatus,
         ElementClass elementClassFilter,
         @NonNull List<Denomination> denominations,
+        String query,
         int maxResults
     ) {
         var aggregate = (AggregateData) this.versionAggregateService.readVersionAggregate(version); // TODO: ugly type casting
@@ -65,6 +66,9 @@ public class JdbcDependencyService implements DependencyService {
                 if (fwdElementId != null) {
                     var elementClass = new ElementClass(fwdElementClassName);
                     var element = this.elementService.readElement(elementClass, denominations, fwdElementId);
+                    if (!this.isQueryMatch(element, query)) {
+                        continue;
+                    }
                     var versions = this.versionService.readVersions(element, minGueltigVon, maxGueltigBis, minPflegestatus);
                     var fwdDependency = new Dependency(elementClass, element, versions);
                     dependencies.add(fwdDependency);
@@ -84,6 +88,7 @@ public class JdbcDependencyService implements DependencyService {
         @NonNull Pflegestatus minPflegestatus,
         ElementClass elementClassFilter,
         @NonNull List<Denomination> denominations,
+        String query,
         int maxResults
     ) {
         var elementClassName = element.getElementClass().getName();
@@ -106,7 +111,7 @@ public class JdbcDependencyService implements DependencyService {
 
         List<ElementData> bwdElements = new ArrayList<>();
         for (var bwdAggregateNode: bwdAggregateNodes) {
-            this.addBwdElements(bwdElements, element, elementTable, bwdAggregateNode, denominations, maxResults);
+            this.addBwdElements(bwdElements, element, elementTable, bwdAggregateNode, denominations, query, maxResults);
         }
 
         List<Dependency> bwdDependencies = new ArrayList<>();
@@ -120,7 +125,7 @@ public class JdbcDependencyService implements DependencyService {
 
 
     @SneakyThrows
-    private void addBwdElements(List<ElementData> bwdElements, ElementData element, ElementTable elementTable, AggregateStructureNode bwdAggregateNode, List<Denomination> denominations, int maxResults) {
+    private void addBwdElements(List<ElementData> bwdElements, ElementData element, ElementTable elementTable, AggregateStructureNode bwdAggregateNode, List<Denomination> denominations, String query, int maxResults) {
         var relToElement = elementTable.getRepoTable().getIncomingRelations()
             .stream()
             .filter(rel -> rel.getBwdClassName().equals(bwdAggregateNode.getRepoTable().getName()))
@@ -163,6 +168,7 @@ public class JdbcDependencyService implements DependencyService {
                 .stream()
                 .limit(maxResults)
                 .map(row -> this.elementService.readElement(bwdElementClass, denominations, row.findIdFieldValue().getValueString()))
+                .filter(bwdElement -> this.isQueryMatch(bwdElement, query))
                 .collect(Collectors.toList())
             );
         }
@@ -196,5 +202,19 @@ public class JdbcDependencyService implements DependencyService {
 
     private boolean isVersionTable(String tableName, AggregateData aggregate) {
         return aggregate.getVersionRecord().getRecord().getRepoTable().getName().equals(tableName);
+    }
+
+
+    private boolean isQueryMatch(ElementData element, String query) {
+        if (query != null && !query.isBlank()) {
+            var matchCount = element.getDenominations()
+                .stream()
+                .filter(e -> e.getValue().toLowerCase().contains(query.toLowerCase()))
+                .count();
+
+            return matchCount > 0;
+        }
+
+        return true;
     }
 }
