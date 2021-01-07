@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
 import java.util.Collections;
+import java.util.List;
 
 
 @Log
@@ -40,7 +41,16 @@ public class ReadDependencyDenominationsUseCaseImpl implements ReadDependencyDen
                 var denominationService = this.denominationServiceProvider.getService(repoType);
                 var denominations = denominationService.readDenominations(elementClass);
 
-                var mslist = new MultiSelectedList<>(denominations, Collections.emptyList());
+                var selectedDenominations = this.mainState.getDenominationState().getLastSelectedDenominations().getOrDefault(elementClass.getName(), Collections.emptyList());
+                if (selectedDenominations.size() == 0) {
+                    selectedDenominations = denominations
+                        .stream()
+                        .filter(Denomination::isElementId)
+                        .map(List::of)
+                        .findFirst()
+                        .orElse(Collections.emptyList());
+                }
+                var mslist = new MultiSelectedList<>(denominations, selectedDenominations);
                 this.mainState.getDependencyState().setDependencyDenominations(mslist);
 
                 var msgSuccess = String.format("successfully read %d dependency denominations.", denominations.size());

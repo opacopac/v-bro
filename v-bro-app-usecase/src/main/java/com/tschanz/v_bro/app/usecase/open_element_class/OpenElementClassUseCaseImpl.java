@@ -13,18 +13,11 @@ import com.tschanz.v_bro.app.usecase.read_denominations.ReadDenominationRequest;
 import com.tschanz.v_bro.app.usecase.read_denominations.ReadDenominationUseCase;
 import com.tschanz.v_bro.app.usecase.read_dependency_element_classes.ReadDependencyElementClassesRequest;
 import com.tschanz.v_bro.app.usecase.read_dependency_element_classes.ReadDependencyElementClassesUseCase;
-import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsRequest;
-import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsRequestItem;
-import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsUseCase;
 import com.tschanz.v_bro.app.usecase.select_dependency_element_class.SelectDependencyElementClassRequest;
 import com.tschanz.v_bro.app.usecase.select_dependency_element_class.SelectDependencyElementClassUseCase;
 import com.tschanz.v_bro.common.selected_list.SelectedList;
-import com.tschanz.v_bro.data_structure.domain.model.Denomination;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-
-import java.util.Collections;
-import java.util.List;
 
 
 @Log
@@ -34,7 +27,6 @@ public class OpenElementClassUseCaseImpl implements OpenElementClassUseCase {
     private final ElementClassPresenter elementClassPresenter;
     private final StatusPresenter statusPresenter;
     private final ReadDenominationUseCase readDenominationUc;
-    private final SelectDenominationsUseCase selectDenominationsUc;
     private final QueryElementsUseCase queryElementsUc;
     private final OpenElementUseCase openElementUseCase;
     private final ReadDependencyElementClassesUseCase readDependencyElementClassesUc;
@@ -73,16 +65,6 @@ public class OpenElementClassUseCaseImpl implements OpenElementClassUseCase {
 
         var readDenominationRequest = new ReadDenominationRequest();
         this.readDenominationUc.execute(readDenominationRequest);
-
-        var denominations = this.mainState.getDenominationState().getDenominations().getItems();
-        List<SelectDenominationsRequestItem> selectDenomination = denominations
-            .stream()
-            .filter(Denomination::isElementId)
-            .map(denomination -> List.of(new SelectDenominationsRequestItem(denomination.getPath(), denomination.getName())))
-            .findFirst()
-            .orElse(Collections.emptyList());
-        var selectDenominationRequest = new SelectDenominationsRequest(selectDenomination);
-        this.selectDenominationsUc.execute(selectDenominationRequest);
 
         if (request.isAutoOpenFirstElement()) {
             var queryElementRequest = new QueryElementsRequest("");

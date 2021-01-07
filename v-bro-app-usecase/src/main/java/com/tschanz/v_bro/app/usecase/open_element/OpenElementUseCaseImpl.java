@@ -32,7 +32,7 @@ public class OpenElementUseCaseImpl implements OpenElementUseCase {
         var elementId = request.getElementId();
         var repoType = mainState.getRepoState().getCurrentRepoType();
         var elementClass = mainState.getElementClassState().getCurrentElementClass();
-        var selectedDenominationFields = this.mainState.getDenominationState().getCurrentDenominations();
+        var selectedDenominationFields = this.mainState.getDenominationState().getElementDenominations().getSelectedItems();
 
         if (repoType != null && elementClass != null && elementId != null) {
             var msgStart = String.format("UC: opening element id '%s'...", elementId);

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public class VersionData {
     public static final LocalDate HIGH_DATE = LocalDate.of(9999, 12, 31);
     public static final LocalDate LOW_DATE = LocalDate.of(2000, 1, 1);
-    public static final LocalDate NOVA_NULL_DATE = LocalDate.of(2015, 1, 1);
+    public static final LocalDate NOVA_NULL_DATE = LocalDate.of(2015, 12, 13);
     public static final Pflegestatus ETERNAL_PFLEGESTATUS = Pflegestatus.PRODUKTIV;
     public static final String ETERNAL_VERSION_ID = "0";
     @Getter private final ElementData element;

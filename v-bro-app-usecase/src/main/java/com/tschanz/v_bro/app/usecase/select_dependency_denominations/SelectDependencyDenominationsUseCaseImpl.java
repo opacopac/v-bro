@@ -23,6 +23,7 @@ public class SelectDependencyDenominationsUseCaseImpl implements SelectDependenc
 
     @Override
     public void execute(SelectDenominationsRequest request) {
+        var elementClass = this.mainState.getElementClassState().getCurrentElementClass();
         var selectedDenominationsReq = Objects.requireNonNull(request.toDomain());
         var selectedDenominationNames = selectedDenominationsReq.stream().map(Denomination::getName).collect(Collectors.toList());
 
@@ -38,8 +39,12 @@ public class SelectDependencyDenominationsUseCaseImpl implements SelectDependenc
             selectedDenominations = List.of(oldDenominations.getItems().get(0));
         }
 
+        var dependencyElementClass = this.mainState.getDependencyState().getDependencyElementClasses().getSelectedItem();
         var newDenominations = new MultiSelectedList<>(oldDenominations.getItems(), selectedDenominations);
         this.mainState.getDependencyState().setDependencyDenominations(newDenominations);
+        if (dependencyElementClass != null) {
+            this.mainState.getDenominationState().getLastSelectedDenominations().put(dependencyElementClass.getName(), selectedDenominations);
+        }
 
         var readDependenciesRequest = new ReadDependenciesRequest();
         this.readDependenciesUc.execute(readDependenciesRequest);

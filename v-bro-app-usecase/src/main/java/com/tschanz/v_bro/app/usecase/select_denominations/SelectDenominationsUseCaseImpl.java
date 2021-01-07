@@ -26,12 +26,13 @@ public class SelectDenominationsUseCaseImpl implements SelectDenominationsUseCas
 
     @Override
     public void execute(SelectDenominationsRequest request) {
+        var elementClass = this.mainState.getElementClassState().getCurrentElementClass();
         var selectedDenominationsReq = Objects.requireNonNull(request.toDomain());
         var selectedDenominationNames = selectedDenominationsReq.stream().map(Denomination::getName).collect(Collectors.toList());
 
         log.info(String.format("UC: selecting denomination(s) '%s'...", String.join("', '", selectedDenominationNames)));
 
-        var oldDenominations = this.mainState.getDenominationState().getDenominations();
+        var oldDenominations = this.mainState.getDenominationState().getElementDenominations();
         var selectedDenominations = oldDenominations.getItems()
             .stream()
             .filter(selectedDenominationsReq::contains)
@@ -42,7 +43,10 @@ public class SelectDenominationsUseCaseImpl implements SelectDenominationsUseCas
         }
 
         var newDenominations = new MultiSelectedList<>(oldDenominations.getItems(), selectedDenominations);
-        this.mainState.getDenominationState().setDenominations(newDenominations);
+        this.mainState.getDenominationState().setElementDenominations(newDenominations);
+        if (elementClass != null) {
+            this.mainState.getDenominationState().getLastSelectedDenominations().put(elementClass.getName(), selectedDenominations);
+        }
 
         var denominationListResponse = DenominationListResponse.fromDomain(newDenominations);
         this.denominationsPresenter.present(denominationListResponse);

@@ -124,7 +124,7 @@ public class Main {
         var queryElementsUc = new QueryElementsUseCaseImpl(mainState, elementServiceProvider);
         var selectDenominationsUc = new SelectDenominationsUseCaseImpl(mainState, mainPresenter.getDenominationsPresenter(), openElementUc);
         var readDenominationUc = new ReadDenominationUseCaseImpl(mainState, denominationServiceProvider, mainPresenter.getDenominationsPresenter(), mainPresenter.getStatusPresenter());
-        var openElementClassUc = new OpenElementClassUseCaseImpl(mainState, mainPresenter.getElementClassPresenter(), mainPresenter.getStatusPresenter(), readDenominationUc, selectDenominationsUc, queryElementsUc, openElementUc, readDependencyElementClassesUc, selectDependencyElementClassUc);
+        var openElementClassUc = new OpenElementClassUseCaseImpl(mainState, mainPresenter.getElementClassPresenter(), mainPresenter.getStatusPresenter(), readDenominationUc, queryElementsUc, openElementUc, readDependencyElementClassesUc, selectDependencyElementClassUc);
         var readElementClassesUc = new ReadElementClassesUseCaseImpl(mainState, elementClassServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getElementClassPresenter());
         var openRepoUc = new OpenRepoUseCaseImpl(mainState, repoConnectionServiceProvider, mainPresenter.getRepoConnectionPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc);
         var closeRepoUc = new CloseRepoUseCaseImpl(mainState, repoConnectionServiceProvider, mainPresenter.getRepoConnectionPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc, selectDependencyElementClassUc);

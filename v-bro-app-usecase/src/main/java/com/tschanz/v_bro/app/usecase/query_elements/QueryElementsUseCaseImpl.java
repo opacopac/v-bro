@@ -24,7 +24,7 @@ public class QueryElementsUseCaseImpl implements QueryElementsUseCase {
         var repoType = mainState.getRepoState().getCurrentRepoType();
         var elementClass = mainState.getElementClassState().getCurrentElementClass();
         var query = Objects.requireNonNull(request.getQuery());
-        var selectedDenominationFields = this.mainState.getDenominationState().getCurrentDenominations();
+        var selectedDenominationFields = this.mainState.getDenominationState().getElementDenominations().getSelectedItems();
 
         if (repoType != null && elementClass != null) {
             try {

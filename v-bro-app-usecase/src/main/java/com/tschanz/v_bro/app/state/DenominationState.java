@@ -7,16 +7,14 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.Synchronized;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Getter(onMethod = @__({@Synchronized}))
 @Setter(onMethod = @__({@Synchronized}))
 public class DenominationState {
-    @NonNull private MultiSelectedList<Denomination> denominations = MultiSelectedList.createEmpty();
-
-
-    public List<Denomination> getCurrentDenominations() {
-        return this.denominations.getSelectedItems();
-    }
+    @NonNull private MultiSelectedList<Denomination> elementDenominations = MultiSelectedList.createEmpty();
+    private Map<String, List<Denomination>> lastSelectedDenominations = new HashMap<>();
 }
