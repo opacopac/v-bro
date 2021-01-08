@@ -11,6 +11,7 @@ import com.tschanz.v_bro.app.presenter.element_class.ElementClassPresenter;
 import com.tschanz.v_bro.app.presenter.repo_connection.RepoConnectionPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.version_aggregate.VersionAggregatePresenter;
+import com.tschanz.v_bro.app.presenter.version_aggregate_history.VersionAggregateHistoryPresenter;
 import com.tschanz.v_bro.app.presenter.version_filter.VersionFilterPresenter;
 import com.tschanz.v_bro.app.presenter.version_timeline.VersionTimelinePresenter;
 import lombok.Getter;
@@ -28,6 +29,7 @@ public class JfxMainPresenter extends MainPresenter {
     private final DependencyElementClassPresenter dependencyElementClassPresenter;
     private final DependencyDenominationsPresenter dependencyDenominationsPresenter;
     private final DependencyPresenter dependencyPresenter;
+    private final VersionAggregateHistoryPresenter versionAggregateHistoryPresenter;
     private final VersionAggregatePresenter versionAggregatePresenter;
 
 
@@ -44,6 +46,7 @@ public class JfxMainPresenter extends MainPresenter {
         this.dependencyElementClassPresenter = new JfxDependencyElementClassPresenter(mainViewModel.dependencyElementClasses);
         this.dependencyDenominationsPresenter = new JfxDependencyDenominationsPresenter(mainViewModel.dependencyDenominations);
         this.dependencyPresenter = new JfxDependenciesPresenter(mainViewModel.fwdDependencies);
+        this.versionAggregateHistoryPresenter = new JfxVersionAggregateHistoryPresenter(mainViewModel.versionAggregateHistory);
         this.versionAggregatePresenter = new JfxVersionAggregatePresenter(mainViewModel.versionAggregate);
     }
 }

@@ -1,6 +1,6 @@
 package com.tschanz.v_bro.app.usecase.select_dependency_denominations;
 
-import com.tschanz.v_bro.app.state.MainState;
+import com.tschanz.v_bro.app.state.AppState;
 import com.tschanz.v_bro.app.usecase.read_dependencies.ReadDependenciesRequest;
 import com.tschanz.v_bro.app.usecase.read_dependencies.ReadDependenciesUseCase;
 import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsRequest;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Log
 @RequiredArgsConstructor
 public class SelectDependencyDenominationsUseCaseImpl implements SelectDependencyDenominationsUseCase {
-    private final MainState mainState;
+    private final AppState appState;
     private final ReadDependenciesUseCase readDependenciesUc;
 
 
@@ -28,7 +28,7 @@ public class SelectDependencyDenominationsUseCaseImpl implements SelectDependenc
 
         log.info(String.format("UC: selecting dependency denomination(s) '%s'...", String.join("', '", selectedDenominationNames)));
 
-        var oldDenominations = this.mainState.getDependencyState().getDependencyDenominations();
+        var oldDenominations = this.appState.getDependencyDenominations();
         var selectedDenominations = oldDenominations.getItems()
             .stream()
             .filter(selectedDenominationsReq::contains)
@@ -38,11 +38,11 @@ public class SelectDependencyDenominationsUseCaseImpl implements SelectDependenc
             selectedDenominations = List.of(oldDenominations.getItems().get(0));
         }
 
-        var dependencyElementClass = this.mainState.getDependencyState().getDependencyElementClasses().getSelectedItem();
+        var dependencyElementClass = this.appState.getDependencyElementClasses().getSelectedItem();
         var newDenominations = new MultiSelectedList<>(oldDenominations.getItems(), selectedDenominations);
-        this.mainState.getDependencyState().setDependencyDenominations(newDenominations);
+        this.appState.setDependencyDenominations(newDenominations);
         if (dependencyElementClass != null) {
-            this.mainState.getDenominationState().getLastSelectedDenominations().put(dependencyElementClass.getName(), selectedDenominations);
+            this.appState.getLastSelectedDenominations().put(dependencyElementClass.getName(), selectedDenominations);
         }
 
         var readDependenciesRequest = new ReadDependenciesRequest();

@@ -4,7 +4,7 @@ import com.tschanz.v_bro.app.presenter.element_class.ElementClassPresenter;
 import com.tschanz.v_bro.app.presenter.element_class.ElementClassResponse;
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusResponse;
-import com.tschanz.v_bro.app.state.MainState;
+import com.tschanz.v_bro.app.state.AppState;
 import com.tschanz.v_bro.common.selected_list.SelectedList;
 import com.tschanz.v_bro.data_structure.domain.service.ElementClassService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
@@ -16,7 +16,7 @@ import lombok.extern.java.Log;
 @Log
 @RequiredArgsConstructor
 public class ReadElementClassesUseCaseImpl implements ReadElementClassesUseCase {
-    private final MainState mainState;
+    private final AppState appState;
     private final RepoServiceProvider<ElementClassService> elementClassServiceProvider;
     private final StatusPresenter statusPresenter;
     private final ElementClassPresenter elementClassPresenter;
@@ -24,7 +24,7 @@ public class ReadElementClassesUseCaseImpl implements ReadElementClassesUseCase 
 
     @Override
     public void execute(ReadElementClassesRequest request) {
-        var repoType = mainState.getRepoState().getCurrentRepoType();
+        var repoType = appState.getCurrentRepoType();
 
         if (repoType != null) {
             try {
@@ -37,7 +37,7 @@ public class ReadElementClassesUseCaseImpl implements ReadElementClassesUseCase 
                 var elementClasses = elementClassService.readAllElementClasses();
                 var slist = new SelectedList<>(elementClasses, null);
 
-                this.mainState.getElementClassState().setElementClasses(slist);
+                this.appState.setElementClasses(slist);
 
                 var msgSuccess = String.format("successfully read %d element classes.", elementClasses.size());
                 log.info(msgSuccess);
@@ -52,10 +52,10 @@ public class ReadElementClassesUseCaseImpl implements ReadElementClassesUseCase 
         } else {
             log.info("UC: clearing element classes");
 
-            this.mainState.getElementClassState().setElementClasses(SelectedList.createEmpty());
+            this.appState.setElementClasses(SelectedList.createEmpty());
         }
 
-        var elementClasses = this.mainState.getElementClassState().getElementClasses();
+        var elementClasses = this.appState.getElementClasses();
         var elementClassListResponse = ElementClassResponse.fromDomain(elementClasses);
         this.elementClassPresenter.present(elementClassListResponse);
     }

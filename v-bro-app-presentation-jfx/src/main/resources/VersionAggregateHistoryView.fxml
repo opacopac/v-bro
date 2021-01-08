@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tschanz.v_bro.app.presentation.jfx.view.JfxVersionAggregateHistoryView">
+    <HBox alignment="CENTER_LEFT" spacing="5.0">
+        <Button fx:id="backButton" mnemonicParsing="false" text=" &lt; " onAction="#onBackClicked" disable="true" />
+        <Button fx:id="fwdButton" mnemonicParsing="false" text=" &gt; " onAction="#onForwardClicked" disable="true" />
+        <Label fx:id="elementClassLabel" text="-" />
+        <Label text="   E:" />
+        <Label fx:id="elementIdLabel" text="-" />
+        <Label text="   V:" />
+        <Label fx:id="versionIdLabel" text="-" />
+    </HBox>
+</AnchorPane>

@@ -14,7 +14,7 @@ public interface MainController {
 
     VersionController getVersionController();
 
-    DependencyFilterController getDependencyFilterController();
+    DependencyDirectionController getDependencyDirectionController();
 
     DependencyElementClassController getDependencyElementClassController();
 
@@ -23,4 +23,6 @@ public interface MainController {
     DependencyElementFilterController getDependencyElementFilterController();
 
     DependencyListController getDependencyListController();
+
+    VersionAggregateHistoryController getVersionAggregateHistoryController();
 }

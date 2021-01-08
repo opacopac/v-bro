@@ -4,7 +4,7 @@ import com.tschanz.v_bro.app.presenter.dependencies.DependencyListResponse;
 import com.tschanz.v_bro.app.presenter.dependencies.DependencyPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusResponse;
-import com.tschanz.v_bro.app.state.MainState;
+import com.tschanz.v_bro.app.state.AppState;
 import com.tschanz.v_bro.data_structure.domain.model.Dependency;
 import com.tschanz.v_bro.data_structure.domain.service.DependencyService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReadDependenciesUseCaseImpl implements ReadDependenciesUseCase {
     private final static int MAX_DEPENDENCIES = 100;
-    private final MainState mainState;
+    private final AppState appState;
     private final RepoServiceProvider<DependencyService> dependencyServiceProvider;
     private final DependencyPresenter dependencyPresenter;
     private final StatusPresenter statusPresenter;
@@ -28,17 +28,17 @@ public class ReadDependenciesUseCaseImpl implements ReadDependenciesUseCase {
 
     @Override
     public void execute(ReadDependenciesRequest request) {
-        var repoType = mainState.getRepoState().getCurrentRepoType();
-        var element = mainState.getElementState().getCurrentElement();
-        var version = mainState.getVersionState().getCurrentVersion();
-        var minGueltigVon = mainState.getVersionFilterState().getVersionFilter().getTimelineVon();
-        var maxGueltigBis = mainState.getVersionFilterState().getVersionFilter().getTimelineBis();
-        var minPflegestatus = mainState.getVersionFilterState().getVersionFilter().getMinPflegestatus();
-        var isFwd = mainState.getDependencyState().isFwdDependencies();
+        var repoType = appState.getCurrentRepoType();
+        var element = appState.getCurrentElement();
+        var version = appState.getCurrentVersion();
+        var minGueltigVon = appState.getVersionFilter().getTimelineVon();
+        var maxGueltigBis = appState.getVersionFilter().getTimelineBis();
+        var minPflegestatus = appState.getVersionFilter().getMinPflegestatus();
+        var isFwd = appState.isFwdDependencies();
         var fwdBwdText = isFwd ? "FWD" : "BWD";
-        var elementClassFilter = mainState.getDependencyState().getDependencyElementClasses().getSelectedItem();
-        var query = mainState.getDependencyState().getDependencyElementQuery();
-        var dependecyDenominations = mainState.getDependencyState().getDependencyDenominations().getSelectedItems();
+        var elementClassFilter = appState.getDependencyElementClasses().getSelectedItem();
+        var query = appState.getDependencyElementQuery();
+        var dependecyDenominations = appState.getDependencyDenominations().getSelectedItems();
 
         if (repoType != null && ((isFwd && version != null) || (!isFwd && element != null))) {
             try {
@@ -76,7 +76,7 @@ public class ReadDependenciesUseCaseImpl implements ReadDependenciesUseCase {
         } else {
             log.info("UC: clearing dependency list");
 
-            this.mainState.getDependencyState().setDependencies(Collections.emptyList());
+            this.appState.setDependencies(Collections.emptyList());
 
             var response = DependencyListResponse.fromDomain(Collections.emptyList());
             this.dependencyPresenter.present(response);

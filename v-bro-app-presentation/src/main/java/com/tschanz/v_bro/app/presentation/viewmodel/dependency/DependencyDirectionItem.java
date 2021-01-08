@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class DependencyFilterItem {
+public class DependencyDirectionItem {
     private final boolean fwd;
 
 

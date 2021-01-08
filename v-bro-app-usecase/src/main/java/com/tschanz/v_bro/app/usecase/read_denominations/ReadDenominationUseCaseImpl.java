@@ -5,7 +5,7 @@ import com.tschanz.v_bro.app.presenter.denominations.DenominationsPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusResponse;
 import com.tschanz.v_bro.app.service.RepoServiceProvider;
-import com.tschanz.v_bro.app.state.MainState;
+import com.tschanz.v_bro.app.state.AppState;
 import com.tschanz.v_bro.common.selected_list.MultiSelectedList;
 import com.tschanz.v_bro.data_structure.domain.model.Denomination;
 import com.tschanz.v_bro.data_structure.domain.service.DenominationService;
@@ -20,7 +20,7 @@ import java.util.List;
 @Log
 @RequiredArgsConstructor
 public class ReadDenominationUseCaseImpl implements ReadDenominationUseCase {
-    private final MainState mainState;
+    private final AppState appState;
     private final RepoServiceProvider<DenominationService> denominationServiceProvider;
     private final DenominationsPresenter denominationsPresenter;
     private final StatusPresenter statusPresenter;
@@ -28,8 +28,8 @@ public class ReadDenominationUseCaseImpl implements ReadDenominationUseCase {
 
     @Override
     public void execute(ReadDenominationRequest request) {
-        var repoType = mainState.getRepoState().getCurrentRepoType();
-        var elementClass = mainState.getElementClassState().getCurrentElementClass();
+        var repoType = appState.getCurrentRepoType();
+        var elementClass = appState.getCurrentElementClass();
 
         if (repoType != null && elementClass != null) {
             try {
@@ -41,7 +41,7 @@ public class ReadDenominationUseCaseImpl implements ReadDenominationUseCase {
                 var denominationService = this.denominationServiceProvider.getService(repoType);
                 var denominations = denominationService.readDenominations(elementClass);
 
-                var selectedDenominations = this.mainState.getDenominationState().getLastSelectedDenominations().getOrDefault(elementClass.getName(), Collections.emptyList());
+                var selectedDenominations = this.appState.getLastSelectedDenominations().getOrDefault(elementClass.getName(), Collections.emptyList());
                 if (selectedDenominations.size() == 0) {
                     selectedDenominations = denominations
                         .stream()
@@ -51,7 +51,7 @@ public class ReadDenominationUseCaseImpl implements ReadDenominationUseCase {
                         .orElse(Collections.emptyList());
                 }
                 var mslist = new MultiSelectedList<>(denominations, selectedDenominations);
-                this.mainState.getDenominationState().setElementDenominations(mslist);
+                this.appState.setElementDenominations(mslist);
 
                 var msgSuccess = String.format("successfully read %d denominations.", denominations.size());
                 log.info(msgSuccess);
@@ -70,7 +70,7 @@ public class ReadDenominationUseCaseImpl implements ReadDenominationUseCase {
             log.info("UC: clearing denominations");
 
             MultiSelectedList<Denomination> mslist = MultiSelectedList.createEmpty();
-            this.mainState.getDenominationState().setElementDenominations(mslist);
+            this.appState.setElementDenominations(mslist);
 
             var denominationListResponse = DenominationListResponse.fromDomain(mslist);
             this.denominationsPresenter.present(denominationListResponse);

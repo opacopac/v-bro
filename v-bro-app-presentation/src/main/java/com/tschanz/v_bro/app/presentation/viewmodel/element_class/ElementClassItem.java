@@ -4,6 +4,7 @@ import com.tschanz.v_bro.app.presentation.viewmodel.common.IdItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.common.SelectableItemList;
 import com.tschanz.v_bro.app.presenter.element_class.ElementClassResponse;
 import com.tschanz.v_bro.app.presenter.element_class.ElementClassResponseItem;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 
 @Getter
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public class ElementClassItem implements IdItem {
     private final String name;

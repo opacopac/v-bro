@@ -4,7 +4,7 @@ import com.tschanz.v_bro.app.presenter.repo_connection.RepoConnectionPresenter;
 import com.tschanz.v_bro.app.presenter.repo_connection.RepoResponse;
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusResponse;
-import com.tschanz.v_bro.app.state.MainState;
+import com.tschanz.v_bro.app.state.AppState;
 import com.tschanz.v_bro.app.usecase.open_element_class.OpenElementClassRequest;
 import com.tschanz.v_bro.app.usecase.open_element_class.OpenElementClassUseCase;
 import com.tschanz.v_bro.app.usecase.read_element_classes.ReadElementClassesRequest;
@@ -19,7 +19,7 @@ import lombok.extern.java.Log;
 @Log
 @RequiredArgsConstructor
 public class OpenRepoUseCaseImpl implements OpenRepoUseCase {
-    private final MainState mainState;
+    private final AppState appState;
     private final RepoServiceProvider<RepoConnectionService> repoServiceProvider;
     private final RepoConnectionPresenter repoConnectionPresenter;
     private final StatusPresenter statusPresenter;
@@ -40,7 +40,7 @@ public class OpenRepoUseCaseImpl implements OpenRepoUseCase {
             var repoService = this.repoServiceProvider.getService(connectionParameters.getRepoType());
             repoService.connect(connectionParameters);
 
-            this.mainState.getRepoState().setConnectionParameters(connectionParameters);
+            this.appState.setConnectionParameters(connectionParameters);
 
             var msgSuccess = String.format("successfully connected to %s repo", connectionParameters.getRepoType());
             log.info(msgSuccess);
@@ -59,11 +59,11 @@ public class OpenRepoUseCaseImpl implements OpenRepoUseCase {
         var readElementClassesRequest = new ReadElementClassesRequest();
         this.readElementClassesUc.execute(readElementClassesRequest);
 
-        var classes = this.mainState.getElementClassState().getElementClasses().getItems();
+        var classes = this.appState.getElementClasses().getItems();
         var selectClass = classes.size() > 0
             ? classes.get(0).getName()
             : null;
-        var openElementClassRequest = new OpenElementClassRequest(selectClass, true, true);
+        var openElementClassRequest = new OpenElementClassRequest(selectClass, true);
         this.openElementClassUc.execute(openElementClassRequest);
     }
 }

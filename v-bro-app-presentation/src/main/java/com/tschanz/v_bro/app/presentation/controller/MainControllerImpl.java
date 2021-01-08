@@ -10,9 +10,10 @@ import com.tschanz.v_bro.app.usecase.open_version.OpenVersionUseCase;
 import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsUseCase;
 import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsUseCase;
 import com.tschanz.v_bro.app.usecase.select_dependency_denominations.SelectDependencyDenominationsUseCase;
+import com.tschanz.v_bro.app.usecase.select_dependency_direction.SelectDependencyDirectionUseCase;
 import com.tschanz.v_bro.app.usecase.select_dependency_element_class.SelectDependencyElementClassUseCase;
 import com.tschanz.v_bro.app.usecase.select_dependency_element_filter.SelectDependencyElementFilterUseCase;
-import com.tschanz.v_bro.app.usecase.select_dependency_direction.SelectDependencyDirectionUseCase;
+import com.tschanz.v_bro.app.usecase.select_version_aggregate_history.SelectVersionAggregateHistoryUseCase;
 import com.tschanz.v_bro.app.usecase.select_version_filter.SelectVersionFilterUseCase;
 import lombok.Getter;
 
@@ -27,11 +28,12 @@ public class MainControllerImpl implements MainController {
     private final ElementController elementController;
     private final VersionFilterController versionFilterController;
     private final VersionController versionController;
-    private final DependencyFilterController dependencyFilterController;
+    private final DependencyDirectionController dependencyDirectionController;
     private final DependencyElementClassController dependencyElementClassController;
     private final DependencyDenominationController dependencyDenominationController;
     private final DependencyElementFilterController dependencyElementFilterController;
     private final DependencyListController dependencyListController;
+    private final VersionAggregateHistoryController versionAggregateHistoryController;
 
 
     public MainControllerImpl(
@@ -49,6 +51,7 @@ public class MainControllerImpl implements MainController {
         SelectDependencyElementClassUseCase selectDependencyElementClassUc,
         SelectDependencyDenominationsUseCase selectDependencyDenominationsUc,
         SelectDependencyElementFilterUseCase selectDependencyElementFilterUc,
+        SelectVersionAggregateHistoryUseCase selectVersionAggregateHistoryUc,
         OpenDependencyVersionUseCase openDependencyVersionUc
     ) {
         this.connectionController = new ConnectionControllerImpl(
@@ -63,10 +66,11 @@ public class MainControllerImpl implements MainController {
         this.elementController = new ElementControllerImpl(queryElementsUc, openElementUc);
         this.versionFilterController = new VersionFilterControllerImpl(selectVersionFilterUc);
         this.versionController = new VersionControllerImpl(openVersionUc);
-        this.dependencyFilterController = new DependencyFilterControllerImpl(selectDependencyDirectionUc);
+        this.dependencyDirectionController = new DependencyDirectionControllerImpl(selectDependencyDirectionUc);
         this.dependencyElementClassController = new DependencyElementClassControllerImpl(selectDependencyElementClassUc);
         this.dependencyDenominationController = new DependencyDenominationControllerImpl(selectDependencyDenominationsUc);
         this.dependencyElementFilterController = new DependencyElementFilterControllerImpl(selectDependencyElementFilterUc);
         this.dependencyListController = new DependencyListControllerImpl(openDependencyVersionUc);
+        this.versionAggregateHistoryController = new VersionAggregateHistoryControllerImpl(selectVersionAggregateHistoryUc);
     }
 }

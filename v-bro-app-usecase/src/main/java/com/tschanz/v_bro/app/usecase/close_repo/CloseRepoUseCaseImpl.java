@@ -4,7 +4,7 @@ import com.tschanz.v_bro.app.presenter.repo_connection.RepoConnectionPresenter;
 import com.tschanz.v_bro.app.presenter.repo_connection.RepoResponse;
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusResponse;
-import com.tschanz.v_bro.app.state.MainState;
+import com.tschanz.v_bro.app.state.AppState;
 import com.tschanz.v_bro.app.usecase.open_element_class.OpenElementClassRequest;
 import com.tschanz.v_bro.app.usecase.open_element_class.OpenElementClassUseCase;
 import com.tschanz.v_bro.app.usecase.read_element_classes.ReadElementClassesRequest;
@@ -23,7 +23,7 @@ import java.util.Objects;
 @Log
 @RequiredArgsConstructor
 public class CloseRepoUseCaseImpl implements CloseRepoUseCase {
-    private final MainState mainState;
+    private final AppState appState;
     private final RepoServiceProvider<RepoConnectionService> repoServiceProvider;
     private final RepoConnectionPresenter repoConnectionPresenter;
     private final StatusPresenter statusPresenter;
@@ -34,7 +34,7 @@ public class CloseRepoUseCaseImpl implements CloseRepoUseCase {
 
     @Override
     public void execute(CloseRepoRequest request) {
-        var connectionParams = Objects.requireNonNull(this.mainState.getRepoState().getConnectionParameters());
+        var connectionParams = Objects.requireNonNull(this.appState.getConnectionParameters());
         var repoType = connectionParams.getRepoType();
 
         try {
@@ -46,7 +46,7 @@ public class CloseRepoUseCaseImpl implements CloseRepoUseCase {
             var repoService = this.repoServiceProvider.getService(repoType);
             repoService.disconnect();
 
-            this.mainState.getRepoState().setConnectionParameters(null);
+            this.appState.setConnectionParameters(null);
 
             String msgSuccess = String.format("successfully disconnected from repo %s", repoType);
             log.info(msgSuccess);
@@ -65,7 +65,7 @@ public class CloseRepoUseCaseImpl implements CloseRepoUseCase {
         var readElementClassesRequest = new ReadElementClassesRequest();
         this.readElementClassesUc.execute(readElementClassesRequest);
 
-        var openElementClassRequest = new OpenElementClassRequest(null, true, true);
+        var openElementClassRequest = new OpenElementClassRequest(null, true);
         this.openElementClassUc.execute(openElementClassRequest);
 
         var selectDependencyElementClassRequest = new SelectDependencyElementClassRequest(null);

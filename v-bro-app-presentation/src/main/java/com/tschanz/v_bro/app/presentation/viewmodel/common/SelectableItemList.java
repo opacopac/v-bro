@@ -1,6 +1,7 @@
 package com.tschanz.v_bro.app.presentation.viewmodel.common;
 
 import lombok.Getter;
+import lombok.NonNull;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class SelectableItemList<T extends IdItem> {
     private final T selectedItem;
 
 
-    public SelectableItemList(List<T> items, String selectedItem) {
+    public SelectableItemList(@NonNull List<T> items, String selectedItem) {
         this.items = items;
         this.selectedItem = items
             .stream()

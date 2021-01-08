@@ -19,6 +19,7 @@ public class JfxMainView implements MainView {
     @FXML private AnchorPane dependencyDenominationsView;
     @FXML private AnchorPane dependencyElementFilterView;
     @FXML private AnchorPane dependenciesView;
+    @FXML private AnchorPane versionAggregateHistoryView;
     @FXML private AnchorPane versionAggregateView;
     @FXML private AnchorPane statusBarView;
     @FXML private JfxConnectionView connectionViewController;
@@ -27,11 +28,12 @@ public class JfxMainView implements MainView {
     @FXML private JfxElementView elementViewController;
     @FXML private JfxVersionFilterView versionFilterViewController;
     @FXML private JfxVersionView versionViewController;
-    @FXML private JfxDependencyFilterView dependencyFilterViewController;
+    @FXML private JfxDependencyDirectionView dependencyFilterViewController;
     @FXML private JfxDependencyElementClassView dependencyElementClassViewController;
     @FXML private JfxDependencyDenominationView dependencyDenominationsViewController;
     @FXML private JfxDependencyElementFilterView dependencyElementFilterViewController;
     @FXML private JfxDependencyListView dependenciesViewController;
+    @FXML private JfxVersionAggregateHistoryView versionAggregateHistoryViewController;
     @FXML private JfxVersionAggregateView versionAggregateViewController;
     @FXML private JfxStatusBarView statusBarViewController;
 
@@ -45,11 +47,12 @@ public class JfxMainView implements MainView {
         this.elementViewController.bindViewModel(mainViewModel.currentElement, mainController.getElementController());
         this.versionFilterViewController.bindViewModel(mainViewModel.versionFilter, mainController.getVersionFilterController());
         this.versionViewController.bindViewModel(mainViewModel.versions, mainViewModel.versionFilter, mainController.getVersionController());
-        this.dependencyFilterViewController.bindViewModel(mainViewModel.dependencyFilter, mainController.getDependencyFilterController());
+        this.dependencyFilterViewController.bindViewModel(mainViewModel.dependencyFilter, mainController.getDependencyDirectionController());
         this.dependencyElementClassViewController.bindViewModel(mainViewModel.dependencyElementClasses, mainController.getDependencyElementClassController());
         this.dependencyDenominationsViewController.bindViewModel(mainViewModel.dependencyDenominations, mainController.getDependencyDenominationController());
         this.dependencyElementFilterViewController.bindViewModel(mainController.getDependencyElementFilterController());
         this.dependenciesViewController.bindViewModel(mainViewModel.fwdDependencies, mainViewModel.versionFilter, mainController.getDependencyListController());
+        this.versionAggregateHistoryViewController.bindViewModel(mainViewModel.elementClasses, mainViewModel.currentElement, mainViewModel.versions, mainViewModel.versionAggregateHistory, mainController.getVersionAggregateHistoryController());
         this.versionAggregateViewController.bindViewModel(mainViewModel.versionAggregate);
     }
 }

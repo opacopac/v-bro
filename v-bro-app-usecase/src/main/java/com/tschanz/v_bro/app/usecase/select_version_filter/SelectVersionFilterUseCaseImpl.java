@@ -4,7 +4,7 @@ import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusResponse;
 import com.tschanz.v_bro.app.presenter.version_filter.VersionFilterPresenter;
 import com.tschanz.v_bro.app.presenter.version_filter.VersionFilterResponse;
-import com.tschanz.v_bro.app.state.MainState;
+import com.tschanz.v_bro.app.state.AppState;
 import com.tschanz.v_bro.app.usecase.read_versions.ReadVersionsRequest;
 import com.tschanz.v_bro.app.usecase.read_versions.ReadVersionsUseCase;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import lombok.extern.java.Log;
 @Log
 @RequiredArgsConstructor
 public class SelectVersionFilterUseCaseImpl implements SelectVersionFilterUseCase {
-    private final MainState mainState;
+    private final AppState appState;
     private final ReadVersionsUseCase readVersionsUc;
     private final StatusPresenter statusPresenter;
     private final VersionFilterPresenter versionFilterPresenter;
@@ -29,7 +29,7 @@ public class SelectVersionFilterUseCaseImpl implements SelectVersionFilterUseCas
         var statusResponse1 = new StatusResponse(msgStart, false, true);
         this.statusPresenter.present(statusResponse1);
 
-        this.mainState.getVersionFilterState().setVersionFilter(versionFilter);
+        this.appState.setVersionFilter(versionFilter);
 
         var versionFilterResponse = VersionFilterResponse.fromDomain(versionFilter);
         this.versionFilterPresenter.present(versionFilterResponse);

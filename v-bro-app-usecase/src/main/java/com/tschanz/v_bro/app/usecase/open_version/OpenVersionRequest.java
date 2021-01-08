@@ -8,4 +8,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OpenVersionRequest {
     private final String versionId;
+    private final boolean appendToHistory;
 }

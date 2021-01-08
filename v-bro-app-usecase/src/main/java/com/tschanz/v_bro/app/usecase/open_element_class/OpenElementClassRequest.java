@@ -9,5 +9,4 @@ import lombok.RequiredArgsConstructor;
 public class OpenElementClassRequest {
     private final String elementClassName;
     private final boolean autoOpenFirstElement;
-    private final boolean presentElementClass;
 }

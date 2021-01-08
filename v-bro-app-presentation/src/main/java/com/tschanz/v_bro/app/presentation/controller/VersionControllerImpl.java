@@ -16,7 +16,7 @@ public class VersionControllerImpl implements VersionController {
             return;
         }
 
-        var request = new OpenVersionRequest(versionId);
+        var request = new OpenVersionRequest(versionId, true);
         this.openVersionUc.execute(request);
     }
 }

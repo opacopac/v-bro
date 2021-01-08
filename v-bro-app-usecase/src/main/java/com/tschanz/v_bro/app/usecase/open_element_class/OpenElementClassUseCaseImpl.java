@@ -4,7 +4,7 @@ import com.tschanz.v_bro.app.presenter.element_class.ElementClassPresenter;
 import com.tschanz.v_bro.app.presenter.element_class.ElementClassResponse;
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusResponse;
-import com.tschanz.v_bro.app.state.MainState;
+import com.tschanz.v_bro.app.state.AppState;
 import com.tschanz.v_bro.app.usecase.open_element.OpenElementRequest;
 import com.tschanz.v_bro.app.usecase.open_element.OpenElementUseCase;
 import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsRequest;
@@ -23,7 +23,7 @@ import lombok.extern.java.Log;
 @Log
 @RequiredArgsConstructor
 public class OpenElementClassUseCaseImpl implements OpenElementClassUseCase {
-    private final MainState mainState;
+    private final AppState appState;
     private final ElementClassPresenter elementClassPresenter;
     private final StatusPresenter statusPresenter;
     private final ReadDenominationUseCase readDenominationUc;
@@ -36,7 +36,7 @@ public class OpenElementClassUseCaseImpl implements OpenElementClassUseCase {
     @Override
     public void execute(OpenElementClassRequest request) {
         var elementClassName = request.getElementClassName();
-        var oldElementClassList = this.mainState.getElementClassState().getElementClasses();
+        var oldElementClassList = this.appState.getElementClasses();
 
         if (elementClassName != null) {
             var msgStart = String.format("UC: opening element class '%s'...", elementClassName);
@@ -50,17 +50,15 @@ public class OpenElementClassUseCaseImpl implements OpenElementClassUseCase {
                 .findFirst()
                 .orElse(null);
             var newElementClassList = new SelectedList<>(oldElementClassList.getItems(), selectedElementClass);
-            this.mainState.getElementClassState().setElementClasses(newElementClassList);
+            this.appState.setElementClasses(newElementClassList);
 
-            if (request.isPresentElementClass()) {
-                var response = ElementClassResponse.fromDomain(newElementClassList);
-                this.elementClassPresenter.present(response);
-            }
+            var response = ElementClassResponse.fromDomain(newElementClassList);
+            this.elementClassPresenter.present(response);
         } else {
             log.info("UC clearing element classes");
 
             var newElementClasses = new SelectedList<>(oldElementClassList.getItems(), null);
-            this.mainState.getElementClassState().setElementClasses(newElementClasses);
+            this.appState.setElementClasses(newElementClasses);
         }
 
         var readDenominationRequest = new ReadDenominationRequest();
@@ -70,7 +68,7 @@ public class OpenElementClassUseCaseImpl implements OpenElementClassUseCase {
             var queryElementRequest = new QueryElementsRequest("");
             this.queryElementsUc.execute(queryElementRequest);
 
-            var elements = this.mainState.getElementState().getQueryResult();
+            var elements = this.appState.getQueryResult();
             var elementId = elements.size() > 0
                 ? elements.get(0).getId()
                 : null;

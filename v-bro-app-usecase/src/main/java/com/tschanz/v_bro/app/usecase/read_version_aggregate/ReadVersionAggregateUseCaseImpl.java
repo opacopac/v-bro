@@ -4,7 +4,7 @@ import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusResponse;
 import com.tschanz.v_bro.app.presenter.version_aggregate.VersionAggregatePresenter;
 import com.tschanz.v_bro.app.presenter.version_aggregate.VersionAggregateResponse;
-import com.tschanz.v_bro.app.state.MainState;
+import com.tschanz.v_bro.app.state.AppState;
 import com.tschanz.v_bro.data_structure.domain.model.VersionAggregate;
 import com.tschanz.v_bro.data_structure.domain.service.VersionAggregateService;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
@@ -16,7 +16,7 @@ import lombok.extern.java.Log;
 @Log
 @RequiredArgsConstructor
 public class ReadVersionAggregateUseCaseImpl implements ReadVersionAggregateUseCase {
-    private final MainState mainState;
+    private final AppState appState;
     private final RepoServiceProvider<VersionAggregateService> versionAggregateServiceProvider;
     private final VersionAggregatePresenter presenter;
     private final StatusPresenter statusPresenter;
@@ -24,8 +24,8 @@ public class ReadVersionAggregateUseCaseImpl implements ReadVersionAggregateUseC
 
     @Override
     public void execute(ReadVersionAggregateRequest request) {
-        var repoType = mainState.getRepoState().getCurrentRepoType();
-        var version = mainState.getVersionState().getCurrentVersion();
+        var repoType = appState.getCurrentRepoType();
+        var version = appState.getCurrentVersion();
 
         if (repoType != null && version != null) {
             try {
@@ -36,7 +36,7 @@ public class ReadVersionAggregateUseCaseImpl implements ReadVersionAggregateUseC
 
                 VersionAggregateService versionAggregateService = this.versionAggregateServiceProvider.getService(repoType);
                 VersionAggregate versionAggregate = versionAggregateService.readVersionAggregate(version);
-                this.mainState.getVersionAggregateState().setVersionAggregate(versionAggregate);
+                this.appState.setVersionAggregate(versionAggregate);
 
                 String msgSuccess = "successfully read version aggregate";
                 log.info(msgSuccess);
@@ -54,7 +54,7 @@ public class ReadVersionAggregateUseCaseImpl implements ReadVersionAggregateUseC
         } else {
             log.info("UC: clearing version aggregate");
 
-            this.mainState.getVersionAggregateState().setVersionAggregate(null);
+            this.appState.setVersionAggregate(null);
 
             var response = VersionAggregateResponse.fromDomain(null);
             this.presenter.present(response);

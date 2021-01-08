@@ -2,7 +2,7 @@ package com.tschanz.v_bro.app.usecase.select_denominations;
 
 import com.tschanz.v_bro.app.presenter.denominations.DenominationListResponse;
 import com.tschanz.v_bro.app.presenter.denominations.DenominationsPresenter;
-import com.tschanz.v_bro.app.state.MainState;
+import com.tschanz.v_bro.app.state.AppState;
 import com.tschanz.v_bro.app.usecase.open_element.OpenElementRequest;
 import com.tschanz.v_bro.app.usecase.open_element.OpenElementUseCase;
 import com.tschanz.v_bro.common.selected_list.MultiSelectedList;
@@ -19,20 +19,20 @@ import java.util.stream.Collectors;
 @Log
 @RequiredArgsConstructor
 public class SelectDenominationsUseCaseImpl implements SelectDenominationsUseCase {
-    private final MainState mainState;
+    private final AppState appState;
     private final DenominationsPresenter denominationsPresenter;
     private final OpenElementUseCase openElementUc;
 
 
     @Override
     public void execute(SelectDenominationsRequest request) {
-        var elementClass = this.mainState.getElementClassState().getCurrentElementClass();
+        var elementClass = this.appState.getCurrentElementClass();
         var selectedDenominationsReq = Objects.requireNonNull(request.toDomain());
         var selectedDenominationNames = selectedDenominationsReq.stream().map(Denomination::getName).collect(Collectors.toList());
 
         log.info(String.format("UC: selecting denomination(s) '%s'...", String.join("', '", selectedDenominationNames)));
 
-        var oldDenominations = this.mainState.getDenominationState().getElementDenominations();
+        var oldDenominations = this.appState.getElementDenominations();
         var selectedDenominations = oldDenominations.getItems()
             .stream()
             .filter(selectedDenominationsReq::contains)
@@ -43,18 +43,18 @@ public class SelectDenominationsUseCaseImpl implements SelectDenominationsUseCas
         }
 
         var newDenominations = new MultiSelectedList<>(oldDenominations.getItems(), selectedDenominations);
-        this.mainState.getDenominationState().setElementDenominations(newDenominations);
+        this.appState.setElementDenominations(newDenominations);
         if (elementClass != null) {
-            this.mainState.getDenominationState().getLastSelectedDenominations().put(elementClass.getName(), selectedDenominations);
+            this.appState.getLastSelectedDenominations().put(elementClass.getName(), selectedDenominations);
         }
 
         var denominationListResponse = DenominationListResponse.fromDomain(newDenominations);
         this.denominationsPresenter.present(denominationListResponse);
 
-        var currentElementId = this.mainState.getElementState().getCurrentElementId();
-        if (currentElementId != null) {
-            this.mainState.getElementState().setQueryResult(Collections.emptyList());
-            var openElementRequest = new OpenElementRequest(currentElementId, false,false);
+        var currentElement = this.appState.getCurrentElement();
+        if (currentElement != null) {
+            this.appState.setQueryResult(Collections.emptyList());
+            var openElementRequest = new OpenElementRequest(currentElement.getId(), false,false);
             this.openElementUc.execute(openElementRequest);
         }
     }

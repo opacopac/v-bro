@@ -25,17 +25,16 @@ import java.util.concurrent.Flow;
 public class JfxElementClassView implements ElementClassView, Initializable {
     @FXML private ComboBox<ElementClassItem> elementClassComboBox;
     private ElementClassController elementClassController;
-    private SuggestionProvider<ElementClassItem> suggestionProvider;
     private String lastQuery;
     private boolean isPopulating = false;
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.suggestionProvider = SuggestionProvider.create(new ArrayList<>());
-        this.suggestionProvider.setShowAllIfEmpty(true);
-        new AutoCompletionTextFieldBinding<>(this.elementClassComboBox.getEditor(), this.suggestionProvider);
-        AutoCompleteComboBoxFixer.fix(this.elementClassComboBox, this.suggestionProvider);
+        SuggestionProvider<ElementClassItem> suggestionProvider = SuggestionProvider.create(new ArrayList<>());
+        suggestionProvider.setShowAllIfEmpty(true);
+        new AutoCompletionTextFieldBinding<>(this.elementClassComboBox.getEditor(), suggestionProvider);
+        AutoCompleteComboBoxFixer.fix(this.elementClassComboBox, suggestionProvider);
     }
 
 
@@ -51,12 +50,10 @@ public class JfxElementClassView implements ElementClassView, Initializable {
 
     private void onElementClassListChanged(SelectableItemList<ElementClassItem> elementClassList) {
         this.isPopulating = true;
+
         this.elementClassComboBox.setItems(FXCollections.observableArrayList(elementClassList.getItems()));
         this.elementClassComboBox.setValue(elementClassList.getSelectedItem());
-        if (this.suggestionProvider != null) {
-            this.suggestionProvider.clearSuggestions();
-            this.suggestionProvider.addPossibleSuggestions(elementClassList.getItems());
-        }
+
         this.isPopulating = false;
     }
 
