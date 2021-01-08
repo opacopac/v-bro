@@ -28,6 +28,15 @@ public class AggregateStructureNode {
     }
 
 
+    public int getLevel() {
+        if (this.getParentNode() == null) {
+            return 0;
+        } else {
+            return this.getParentNode().getLevel() + 1;
+        }
+    }
+
+
     public AggregateStructureNode getNodeByTableName(String tableName) {
         if (this.getRepoTable().getName().equals(tableName)) {
             return this;

@@ -58,7 +58,7 @@ public class JdbcVersionService implements VersionService {
         var versions = versionRecords
             .stream()
             .map(row -> {
-                String id = row.findIdFieldValue().getValueString();
+                String id = row.findPkFieldValue().getValueString();
                 LocalDate gueltigVon = row.findFieldValue(VersionTable.GUELTIG_VON_COLNAME).getValueDate();
                 LocalDate gueltigBis = row.findFieldValue(VersionTable.GUELTIG_BIS_COLNAME).getValueDate();
                 Pflegestatus pflegestatus = (row.findFieldValue(VersionTable.PFLEGESTATUS_COLNAME) != null)

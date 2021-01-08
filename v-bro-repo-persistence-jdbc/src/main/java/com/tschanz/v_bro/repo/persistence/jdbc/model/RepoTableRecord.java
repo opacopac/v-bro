@@ -44,8 +44,8 @@ public class RepoTableRecord {
     }
 
 
-    public FieldValue findIdFieldValue() {
-        String idFieldName = this.repoTable.findfirstIdField().getName();
+    public FieldValue findPkFieldValue() {
+        String idFieldName = this.repoTable.findfirstPkField().getName();
         if (idFieldName == null) {
             return null;
         } else {

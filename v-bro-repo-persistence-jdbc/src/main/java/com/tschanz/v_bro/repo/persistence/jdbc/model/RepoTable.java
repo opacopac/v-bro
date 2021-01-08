@@ -26,18 +26,18 @@ public class RepoTable {
     }
 
 
-    public RepoField findfirstIdField() {
-        return this.findAllIdFields()
+    public RepoField findfirstPkField() {
+        return this.findAllPkFields()
             .stream()
             .findFirst()
             .orElse(null);
     }
 
 
-    public List<RepoField> findAllIdFields() {
+    public List<RepoField> findAllPkFields() {
         return this.fields
             .stream()
-            .filter(RepoField::isId)
+            .filter(RepoField::isPk)
             .collect(Collectors.toList());
     }
 }

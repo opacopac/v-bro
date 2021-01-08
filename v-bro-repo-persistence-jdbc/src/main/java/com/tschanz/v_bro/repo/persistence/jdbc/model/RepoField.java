@@ -13,7 +13,7 @@ public class RepoField {
     @NonNull private final String tableName;
     @NonNull private final String name;
     @NonNull private final RepoFieldType type;
-    @NonNull private final boolean isId;
+    @NonNull private final boolean isPk;
     @NonNull private final boolean isNullable;
     @NonNull private final boolean isUnique;
 
@@ -23,7 +23,7 @@ public class RepoField {
             this.tableName,
             this.name,
             newType,
-            this.isId,
+            this.isPk,
             this.isNullable,
             this.isUnique
         );

@@ -6,6 +6,7 @@ import com.tschanz.v_bro.data_structure.persistence.jdbc.model.ElementTable;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.VersionTable;
 import com.tschanz.v_bro.repo.domain.model.RepoException;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoField;
+import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoRelation;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
 import com.tschanz.v_bro.repo.persistence.jdbc.repo_metadata.JdbcRepoMetadataServiceImpl;
 import lombok.NonNull;
@@ -49,7 +50,7 @@ public class JdbcDataStructureService {
         List<String> unprocessedTableNames = this.getAllTableNames();
         this.aggregateStructureMap.clear();
 
-        // versioned aggregates
+        // versioned aggregates (but without element children)
         for (var rel: this.repoMetadataService.getRepoRelationLut()) {
             if (rel.getBwdFieldName().equals(VersionTable.ELEMENT_ID_COLNAME) && rel.getBwdClassName().endsWith(VersionTable.TABLE_SUFFIX)) {
                 var elementTable = new ElementTable(this.repoMetadataService.readTableStructure(rel.getFwdClassName()));
@@ -62,14 +63,32 @@ public class JdbcDataStructureService {
         }
 
         // single table aggregates
-        for (var tableName: unprocessedTableNames) {
+        for (var tableName: new ArrayList<>(unprocessedTableNames)) {
             var repoTable = this.repoMetadataService.readTableStructure(tableName);
-            if (repoTable.findAllIdFields().size() == 1) {
+            if (repoTable.findAllPkFields().size() == 1 && unprocessedTableNames.contains(repoTable.getName())) {
+                unprocessedTableNames.remove(repoTable.getName());
                 var elementTable = new ElementTable(repoTable);
                 var rootNode = new AggregateStructureNode(elementTable.getRepoTable(), null, null);
                 this.aggregateStructureMap.put(elementTable.getName(), new AggregateStructure(elementTable, null, rootNode));
             }
         }
+
+        // attaching remaining element children (e.g. E-E cross tables) to aggregates
+        for (var tableName: new ArrayList<>(unprocessedTableNames)) {
+            var repoTable = this.repoMetadataService.readTableStructure(tableName);
+            var fwdTableNames = repoTable.getOutgoingRelations().stream().sorted().map(RepoRelation::getFwdClassName).collect(Collectors.toList());
+            for (var fwdTableName: fwdTableNames) {
+                var aggregate = this.aggregateStructureMap.get(fwdTableName);
+                if (aggregate != null && unprocessedTableNames.contains(repoTable.getName())) {
+                    unprocessedTableNames.remove(repoTable.getName());
+                    var parentRelation = repoTable.getOutgoingRelations().stream().filter(rel -> rel.getFwdClassName().equals(fwdTableName)).findFirst().orElse(null);
+                    var elementChildNode = new AggregateStructureNode(repoTable, parentRelation, aggregate.getRootNode());
+                    aggregate.getRootNode().getChildNodes().add(elementChildNode);
+                    elementChildNode.getChildNodes().addAll(this.getChildNodes(repoTable, elementChildNode, unprocessedTableNames));
+                }
+            }
+        }
+
     }
 
 

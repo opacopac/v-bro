@@ -154,9 +154,9 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
 
 
     private List<RepoField> readAllRepoFields() throws RepoException {
-        Set<String> idTableColumns = new HashSet<>();
+        Set<String> pkTableColumns = new HashSet<>();
         Set<String> uniqueTableColumns = new HashSet<>();
-        this.populateIdAndUniqueTableColumns(idTableColumns, uniqueTableColumns);
+        this.populatePkAndUniqueTableColumns(pkTableColumns, uniqueTableColumns);
 
         String query;
         switch (this.connectionFactory.getJdbcServerType()) {
@@ -190,7 +190,7 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
                         tableName,
                         colName,
                         this.getRepoFieldType(dataType),
-                        idTableColumns.contains(key),
+                        pkTableColumns.contains(key),
                         this.getIsNullable(isNullable),
                         uniqueTableColumns.contains(key)
                     );
@@ -209,7 +209,7 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
     }
 
 
-    private void populateIdAndUniqueTableColumns(Set<String> idTableColumns, Set<String> uniqueTableColumns) throws RepoException {
+    private void populatePkAndUniqueTableColumns(Set<String> pkTableColumns, Set<String> uniqueTableColumns) throws RepoException {
         String query;
         switch (this.connectionFactory.getJdbcServerType()) {
             case MYSQL:
@@ -238,8 +238,8 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
                     var colName = resultSet.getString("COLUMN_NAME").toUpperCase();
                     var constraintType = resultSet.getString("CONSTRAINT_TYPE").toUpperCase();
                     var key = this.getTableColumnKey(tableName, colName);
-                    if (this.isIdConstraint(constraintType)) {
-                        idTableColumns.add(key);
+                    if (this.isPkConstraint(constraintType)) {
+                        pkTableColumns.add(key);
                     }
                     if (this.isUniqueConstraint(constraintType)) {
                         uniqueTableColumns.add(key);
@@ -256,7 +256,7 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
     }
 
 
-    private boolean isIdConstraint(String constraintType) {
+    private boolean isPkConstraint(String constraintType) {
         switch (constraintType.toUpperCase()) {
             case "P":
             case "PRIMARY KEY":

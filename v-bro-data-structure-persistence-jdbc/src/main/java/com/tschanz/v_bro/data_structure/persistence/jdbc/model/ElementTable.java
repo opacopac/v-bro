@@ -24,7 +24,7 @@ public class ElementTable {
 
 
     public RepoField getIdField() {
-        return this.repoTable.findfirstIdField();
+        return this.repoTable.findfirstPkField();
     }
 
 

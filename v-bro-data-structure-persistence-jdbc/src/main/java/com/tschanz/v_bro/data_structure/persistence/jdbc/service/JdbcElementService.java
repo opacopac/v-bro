@@ -173,7 +173,7 @@ public class JdbcElementService implements ElementService {
             .stream()
             .map(Denomination::getName)
             .collect(Collectors.toList());
-        var elementId = row.findIdFieldValue().getValueString();
+        var elementId = row.findPkFieldValue().getValueString();
         var denominations = row.getFieldValues()
             .stream()
             .filter(field -> denominationFieldNames.contains(field.getName()))

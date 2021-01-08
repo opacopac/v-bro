@@ -28,7 +28,7 @@ public class VersionTable {
 
 
     public RepoField getIdField() {
-        return this.repoTable.findfirstIdField();
+        return this.repoTable.findfirstPkField();
     }
 
 

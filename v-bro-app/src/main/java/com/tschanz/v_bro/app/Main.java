@@ -67,7 +67,7 @@ public class Main {
         var jdbcElementService = new JdbcElementService(jdbcRepoMetadataService, jdbcRepoDataService);
         var jdbcVersionService = new JdbcVersionService(jdbcRepoDataService, jdbcElementService);
         var jdbcDenominationService = new JdbcDenominationService(jdbcElementService);
-        var jdbcVersionAggregateService = new JdbcVersionAggregateService(jdbcRepoMetadataService, jdbcRepoDataService, jdbcElementService, jdbcVersionService);
+        var jdbcVersionAggregateService = new JdbcVersionAggregateService(jdbcRepoMetadataService, jdbcRepoDataService, jdbcDataStructureService, jdbcElementService, jdbcVersionService);
         var jdbcVersionAggregateServiceCache = new JdbcVersionAggregateServiceCache(jdbcVersionAggregateService, new LastNCache<>(10));
         var jdbcDependencyService = new JdbcDependencyService(jdbcRepoMetadataService, jdbcRepoDataService, jdbcDataStructureService, jdbcElementService, jdbcVersionService, jdbcVersionAggregateServiceCache);
 
