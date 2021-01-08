@@ -76,7 +76,7 @@ public class JdbcDataStructureService {
         // attaching remaining element children (e.g. E-E cross tables) to aggregates
         for (var tableName: new ArrayList<>(unprocessedTableNames)) {
             var repoTable = this.repoMetadataService.readTableStructure(tableName);
-            var fwdTableNames = repoTable.getOutgoingRelations().stream().sorted().map(RepoRelation::getFwdClassName).collect(Collectors.toList());
+            var fwdTableNames = repoTable.getOutgoingRelations().stream().map(RepoRelation::getFwdClassName).collect(Collectors.toList());
             for (var fwdTableName: fwdTableNames) {
                 var aggregate = this.aggregateStructureMap.get(fwdTableName);
                 if (aggregate != null && unprocessedTableNames.contains(repoTable.getName())) {

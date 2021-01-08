@@ -45,12 +45,12 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
             ? this.versionService.readVersionRecord(versionTable, Long.parseLong(version.getId()), versionTable.getFields())
             : null;
 
-        // TODO: read element children
+        List<AggregateDataNode> elementChildNodes = this.readElementChildNodes(elementRecord);
         List<AggregateDataNode> versionChildNodes = versionRecord != null
             ? this.readVersionChildNodes(versionRecord)
             : Collections.emptyList();
 
-        return new AggregateData(elementRecord, versionRecord, versionChildNodes);
+        return new AggregateData(elementRecord, versionRecord, elementChildNodes, versionChildNodes);
     }
 
 
@@ -60,10 +60,9 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
 
         var elementTable = elementRecord.getRecord().getRepoTable();
         var aggregateStructure = this.dataStructureService.getAggregateStructureByElementClass(elementTable.getName());
-        var fwdDepRel = aggregateStructure.getFwdDepdendencyRelations();
         for (var relation: elementTable.getIncomingRelations()) {
-            if (fwdDepRel.contains(relation)) {
-                continue; // skip external links (within own aggregate)
+            if (aggregateStructure.isExternalRelation(relation) || aggregateStructure.isElementVersionRelation(relation)) {
+                continue;
             }
             var ownField = elementTable.findField(relation.getFwdFieldName());
             var ownFieldValue = elementRecord.getRecord().findFieldValue(ownField.getName()).getValue();

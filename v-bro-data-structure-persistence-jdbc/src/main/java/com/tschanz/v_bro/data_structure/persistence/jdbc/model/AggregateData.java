@@ -16,10 +16,11 @@ public class AggregateData extends VersionAggregate {
     public AggregateData(
         ElementRecord elementRecord,
         VersionRecord versionRecord,
+        List<AggregateDataNode> elementChildNodes,
         List<AggregateDataNode> versionChildNodes
     ) {
         super(
-            getRootNode(elementRecord, versionRecord, versionChildNodes)
+            getRootNode(elementRecord, versionRecord, elementChildNodes, versionChildNodes)
         );
 
         this.elementRecord = elementRecord;
@@ -45,11 +46,14 @@ public class AggregateData extends VersionAggregate {
     private static AggregateDataNode getRootNode(
         ElementRecord elementRecord,
         VersionRecord versionRecord,
+        List<AggregateDataNode> elementChildNodes,
         List<AggregateDataNode> versionChildNodes
     ) {
-        return new AggregateDataNode(
-            elementRecord.getRecord(),
-            List.of(new AggregateDataNode(versionRecord != null ? versionRecord.getRecord() : elementRecord.getRecord(), versionChildNodes))
-        );
+        List<AggregateDataNode> childNodes = new ArrayList<>(elementChildNodes);
+        if (versionRecord != null) {
+            childNodes.add(new AggregateDataNode(versionRecord.getRecord(), versionChildNodes));
+        }
+
+        return new AggregateDataNode(elementRecord.getRecord(), childNodes);
     }
 }

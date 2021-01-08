@@ -40,7 +40,7 @@ public class AggregateStructure {
     }
 
 
-    private List<String> getOwnTableNames() {
+    public List<String> getOwnTableNames() {
         if (this.ownTableNames == null) {
             this.ownTableNames = this.rootNode.getRepoTables()
                 .stream()
@@ -52,7 +52,7 @@ public class AggregateStructure {
     }
 
 
-    private boolean isExternalRelation(RepoRelation relation) {
+    public boolean isExternalRelation(RepoRelation relation) {
         if (!this.getOwnTableNames().contains(relation.getFwdClassName()) || !this.getOwnTableNames().contains(relation.getBwdClassName())) {
             return true; // links to/from external tables are ok
         } else if (!relation.getFwdClassName().equals(this.elementTable.getName())) {
@@ -68,5 +68,10 @@ public class AggregateStructure {
                 .collect(Collectors.toList());
             return (relsFromSameTable.indexOf(relation) > 0); // only allow 2nd+ link from direct _E child
         }
+    }
+
+
+    public boolean isElementVersionRelation(RepoRelation relation) {
+        return relation.getBwdClassName().equals(this.versionTable.getName()) && relation.getBwdFieldName().equals(VersionTable.ELEMENT_ID_COLNAME);
     }
 }
