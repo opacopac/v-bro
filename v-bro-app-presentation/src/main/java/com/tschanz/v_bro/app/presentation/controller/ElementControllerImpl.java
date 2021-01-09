@@ -15,6 +15,7 @@ import java.util.List;
 public class ElementControllerImpl implements ElementController {
     private final QueryElementsUseCase queryElementsUc;
     private final OpenElementUseCase openElementUc;
+    private final ProgressController progressController;
 
 
     @Override
@@ -23,8 +24,12 @@ public class ElementControllerImpl implements ElementController {
             return Collections.emptyList();
         }
 
+        this.progressController.startProgress();
+
         var request = new QueryElementsRequest(queryText);
         var response = this.queryElementsUc.execute(request);
+
+        this.progressController.endProgress();
 
         return ElementItem.fromResponse(response);
     }
@@ -36,7 +41,11 @@ public class ElementControllerImpl implements ElementController {
             return;
         }
 
+        this.progressController.startProgress();
+
         var request = new OpenElementRequest(selectedElementId, true,true);
         this.openElementUc.execute(request);
+
+        this.progressController.endProgress();
     }
 }

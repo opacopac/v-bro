@@ -10,6 +10,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ElementDenominationControllerImpl implements ElementDenominationController {
     private final SelectDenominationsUseCase selectElementDenominationUc;
+    private final ProgressController progressController;
 
 
     @Override
@@ -18,7 +19,11 @@ public class ElementDenominationControllerImpl implements ElementDenominationCon
             return;
         }
 
+        this.progressController.startProgress();
+
         var request = DenominationItem.toRequest(denominations);
         this.selectElementDenominationUc.execute(request);
+
+        this.progressController.endProgress();
     }
 }

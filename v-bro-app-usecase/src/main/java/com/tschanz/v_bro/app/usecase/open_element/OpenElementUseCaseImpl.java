@@ -38,7 +38,7 @@ public class OpenElementUseCaseImpl implements OpenElementUseCase {
         if (repoType != null && elementClass != null && elementId != null) {
             var msgStart = String.format("UC: opening element id '%s'...", elementId);
             log.info(msgStart);
-            var statusResponse1 = new StatusResponse(msgStart, false, true);
+            var statusResponse1 = new StatusResponse(msgStart, false);
             this.statusPresenter.present(statusResponse1);
 
             if (!this.trySelectElement(elementClass, elementId)) { // check if element is already loaded by previous query
@@ -55,7 +55,7 @@ public class OpenElementUseCaseImpl implements OpenElementUseCase {
                 }
             }
 
-            var statusResponse2 = new StatusResponse(msgStart, false, false);
+            var statusResponse2 = new StatusResponse(msgStart, false);
             this.statusPresenter.present(statusResponse2);
         } else {
             log.info("UC: clearing selected element");

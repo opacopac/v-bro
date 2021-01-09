@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class VersionControllerImpl implements VersionController {
     private final OpenVersionUseCase openVersionUc;
+    private final ProgressController progressController;
 
 
     @Override
@@ -16,7 +17,11 @@ public class VersionControllerImpl implements VersionController {
             return;
         }
 
+        this.progressController.startProgress();
+
         var request = new OpenVersionRequest(versionId, true);
         this.openVersionUc.execute(request);
+
+        this.progressController.endProgress();
     }
 }

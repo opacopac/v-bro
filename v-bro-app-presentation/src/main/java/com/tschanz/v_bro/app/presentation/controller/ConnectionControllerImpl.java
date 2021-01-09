@@ -19,6 +19,7 @@ public class ConnectionControllerImpl implements ConnectionController {
     private final BehaviorSubject<RepoConnectionItem> repoConnection;
     private final OpenRepoUseCase openRepoUc;
     private final CloseRepoUseCase closeRepoUc;
+    private final ProgressController progressController;
 
 
     public ConnectionControllerImpl(
@@ -26,19 +27,23 @@ public class ConnectionControllerImpl implements ConnectionController {
         BehaviorSubject<List<QuickConnectionItem>> quickConnectionList,
         BehaviorSubject<RepoConnectionItem> repoConnection,
         OpenRepoUseCase openRepoUc,
-        CloseRepoUseCase closeRepoUc
+        CloseRepoUseCase closeRepoUc,
+        ProgressController progressController
     ) {
         this.quickConnectionList = quickConnectionList;
         this.repoConnection = repoConnection;
         this.openRepoUc = openRepoUc;
         this.closeRepoUc = closeRepoUc;
+        this.progressController = progressController;
 
         this.initQuickConnectionList(appProperties);
     }
 
 
     @Override
-    public void onConnectToRepoAction(RepoConnectionItem connection) {
+    public void onConnectToRepo(RepoConnectionItem connection) {
+        this.progressController.startProgress();
+
         if (connection != null) {
             var request = RepoConnectionItem.toRequest(connection);
             this.openRepoUc.execute(request);
@@ -46,6 +51,8 @@ public class ConnectionControllerImpl implements ConnectionController {
             var request = new CloseRepoRequest();
             this.closeRepoUc.execute(request);
         }
+
+        this.progressController.endProgress();
     }
 
 

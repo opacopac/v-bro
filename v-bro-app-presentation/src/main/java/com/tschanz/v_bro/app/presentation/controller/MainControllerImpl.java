@@ -22,6 +22,7 @@ import java.util.Properties;
 
 @Getter
 public class MainControllerImpl implements MainController {
+    private final ProgressController progressController;
     private final ConnectionController connectionController;
     private final ElementClassController elementClassController;
     private final ElementDenominationController elementDenominationController;
@@ -54,23 +55,25 @@ public class MainControllerImpl implements MainController {
         SelectVersionAggregateHistoryUseCase selectVersionAggregateHistoryUc,
         OpenDependencyVersionUseCase openDependencyVersionUc
     ) {
+        this.progressController = new ProgressControllerImpl(mainViewModel.progressStatus);
         this.connectionController = new ConnectionControllerImpl(
             appProperties,
             mainViewModel.quickConnectionList,
             mainViewModel.currentRepoConnection,
             openRepoUseCase,
-            closeRepoUseCase
+            closeRepoUseCase,
+            this.progressController
         );
-        this.elementClassController = new ElementClassControllerImpl(openElementClassUc);
-        this.elementDenominationController = new ElementDenominationControllerImpl(selectDenominationsUc);
-        this.elementController = new ElementControllerImpl(queryElementsUc, openElementUc);
-        this.versionFilterController = new VersionFilterControllerImpl(selectVersionFilterUc);
-        this.versionController = new VersionControllerImpl(openVersionUc);
-        this.dependencyDirectionController = new DependencyDirectionControllerImpl(selectDependencyDirectionUc);
-        this.dependencyElementClassController = new DependencyElementClassControllerImpl(selectDependencyElementClassUc);
-        this.dependencyDenominationController = new DependencyDenominationControllerImpl(selectDependencyDenominationsUc);
-        this.dependencyElementFilterController = new DependencyElementFilterControllerImpl(selectDependencyElementFilterUc);
-        this.dependencyListController = new DependencyListControllerImpl(openDependencyVersionUc);
-        this.versionAggregateHistoryController = new VersionAggregateHistoryControllerImpl(selectVersionAggregateHistoryUc);
+        this.elementClassController = new ElementClassControllerImpl(openElementClassUc, this.progressController);
+        this.elementDenominationController = new ElementDenominationControllerImpl(selectDenominationsUc, this.progressController);
+        this.elementController = new ElementControllerImpl(queryElementsUc, openElementUc, this.progressController);
+        this.versionFilterController = new VersionFilterControllerImpl(selectVersionFilterUc, this.progressController);
+        this.versionController = new VersionControllerImpl(openVersionUc, this.progressController);
+        this.dependencyDirectionController = new DependencyDirectionControllerImpl(selectDependencyDirectionUc, this.progressController);
+        this.dependencyElementClassController = new DependencyElementClassControllerImpl(selectDependencyElementClassUc, this.progressController);
+        this.dependencyDenominationController = new DependencyDenominationControllerImpl(selectDependencyDenominationsUc, this.progressController);
+        this.dependencyElementFilterController = new DependencyElementFilterControllerImpl(selectDependencyElementFilterUc, this.progressController);
+        this.dependencyListController = new DependencyListControllerImpl(openDependencyVersionUc, this.progressController);
+        this.versionAggregateHistoryController = new VersionAggregateHistoryControllerImpl(selectVersionAggregateHistoryUc, this.progressController);
     }
 }

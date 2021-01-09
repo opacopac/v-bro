@@ -40,7 +40,7 @@ public class SelectVersionAggregateHistoryUseCaseImpl implements SelectVersionAg
 
             var msgStart = String.format("UC: selecting element class '%s' element id '%s' version id '%s' from history...", elementClassName, elementId, versionId);
             log.info(msgStart);
-            var statusResponse1 = new StatusResponse(msgStart, false, true);
+            var statusResponse1 = new StatusResponse(msgStart, false);
             this.statusPresenter.present(statusResponse1);
 
             var versionAggregateHistoryResponse = new VersionAggregateHistoryResponse(this.appState.hasPreviousHistory(), this.appState.hasNextHistory());

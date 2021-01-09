@@ -8,18 +8,27 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class VersionAggregateHistoryControllerImpl implements VersionAggregateHistoryController {
     private final SelectVersionAggregateHistoryUseCase selectVersionAggregateHistoryUc;
+    private final ProgressController progressController;
 
 
     @Override
     public void onForwardSelected() {
+        this.progressController.startProgress();
+
         var request = new SelectVersionAggregateHistoryRequest(true);
         this.selectVersionAggregateHistoryUc.execute(request);
+
+        this.progressController.endProgress();
     }
 
 
     @Override
     public void onBackwardSelected() {
+        this.progressController.startProgress();
+
         var request = new SelectVersionAggregateHistoryRequest(false);
         this.selectVersionAggregateHistoryUc.execute(request);
+
+        this.progressController.endProgress();
     }
 }

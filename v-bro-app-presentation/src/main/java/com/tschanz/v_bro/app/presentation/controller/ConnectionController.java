@@ -4,5 +4,5 @@ import com.tschanz.v_bro.app.presentation.viewmodel.repo.RepoConnectionItem;
 
 
 public interface ConnectionController {
-    void onConnectToRepoAction(RepoConnectionItem connection);
+    void onConnectToRepo(RepoConnectionItem connection);
 }

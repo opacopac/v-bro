@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class VersionFilterControllerImpl implements VersionFilterController {
     private final SelectVersionFilterUseCase selectVersionFilterUc;
+    private final ProgressController progressController;
 
 
     public void onVersionFilterSelected(VersionFilterItem versionFilterItem) {
@@ -16,7 +17,11 @@ public class VersionFilterControllerImpl implements VersionFilterController {
             return;
         }
 
+        this.progressController.startProgress();
+
         var request = new SelectVersionFilterRequest(versionFilterItem.getMinGueltigVon(), versionFilterItem.getMaxGueltigBis(), versionFilterItem.getMinPflegestatus());
         this.selectVersionFilterUc.execute(request);
+
+        this.progressController.endProgress();
     }
 }

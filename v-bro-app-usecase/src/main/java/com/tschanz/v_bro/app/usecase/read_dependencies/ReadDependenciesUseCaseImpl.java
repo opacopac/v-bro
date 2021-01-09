@@ -49,7 +49,7 @@ public class ReadDependenciesUseCaseImpl implements ReadDependenciesUseCase {
                     msgStart = String.format("UC: reading BWD dependencies of element '%s'...", element.getId());
                 }
                 log.info(msgStart);
-                var statusResponse1 = new StatusResponse(msgStart, false, true);
+                var statusResponse1 = new StatusResponse(msgStart, false);
                 this.statusPresenter.present(statusResponse1);
 
                 var dependencyService = this.dependencyServiceProvider.getService(repoType);
@@ -62,7 +62,7 @@ public class ReadDependenciesUseCaseImpl implements ReadDependenciesUseCase {
 
                 var msgSuccess = String.format("successfully read %d %s dependencies", dependencies.size(), fwdBwdText);
                 log.info(msgSuccess);
-                var statusResponse2 = new StatusResponse(msgSuccess, false, false);
+                var statusResponse2 = new StatusResponse(msgSuccess, false);
                 this.statusPresenter.present(statusResponse2);
 
                 var response = DependencyListResponse.fromDomain(dependencies);
@@ -70,7 +70,7 @@ public class ReadDependenciesUseCaseImpl implements ReadDependenciesUseCase {
             } catch (RepoException exception) {
                 var message = String.format("error reading %s dependencies: %s", fwdBwdText, exception.getMessage());
                 log.severe(message);
-                var statusResponse = new StatusResponse(message, true, false);
+                var statusResponse = new StatusResponse(message, true);
                 this.statusPresenter.present(statusResponse);
             }
         } else {

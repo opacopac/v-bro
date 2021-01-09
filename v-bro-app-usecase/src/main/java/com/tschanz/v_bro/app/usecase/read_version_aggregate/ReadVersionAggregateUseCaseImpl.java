@@ -31,7 +31,7 @@ public class ReadVersionAggregateUseCaseImpl implements ReadVersionAggregateUseC
             try {
                 var msgStart = String.format("UC: reading version aggregate of version id '%s'...", version.getId());
                 log.info(msgStart);
-                var statusResponse1 = new StatusResponse(msgStart, false, true);
+                var statusResponse1 = new StatusResponse(msgStart, false);
                 this.statusPresenter.present(statusResponse1);
 
                 VersionAggregateService versionAggregateService = this.versionAggregateServiceProvider.getService(repoType);
@@ -40,7 +40,7 @@ public class ReadVersionAggregateUseCaseImpl implements ReadVersionAggregateUseC
 
                 String msgSuccess = "successfully read version aggregate";
                 log.info(msgSuccess);
-                var statusResponse2 = new StatusResponse(msgSuccess, false, false);
+                var statusResponse2 = new StatusResponse(msgSuccess, false);
                 this.statusPresenter.present(statusResponse2);
 
                 var response = VersionAggregateResponse.fromDomain(versionAggregate);
@@ -48,7 +48,7 @@ public class ReadVersionAggregateUseCaseImpl implements ReadVersionAggregateUseC
             } catch (RepoException exception) {
                 String message = String.format("error reading version aggregate: %s", exception.getMessage());
                 log.severe(message);
-                var statusResponse = new StatusResponse(message, true, false);
+                var statusResponse = new StatusResponse(message, true);
                 this.statusPresenter.present(statusResponse);
             }
         } else {

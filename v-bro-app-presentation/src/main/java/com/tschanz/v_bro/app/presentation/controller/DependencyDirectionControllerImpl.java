@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DependencyDirectionControllerImpl implements DependencyDirectionController {
     private final SelectDependencyDirectionUseCase selectDependencyDirectionUc;
+    private final ProgressController progressController;
 
 
     public void onDependencyFilterSelected(DependencyDirectionItem dependencyDirectionItem) {
@@ -16,7 +17,11 @@ public class DependencyDirectionControllerImpl implements DependencyDirectionCon
             return;
         }
 
+        this.progressController.startProgress();
+
         var selectDependencyFilterRequest = new SelectDependencyDirectionRequest(dependencyDirectionItem.isFwd());
         this.selectDependencyDirectionUc.execute(selectDependencyFilterRequest);
+
+        this.progressController.endProgress();
     }
 }

@@ -35,7 +35,7 @@ public class ReadDependencyDenominationsUseCaseImpl implements ReadDependencyDen
             try {
                 var msgStart =  String.format("UC: reading dependency denominations for element class '%s'...", elementClass.getName());
                 log.info(msgStart);
-                var statusResponse1 = new StatusResponse(msgStart, false, true);
+                var statusResponse1 = new StatusResponse(msgStart, false);
                 this.statusPresenter.present(statusResponse1);
 
                 var denominationService = this.denominationServiceProvider.getService(repoType);
@@ -55,7 +55,7 @@ public class ReadDependencyDenominationsUseCaseImpl implements ReadDependencyDen
 
                 var msgSuccess = String.format("successfully read %d dependency denominations.", denominations.size());
                 log.info(msgSuccess);
-                var statusResponse = new StatusResponse(msgSuccess, false, false);
+                var statusResponse = new StatusResponse(msgSuccess, false);
                 this.statusPresenter.present(statusResponse);
 
                 var denominationResponse = DenominationListResponse.fromDomain(mslist);
@@ -63,7 +63,7 @@ public class ReadDependencyDenominationsUseCaseImpl implements ReadDependencyDen
             } catch (RepoException exception) {
                 var message = String.format("error reading dependency denominations: %s", exception.getMessage());
                 log.severe(message);
-                var statusResponse = new StatusResponse(message, true, false);
+                var statusResponse = new StatusResponse(message, true);
                 this.statusPresenter.present(statusResponse);
             }
         } else {

@@ -35,7 +35,7 @@ public class ReadDenominationUseCaseImpl implements ReadDenominationUseCase {
             try {
                 var msgStart =  String.format("UC: reading denominations for element class '%s'...", elementClass.getName());
                 log.info(msgStart);
-                var statusResponse1 = new StatusResponse(msgStart, false, true);
+                var statusResponse1 = new StatusResponse(msgStart, false);
                 this.statusPresenter.present(statusResponse1);
 
                 var denominationService = this.denominationServiceProvider.getService(repoType);
@@ -55,7 +55,7 @@ public class ReadDenominationUseCaseImpl implements ReadDenominationUseCase {
 
                 var msgSuccess = String.format("successfully read %d denominations.", denominations.size());
                 log.info(msgSuccess);
-                var statusResponse = new StatusResponse(msgSuccess, false, false);
+                var statusResponse = new StatusResponse(msgSuccess, false);
                 this.statusPresenter.present(statusResponse);
 
                 var denominationResponse = DenominationListResponse.fromDomain(mslist);
@@ -63,7 +63,7 @@ public class ReadDenominationUseCaseImpl implements ReadDenominationUseCase {
             } catch (RepoException exception) {
                 var message = String.format("error reading denominations: %s", exception.getMessage());
                 log.severe(message);
-                var statusResponse = new StatusResponse(message, true, false);
+                var statusResponse = new StatusResponse(message, true);
                 this.statusPresenter.present(statusResponse);
             }
         } else {

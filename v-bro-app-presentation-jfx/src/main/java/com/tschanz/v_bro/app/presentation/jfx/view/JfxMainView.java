@@ -21,6 +21,7 @@ public class JfxMainView implements MainView {
     @FXML private AnchorPane dependenciesView;
     @FXML private AnchorPane versionAggregateHistoryView;
     @FXML private AnchorPane versionAggregateView;
+    @FXML private AnchorPane progressView;
     @FXML private AnchorPane statusBarView;
     @FXML private JfxConnectionView connectionViewController;
     @FXML private JfxElementClassView elementClassViewController;
@@ -35,12 +36,14 @@ public class JfxMainView implements MainView {
     @FXML private JfxDependencyListView dependenciesViewController;
     @FXML private JfxVersionAggregateHistoryView versionAggregateHistoryViewController;
     @FXML private JfxVersionAggregateView versionAggregateViewController;
+    @FXML private JfxProgressView progressViewController;
     @FXML private JfxStatusBarView statusBarViewController;
 
 
     @Override
     public void bindViewModel(MainViewModel mainViewModel, MainController mainController) {
         this.statusBarViewController.bindViewModel(mainViewModel.appStatus);
+        this.progressViewController.bindViewModel(mainViewModel.progressStatus);
         this.connectionViewController.bindViewModel(mainViewModel.quickConnectionList, mainViewModel.currentRepoConnection, mainController.getConnectionController());
         this.elementClassViewController.bindViewModel(mainViewModel.elementClasses, mainController.getElementClassController());
         this.elementDenominationViewController.bindViewModel(mainViewModel.elementDenominations, mainController.getElementDenominationController());

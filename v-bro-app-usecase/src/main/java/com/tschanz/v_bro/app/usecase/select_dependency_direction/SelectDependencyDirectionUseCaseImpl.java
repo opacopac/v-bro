@@ -29,7 +29,7 @@ public class SelectDependencyDirectionUseCaseImpl implements SelectDependencyDir
 
         var msgStart = String.format("UC: selecting %s dependency direction...", fwdBwdText);
         log.info(msgStart);
-        var statusResponse1 = new StatusResponse(msgStart, false, false);
+        var statusResponse1 = new StatusResponse(msgStart, false);
         this.statusPresenter.present(statusResponse1);
 
         this.appState.setFwdDependencies(request.isFwd());

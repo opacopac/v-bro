@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DependencyElementClassControllerImpl implements DependencyElementClassController {
     private final SelectDependencyElementClassUseCase selectDependencyElementClassUc;
+    private final ProgressController progressController;
 
 
     @Override
@@ -16,7 +17,11 @@ public class DependencyElementClassControllerImpl implements DependencyElementCl
             return;
         }
 
+        this.progressController.startProgress();
+
         var request = new SelectDependencyElementClassRequest(selectedElementClass);
         this.selectDependencyElementClassUc.execute(request);
+
+        this.progressController.endProgress();
     }
 }

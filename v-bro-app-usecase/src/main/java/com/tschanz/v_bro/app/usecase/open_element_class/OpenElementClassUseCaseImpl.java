@@ -41,7 +41,7 @@ public class OpenElementClassUseCaseImpl implements OpenElementClassUseCase {
         if (elementClassName != null) {
             var msgStart = String.format("UC: opening element class '%s'...", elementClassName);
             log.info(msgStart);
-            var statusResponse1 = new StatusResponse(msgStart, false, true);
+            var statusResponse1 = new StatusResponse(msgStart, false);
             this.statusPresenter.present(statusResponse1);
 
             var selectedElementClass = oldElementClassList.getItems()

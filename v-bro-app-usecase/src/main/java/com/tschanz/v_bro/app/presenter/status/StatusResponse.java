@@ -9,5 +9,4 @@ import lombok.RequiredArgsConstructor;
 public class StatusResponse {
     private final String message;
     private final boolean isError;
-    private final boolean isWaiting;
 }

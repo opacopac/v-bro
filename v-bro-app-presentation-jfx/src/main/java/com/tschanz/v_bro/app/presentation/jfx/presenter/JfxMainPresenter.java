@@ -8,6 +8,7 @@ import com.tschanz.v_bro.app.presenter.dependency_denominations.DependencyDenomi
 import com.tschanz.v_bro.app.presenter.dependency_element_class.DependencyElementClassPresenter;
 import com.tschanz.v_bro.app.presenter.element.ElementPresenter;
 import com.tschanz.v_bro.app.presenter.element_class.ElementClassPresenter;
+import com.tschanz.v_bro.app.presenter.progress.ProgressPresenter;
 import com.tschanz.v_bro.app.presenter.repo_connection.RepoConnectionPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.version_aggregate.VersionAggregatePresenter;
@@ -20,6 +21,7 @@ import lombok.Getter;
 @Getter
 public class JfxMainPresenter extends MainPresenter {
     private final StatusPresenter statusPresenter;
+    private final ProgressPresenter progressPresenter;
     private final RepoConnectionPresenter repoConnectionPresenter;
     private final ElementClassPresenter elementClassPresenter;
     private final DenominationsPresenter denominationsPresenter;
@@ -37,6 +39,7 @@ public class JfxMainPresenter extends MainPresenter {
         super(mainViewModel);
 
         this.statusPresenter = new JfxStatusPresenter(mainViewModel.appStatus);
+        this.progressPresenter = new JfxProgressPresenter(mainViewModel.progressStatus);
         this.repoConnectionPresenter = new JfxRepoConnectionPresenter(mainViewModel.currentRepoConnection);
         this.elementClassPresenter = new JfxElementClassPresenter(mainViewModel.elementClasses);
         this.denominationsPresenter = new JfxDenominationsPresenter(mainViewModel.elementDenominations);

@@ -33,7 +33,7 @@ public class ReadDependencyElementClassesUseCaseImpl implements ReadDependencyEl
             try {
                 var msgStart = String.format("UC: reading %s dependency element classes for element class '%s'...", fwdBwdText, elementClass.getName());
                 log.info(msgStart);
-                var statusResponse1 = new StatusResponse(msgStart, false, true);
+                var statusResponse1 = new StatusResponse(msgStart, false);
                 this.statusPresenter.present(statusResponse1);
 
                 var dependencyStructureService = this.dependencyStructureServiceProvider.getService(repoType);
@@ -43,7 +43,7 @@ public class ReadDependencyElementClassesUseCaseImpl implements ReadDependencyEl
 
                 var msgSuccess = String.format("successfully read %d %s dependency element classes", dependencyElementClasses.size(), fwdBwdText);
                 log.info(msgSuccess);
-                var statusResponse2 = new StatusResponse(msgSuccess, false, false);
+                var statusResponse2 = new StatusResponse(msgSuccess, false);
                 this.statusPresenter.present(statusResponse2);
 
                 var elementClassList = new SelectedList<>(dependencyElementClasses, null);
@@ -54,7 +54,7 @@ public class ReadDependencyElementClassesUseCaseImpl implements ReadDependencyEl
             } catch (RepoException exception) {
                 var message = String.format("error reading %s dependency element classes: %s", fwdBwdText, exception.getMessage());
                 log.severe(message);
-                var statusResponse = new StatusResponse(message, true, false);
+                var statusResponse = new StatusResponse(message, true);
                 this.statusPresenter.present(statusResponse);
             }
         } else {

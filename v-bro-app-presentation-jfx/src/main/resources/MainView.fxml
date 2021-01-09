@@ -49,7 +49,13 @@
             </HBox>
         </center>
         <bottom>
-            <fx:include fx:id="statusBarView" source="StatusBarView.fxml" />
+            <HBox alignment="CENTER_LEFT" spacing="5.0">
+                <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                </padding>
+                <fx:include fx:id="progressView" source="ProgressView.fxml" />
+                <fx:include fx:id="statusBarView" source="StatusBarView.fxml" />
+            </HBox>
         </bottom>
     </BorderPane>
 </AnchorPane>

@@ -10,6 +10,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DependencyDenominationControllerImpl implements DependencyDenominationController {
     private final SelectDependencyDenominationsUseCase selectDependencyDenominationsUc;
+    private final ProgressController progressController;
 
 
     @Override
@@ -18,7 +19,11 @@ public class DependencyDenominationControllerImpl implements DependencyDenominat
             return;
         }
 
+        this.progressController.startProgress();
+
         var request = DenominationItem.toRequest(denominations);
         this.selectDependencyDenominationsUc.execute(request);
+
+        this.progressController.endProgress();
     }
 }

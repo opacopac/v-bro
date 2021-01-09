@@ -36,7 +36,7 @@ public class OpenVersionUseCaseImpl implements OpenVersionUseCase {
         if (versionId != null) {
             var msgStart = String.format("UC: opening version id '%s'...", versionId);
             log.info(msgStart);
-            var statusResponse1 = new StatusResponse(msgStart, false, true);
+            var statusResponse1 = new StatusResponse(msgStart, false);
             this.statusPresenter.present(statusResponse1);
 
             var selectedVersion = oldVersionList

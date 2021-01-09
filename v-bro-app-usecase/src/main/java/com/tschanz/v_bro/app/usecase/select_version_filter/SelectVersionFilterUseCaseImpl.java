@@ -26,7 +26,7 @@ public class SelectVersionFilterUseCaseImpl implements SelectVersionFilterUseCas
 
         var msgStart = String.format("UC: selecting version filter %tF-%tF %s...", versionFilter.getTimelineVon(), versionFilter.getTimelineBis(), versionFilter.getMinPflegestatus().name());
         log.info(msgStart);
-        var statusResponse1 = new StatusResponse(msgStart, false, true);
+        var statusResponse1 = new StatusResponse(msgStart, false);
         this.statusPresenter.present(statusResponse1);
 
         this.appState.setVersionFilter(versionFilter);

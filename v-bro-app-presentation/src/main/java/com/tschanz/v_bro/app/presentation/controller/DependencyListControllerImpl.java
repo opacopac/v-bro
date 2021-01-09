@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DependencyListControllerImpl implements DependencyListController {
     private final OpenDependencyVersionUseCase openDependencyVersionUc;
+    private final ProgressController progressController;
 
 
     @Override
@@ -17,11 +18,15 @@ public class DependencyListControllerImpl implements DependencyListController {
             return;
         }
 
+        this.progressController.startProgress();
+
         var request = new OpenDependencyVersionRequest(
             selectedDependencyVersion.getElementClass(),
             selectedDependencyVersion.getElementId(),
             selectedDependencyVersion.getVersionId()
         );
         this.openDependencyVersionUc.execute(request);
+
+        this.progressController.endProgress();
     }
 }

@@ -25,6 +25,7 @@ import java.util.List;
 
 public class MainViewModel {
     public final BehaviorSubject<StatusItem> appStatus = new BehaviorSubject<>(null);
+    public final BehaviorSubject<Boolean> progressStatus = new BehaviorSubject<>(false);
     public final BehaviorSubject<List<QuickConnectionItem>> quickConnectionList = new BehaviorSubject<>(Collections.emptyList());
     public final BehaviorSubject<RepoConnectionItem> currentRepoConnection = new BehaviorSubject<>(null);
     public final BehaviorSubject<SelectableItemList<ElementClassItem>> elementClasses = new BehaviorSubject<>(new SelectableItemList<>(Collections.emptyList(), null));

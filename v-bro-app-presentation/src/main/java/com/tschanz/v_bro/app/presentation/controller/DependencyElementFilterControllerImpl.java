@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DependencyElementFilterControllerImpl implements DependencyElementFilterController {
     private final SelectDependencyElementFilterUseCase selectDependencyElementFilterUc;
+    private final ProgressController progressController;
 
 
     public void onDependencyElementQuerySelected(String query) {
@@ -15,7 +16,11 @@ public class DependencyElementFilterControllerImpl implements DependencyElementF
             return;
         }
 
+        this.progressController.startProgress();
+
         var request = new SelectDependencyElementFilterRequest(query);
         this.selectDependencyElementFilterUc.execute(request);
+
+        this.progressController.endProgress();
     }
 }

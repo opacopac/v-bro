@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ElementClassControllerImpl implements ElementClassController {
     private final OpenElementClassUseCase openElementClassUc;
+    private final ProgressController progressController;
 
 
     @Override
@@ -16,7 +17,11 @@ public class ElementClassControllerImpl implements ElementClassController {
             return;
         }
 
+        this.progressController.startProgress();
+
         var request = new OpenElementClassRequest(selectedElementClass, true);
         this.openElementClassUc.execute(request);
+
+        this.progressController.endProgress();
     }
 }

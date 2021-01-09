@@ -40,7 +40,7 @@ public class CloseRepoUseCaseImpl implements CloseRepoUseCase {
         try {
             var msgStart =  String.format("UC: disconnecting from repo %s...", repoType);
             log.info(msgStart);
-            var statusResponse1 = new StatusResponse(msgStart, false, true);
+            var statusResponse1 = new StatusResponse(msgStart, false);
             this.statusPresenter.present(statusResponse1);
 
             var repoService = this.repoServiceProvider.getService(repoType);
@@ -50,7 +50,7 @@ public class CloseRepoUseCaseImpl implements CloseRepoUseCase {
 
             String msgSuccess = String.format("successfully disconnected from repo %s", repoType);
             log.info(msgSuccess);
-            var statusResponse2 = new StatusResponse(msgSuccess, false, false);
+            var statusResponse2 = new StatusResponse(msgSuccess, false);
             this.statusPresenter.present(statusResponse2);
 
             var repoResponse = RepoResponse.fromDomain(null);
@@ -58,7 +58,7 @@ public class CloseRepoUseCaseImpl implements CloseRepoUseCase {
         } catch (RepoException exception) {
             var message = String.format("error disconnecting from repo: %s", exception.getMessage());
             log.severe(message);
-            var statusResponse = new StatusResponse(message, true, false);
+            var statusResponse = new StatusResponse(message, true);
             this.statusPresenter.present(statusResponse);
         }
 

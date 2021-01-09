@@ -34,7 +34,7 @@ public class OpenRepoUseCaseImpl implements OpenRepoUseCase {
         try {
             var msgStart = "UC: connecting to repo...";
             log.info(msgStart);
-            var statusResponse1 = new StatusResponse(msgStart, false, true);
+            var statusResponse1 = new StatusResponse(msgStart, false);
             this.statusPresenter.present(statusResponse1);
 
             var repoService = this.repoServiceProvider.getService(connectionParameters.getRepoType());
@@ -44,7 +44,7 @@ public class OpenRepoUseCaseImpl implements OpenRepoUseCase {
 
             var msgSuccess = String.format("successfully connected to %s repo", connectionParameters.getRepoType());
             log.info(msgSuccess);
-            var statusResponse2 = new StatusResponse(msgSuccess, false, false);
+            var statusResponse2 = new StatusResponse(msgSuccess, false);
             this.statusPresenter.present(statusResponse2);
 
             var response = RepoResponse.fromDomain(connectionParameters);
@@ -52,7 +52,7 @@ public class OpenRepoUseCaseImpl implements OpenRepoUseCase {
         } catch (RepoException exception) {
             var message = "error connecting to repo: " + exception.getMessage();
             log.severe(message);
-            var statusResponse = new StatusResponse(message, true, false);
+            var statusResponse = new StatusResponse(message, true);
             this.statusPresenter.present(statusResponse);
         }
 
