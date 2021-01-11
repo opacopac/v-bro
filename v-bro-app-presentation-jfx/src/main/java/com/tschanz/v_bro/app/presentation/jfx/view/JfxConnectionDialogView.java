@@ -1,6 +1,7 @@
 package com.tschanz.v_bro.app.presentation.jfx.view;
 
 import com.tschanz.v_bro.app.presentation.controller.ConnectionController;
+import com.tschanz.v_bro.app.presentation.viewmodel.quick_connections.QuickConnectionItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.repo.*;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 import com.tschanz.v_bro.common.reactive.GenericSubscriber;

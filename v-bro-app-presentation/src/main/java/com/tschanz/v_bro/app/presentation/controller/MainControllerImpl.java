@@ -8,6 +8,7 @@ import com.tschanz.v_bro.app.usecase.open_element_class.OpenElementClassUseCase;
 import com.tschanz.v_bro.app.usecase.open_repo.OpenRepoUseCase;
 import com.tschanz.v_bro.app.usecase.open_version.OpenVersionUseCase;
 import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsUseCase;
+import com.tschanz.v_bro.app.usecase.read_quick_connections.ReadQuickConnectionsUseCase;
 import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsUseCase;
 import com.tschanz.v_bro.app.usecase.select_dependency_denominations.SelectDependencyDenominationsUseCase;
 import com.tschanz.v_bro.app.usecase.select_dependency_direction.SelectDependencyDirectionUseCase;
@@ -16,8 +17,6 @@ import com.tschanz.v_bro.app.usecase.select_dependency_element_filter.SelectDepe
 import com.tschanz.v_bro.app.usecase.select_version_aggregate_history.SelectVersionAggregateHistoryUseCase;
 import com.tschanz.v_bro.app.usecase.select_version_filter.SelectVersionFilterUseCase;
 import lombok.Getter;
-
-import java.util.Properties;
 
 
 @Getter
@@ -38,8 +37,8 @@ public class MainControllerImpl implements MainController {
 
 
     public MainControllerImpl(
-        Properties appProperties,
         MainViewModel mainViewModel,
+        ReadQuickConnectionsUseCase readQuickConnectionsUc,
         OpenRepoUseCase openRepoUseCase,
         CloseRepoUseCase closeRepoUseCase,
         OpenElementClassUseCase openElementClassUc,
@@ -57,9 +56,8 @@ public class MainControllerImpl implements MainController {
     ) {
         this.progressController = new ProgressControllerImpl(mainViewModel.progressStatus);
         this.connectionController = new ConnectionControllerImpl(
-            appProperties,
-            mainViewModel.quickConnectionList,
             mainViewModel.currentRepoConnection,
+            readQuickConnectionsUc,
             openRepoUseCase,
             closeRepoUseCase,
             this.progressController

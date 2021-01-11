@@ -5,6 +5,7 @@ import com.tschanz.v_bro.common.selected_list.SelectedList;
 import com.tschanz.v_bro.common.types.Triple;
 import com.tschanz.v_bro.data_structure.domain.model.*;
 import com.tschanz.v_bro.repo.domain.model.ConnectionParameters;
+import com.tschanz.v_bro.repo.domain.model.QuickConnection;
 import com.tschanz.v_bro.repo.domain.model.RepoType;
 import lombok.Getter;
 import lombok.NonNull;
@@ -17,6 +18,7 @@ import java.util.*;
 @Getter(onMethod = @__({@Synchronized}))
 @Setter(onMethod = @__({@Synchronized}))
 public class AppState {
+    @NonNull private List<QuickConnection> quickConnections = Collections.emptyList();
     private ConnectionParameters connectionParameters;
     @NonNull private SelectedList<ElementClass> elementClasses = SelectedList.createEmpty();
     @NonNull private MultiSelectedList<Denomination> elementDenominations = MultiSelectedList.createEmpty();

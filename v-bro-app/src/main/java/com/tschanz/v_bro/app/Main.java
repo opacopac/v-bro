@@ -18,13 +18,14 @@ import com.tschanz.v_bro.app.usecase.read_dependencies.ReadDependenciesUseCaseIm
 import com.tschanz.v_bro.app.usecase.read_dependency_denominations.ReadDependencyDenominationsUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.read_dependency_element_classes.ReadDependencyElementClassesUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.read_element_classes.ReadElementClassesUseCaseImpl;
+import com.tschanz.v_bro.app.usecase.read_quick_connections.ReadQuickConnectionsUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.read_version_aggregate.ReadVersionAggregateUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.read_versions.ReadVersionsUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_dependency_denominations.SelectDependencyDenominationsUseCaseImpl;
+import com.tschanz.v_bro.app.usecase.select_dependency_direction.SelectDependencyDirectionUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_dependency_element_class.SelectDependencyElementClassUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_dependency_element_filter.SelectDependencyElementFilterUseCaseImpl;
-import com.tschanz.v_bro.app.usecase.select_dependency_direction.SelectDependencyDirectionUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_version_aggregate_history.SelectVersionAggregateHistoryUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_version_filter.SelectVersionFilterUseCaseImpl;
 import com.tschanz.v_bro.common.cache.LastNCache;
@@ -43,16 +44,12 @@ import com.tschanz.v_bro.repo.persistence.xml.service.XmlRepoConnectionService;
 import lombok.SneakyThrows;
 
 import javax.xml.stream.XMLInputFactory;
-import java.io.FileNotFoundException;
-import java.util.Properties;
 
 
 public class Main {
     @SneakyThrows
     public static void main(String[] args) {
         /// poor man's DI ///
-
-        var appProperties = loadProperties();
 
         // persistence jdbc
         Class.forName("oracle.jdbc.OracleDriver");
@@ -129,6 +126,7 @@ public class Main {
         var readDenominationUc = new ReadDenominationUseCaseImpl(mainState, denominationServiceProvider, mainPresenter.getDenominationsPresenter(), mainPresenter.getStatusPresenter());
         var openElementClassUc = new OpenElementClassUseCaseImpl(mainState, mainPresenter.getElementClassPresenter(), mainPresenter.getStatusPresenter(), readDenominationUc, queryElementsUc, openElementUc, readDependencyElementClassesUc, selectDependencyElementClassUc);
         var readElementClassesUc = new ReadElementClassesUseCaseImpl(mainState, elementClassServiceProvider, mainPresenter.getStatusPresenter(), mainPresenter.getElementClassPresenter());
+        var readQuickConnectionsUc = new ReadQuickConnectionsUseCaseImpl(mainState, mainPresenter.getStatusPresenter(), mainPresenter.getQuickConnectionsPresenter());
         var openRepoUc = new OpenRepoUseCaseImpl(mainState, repoConnectionServiceProvider, mainPresenter.getRepoConnectionPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc);
         var closeRepoUc = new CloseRepoUseCaseImpl(mainState, repoConnectionServiceProvider, mainPresenter.getRepoConnectionPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc, selectDependencyElementClassUc);
         var openDependencyVersionUc = new OpenDependencyVersionUseCaseImpl(openElementClassUc, openElementUc, openVersionUc, mainPresenter.getStatusPresenter());
@@ -136,8 +134,8 @@ public class Main {
 
         // presentation controller
         var mainController = new MainControllerImpl(
-            appProperties, // TODO => move to app
             mainModel,
+            readQuickConnectionsUc,
             openRepoUc,
             closeRepoUc,
             openElementClassUc,
@@ -156,22 +154,5 @@ public class Main {
 
         // presentation view
         JfxApplication.main(args, mainModel, mainController);
-    }
-
-
-    @SneakyThrows
-    private static Properties loadProperties() {
-        var prop = new Properties();
-        var propFileName = "/application.properties";
-
-        var inputStream = Main.class.getResourceAsStream(propFileName);
-
-        if (inputStream != null) {
-            prop.load(inputStream);
-        } else {
-            throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
-        }
-
-        return prop;
     }
 }

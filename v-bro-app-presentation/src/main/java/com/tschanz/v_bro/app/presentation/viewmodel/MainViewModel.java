@@ -7,7 +7,7 @@ import com.tschanz.v_bro.app.presentation.viewmodel.dependency.DependencyDirecti
 import com.tschanz.v_bro.app.presentation.viewmodel.dependency.DependencyItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.element.ElementItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.element_class.ElementClassItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.repo.QuickConnectionItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.quick_connections.QuickConnectionItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.repo.RepoConnectionItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.status.StatusItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.version.VersionFilterItem;

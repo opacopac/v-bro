@@ -1,6 +1,7 @@
 package com.tschanz.v_bro.app.presentation.jfx.presenter;
 
-import com.tschanz.v_bro.app.presentation.presenter.*;
+import com.tschanz.v_bro.app.presentation.presenter.MainPresenter;
+import com.tschanz.v_bro.app.presentation.presenter.QuickConnectionPresenterImpl;
 import com.tschanz.v_bro.app.presentation.viewmodel.MainViewModel;
 import com.tschanz.v_bro.app.presenter.denominations.DenominationsPresenter;
 import com.tschanz.v_bro.app.presenter.dependencies.DependencyPresenter;
@@ -9,6 +10,7 @@ import com.tschanz.v_bro.app.presenter.dependency_element_class.DependencyElemen
 import com.tschanz.v_bro.app.presenter.element.ElementPresenter;
 import com.tschanz.v_bro.app.presenter.element_class.ElementClassPresenter;
 import com.tschanz.v_bro.app.presenter.progress.ProgressPresenter;
+import com.tschanz.v_bro.app.presenter.quick_connections.QuickConnectionsPresenter;
 import com.tschanz.v_bro.app.presenter.repo_connection.RepoConnectionPresenter;
 import com.tschanz.v_bro.app.presenter.status.StatusPresenter;
 import com.tschanz.v_bro.app.presenter.version_aggregate.VersionAggregatePresenter;
@@ -22,6 +24,7 @@ import lombok.Getter;
 public class JfxMainPresenter extends MainPresenter {
     private final StatusPresenter statusPresenter;
     private final ProgressPresenter progressPresenter;
+    private final QuickConnectionsPresenter quickConnectionsPresenter;
     private final RepoConnectionPresenter repoConnectionPresenter;
     private final ElementClassPresenter elementClassPresenter;
     private final DenominationsPresenter denominationsPresenter;
@@ -40,6 +43,7 @@ public class JfxMainPresenter extends MainPresenter {
 
         this.statusPresenter = new JfxStatusPresenter(mainViewModel.appStatus);
         this.progressPresenter = new JfxProgressPresenter(mainViewModel.progressStatus);
+        this.quickConnectionsPresenter = new QuickConnectionPresenterImpl(mainViewModel.quickConnectionList);
         this.repoConnectionPresenter = new JfxRepoConnectionPresenter(mainViewModel.currentRepoConnection);
         this.elementClassPresenter = new JfxElementClassPresenter(mainViewModel.elementClasses);
         this.denominationsPresenter = new JfxDenominationsPresenter(mainViewModel.elementDenominations);

@@ -4,7 +4,7 @@ package com.tschanz.v_bro.app.presentation.jfx.view;
 import com.tschanz.v_bro.app.presentation.controller.ConnectionController;
 import com.tschanz.v_bro.app.presentation.view.ConnectionView;
 import com.tschanz.v_bro.app.presentation.viewmodel.repo.JdbcRepoConnectionItem;
-import com.tschanz.v_bro.app.presentation.viewmodel.repo.QuickConnectionItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.quick_connections.QuickConnectionItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.repo.RepoConnectionItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.repo.XmlRepoConnectionItem;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
@@ -64,6 +64,7 @@ public class JfxConnectionView implements Initializable, ConnectionView {
         ConnectionController connectionController
     ) {
         this.connectionController = connectionController;
+        this.connectionController.onReadQuickConnections();
         this.connectionDialogView.bindViewModel(quickConnectionList, currentRepoConnection, connectionController);
         currentRepoConnection.subscribe(new GenericSubscriber<>(this::onRepoConnectionChanged));
     }

@@ -1,7 +1,7 @@
 package com.tschanz.v_bro.app.presentation.view;
 
 import com.tschanz.v_bro.app.presentation.controller.ConnectionController;
-import com.tschanz.v_bro.app.presentation.viewmodel.repo.QuickConnectionItem;
+import com.tschanz.v_bro.app.presentation.viewmodel.quick_connections.QuickConnectionItem;
 import com.tschanz.v_bro.app.presentation.viewmodel.repo.RepoConnectionItem;
 import com.tschanz.v_bro.common.reactive.BehaviorSubject;
 
