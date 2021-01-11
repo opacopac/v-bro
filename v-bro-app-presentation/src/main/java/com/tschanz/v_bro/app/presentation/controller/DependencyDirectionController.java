@@ -4,5 +4,5 @@ import com.tschanz.v_bro.app.presentation.viewmodel.dependency.DependencyDirecti
 
 
 public interface DependencyDirectionController {
-    void onDependencyFilterSelected(DependencyDirectionItem dependencyDirectionItem);
+    void selectDependencyDirection(DependencyDirectionItem dependencyDirectionItem);
 }

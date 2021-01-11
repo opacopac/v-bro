@@ -12,7 +12,7 @@ public class DependencyElementClassControllerImpl implements DependencyElementCl
 
 
     @Override
-    public void onElementClassSelected(String selectedElementClass) {
+    public void selectDependencyElementClass(String selectedElementClass) {
         if (selectedElementClass == null) {
             return;
         }

@@ -11,7 +11,7 @@ public class DependencyElementFilterControllerImpl implements DependencyElementF
     private final ProgressController progressController;
 
 
-    public void onDependencyElementQuerySelected(String query) {
+    public void selectDependencyElementQuery(String query) {
         if (query == null) {
             return;
         }

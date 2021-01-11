@@ -33,6 +33,6 @@ public class JfxDependencyElementFilterView implements Initializable, Dependency
     public void onQueryChanged(ActionEvent actionEvent) {
         var query = this.elementQueryTextField.getText();
 
-        new Thread(() -> { this.dependencyElementFilterController.onDependencyElementQuerySelected(query); }).start();
+        new Thread(() -> { this.dependencyElementFilterController.selectDependencyElementQuery(query); }).start();
     }
 }

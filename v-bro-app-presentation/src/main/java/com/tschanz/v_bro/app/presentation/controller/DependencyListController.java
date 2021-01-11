@@ -4,5 +4,5 @@ import com.tschanz.v_bro.app.presentation.viewmodel.dependency.ElementVersionVec
 
 
 public interface DependencyListController {
-    void onVersionFilterSelected(ElementVersionVector selectedDependencyVersion);
+    void selectDependencyVersion(ElementVersionVector selectedDependencyVersion);
 }

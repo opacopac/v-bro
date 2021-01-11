@@ -62,7 +62,7 @@ public class JfxVersionFilterView implements VersionFilterView, Initializable {
 
     @FXML
     private void onFilterSelected(ActionEvent actionEvent) {
-        new Thread(() -> this.versionFilterController.onVersionFilterSelected(this.getVersionFilterItem())).start();
+        new Thread(() -> this.versionFilterController.selectVersionFilter(this.getVersionFilterItem())).start();
     }
 
 

@@ -85,7 +85,7 @@ public class JfxVersionTimeline {
             return;
         }
 
-        new Thread(() -> this.versionController.onVersionSelected(selectedVersionItem.getId())).start();
+        new Thread(() -> this.versionController.openVersion(selectedVersionItem.getId())).start();
     }
 
 

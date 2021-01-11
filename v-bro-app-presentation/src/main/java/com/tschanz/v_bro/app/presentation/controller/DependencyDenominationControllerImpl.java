@@ -14,7 +14,7 @@ public class DependencyDenominationControllerImpl implements DependencyDenominat
 
 
     @Override
-    public void onDenominationsSelected(List<DenominationItem> denominations) {
+    public void selectDenominations(List<DenominationItem> denominations) {
         if (denominations == null) {
             return;
         }

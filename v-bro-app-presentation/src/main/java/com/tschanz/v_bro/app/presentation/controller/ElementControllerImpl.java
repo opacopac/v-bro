@@ -19,7 +19,7 @@ public class ElementControllerImpl implements ElementController {
 
 
     @Override
-    public List<ElementItem> onQueryElement(String queryText) {
+    public List<ElementItem> queryElement(String queryText) {
         if (queryText == null) {
             return Collections.emptyList();
         }
@@ -36,7 +36,7 @@ public class ElementControllerImpl implements ElementController {
 
 
     @Override
-    public void onElementSelected(String selectedElementId) {
+    public void openElement(String selectedElementId) {
         if (selectedElementId == null) {
             return;
         }

@@ -12,7 +12,7 @@ public class VersionAggregateHistoryControllerImpl implements VersionAggregateHi
 
 
     @Override
-    public void onForwardSelected() {
+    public void goForward() {
         this.progressController.startProgress();
 
         var request = new SelectVersionAggregateHistoryRequest(true);
@@ -23,7 +23,7 @@ public class VersionAggregateHistoryControllerImpl implements VersionAggregateHi
 
 
     @Override
-    public void onBackwardSelected() {
+    public void goBack() {
         this.progressController.startProgress();
 
         var request = new SelectVersionAggregateHistoryRequest(false);

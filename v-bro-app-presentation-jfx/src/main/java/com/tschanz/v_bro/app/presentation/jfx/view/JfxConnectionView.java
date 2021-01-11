@@ -64,7 +64,7 @@ public class JfxConnectionView implements Initializable, ConnectionView {
         ConnectionController connectionController
     ) {
         this.connectionController = connectionController;
-        this.connectionController.onReadQuickConnections();
+        this.connectionController.readQuickConnections();
         this.connectionDialogView.bindViewModel(quickConnectionList, currentRepoConnection, connectionController);
         currentRepoConnection.subscribe(new GenericSubscriber<>(this::onRepoConnectionChanged));
     }
@@ -81,7 +81,7 @@ public class JfxConnectionView implements Initializable, ConnectionView {
 
     @FXML
     private void onDisconnectClicked(ActionEvent actionEvent) {
-        new Thread(() -> this.connectionController.onConnectToRepo(null)).start();
+        new Thread(() -> this.connectionController.connectToRepo(null)).start();
     }
 
 

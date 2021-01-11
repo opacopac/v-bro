@@ -12,7 +12,7 @@ public class DependencyDirectionControllerImpl implements DependencyDirectionCon
     private final ProgressController progressController;
 
 
-    public void onDependencyFilterSelected(DependencyDirectionItem dependencyDirectionItem) {
+    public void selectDependencyDirection(DependencyDirectionItem dependencyDirectionItem) {
         if (dependencyDirectionItem == null) {
             return;
         }

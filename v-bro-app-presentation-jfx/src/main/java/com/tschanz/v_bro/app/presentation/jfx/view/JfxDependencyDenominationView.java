@@ -67,7 +67,7 @@ public class JfxDependencyDenominationView implements DependencyDenominationView
                 .mapToObj(i -> this.denominationCheckComboBox.getCheckModel().getItem(i))
                 .collect(Collectors.toList());
 
-            new Thread(() -> this.dependencyDenominationController.onDenominationsSelected(selectedItems)).start();
+            new Thread(() -> this.dependencyDenominationController.selectDenominations(selectedItems)).start();
         }
     }
 }

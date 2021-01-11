@@ -20,14 +20,14 @@ public class ConnectionControllerImpl implements ConnectionController {
 
 
     @Override
-    public void onReadQuickConnections() {
+    public void readQuickConnections() {
         var request = new ReadQuickConnectionsRequest();
         this.readQuickConnectionsUc.execute(request);
     }
 
 
     @Override
-    public void onConnectToRepo(RepoConnectionItem connection) {
+    public void connectToRepo(RepoConnectionItem connection) {
         this.progressController.startProgress();
 
         if (connection != null) {

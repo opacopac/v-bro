@@ -6,5 +6,5 @@ import java.util.List;
 
 
 public interface ElementDenominationController {
-    void onDenominationsSelected(List<DenominationItem> denominations);
+    void selectDenominations(List<DenominationItem> denominations);
 }

@@ -76,7 +76,7 @@ public class JfxDependencyElementClassView implements DependencyElementClassView
                     .stream()
                     .filter(item -> item.getName().equals(selectedText))
                     .findFirst()
-                    .ifPresent(item -> this.dependencyElementClassController.onElementClassSelected(item.getName()));
+                    .ifPresent(item -> this.dependencyElementClassController.selectDependencyElementClass(item.getName()));
             }).start();
         }
     }

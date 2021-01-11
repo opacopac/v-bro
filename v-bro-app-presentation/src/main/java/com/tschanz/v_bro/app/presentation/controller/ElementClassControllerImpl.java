@@ -12,7 +12,7 @@ public class ElementClassControllerImpl implements ElementClassController {
 
 
     @Override
-    public void onElementClassSelected(String selectedElementClass) {
+    public void openElementClass(String selectedElementClass) {
         if (selectedElementClass == null) {
             return;
         }

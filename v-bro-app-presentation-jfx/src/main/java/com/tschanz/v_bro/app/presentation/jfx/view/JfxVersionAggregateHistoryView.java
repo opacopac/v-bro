@@ -79,14 +79,14 @@ public class JfxVersionAggregateHistoryView implements VersionAggregateHistoryVi
 
     @FXML private void onBackClicked(ActionEvent actionEvent) {
         new Thread(() -> {
-            this.versionAggregateHistoryController.onBackwardSelected();
+            this.versionAggregateHistoryController.goBack();
         }).start();
     }
 
 
     @FXML private void onForwardClicked(ActionEvent actionEvent) {
         new Thread(() -> {
-            this.versionAggregateHistoryController.onForwardSelected();
+            this.versionAggregateHistoryController.goForward();
         }).start();
     }
 }

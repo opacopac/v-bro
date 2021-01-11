@@ -54,14 +54,14 @@ public class JfxElementView implements ElementView, Initializable {
     @FXML private void onElementSelected(AutoCompletionBinding.AutoCompletionEvent<ElementItem> event) {
         var elementId = event.getCompletion().getId();
 
-        new Thread(() -> this.elementController.onElementSelected(elementId)).start();
+        new Thread(() -> this.elementController.openElement(elementId)).start();
     }
 
 
     private class ElementSuggestionProvider extends SuggestionProvider<ElementItem> {
         @Override
         public Collection<ElementItem> call(AutoCompletionBinding.ISuggestionRequest request) {
-            return JfxElementView.this.elementController.onQueryElement(request.getUserText());
+            return JfxElementView.this.elementController.queryElement(request.getUserText());
         }
 
 

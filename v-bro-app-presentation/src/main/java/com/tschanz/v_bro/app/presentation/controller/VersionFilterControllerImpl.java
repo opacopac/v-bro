@@ -12,7 +12,7 @@ public class VersionFilterControllerImpl implements VersionFilterController {
     private final ProgressController progressController;
 
 
-    public void onVersionFilterSelected(VersionFilterItem versionFilterItem) {
+    public void selectVersionFilter(VersionFilterItem versionFilterItem) {
         if (versionFilterItem == null) {
             return;
         }

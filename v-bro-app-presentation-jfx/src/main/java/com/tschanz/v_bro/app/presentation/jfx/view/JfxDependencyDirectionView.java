@@ -39,19 +39,19 @@ public class JfxDependencyDirectionView implements DependencyDirectionView {
         }
 
         if (this.dependencyDirectionController != null) {
-            new Thread(() -> this.dependencyDirectionController.onDependencyFilterSelected(dependencyFilter)).start();
+            new Thread(() -> this.dependencyDirectionController.selectDependencyDirection(dependencyFilter)).start();
         }
     }
 
 
     @FXML private void onFwdDependencySelected(ActionEvent actionEvent) {
         var dependencyFilter = new DependencyDirectionItem(true);
-        new Thread(() -> this.dependencyDirectionController.onDependencyFilterSelected(dependencyFilter)).start();
+        new Thread(() -> this.dependencyDirectionController.selectDependencyDirection(dependencyFilter)).start();
     }
 
 
     @FXML private void onBwdDependencySelected(ActionEvent actionEvent) {
         var dependencyFilter = new DependencyDirectionItem(false);
-        new Thread(() -> this.dependencyDirectionController.onDependencyFilterSelected(dependencyFilter)).start();
+        new Thread(() -> this.dependencyDirectionController.selectDependencyDirection(dependencyFilter)).start();
     }
 }

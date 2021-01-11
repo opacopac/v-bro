@@ -13,7 +13,7 @@ public class DependencyListControllerImpl implements DependencyListController {
 
 
     @Override
-    public void onVersionFilterSelected(ElementVersionVector selectedDependencyVersion) {
+    public void selectDependencyVersion(ElementVersionVector selectedDependencyVersion) {
         if (selectedDependencyVersion == null) {
             return;
         }

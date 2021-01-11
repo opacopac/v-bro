@@ -4,7 +4,7 @@ import com.tschanz.v_bro.app.presentation.viewmodel.repo.RepoConnectionItem;
 
 
 public interface ConnectionController {
-    void onReadQuickConnections();
+    void readQuickConnections();
 
-    void onConnectToRepo(RepoConnectionItem connection);
+    void connectToRepo(RepoConnectionItem connection);
 }

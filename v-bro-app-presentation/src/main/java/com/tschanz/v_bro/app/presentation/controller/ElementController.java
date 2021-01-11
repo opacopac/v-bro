@@ -6,7 +6,7 @@ import com.tschanz.v_bro.app.presentation.viewmodel.element.ElementItem;
 import java.util.List;
 
 public interface ElementController {
-    List<ElementItem> onQueryElement(String queryText);
+    List<ElementItem> queryElement(String queryText);
 
-    void onElementSelected(String selectedElementId);
+    void openElement(String selectedElementId);
 }

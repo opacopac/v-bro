@@ -134,7 +134,7 @@ public class JfxConnectionDialogView implements Initializable {
                 break;
         }
 
-        new Thread(() -> this.connectionController.onConnectToRepo(nextRepoConnection)).start();
+        new Thread(() -> this.connectionController.connectToRepo(nextRepoConnection)).start();
         this.stage.close();
     }
 

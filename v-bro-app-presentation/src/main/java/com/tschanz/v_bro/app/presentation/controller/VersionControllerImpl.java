@@ -12,7 +12,7 @@ public class VersionControllerImpl implements VersionController {
 
 
     @Override
-    public void onVersionSelected(String versionId) {
+    public void openVersion(String versionId) {
         if (versionId == null) {
             return;
         }
