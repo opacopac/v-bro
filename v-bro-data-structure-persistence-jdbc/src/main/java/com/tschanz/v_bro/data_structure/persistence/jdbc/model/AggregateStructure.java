@@ -57,7 +57,7 @@ public class AggregateStructure {
             return true; // links to/from external tables are ok
         } else if (!relation.getFwdClassName().equals(this.elementTable.getName())) {
             return false; // links to internal tables (except to _E) are nok
-        } else if (relation.getBwdClassName().equals(this.versionTable.getName())) {
+        } else if (this.versionTable != null && relation.getBwdClassName().equals(this.versionTable.getName())) {
             return !relation.getBwdFieldName().equals(VersionTable.ELEMENT_ID_COLNAME); // all links from _V, except parent-link, are nok
         } else if (this.getNodeByTableName(relation.getBwdClassName()).getLevel() > 1) {
             return true; // all tables which are not a direct child of _E, are ok
@@ -72,6 +72,8 @@ public class AggregateStructure {
 
 
     public boolean isElementVersionRelation(RepoRelation relation) {
-        return relation.getBwdClassName().equals(this.versionTable.getName()) && relation.getBwdFieldName().equals(VersionTable.ELEMENT_ID_COLNAME);
+        return this.versionTable != null
+            && relation.getBwdClassName().equals(this.versionTable.getName())
+            && relation.getBwdFieldName().equals(VersionTable.ELEMENT_ID_COLNAME);
     }
 }
