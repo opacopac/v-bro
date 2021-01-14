@@ -1,25 +1,25 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.repo_connection;
 
+import lombok.Getter;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 
+@Getter
 public class JdbcConnectionFactoryImpl implements JdbcConnectionFactory {
     private Connection currentConnection;
     private String currentConnectionUrl;
+    private String currentSchema;
 
 
     @Override
-    public void openConnection(String url, String user, String password) throws SQLException {
+    public void openConnection(String url, String user, String password, String schema) throws SQLException {
         this.currentConnection = DriverManager.getConnection(url, user, password);
+        this.currentConnection.setSchema(schema);
         this.currentConnectionUrl = url;
-    }
-
-
-    @Override
-    public Connection getCurrentConnection() {
-        return this.currentConnection;
+        this.currentSchema = schema;
     }
 
 
@@ -40,5 +40,6 @@ public class JdbcConnectionFactoryImpl implements JdbcConnectionFactory {
         this.currentConnection.close();
         this.currentConnection = null;
         this.currentConnectionUrl = null;
+        this.currentSchema = null;
     }
 }

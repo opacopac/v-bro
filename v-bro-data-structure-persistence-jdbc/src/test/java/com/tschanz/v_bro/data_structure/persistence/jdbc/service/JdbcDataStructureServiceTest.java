@@ -17,7 +17,7 @@ class JdbcDataStructureServiceTest {
     @SneakyThrows
     void setUp() {
         var jdbcConnectionFactory = new JdbcConnectionFactoryImpl();
-        jdbcConnectionFactory.openConnection("jdbc:mysql://localhost:3306/test", "", "");
+        jdbcConnectionFactory.openConnection("jdbc:mysql://localhost:3306/test", "", "", "test");
         var jdbcRepoMetadataService = new JdbcRepoMetadataServiceImpl(jdbcConnectionFactory);
         this.jdbcDataStructureService = new JdbcDataStructureService(jdbcRepoMetadataService);
     }

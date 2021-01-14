@@ -29,10 +29,12 @@ public class JfxConnectionDialogView implements Initializable {
     @FXML private Label urlLabel;
     @FXML private Label userLabel;
     @FXML private Label passwordLabel;
+    @FXML private Label schemaLabel;
     @FXML private Label fileLabel;
     @FXML private RowConstraints urlRow;
     @FXML private RowConstraints userRow;
     @FXML private RowConstraints passwordRow;
+    @FXML private RowConstraints schemaRow;
     @FXML private RowConstraints fileRow;
     @FXML private ComboBox<QuickConnectionItem> quickLinkComboBox;
     @FXML private ToggleGroup repoType;
@@ -42,6 +44,7 @@ public class JfxConnectionDialogView implements Initializable {
     @FXML private TextField urlTextField;
     @FXML private TextField userTextField;
     @FXML private PasswordField passwordField;
+    @FXML private TextField schemaField;
     @FXML private TextField fileTextField;
     @FXML private Button selectFileButton;
     @FXML private Button connectButton;
@@ -85,6 +88,7 @@ public class JfxConnectionDialogView implements Initializable {
         this.urlTextField.setText(quickConnectionItem.getUrl());
         this.userTextField.setText(quickConnectionItem.getUser());
         this.passwordField.setText(quickConnectionItem.getPassword());
+        this.schemaField.setText(quickConnectionItem.getSchema());
         this.fileTextField.setText(quickConnectionItem.getFilename());
     }
 
@@ -123,7 +127,12 @@ public class JfxConnectionDialogView implements Initializable {
         RepoConnectionItem nextRepoConnection;
         switch (repoType) {
             case JDBC:
-                nextRepoConnection = new JdbcRepoConnectionItem(this.urlTextField.getText(), this.userTextField.getText(), String.valueOf(this.passwordField.getText()));
+                nextRepoConnection = new JdbcRepoConnectionItem(
+                    this.urlTextField.getText(),
+                    this.userTextField.getText(),
+                    String.valueOf(this.passwordField.getText()),
+                    this.schemaField.getText()
+                );
                 break;
             case XML:
                 nextRepoConnection = new XmlRepoConnectionItem(this.fileTextField.getText());
@@ -170,11 +179,13 @@ public class JfxConnectionDialogView implements Initializable {
         this.urlLabel.setVisible(repoType == RepoType.JDBC);
         this.userLabel.setVisible(repoType == RepoType.JDBC);
         this.passwordLabel.setVisible(repoType == RepoType.JDBC);
+        this.schemaLabel.setVisible(repoType == RepoType.JDBC);
         this.fileLabel.setVisible(repoType == RepoType.XML);
 
         this.urlTextField.setVisible(repoType == RepoType.JDBC);
         this.userTextField.setVisible(repoType == RepoType.JDBC);
         this.passwordField.setVisible(repoType == RepoType.JDBC);
+        this.schemaField.setVisible(repoType == RepoType.JDBC);
         this.fileTextField.setVisible(repoType == RepoType.XML);
         this.selectFileButton.setVisible(repoType == RepoType.XML);
 
@@ -184,6 +195,7 @@ public class JfxConnectionDialogView implements Initializable {
         this.urlRow.setMaxHeight(jdbcMaxHeight);
         this.userRow.setMaxHeight(jdbcMaxHeight);
         this.passwordRow.setMaxHeight(jdbcMaxHeight);
+        this.schemaRow.setMaxHeight(jdbcMaxHeight);
         this.fileRow.setMaxHeight(xmlMaxHeight);
 
         this.stage.sizeToScene(); // TODO: doesn't work

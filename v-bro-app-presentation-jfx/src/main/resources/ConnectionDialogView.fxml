@@ -18,6 +18,7 @@
                     <RowConstraints fx:id="urlRow" />
                     <RowConstraints fx:id="userRow" />
                     <RowConstraints fx:id="passwordRow" />
+                    <RowConstraints fx:id="schemaRow" />
                     <RowConstraints fx:id="fileRow" />
                     <RowConstraints />
                 </rowConstraints>
@@ -38,12 +39,14 @@
                 <TextField fx:id="userTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                 <Label fx:id="passwordLabel" text="Password" GridPane.rowIndex="4" />
                 <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                <Label fx:id="fileLabel" text="File" GridPane.rowIndex="5" />
-                <HBox GridPane.columnIndex="1" GridPane.rowIndex="5">
+                <Label fx:id="schemaLabel" text="Schema" GridPane.rowIndex="5" />
+                <TextField fx:id="schemaField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                <Label fx:id="fileLabel" text="File" GridPane.rowIndex="6" />
+                <HBox GridPane.columnIndex="1" GridPane.rowIndex="6">
                     <TextField fx:id="fileTextField" HBox.hgrow="ALWAYS" />
                     <Button fx:id="selectFileButton" mnemonicParsing="false" onAction="#onSelectFileClicked" text="Select..." />
                 </HBox>
-                <HBox GridPane.columnIndex="1" GridPane.rowIndex="6">
+                <HBox GridPane.columnIndex="1" GridPane.rowIndex="7">
                     <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#onCancelClicked" text="Cancel" />
                     <Button fx:id="connectButton" mnemonicParsing="false" onAction="#onConnectClicked" text="Connect" />
                 </HBox>

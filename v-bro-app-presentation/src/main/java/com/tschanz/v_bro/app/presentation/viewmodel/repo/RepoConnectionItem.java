@@ -21,7 +21,7 @@ public abstract class RepoConnectionItem {
         switch (connection.getRepoType()) {
             case JDBC:
                 JdbcRepoConnectionItem jdbcConnection = (JdbcRepoConnectionItem) connection;
-                connectionParameters = new JdbcConnectionParametersRequest(jdbcConnection.getUrl(), jdbcConnection.getUser(), jdbcConnection.getPassword());
+                connectionParameters = new JdbcConnectionParametersRequest(jdbcConnection.getUrl(), jdbcConnection.getUser(), jdbcConnection.getPassword(), jdbcConnection.getSchema());
                 break;
             case XML:
                 XmlRepoConnectionItem xmlRepoConnectionItem = (XmlRepoConnectionItem) connection;
@@ -44,7 +44,7 @@ public abstract class RepoConnectionItem {
             switch (response.getConnection().repoType) {
                 case JDBC:
                     JdbcConnectionResponse jdbcConnection = (JdbcConnectionResponse) response.getConnection();
-                    return new JdbcRepoConnectionItem(jdbcConnection.url, jdbcConnection.user, jdbcConnection.password);
+                    return new JdbcRepoConnectionItem(jdbcConnection.url, jdbcConnection.user, jdbcConnection.password, jdbcConnection.schema);
                 case XML:
                     XmlConnectionResponse xmlConnection = (XmlConnectionResponse) response.getConnection();
                     return new XmlRepoConnectionItem(xmlConnection.filename);

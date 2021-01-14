@@ -34,7 +34,8 @@ public class JdbcRepoConnectionService implements RepoConnectionService {
             this.connectionFactory.openConnection(
                 connectionParameters.getUrl(),
                 connectionParameters.getUser(),
-                connectionParameters.getPassword()
+                connectionParameters.getPassword(),
+                connectionParameters.getSchema()
             );
         } catch (SQLException exception) {
             String msg = "error connecting to db: " + exception.getMessage();

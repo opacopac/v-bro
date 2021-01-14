@@ -27,7 +27,7 @@ class JdbcRepoConnectionServiceTest {
 
     @Test
     void connect_happy_day() throws RepoException {
-        JdbcConnectionParameters parameters = new JdbcConnectionParameters("XXX", "YYY", "ZZZ");
+        JdbcConnectionParameters parameters = new JdbcConnectionParameters("XXX", "YYY", "ZZZ", "UUU");
 
         this.jdbcRepo.connect(parameters);
 
@@ -38,7 +38,7 @@ class JdbcRepoConnectionServiceTest {
     @Test
     void connect_sql_exception() {
         this.spyConnectionFactory.spyHelper.setThrowException(new SQLException("MEEP"));
-        JdbcConnectionParameters parameters = new JdbcConnectionParameters("XXX", "YYY", "ZZZ");
+        JdbcConnectionParameters parameters = new JdbcConnectionParameters("XXX", "YYY", "ZZZ", "UUU");
 
         Exception exception = assertThrows(RepoException.class, () -> {
             this.jdbcRepo.connect(parameters);

@@ -14,6 +14,7 @@ public class QuickConnectionsResponseItem {
     private final String url;
     private final String user;
     private final String password;
+    private final String schema;
     private final String filename;
 
 
@@ -24,6 +25,7 @@ public class QuickConnectionsResponseItem {
             quickConnection.getUrl(),
             quickConnection.getUser(),
             quickConnection.getPassword(),
+            quickConnection.getSchema(),
             quickConnection.getFilename()
         );
     }

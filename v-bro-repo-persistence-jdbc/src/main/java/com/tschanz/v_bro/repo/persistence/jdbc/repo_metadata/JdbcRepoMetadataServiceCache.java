@@ -6,20 +6,12 @@ import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
-import java.util.List;
-
 
 @Log
 @RequiredArgsConstructor
 public class JdbcRepoMetadataServiceCache implements JdbcRepoMetadataService {
     private final JdbcRepoMetadataServiceImpl jdbcRepoMetadataService;
     private final Cache<RepoTable> readTableStructureCache;
-
-
-    @Override
-    public List<String> findTableNames(String tableNamePattern) throws RepoException {
-        return this.jdbcRepoMetadataService.findTableNames(tableNamePattern);
-    }
 
 
     @Override
@@ -33,11 +25,5 @@ public class JdbcRepoMetadataServiceCache implements JdbcRepoMetadataService {
             this.readTableStructureCache.addItem(className, result);
             return result;
         }
-    }
-
-
-    @Override
-    public String escapeUnderscore(String tableNamePattern) throws RepoException {
-        return this.jdbcRepoMetadataService.escapeUnderscore(tableNamePattern);
     }
 }

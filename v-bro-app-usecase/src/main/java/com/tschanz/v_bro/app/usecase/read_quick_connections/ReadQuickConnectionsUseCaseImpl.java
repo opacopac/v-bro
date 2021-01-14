@@ -79,12 +79,12 @@ public class ReadQuickConnectionsUseCaseImpl implements ReadQuickConnectionsUseC
 
     private QuickConnection parseQuickConnectionProperty(String propertyValue) {
         String[] parts = propertyValue.split(",", -1); // -1: don't cut of trailing empty parts
-        if (parts.length != 6) {
+        if (parts.length != 7) {
             throw new IllegalArgumentException("Invalid quick connection '" + propertyValue + "': invalid number of comma separators");
         }
 
         RepoType repoType = RepoType.valueOf(parts[1]);
 
-        return new QuickConnection(parts[0], repoType, parts[2], parts[3], parts[4], parts[5]);
+        return new QuickConnection(parts[0], repoType, parts[2], parts[3], parts[4], parts[5], parts[6]);
     }
 }

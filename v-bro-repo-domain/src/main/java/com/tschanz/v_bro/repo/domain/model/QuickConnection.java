@@ -12,10 +12,6 @@ public class QuickConnection {
     private final String url;
     private final String user;
     private final String password;
+    private final String schema;
     private final String filename;
-
-
-    public static QuickConnection createEmptyItem(String key) {
-        return new QuickConnection(key, null, null, null, null, null);
-    }
 }

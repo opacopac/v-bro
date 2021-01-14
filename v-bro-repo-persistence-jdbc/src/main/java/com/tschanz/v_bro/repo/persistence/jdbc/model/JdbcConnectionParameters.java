@@ -13,6 +13,7 @@ public class JdbcConnectionParameters implements ConnectionParameters {
     @NonNull private final String url;
     private final String user;
     private final String password;
+    @NonNull private final String schema;
 
 
     @Override

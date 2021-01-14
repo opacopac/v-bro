@@ -16,7 +16,12 @@ public abstract class RepoConnectionResponse {
         switch (connectionParameters.getRepoType()) {
             case JDBC:
                 JdbcConnectionParameters jdbcConnectionParameters = (JdbcConnectionParameters) connectionParameters;
-                return new JdbcConnectionResponse(jdbcConnectionParameters.getUrl(), jdbcConnectionParameters.getUser(), jdbcConnectionParameters.getPassword());
+                return new JdbcConnectionResponse(
+                    jdbcConnectionParameters.getUrl(),
+                    jdbcConnectionParameters.getUser(),
+                    jdbcConnectionParameters.getPassword(),
+                    jdbcConnectionParameters.getSchema()
+                );
             case XML:
                 XmlConnectionParameters xmlConnectionParameters = (XmlConnectionParameters) connectionParameters;
                 return new XmlConnectionResponse(xmlConnectionParameters.getFilename());

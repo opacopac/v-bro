@@ -27,32 +27,6 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
 
 
     @Override
-    public List<String> findTableNames(String tableNamePattern) throws RepoException {
-        try {
-            var tablesResult = this.connectionFactory.getCurrentConnection().getMetaData().getTables(
-                null,
-                null,
-                tableNamePattern,
-                new String[]{"TABLE"}
-            );
-
-            List<String> tableNames = new ArrayList<>();
-            while (tablesResult.next()) {
-                var name = tablesResult.getString("TABLE_NAME").toUpperCase();
-                tableNames.add(name);
-            }
-            tablesResult.close();
-
-            return tableNames;
-        } catch (SQLException exception) {
-            var msg = "error reading element structure: " + exception.getMessage();
-            log.severe(msg);
-            throw new RepoException(msg, exception);
-        }
-    }
-
-
-    @Override
     public RepoTable readTableStructure(String tableName) throws RepoException {
         var upperCaseTableName = tableName.toUpperCase();
         var repoFields = this.getRepoFieldLut()
@@ -74,19 +48,6 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
             outgoingRelations,
             incomingRelations
         );
-    }
-
-
-    @Override
-    public String escapeUnderscore(String tableNamePattern) throws RepoException {
-        try {
-            var escapeChar = this.connectionFactory.getCurrentConnection().getMetaData().getSearchStringEscape();
-            return tableNamePattern.replace("_", escapeChar + "_");
-        } catch (SQLException exception) {
-            var msg = "error reading wildcard from repo_metadata: " + exception.getMessage();
-            log.severe(msg);
-            throw new RepoException(msg, exception);
-        }
     }
 
 
@@ -118,11 +79,12 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
                 break;
             case ORACLE:
             default:
-                query = "SELECT uc.TABLE_NAME AS BWD_TABLE, col.COLUMN_NAME AS BWD_COLUMN, col2.TABLE_NAME AS FWD_TABLE, col2.COLUMN_NAME AS FWD_COLUMN "
-                    + "FROM USER_CONSTRAINTS uc "
-                    + "INNER JOIN USER_CONS_COLUMNS col ON col.CONSTRAINT_NAME = uc.CONSTRAINT_NAME "
-                    + "INNER JOIN USER_CONS_COLUMNS col2 ON col2.CONSTRAINT_NAME = uc.R_CONSTRAINT_NAME "
-                    + "WHERE uc.CONSTRAINT_TYPE = 'R'";
+                var schema = this.connectionFactory.getCurrentSchema();
+                query = "SELECT con.TABLE_NAME AS BWD_TABLE, col.COLUMN_NAME AS BWD_COLUMN, col2.TABLE_NAME AS FWD_TABLE, col2.COLUMN_NAME AS FWD_COLUMN "
+                    + "FROM ALL_CONSTRAINTS con "
+                    + "INNER JOIN ALL_CONS_COLUMNS col ON col.CONSTRAINT_NAME = con.CONSTRAINT_NAME "
+                    + "INNER JOIN ALL_CONS_COLUMNS col2 ON col2.CONSTRAINT_NAME = con.R_CONSTRAINT_NAME "
+                    + "WHERE con.OWNER = '" + schema + "' AND col.OWNER = '" + schema + "' AND col2.OWNER = '" + schema + "' AND con.CONSTRAINT_TYPE = 'R'";
                 break;
         }
 
@@ -167,7 +129,8 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
                 break;
             case ORACLE:
             default:
-                query = "SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, NULLABLE FROM USER_TAB_COLUMNS";
+                var schema = this.connectionFactory.getCurrentSchema();
+                query = "SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, NULLABLE FROM ALL_TAB_COLUMNS WHERE OWNER = '" + schema + "'";
                 break;
         }
 
@@ -220,10 +183,11 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
                 break;
             case ORACLE:
             default:
-                query = "SELECT uc.TABLE_NAME, col.COLUMN_NAME, uc.CONSTRAINT_TYPE "
-                    + "FROM USER_CONSTRAINTS uc "
-                    + "INNER JOIN USER_CONS_COLUMNS col ON (col.CONSTRAINT_NAME = uc.CONSTRAINT_NAME AND col.TABLE_NAME = uc.TABLE_NAME) "
-                    + "WHERE uc.CONSTRAINT_TYPE IN ('P', 'U')";
+                var schema = this.connectionFactory.getCurrentSchema();
+                query = "SELECT con.TABLE_NAME, col.COLUMN_NAME, con.CONSTRAINT_TYPE "
+                    + "FROM ALL_CONSTRAINTS con "
+                    + "INNER JOIN ALL_CONS_COLUMNS col ON (col.CONSTRAINT_NAME = con.CONSTRAINT_NAME AND col.TABLE_NAME = con.TABLE_NAME) "
+                    + "WHERE con.OWNER = '" + schema + "' AND col.OWNER = '" + schema + "' AND con.CONSTRAINT_TYPE IN ('P', 'U')";
                 break;
         }
 

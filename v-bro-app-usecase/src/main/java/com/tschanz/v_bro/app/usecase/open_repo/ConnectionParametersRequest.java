@@ -18,7 +18,7 @@ public abstract class ConnectionParametersRequest {
         switch (requestConnectionParameters.repoType) {
             case JDBC:
                 var jdbcConnectionParameters = (JdbcConnectionParametersRequest) requestConnectionParameters;
-                connectionParameters = new JdbcConnectionParameters(jdbcConnectionParameters.url, jdbcConnectionParameters.user, jdbcConnectionParameters.password);
+                connectionParameters = new JdbcConnectionParameters(jdbcConnectionParameters.url, jdbcConnectionParameters.user, jdbcConnectionParameters.password, jdbcConnectionParameters.schema);
                 break;
             case XML:
                 var xmlRepoConnectionParameters = (XMlConnectionParametersRequest) requestConnectionParameters;

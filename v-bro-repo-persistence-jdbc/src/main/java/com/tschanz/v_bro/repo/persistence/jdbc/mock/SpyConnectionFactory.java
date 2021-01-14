@@ -12,6 +12,7 @@ public class SpyConnectionFactory implements JdbcConnectionFactory {
     public SpyHelper<SQLException> spyHelper = new SpyHelper<>();
     public SpyConnection spyConnection = new SpyConnection();
     public SpyConnection getCurrentConnectionResult;
+    public String getCurrentSchemaResult;
     public JdbcServerType jdbcServerType = JdbcServerType.ORACLE;
 
 
@@ -23,8 +24,8 @@ public class SpyConnectionFactory implements JdbcConnectionFactory {
 
 
     @Override
-    public void openConnection(String url, String user, String password) throws SQLException {
-        this.spyHelper.reportMethodCall("openConnection", url, user, password);
+    public void openConnection(String url, String user, String password, String schema) throws SQLException {
+        this.spyHelper.reportMethodCall("openConnection", url, user, password, schema);
         this.spyHelper.checkThrowException();
         this.getCurrentConnectionResult = spyConnection;
     }
@@ -33,6 +34,12 @@ public class SpyConnectionFactory implements JdbcConnectionFactory {
     @Override
     public Connection getCurrentConnection() {
         return this.getCurrentConnectionResult;
+    }
+
+
+    @Override
+    public String getCurrentSchema() {
+        return this.getCurrentSchemaResult;
     }
 
 
