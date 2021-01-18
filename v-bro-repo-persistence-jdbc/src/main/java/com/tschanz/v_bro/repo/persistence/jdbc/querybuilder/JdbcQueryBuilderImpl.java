@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
     public static int MAX_ROW_NUM_HARD_LIMIT = 10000;
+    public static int MAX_IN_CLAUSE_LIMIT = 1000; // oracle doesn't allow more than 1000 values in an IN clause
     private final JdbcConnectionFactory connectionFactory;
 
 
@@ -107,7 +108,7 @@ public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
             case GREATER_OR_EQUAL:
                 return ">=" + this.buildFilterValue(rowFilter.getValue());
             case IN:
-                return " in (" + rowFilter.getFieldValues().stream().map(this::buildFilterValue).collect(Collectors.joining(",")) + ")";
+                return " in (" + rowFilter.getFieldValues().stream().limit(MAX_IN_CLAUSE_LIMIT).map(this::buildFilterValue).collect(Collectors.joining(",")) + ")";
             case LIKE:
                 return " like " + this.buildFilterValue(rowFilter.getValue()).toUpperCase();
             case EQUALS:

@@ -50,7 +50,7 @@ public class JdbcDependencyService implements DependencyService {
         var aggregateData = (AggregateData) this.versionAggregateService.readVersionAggregate(version);
 
         List<Dependency> dependencies = new ArrayList<>();
-        List<String> fwdElementIds = new ArrayList<>();
+        List<String> processedfwdElementIds = new ArrayList<>();
         for (var record: aggregateData.getAllRecords()) {
             for (var relation: record.getRepoTable().getOutgoingRelations()) {
                 if (dependencies.size() >= maxResults) {
@@ -64,7 +64,8 @@ public class JdbcDependencyService implements DependencyService {
                     continue;
                 }
                 var fwdElementId = record.findFieldValue(relation.getBwdFieldName()).getValueString();
-                if (fwdElementId != null && !fwdElementIds.contains(fwdElementId)) {
+                if (fwdElementId != null && !processedfwdElementIds.contains(fwdElementId)) {
+                    processedfwdElementIds.add(fwdElementId);
                     var elementClass = new ElementClass(fwdElementClassName);
                     var element = this.elementService.readElement(elementClass, denominations, fwdElementId);
                     if (!this.isQueryMatch(element, query)) {
@@ -73,7 +74,6 @@ public class JdbcDependencyService implements DependencyService {
                     var versions = this.versionService.readVersions(element, minGueltigVon, maxGueltigBis, minPflegestatus);
                     var fwdDependency = new Dependency(elementClass, element, versions);
                     dependencies.add(fwdDependency);
-                    fwdElementIds.add(fwdElementId);
                 }
             }
         }
@@ -165,9 +165,9 @@ public class JdbcDependencyService implements DependencyService {
 
             bwdElements.addAll(rows
                 .stream()
-                .limit(maxResults)
                 .map(row -> this.elementService.readElement(bwdElementClass, denominations, row.findPkFieldValue().getValueString()))
                 .filter(bwdElement -> this.isQueryMatch(bwdElement, query))
+                .limit(maxResults)
                 .collect(Collectors.toList())
             );
         }
