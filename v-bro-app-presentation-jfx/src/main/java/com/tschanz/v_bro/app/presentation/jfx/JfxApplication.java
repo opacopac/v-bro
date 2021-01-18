@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
 
@@ -40,5 +41,14 @@ public class JfxApplication extends Application {
         stage.setTitle(WINDOW_TITLE);
         stage.setScene(new Scene(root));
         stage.show();
+        this.fitToScreen(stage);
+    }
+
+
+    private void fitToScreen(Stage stage) {
+        stage.setX(Math.max(0, stage.getX()));
+        stage.setY(Math.max(0, stage.getY()));
+        stage.setHeight(Math.min(Screen.getPrimary().getBounds().getHeight() * 0.9, stage.getHeight()));
+        stage.setWidth(Math.min(Screen.getPrimary().getBounds().getWidth() * 0.9, stage.getWidth()));
     }
 }
