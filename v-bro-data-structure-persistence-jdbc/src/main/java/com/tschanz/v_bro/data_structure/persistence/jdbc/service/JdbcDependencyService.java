@@ -50,6 +50,7 @@ public class JdbcDependencyService implements DependencyService {
         var aggregateData = (AggregateData) this.versionAggregateService.readVersionAggregate(version);
 
         List<Dependency> dependencies = new ArrayList<>();
+        List<String> fwdElementIds = new ArrayList<>();
         for (var record: aggregateData.getAllRecords()) {
             for (var relation: record.getRepoTable().getOutgoingRelations()) {
                 if (dependencies.size() >= maxResults) {
@@ -63,7 +64,7 @@ public class JdbcDependencyService implements DependencyService {
                     continue;
                 }
                 var fwdElementId = record.findFieldValue(relation.getBwdFieldName()).getValueString();
-                if (fwdElementId != null) {
+                if (fwdElementId != null && !fwdElementIds.contains(fwdElementId)) {
                     var elementClass = new ElementClass(fwdElementClassName);
                     var element = this.elementService.readElement(elementClass, denominations, fwdElementId);
                     if (!this.isQueryMatch(element, query)) {
@@ -72,6 +73,7 @@ public class JdbcDependencyService implements DependencyService {
                     var versions = this.versionService.readVersions(element, minGueltigVon, maxGueltigBis, minPflegestatus);
                     var fwdDependency = new Dependency(elementClass, element, versions);
                     dependencies.add(fwdDependency);
+                    fwdElementIds.add(fwdElementId);
                 }
             }
         }
