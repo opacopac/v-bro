@@ -1,5 +1,6 @@
 package com.tschanz.v_bro.data_structure.persistence.jdbc.service;
 
+import com.tschanz.v_bro.common.types.Pair;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.AggregateStructure;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.AggregateStructureNode;
 import com.tschanz.v_bro.data_structure.persistence.jdbc.model.ElementTable;
@@ -50,16 +51,24 @@ public class JdbcDataStructureService {
         List<String> unprocessedTableNames = this.getAllTableNames();
         this.aggregateStructureMap.clear();
 
-        // versioned aggregates (but without element children)
+        // identify all version & element tables
+        List<Pair<ElementTable, VersionTable>> elementVersionTables = new ArrayList<>();
         for (var rel: this.repoMetadataService.getRepoRelationLut()) {
             if (rel.getBwdFieldName().equals(VersionTable.ELEMENT_ID_COLNAME) && rel.getBwdClassName().endsWith(VersionTable.TABLE_SUFFIX)) {
                 var elementTable = new ElementTable(this.repoMetadataService.readTableStructure(rel.getFwdClassName()));
                 unprocessedTableNames.remove(elementTable.getName());
                 var versionTable = new VersionTable(this.repoMetadataService.readTableStructure(rel.getBwdClassName()));
                 unprocessedTableNames.remove(versionTable.getName());
-                var rootNode = this.getRootNodeAndTree(elementTable.getRepoTable(), versionTable.getRepoTable(), unprocessedTableNames);
-                this.aggregateStructureMap.put(elementTable.getName(), new AggregateStructure(elementTable, versionTable, rootNode));
+                elementVersionTables.add(new Pair<>(elementTable, versionTable));
             }
+        }
+
+        // traverse versioned aggregates (but without element children)
+        for (var elementVersionTable: elementVersionTables) {
+            var elementTable = elementVersionTable.first;
+            var versionTable = elementVersionTable.second;
+            var rootNode = this.getRootNodeAndTree(elementTable.getRepoTable(), versionTable.getRepoTable(), unprocessedTableNames);
+            this.aggregateStructureMap.put(elementTable.getName(), new AggregateStructure(elementTable, versionTable, rootNode));
         }
 
         // single table aggregates

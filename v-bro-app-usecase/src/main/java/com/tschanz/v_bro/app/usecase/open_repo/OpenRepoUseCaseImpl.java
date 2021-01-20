@@ -32,7 +32,7 @@ public class OpenRepoUseCaseImpl implements OpenRepoUseCase {
         var connectionParameters = ConnectionParametersRequest.fromRequest(request.getConnectionParameters());
 
         try {
-            var msgStart = "UC: connecting to repo...";
+            var msgStart = "UC: connecting to repo & indexing structure...";
             log.info(msgStart);
             var statusResponse1 = new StatusResponse(msgStart, false);
             this.statusPresenter.present(statusResponse1);
