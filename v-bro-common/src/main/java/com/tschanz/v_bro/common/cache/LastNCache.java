@@ -37,4 +37,10 @@ public class LastNCache<T> implements Cache<T> {
             .findFirst()
             .orElse(null);
     }
+
+
+    @Override
+    public void clear() {
+        this.cachedItems.clear();
+    }
 }

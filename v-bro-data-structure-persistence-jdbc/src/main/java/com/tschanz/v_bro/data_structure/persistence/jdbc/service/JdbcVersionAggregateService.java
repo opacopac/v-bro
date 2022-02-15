@@ -54,6 +54,12 @@ public class JdbcVersionAggregateService implements VersionAggregateService {
     }
 
 
+    @Override
+    public void clearCache() {
+        // nothing to do
+    }
+
+
     @SneakyThrows
     private List<AggregateDataNode> readElementChildNodes(ElementRecord elementRecord) {
         List<AggregateDataNode> nodes = new ArrayList<>();

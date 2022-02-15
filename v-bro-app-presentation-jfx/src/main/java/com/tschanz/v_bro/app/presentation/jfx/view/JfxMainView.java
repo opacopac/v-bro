@@ -11,6 +11,7 @@ public class JfxMainView implements MainView {
     @FXML private AnchorPane connectionView;
     @FXML private AnchorPane elementClassView;
     @FXML private AnchorPane elementDenominationView;
+    @FXML private AnchorPane refreshView;
     @FXML private AnchorPane elementView;
     @FXML private AnchorPane versionFilterView;
     @FXML private AnchorPane versionView;
@@ -26,6 +27,7 @@ public class JfxMainView implements MainView {
     @FXML private JfxConnectionView connectionViewController;
     @FXML private JfxElementClassView elementClassViewController;
     @FXML private JfxElementDenominationView elementDenominationViewController;
+    @FXML private JfxRefreshView refreshViewController;
     @FXML private JfxElementView elementViewController;
     @FXML private JfxVersionFilterView versionFilterViewController;
     @FXML private JfxVersionView versionViewController;
@@ -47,6 +49,7 @@ public class JfxMainView implements MainView {
         this.connectionViewController.bindViewModel(mainViewModel.quickConnectionList, mainViewModel.currentRepoConnection, mainController.getConnectionController());
         this.elementClassViewController.bindViewModel(mainViewModel.elementClasses, mainController.getElementClassController());
         this.elementDenominationViewController.bindViewModel(mainViewModel.elementDenominations, mainController.getElementDenominationController());
+        this.refreshViewController.bindViewModel(mainController.getRefreshController());
         this.elementViewController.bindViewModel(mainViewModel.currentElement, mainController.getElementController());
         this.versionFilterViewController.bindViewModel(mainViewModel.versionFilter, mainController.getVersionFilterController());
         this.versionViewController.bindViewModel(mainViewModel.versions, mainViewModel.versionFilter, mainController.getVersionController());

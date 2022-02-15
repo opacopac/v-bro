@@ -7,4 +7,6 @@ import lombok.NonNull;
 
 public interface VersionAggregateService {
     VersionAggregate readVersionAggregate(@NonNull VersionData version);
+
+    void clearCache();
 }

@@ -33,6 +33,12 @@ public class XmlVersionAggregateService implements VersionAggregateService {
     }
 
 
+    @Override
+    public void clearCache() {
+        // nothing to do
+    }
+
+
     private AggregateNode getAggregateNode(VersionData version, XmlNodeInfo xmlNode) {
         return new AggregateNode(
             xmlNode.getName(),

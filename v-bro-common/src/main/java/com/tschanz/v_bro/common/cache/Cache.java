@@ -5,4 +5,6 @@ public interface Cache<T> {
     void addItem(String key, T item);
 
     T getItem(String key);
+
+    void clear();
 }

@@ -18,6 +18,7 @@
                         <HBox spacing="5.0">
                             <fx:include fx:id="elementClassView" source="ElementClassView.fxml" />
                             <fx:include fx:id="elementDenominationView" source="ElementDenominationView.fxml" />
+                            <fx:include fx:id="refreshView" source="RefreshView.fxml" />
                         </HBox>
                         <fx:include fx:id="elementView" source="ElementView.fxml" />
                         <fx:include fx:id="versionFilterView" source="VersionFilterView.fxml" />

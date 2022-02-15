@@ -8,6 +8,8 @@ public interface MainController {
 
     ElementDenominationController getElementDenominationController();
 
+    RefreshController getRefreshController();
+
     ElementController getElementController();
 
     VersionFilterController getVersionFilterController();

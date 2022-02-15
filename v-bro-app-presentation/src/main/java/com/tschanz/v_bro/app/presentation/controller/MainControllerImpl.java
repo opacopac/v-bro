@@ -9,6 +9,7 @@ import com.tschanz.v_bro.app.usecase.open_repo.OpenRepoUseCase;
 import com.tschanz.v_bro.app.usecase.open_version.OpenVersionUseCase;
 import com.tschanz.v_bro.app.usecase.query_elements.QueryElementsUseCase;
 import com.tschanz.v_bro.app.usecase.read_quick_connections.ReadQuickConnectionsUseCase;
+import com.tschanz.v_bro.app.usecase.refresh_view.RefreshViewUseCase;
 import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsUseCase;
 import com.tschanz.v_bro.app.usecase.select_dependency_denominations.SelectDependencyDenominationsUseCase;
 import com.tschanz.v_bro.app.usecase.select_dependency_direction.SelectDependencyDirectionUseCase;
@@ -25,6 +26,7 @@ public class MainControllerImpl implements MainController {
     private final ConnectionController connectionController;
     private final ElementClassController elementClassController;
     private final ElementDenominationController elementDenominationController;
+    private final RefreshController refreshController;
     private final ElementController elementController;
     private final VersionFilterController versionFilterController;
     private final VersionController versionController;
@@ -43,6 +45,7 @@ public class MainControllerImpl implements MainController {
         CloseRepoUseCase closeRepoUseCase,
         OpenElementClassUseCase openElementClassUc,
         SelectDenominationsUseCase selectDenominationsUc,
+        RefreshViewUseCase refreshViewUc,
         QueryElementsUseCase queryElementsUc,
         OpenElementUseCase openElementUc,
         SelectVersionFilterUseCase selectVersionFilterUc,
@@ -64,6 +67,7 @@ public class MainControllerImpl implements MainController {
         );
         this.elementClassController = new ElementClassControllerImpl(openElementClassUc, this.progressController);
         this.elementDenominationController = new ElementDenominationControllerImpl(selectDenominationsUc, this.progressController);
+        this.refreshController = new RefreshControllerImpl(refreshViewUc, this.progressController);
         this.elementController = new ElementControllerImpl(queryElementsUc, openElementUc, this.progressController);
         this.versionFilterController = new VersionFilterControllerImpl(selectVersionFilterUc, this.progressController);
         this.versionController = new VersionControllerImpl(openVersionUc, this.progressController);

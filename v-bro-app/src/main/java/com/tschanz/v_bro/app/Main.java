@@ -21,6 +21,7 @@ import com.tschanz.v_bro.app.usecase.read_element_classes.ReadElementClassesUseC
 import com.tschanz.v_bro.app.usecase.read_quick_connections.ReadQuickConnectionsUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.read_version_aggregate.ReadVersionAggregateUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.read_versions.ReadVersionsUseCaseImpl;
+import com.tschanz.v_bro.app.usecase.refresh_view.RefreshViewUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_denominations.SelectDenominationsUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_dependency_denominations.SelectDependencyDenominationsUseCaseImpl;
 import com.tschanz.v_bro.app.usecase.select_dependency_direction.SelectDependencyDirectionUseCaseImpl;
@@ -131,6 +132,7 @@ public class Main {
         var closeRepoUc = new CloseRepoUseCaseImpl(mainState, repoConnectionServiceProvider, mainPresenter.getRepoConnectionPresenter(), mainPresenter.getStatusPresenter(), readElementClassesUc, openElementClassUc, selectDependencyElementClassUc);
         var openDependencyVersionUc = new OpenDependencyVersionUseCaseImpl(openElementClassUc, openElementUc, openVersionUc, mainPresenter.getStatusPresenter());
         var selectVersionAggregateHistoryUc = new SelectVersionAggregateHistoryUseCaseImpl(mainState, openElementClassUc, openElementUc, openVersionUc, mainPresenter.getStatusPresenter(), mainPresenter.getVersionAggregateHistoryPresenter());
+        var refreshViewUc = new RefreshViewUseCaseImpl(mainState, versionAggregateServiceProvider, readElementClassesUc, openElementClassUc, queryElementsUc, openElementUc, readVersionsUc, openVersionUc, mainPresenter.getStatusPresenter());
 
         // presentation controller
         var mainController = new MainControllerImpl(
@@ -140,6 +142,7 @@ public class Main {
             closeRepoUc,
             openElementClassUc,
             selectDenominationsUc,
+            refreshViewUc,
             queryElementsUc,
             openElementUc,
             selectVersionFilterUc,

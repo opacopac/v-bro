@@ -5,7 +5,7 @@ import java.util.Hashtable;
 
 
 public class EternalCache<T> implements Cache<T> {
-    private final Dictionary<String, T> cachedItems = new Hashtable<>();
+    private Dictionary<String, T> cachedItems = new Hashtable<>();
 
 
     @Override
@@ -17,5 +17,11 @@ public class EternalCache<T> implements Cache<T> {
     @Override
     public T getItem(String key) {
         return this.cachedItems.get(key);
+    }
+
+
+    @Override
+    public void clear() {
+        this.cachedItems = new Hashtable<>();
     }
 }

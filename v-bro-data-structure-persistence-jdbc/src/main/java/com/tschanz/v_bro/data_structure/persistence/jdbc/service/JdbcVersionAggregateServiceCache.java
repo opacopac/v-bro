@@ -4,7 +4,6 @@ import com.tschanz.v_bro.common.cache.Cache;
 import com.tschanz.v_bro.data_structure.domain.model.VersionAggregate;
 import com.tschanz.v_bro.data_structure.domain.model.VersionData;
 import com.tschanz.v_bro.data_structure.domain.service.VersionAggregateService;
-import com.tschanz.v_bro.repo.domain.model.RepoException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -31,5 +30,11 @@ public class JdbcVersionAggregateServiceCache implements VersionAggregateService
             this.cache.addItem(key, aggregate);
             return aggregate;
         }
+    }
+
+
+    @Override
+    public void clearCache() {
+        this.cache.clear();
     }
 }

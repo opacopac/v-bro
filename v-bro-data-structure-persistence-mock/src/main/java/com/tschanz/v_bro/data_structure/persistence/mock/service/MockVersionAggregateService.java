@@ -53,4 +53,10 @@ public class MockVersionAggregateService implements VersionAggregateService {
             )
         );
     }
+
+
+    @Override
+    public void clearCache() {
+        // nothing to do
+    }
 }
