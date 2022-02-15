@@ -35,7 +35,7 @@ public class JdbcRepoDataService {
         ArrayList<RepoTableRecord> records = new ArrayList<>();
         try {
             var query = this.queryBuilder.buildQuery(repoTable.getName(), joins, fields, mandatoryFilters, optFilters, maxResults);
-            var statement = this.connectionFactory.getCurrentConnection().createStatement();
+            var statement = this.connectionFactory.createStatement();
 
             log.info("executing query " + query);
             AtomicReference<SQLException> readException = new AtomicReference<>();

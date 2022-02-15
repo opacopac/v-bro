@@ -6,11 +6,13 @@ import com.tschanz.v_bro.repo.persistence.jdbc.repo_connection.JdbcServerType;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 
 public class SpyConnectionFactory implements JdbcConnectionFactory {
     public SpyHelper<SQLException> spyHelper = new SpyHelper<>();
     public SpyConnection spyConnection = new SpyConnection();
+    public SpyStatement spyStatement = new SpyStatement();
     public SpyConnection getCurrentConnectionResult;
     public String getCurrentSchemaResult;
     public JdbcServerType jdbcServerType = JdbcServerType.ORACLE;
@@ -34,6 +36,12 @@ public class SpyConnectionFactory implements JdbcConnectionFactory {
     @Override
     public Connection getCurrentConnection() {
         return this.getCurrentConnectionResult;
+    }
+
+
+    @Override
+    public Statement createStatement() throws SQLException {
+        return this.spyStatement;
     }
 
 

@@ -5,10 +5,13 @@ import lombok.Getter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 
 @Getter
 public class JdbcConnectionFactoryImpl implements JdbcConnectionFactory {
+    private final static int FETCH_SIZE = 1000;
+
     private Connection currentConnection;
     private String currentConnectionUrl;
     private String currentSchema;
@@ -20,6 +23,20 @@ public class JdbcConnectionFactoryImpl implements JdbcConnectionFactory {
         this.currentConnection.setSchema(schema);
         this.currentConnectionUrl = url;
         this.currentSchema = schema;
+    }
+
+
+    @Override
+    public Statement createStatement() throws SQLException {
+        var connection = this.getCurrentConnection();
+        if (connection == null) {
+            throw new SQLException("Connection is closed");
+        }
+
+        var statement = connection.createStatement();
+        statement.setFetchSize(FETCH_SIZE);
+
+        return statement;
     }
 
 

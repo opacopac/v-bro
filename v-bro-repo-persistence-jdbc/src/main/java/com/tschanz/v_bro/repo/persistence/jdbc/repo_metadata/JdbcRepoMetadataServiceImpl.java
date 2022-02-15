@@ -92,7 +92,7 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
 
         List<RepoRelation> repoRelations = new ArrayList<>();
         try {
-            var statement = this.connectionFactory.getCurrentConnection().createStatement();
+            var statement = this.connectionFactory.createStatement();
             if (statement.execute(query)) {
                 var resultSet = statement.getResultSet();
                 while (resultSet.next()) {
@@ -139,7 +139,7 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
         List<RepoField> repoFields = new ArrayList<>();
 
         try {
-            var statement = this.connectionFactory.getCurrentConnection().createStatement();
+            var statement = this.connectionFactory.createStatement();
             if (statement.execute(query)) {
                 var resultSet = statement.getResultSet();
                 while (resultSet.next()) {
@@ -194,7 +194,7 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
         log.info("executing query " + query);
 
         try {
-            var statement = this.connectionFactory.getCurrentConnection().createStatement();
+            var statement = this.connectionFactory.createStatement();
             if (statement.execute(query)) {
                 var resultSet = statement.getResultSet();
                 while (resultSet.next()) {
