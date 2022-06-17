@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class XmlIdRefParser {
     private static final int MAX_XML_TAG_LENTGH = 1024;
-    private static final int MAX_ID_REF_LENTGH = 20;
+    private static final int MAX_ID_REF_LENTGH = 30;
 
     private final InputStream stream;
 
