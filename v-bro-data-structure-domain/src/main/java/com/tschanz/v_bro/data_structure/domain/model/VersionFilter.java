@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VersionFilter {
     public static final VersionFilter DEFAULT_VERSION_FILTER = new VersionFilter(
-        VersionData.NOVA_NULL_DATE,
+        LocalDate.now().minusYears(3),
         LocalDate.now().plusYears(1),
         Pflegestatus.IN_ARBEIT
     );
@@ -26,7 +26,7 @@ public class VersionFilter {
     public VersionFilter cropToVersions(List<VersionData> versions) {
         if (versions == null) {
             return null;
-        } else if (versions.size() == 0) {
+        } else if (versions.isEmpty()) {
             return new VersionFilter(this.timelineVon, this.timelineBis, this.minPflegestatus);
         }
 
