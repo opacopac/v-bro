@@ -59,7 +59,7 @@ public class XmlRepoConnectionService implements RepoConnectionService {
     }
 
 
-    public InputStream getNewXmlFileStream(int startBytePos, int endBytePos) throws RepoException {
+    public InputStream getNewXmlFileStream(long startBytePos, long endBytePos) throws RepoException {
         if (startBytePos > endBytePos) {
             throw new IllegalArgumentException("start position must be smaller than end position");
         }
@@ -69,7 +69,8 @@ public class XmlRepoConnectionService implements RepoConnectionService {
         try {
             var xmlFileStream = new FileInputStream(this.connectionParameters.getFilename());
             xmlFileStream.skip(startBytePos);
-            bytes = xmlFileStream.readNBytes(endBytePos - startBytePos + 1);
+            var byteLen = endBytePos - startBytePos + 1;
+            bytes = xmlFileStream.readNBytes((int) byteLen);
             xmlFileStream.close();
 
         } catch (IOException exception) {

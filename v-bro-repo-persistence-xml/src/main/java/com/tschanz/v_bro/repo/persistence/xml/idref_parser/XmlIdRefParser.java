@@ -19,17 +19,17 @@ public class XmlIdRefParser {
 
     private final InputStream stream;
 
-    private int byteCount = 0;
+    private long byteCount = 0;
 
     @Getter private final List<XmlIdElementPosInfo> idElementPositions = new ArrayList<>();
     private final char[] tag = new char[MAX_XML_TAG_LENTGH];
     private final String idAttributePrefix;
     private final String[] idAttributeValuePrefixes;
     private int tagLength = -1;
-    private int tagOpenBytePos = -1;
-    private int tagCloseBytePos = -1;
+    private long tagOpenBytePos = -1;
+    private long tagCloseBytePos = -1;
     private int elementNameEndIdx = -1;
-    private int elementTagOpenBytePos = -1;
+    private long elementTagOpenBytePos = -1;
     private String elementName;
     private String elementId;
     private int idAttributeStartIdx = -1;

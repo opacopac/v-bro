@@ -12,7 +12,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
 import java.io.InputStream;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -117,7 +120,7 @@ public class XmlDataStructureService {
         return this.elementPositionMap.values()
             .stream()
             .filter(element -> elementClassName.equals(element.getName()))
-            .sorted(Comparator.comparingInt(XmlIdElementPosInfo::getStartBytePos))
+            .sorted(Comparator.comparingLong(XmlIdElementPosInfo::getStartBytePos))
             .collect(Collectors.toList());
     }
 }

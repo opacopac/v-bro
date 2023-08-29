@@ -12,7 +12,7 @@ import java.util.List;
 public class XmlIdElementPosInfo {
     @Getter private final String name;
     @Getter private final String elementId;
-    @Getter private final int startBytePos;
-    @Getter private final int endBytePos;
+    @Getter private final long startBytePos;
+    @Getter private final long endBytePos;
     @Getter private final List<String> idRefs;
 }
