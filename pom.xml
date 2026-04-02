@@ -30,7 +30,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <lombok.version>1.18.10</lombok.version>
+        <lombok.version>1.18.34</lombok.version>
         <javafx.version>15.0.1</javafx.version>
         <controlsfx.version>11.0.3</controlsfx.version>
     </properties>
