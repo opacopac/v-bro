@@ -100,6 +100,56 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Launch4j: wraps the shaded JAR into a Windows EXE -->
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>2.5.1</version>
+                <executions>
+                    <execution>
+                        <id>create-exe</id>
+                        <!-- runs after 'package' has produced the shaded fat JAR -->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Path to the fat JAR produced by maven-shade-plugin -->
+                            <jar>${project.build.directory}/${project.artifactId}-${project.version}-jar-with-dependencies.jar</jar>
+                            <!-- Output EXE -->
+                            <outfile>${project.build.directory}/${project.artifactId}-${project.version}.exe</outfile>
+                            <!-- Icon for the EXE (must be .ico format) -->
+                            <icon>${project.basedir}/src/main/resources/v-bro.ico</icon>
+                            <!-- JavaFX GUI app: no console window -->
+                            <headerType>gui</headerType>
+                            <!-- No <classPath> here: Launch4j will use "java -jar" mode -->
+                            <jre>
+                                <!-- Minimum Java version required on the end-user's machine -->
+                                <minVersion>11</minVersion>
+                            </jre>
+                            <!-- Splash screen shown while the JVM starts up (must be .bmp format) -->
+                            <splash>
+                                <file>${project.basedir}/src/main/resources/v-bro-splash.bmp</file>
+                                <waitForWindow>true</waitForWindow>
+                                <timeout>60</timeout>
+                                <timeoutErr>true</timeoutErr>
+                            </splash>
+                            <versionInfo>
+                                <fileVersion>0.0.1.0</fileVersion>
+                                <txtFileVersion>${project.version}</txtFileVersion>
+                                <fileDescription>v-bro</fileDescription>
+                                <copyright>tschanz</copyright>
+                                <productVersion>0.0.1.0</productVersion>
+                                <txtProductVersion>${project.version}</txtProductVersion>
+                                <productName>v-bro</productName>
+                                <internalName>${project.artifactId}</internalName>
+                                <originalFilename>${project.artifactId}-${project.version}.exe</originalFilename>
+                            </versionInfo>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
