@@ -57,6 +57,22 @@ class JdbcQueryBuilderImplTest {
 
 
     @Test
+    void buildQuery_multiple_fields_no_condition_postgres() {
+        this.spyConnectionFactory.jdbcServerType = JdbcServerType.POSTGRES;
+        var fields = List.of(
+            new RepoField("TABLE1", "ID", RepoFieldType.LONG, true,false, true),
+            new RepoField("TABLE1", "NAME", RepoFieldType.STRING, false, false, true),
+            new RepoField("TABLE1", "ISACTIVE", RepoFieldType.BOOL, false, false, false),
+            new RepoField("TABLE1", "CREATEDAT", RepoFieldType.DATE, false, true, false)
+        );
+
+        var query = this.jdbcQueryBuilder.buildQuery("TABLE1", Collections.emptyList(), fields, Collections.emptyList(), Collections.emptyList(), -1);
+
+        assertEquals("select TABLE1.ID,TABLE1.NAME,TABLE1.ISACTIVE,TABLE1.CREATEDAT from TABLE1 limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
+    }
+
+
+    @Test
     void buildQuery_single_equal_condition() {
         this.spyConnectionFactory.jdbcServerType = JdbcServerType.MYSQL;
         var fields = List.of(new RepoField("TABLE1", "ID", RepoFieldType.LONG, true,false, true));
@@ -122,6 +138,18 @@ class JdbcQueryBuilderImplTest {
         String query = this.jdbcQueryBuilder.buildQuery("TABLE1", Collections.emptyList(), fields, filters, Collections.emptyList(), -1);
 
         assertEquals("select TABLE1.ID from TABLE1 where (TABLE1.CREATEDAT=to_date('1976-08-28','YYYY-MM-DD')) and ROWNUM<=" + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
+    }
+
+
+    @Test
+    void buildQuery_date_condition_postgres() {
+        this.spyConnectionFactory.jdbcServerType = JdbcServerType.POSTGRES;
+        var fields = List.of(new RepoField("TABLE1", "ID", RepoFieldType.LONG, true,false, true));
+        var filters = List.of(new RowFilter(new RepoField("TABLE1", "CREATEDAT", RepoFieldType.DATE, false, false, false), RowFilterOperator.EQUALS, Date.valueOf(LocalDate.of(1976, 8, 28))));
+
+        String query = this.jdbcQueryBuilder.buildQuery("TABLE1", Collections.emptyList(), fields, filters, Collections.emptyList(), -1);
+
+        assertEquals("select TABLE1.ID from TABLE1 where (TABLE1.CREATEDAT=to_date('1976-08-28','YYYY-MM-DD')) limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
     }
 
 

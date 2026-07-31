@@ -77,6 +77,13 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
                     + "from information_schema.key_column_usage "
                     + "where REFERENCED_TABLE_NAME IS NOT NULL AND constraint_schema = DATABASE()";
                 break;
+            case POSTGRES:
+                query = "SELECT tc.TABLE_NAME AS BWD_TABLE, kcu.COLUMN_NAME AS BWD_COLUMN, ccu.TABLE_NAME AS FWD_TABLE, ccu.COLUMN_NAME AS FWD_COLUMN "
+                    + "FROM information_schema.table_constraints tc "
+                    + "INNER JOIN information_schema.key_column_usage kcu ON kcu.CONSTRAINT_NAME = tc.CONSTRAINT_NAME AND kcu.TABLE_SCHEMA = tc.TABLE_SCHEMA "
+                    + "INNER JOIN information_schema.constraint_column_usage ccu ON ccu.CONSTRAINT_NAME = tc.CONSTRAINT_NAME AND ccu.TABLE_SCHEMA = tc.TABLE_SCHEMA "
+                    + "WHERE tc.CONSTRAINT_TYPE = 'FOREIGN KEY' AND tc.TABLE_SCHEMA = current_schema()";
+                break;
             case ORACLE:
             default:
                 var schema = this.connectionFactory.getCurrentSchema();
@@ -126,6 +133,11 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
                 query = "select TABLE_NAME, COLUMN_NAME, DATA_TYPE, IS_NULLABLE as NULLABLE "
                     + "from information_schema.columns "
                     + "where table_schema = DATABASE()";
+                break;
+            case POSTGRES:
+                query = "select TABLE_NAME, COLUMN_NAME, DATA_TYPE, IS_NULLABLE as NULLABLE "
+                    + "from information_schema.columns "
+                    + "where table_schema = current_schema()";
                 break;
             case ORACLE:
             default:
@@ -180,6 +192,12 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
                     + "from information_schema.table_constraints as tc "
                     + "inner join information_schema.key_column_usage as cu ON (cu.constraint_name = tc.constraint_name AND cu.table_name = tc.table_name) "
                     + "where tc.constraint_schema = DATABASE()";
+                break;
+            case POSTGRES:
+                query = "select tc.TABLE_NAME, cu.COLUMN_NAME, tc.CONSTRAINT_TYPE "
+                    + "from information_schema.table_constraints as tc "
+                    + "inner join information_schema.key_column_usage as cu ON (cu.constraint_name = tc.constraint_name AND cu.table_name = tc.table_name AND cu.table_schema = tc.table_schema) "
+                    + "where tc.table_schema = current_schema() AND tc.CONSTRAINT_TYPE IN ('PRIMARY KEY', 'UNIQUE')";
                 break;
             case ORACLE:
             default:
@@ -253,11 +271,26 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
         switch (dataType.toUpperCase()) {
             case "INT":
             case "NUMBER":
+            case "INTEGER":
+            case "BIGINT":
+            case "SMALLINT":
+            case "NUMERIC":
+            case "DECIMAL":
                 return RepoFieldType.LONG;
+            case "BOOLEAN":
+            case "BOOL":
+                return RepoFieldType.BOOL;
             case "DATE":
                 return RepoFieldType.DATE;
+            case "TIMESTAMP":
+            case "TIMESTAMP WITHOUT TIME ZONE":
+            case "TIMESTAMP WITH TIME ZONE":
+                return RepoFieldType.TIMESTAMP;
             case "VARCHAR":
             case "VARCHAR2":
+            case "CHARACTER VARYING":
+            case "TEXT":
+            case "CHARACTER":
             default:
                 return RepoFieldType.STRING;
         }

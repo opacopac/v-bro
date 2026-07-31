@@ -139,6 +139,7 @@ public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
         switch (this.connectionFactory.getJdbcServerType()) {
             case MYSQL:
                 return "str_to_date('" + formatter.format(date) + "','%Y-%m-%d')";
+            case POSTGRES:
             case ORACLE:
             default:
                 return "to_date('" + formatter.format(date) + "','YYYY-MM-DD')";
@@ -161,7 +162,8 @@ public class JdbcQueryBuilderImpl implements JdbcQueryBuilder {
 
 
     private String buildLimitClause(int resultLimit) {
-        if (this.connectionFactory.getJdbcServerType() == JdbcServerType.MYSQL) {
+        if (this.connectionFactory.getJdbcServerType() == JdbcServerType.MYSQL
+            || this.connectionFactory.getJdbcServerType() == JdbcServerType.POSTGRES) {
             return " limit " + resultLimit;
         } else {
             return "";

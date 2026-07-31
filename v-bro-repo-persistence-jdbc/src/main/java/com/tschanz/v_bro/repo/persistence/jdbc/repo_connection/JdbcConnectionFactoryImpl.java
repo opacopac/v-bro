@@ -46,6 +46,8 @@ public class JdbcConnectionFactoryImpl implements JdbcConnectionFactory {
             return JdbcServerType.MYSQL;
         } else if (this.currentConnectionUrl.trim().toLowerCase().startsWith("jdbc:oracle")) {
             return JdbcServerType.ORACLE;
+        } else if (this.currentConnectionUrl.trim().toLowerCase().startsWith("jdbc:postgresql")) {
+            return JdbcServerType.POSTGRES;
         } else {
             throw new IllegalArgumentException("unknown jdbc server type");
         }
