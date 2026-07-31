@@ -1,6 +1,7 @@
 package com.tschanz.v_bro.repo.persistence.jdbc.querybuilder;
 
 import com.tschanz.v_bro.repo.persistence.jdbc.mock.SpyConnectionFactory;
+import com.tschanz.v_bro.repo.persistence.jdbc.model.FieldValue;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoField;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoFieldType;
 import com.tschanz.v_bro.repo.persistence.jdbc.model.RepoTable;
@@ -29,6 +30,11 @@ class JdbcQueryBuilderImplTest {
     }
 
 
+    private static String col(String table, String field) {
+        return table + "." + field + " as " + FieldValue.getLabel(table, field);
+    }
+
+
     @Test
     void buildQuery_single_field_single_condition_oracle() {
         this.spyConnectionFactory.jdbcServerType = JdbcServerType.ORACLE;
@@ -36,7 +42,7 @@ class JdbcQueryBuilderImplTest {
 
         var query = this.jdbcQueryBuilder.buildQuery("TABLE1", Collections.emptyList(), fields, Collections.emptyList(), Collections.emptyList(), -1);
 
-        assertEquals("select TABLE1.ID from TABLE1 where ROWNUM<=" + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
+        assertEquals("select " + col("TABLE1", "ID") + " from TABLE1 where ROWNUM<=" + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
     }
 
 
@@ -52,7 +58,7 @@ class JdbcQueryBuilderImplTest {
 
         var query = this.jdbcQueryBuilder.buildQuery("TABLE1", Collections.emptyList(), fields, Collections.emptyList(), Collections.emptyList(), -1);
 
-        assertEquals("select TABLE1.ID,TABLE1.NAME,TABLE1.ISACTIVE,TABLE1.CREATEDAT from TABLE1 limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
+        assertEquals("select " + col("TABLE1", "ID") + "," + col("TABLE1", "NAME") + "," + col("TABLE1", "ISACTIVE") + "," + col("TABLE1", "CREATEDAT") + " from TABLE1 limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
     }
 
 
@@ -68,7 +74,7 @@ class JdbcQueryBuilderImplTest {
 
         var query = this.jdbcQueryBuilder.buildQuery("TABLE1", Collections.emptyList(), fields, Collections.emptyList(), Collections.emptyList(), -1);
 
-        assertEquals("select TABLE1.ID,TABLE1.NAME,TABLE1.ISACTIVE,TABLE1.CREATEDAT from TABLE1 limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
+        assertEquals("select " + col("TABLE1", "ID") + "," + col("TABLE1", "NAME") + "," + col("TABLE1", "ISACTIVE") + "," + col("TABLE1", "CREATEDAT") + " from TABLE1 limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
     }
 
 
@@ -80,7 +86,7 @@ class JdbcQueryBuilderImplTest {
 
         String query = this.jdbcQueryBuilder.buildQuery("TABLE1", Collections.emptyList(), fields, filters, Collections.emptyList(), -1);
 
-        assertEquals("select TABLE1.ID from TABLE1 where (TABLE1.ID=1) limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
+        assertEquals("select " + col("TABLE1", "ID") + " from TABLE1 where (TABLE1.ID=1) limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
     }
 
 
@@ -92,7 +98,7 @@ class JdbcQueryBuilderImplTest {
 
         String query = this.jdbcQueryBuilder.buildQuery("TABLE1", Collections.emptyList(), fields, filters, Collections.emptyList(), -1);
 
-        assertEquals("select TABLE1.ID from TABLE1 where (TABLE1.ID in (1,2,3)) limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
+        assertEquals("select " + col("TABLE1", "ID") + " from TABLE1 where (TABLE1.ID in (1,2,3)) limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
     }
 
 
@@ -113,7 +119,7 @@ class JdbcQueryBuilderImplTest {
 
         String query = this.jdbcQueryBuilder.buildQuery("TABLE1", Collections.emptyList(), fields, filters, Collections.emptyList(), -1);
 
-        assertEquals("select TABLE1.ID,TABLE1.NAME from TABLE1 where (TABLE1.ID>=1 and TABLE1.ID<=1000 and TABLE1.NAME='MEEP' and TABLE1.ISACTIVE=1) and ROWNUM<=" + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
+        assertEquals("select " + col("TABLE1", "ID") + "," + col("TABLE1", "NAME") + " from TABLE1 where (TABLE1.ID>=1 and TABLE1.ID<=1000 and TABLE1.NAME='MEEP' and TABLE1.ISACTIVE=1) and ROWNUM<=" + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
     }
 
 
@@ -125,7 +131,7 @@ class JdbcQueryBuilderImplTest {
 
         String query = this.jdbcQueryBuilder.buildQuery("TABLE1", Collections.emptyList(), fields, filters, Collections.emptyList(), -1);
 
-        assertEquals("select TABLE1.ID from TABLE1 where (TABLE1.CREATEDAT=str_to_date('1976-08-28','%Y-%m-%d')) limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
+        assertEquals("select " + col("TABLE1", "ID") + " from TABLE1 where (TABLE1.CREATEDAT=str_to_date('1976-08-28','%Y-%m-%d')) limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
     }
 
 
@@ -137,7 +143,7 @@ class JdbcQueryBuilderImplTest {
 
         String query = this.jdbcQueryBuilder.buildQuery("TABLE1", Collections.emptyList(), fields, filters, Collections.emptyList(), -1);
 
-        assertEquals("select TABLE1.ID from TABLE1 where (TABLE1.CREATEDAT=to_date('1976-08-28','YYYY-MM-DD')) and ROWNUM<=" + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
+        assertEquals("select " + col("TABLE1", "ID") + " from TABLE1 where (TABLE1.CREATEDAT=to_date('1976-08-28','YYYY-MM-DD')) and ROWNUM<=" + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
     }
 
 
@@ -149,7 +155,7 @@ class JdbcQueryBuilderImplTest {
 
         String query = this.jdbcQueryBuilder.buildQuery("TABLE1", Collections.emptyList(), fields, filters, Collections.emptyList(), -1);
 
-        assertEquals("select TABLE1.ID from TABLE1 where (TABLE1.CREATEDAT=to_date('1976-08-28','YYYY-MM-DD')) limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
+        assertEquals("select " + col("TABLE1", "ID") + " from TABLE1 where (TABLE1.CREATEDAT=to_date('1976-08-28','YYYY-MM-DD')) limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
     }
 
 
@@ -161,7 +167,7 @@ class JdbcQueryBuilderImplTest {
 
         String query = this.jdbcQueryBuilder.buildQuery("TABLE1", Collections.emptyList(), fields, filters, Collections.emptyList(), -1);
 
-        assertEquals("select TABLE1.ID from TABLE1 where (upper(TABLE1.BEZEICHNUNG) like 'MEEP%') and ROWNUM<=" + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
+        assertEquals("select " + col("TABLE1", "ID") + " from TABLE1 where (upper(TABLE1.BEZEICHNUNG) like 'MEEP%') and ROWNUM<=" + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
     }
 
 
@@ -173,7 +179,7 @@ class JdbcQueryBuilderImplTest {
 
         String query = this.jdbcQueryBuilder.buildQuery("TABLE1", Collections.emptyList(), fields, filters, Collections.emptyList(), -1);
 
-        assertEquals("select TABLE1.ID from TABLE1 where (TABLE1.REMARK='it''s old') limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
+        assertEquals("select " + col("TABLE1", "ID") + " from TABLE1 where (TABLE1.REMARK='it''s old') limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
     }
 
 
@@ -185,7 +191,7 @@ class JdbcQueryBuilderImplTest {
 
         String query = this.jdbcQueryBuilder.buildQuery("TABLE1", Collections.emptyList(), fields, filters, Collections.emptyList(), 50);
 
-        assertEquals("select TABLE1.ID from TABLE1 where (TABLE1.CODE='XXX') limit 50", query);
+        assertEquals("select " + col("TABLE1", "ID") + " from TABLE1 where (TABLE1.CODE='XXX') limit 50", query);
     }
 
 
@@ -200,7 +206,7 @@ class JdbcQueryBuilderImplTest {
 
         String query = this.jdbcQueryBuilder.buildQuery("TABLE1", Collections.emptyList(), fields, Collections.emptyList(), filters, -1);
 
-        assertEquals("select TABLE1.ID from TABLE1 where (TABLE1.CODE='XXX' or TABLE1.NAME='YYY') limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
+        assertEquals("select " + col("TABLE1", "ID") + " from TABLE1 where (TABLE1.CODE='XXX' or TABLE1.NAME='YYY') limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
     }
 
 
@@ -223,7 +229,7 @@ class JdbcQueryBuilderImplTest {
 
         String query = this.jdbcQueryBuilder.buildQuery("TABLE1", Collections.emptyList(), fields, andFilters, orFilters, -1);
 
-        assertEquals("select TABLE1.ID,TABLE1.NAME from TABLE1 where (TABLE1.ID>=1 and TABLE1.ID<=1000) and (TABLE1.CODE='XXX' or TABLE1.NAME='YYY') and ROWNUM<=" + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
+        assertEquals("select " + col("TABLE1", "ID") + "," + col("TABLE1", "NAME") + " from TABLE1 where (TABLE1.ID>=1 and TABLE1.ID<=1000) and (TABLE1.CODE='XXX' or TABLE1.NAME='YYY') and ROWNUM<=" + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
     }
 
 
@@ -248,6 +254,6 @@ class JdbcQueryBuilderImplTest {
 
         String query = this.jdbcQueryBuilder.buildQuery("TABLE1", joins, List.of(fields1.get(0), fields2.get(1)), Collections.emptyList(), orFilters, -1);
 
-        assertEquals("select TABLE1.ID,TABLE2.VORNAME from TABLE1 left join TABLE2 on TABLE1.NAME=TABLE2.VORNAME where (TABLE1.ID=33 or TABLE2.ID=44) limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
+        assertEquals("select " + col("TABLE1", "ID") + "," + col("TABLE2", "VORNAME") + " from TABLE1 left join TABLE2 on TABLE1.NAME=TABLE2.VORNAME where (TABLE1.ID=33 or TABLE2.ID=44) limit " + JdbcQueryBuilderImpl.MAX_ROW_NUM_HARD_LIMIT, query);
     }
 }

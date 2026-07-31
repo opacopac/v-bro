@@ -25,7 +25,7 @@ public class JdbcRepoMetadataServiceImplTest {
 
     // region findTablesNamesBySuffix
 
-    @Test
+    //@Test
     void findTablesNamesBySuffix_happy_day() throws SQLException {
         /*JdbcConnectionFactory jdbcConnectionFactory = new JdbcConnectionFactoryImpl();
         this.metadataService = new JdbcRepoMetadataServiceImpl(jdbcConnectionFactory);

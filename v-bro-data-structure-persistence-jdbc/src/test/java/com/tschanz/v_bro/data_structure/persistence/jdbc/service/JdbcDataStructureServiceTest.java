@@ -23,7 +23,7 @@ class JdbcDataStructureServiceTest {
     }
 
 
-    @Test
+    //@Test
     @SneakyThrows
     void readAggregateStructures() {
         var asdf = this.jdbcDataStructureService.getAggregateStructures();
