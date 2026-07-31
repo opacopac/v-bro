@@ -78,11 +78,18 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
                     + "where REFERENCED_TABLE_NAME IS NOT NULL AND constraint_schema = DATABASE()";
                 break;
             case POSTGRES:
-                query = "SELECT tc.TABLE_NAME AS BWD_TABLE, kcu.COLUMN_NAME AS BWD_COLUMN, ccu.TABLE_NAME AS FWD_TABLE, ccu.COLUMN_NAME AS FWD_COLUMN "
-                    + "FROM information_schema.table_constraints tc "
-                    + "INNER JOIN information_schema.key_column_usage kcu ON kcu.CONSTRAINT_NAME = tc.CONSTRAINT_NAME AND kcu.TABLE_SCHEMA = tc.TABLE_SCHEMA "
-                    + "INNER JOIN information_schema.constraint_column_usage ccu ON ccu.CONSTRAINT_NAME = tc.CONSTRAINT_NAME AND ccu.TABLE_SCHEMA = tc.TABLE_SCHEMA "
-                    + "WHERE tc.CONSTRAINT_TYPE = 'FOREIGN KEY' AND tc.TABLE_SCHEMA = current_schema()";
+                // uses pg_catalog instead of information_schema.table_constraints/constraint_column_usage,
+                // since those information_schema views only show constraints for tables the current user
+                // owns or has privileges other than SELECT on - a read-only user would see nothing there.
+                query = "SELECT cls.relname AS BWD_TABLE, att.attname AS BWD_COLUMN, fcls.relname AS FWD_TABLE, fatt.attname AS FWD_COLUMN "
+                    + "FROM pg_constraint con "
+                    + "INNER JOIN pg_class cls ON cls.oid = con.conrelid "
+                    + "INNER JOIN pg_namespace nsp ON nsp.oid = cls.relnamespace "
+                    + "INNER JOIN pg_class fcls ON fcls.oid = con.confrelid "
+                    + "INNER JOIN unnest(con.conkey, con.confkey) AS cols(bwd_attnum, fwd_attnum) ON true "
+                    + "INNER JOIN pg_attribute att ON att.attrelid = cls.oid AND att.attnum = cols.bwd_attnum "
+                    + "INNER JOIN pg_attribute fatt ON fatt.attrelid = fcls.oid AND fatt.attnum = cols.fwd_attnum "
+                    + "WHERE con.contype = 'f' AND nsp.nspname = current_schema()";
                 break;
             case ORACLE:
             default:
@@ -194,10 +201,16 @@ public class JdbcRepoMetadataServiceImpl implements JdbcRepoMetadataService {
                     + "where tc.constraint_schema = DATABASE()";
                 break;
             case POSTGRES:
-                query = "select tc.TABLE_NAME, cu.COLUMN_NAME, tc.CONSTRAINT_TYPE "
-                    + "from information_schema.table_constraints as tc "
-                    + "inner join information_schema.key_column_usage as cu ON (cu.constraint_name = tc.constraint_name AND cu.table_name = tc.table_name AND cu.table_schema = tc.table_schema) "
-                    + "where tc.table_schema = current_schema() AND tc.CONSTRAINT_TYPE IN ('PRIMARY KEY', 'UNIQUE')";
+                // uses pg_catalog instead of information_schema.table_constraints/key_column_usage,
+                // since those information_schema views only show constraints for tables the current user
+                // owns or has privileges other than SELECT on - a read-only user would see nothing there.
+                query = "SELECT cls.relname AS TABLE_NAME, att.attname AS COLUMN_NAME, con.contype AS CONSTRAINT_TYPE "
+                    + "FROM pg_constraint con "
+                    + "INNER JOIN pg_class cls ON cls.oid = con.conrelid "
+                    + "INNER JOIN pg_namespace nsp ON nsp.oid = cls.relnamespace "
+                    + "INNER JOIN unnest(con.conkey) AS k(attnum) ON true "
+                    + "INNER JOIN pg_attribute att ON att.attrelid = cls.oid AND att.attnum = k.attnum "
+                    + "WHERE nsp.nspname = current_schema() AND con.contype IN ('p', 'u')";
                 break;
             case ORACLE:
             default:
